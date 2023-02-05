@@ -1,0 +1,30 @@
+[project]
+name = "joserfc"
+description = ""
+license = {text = "BSD-3-Clause"}
+authors = [{name = "Hsiaoming Yang", email="me@lepture.com"}]
+
+requires-python = ">=3.8"
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://jose.authlib.org/"
+Twitter = "https://twitter.com/authlib"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "joserfc.__version__"}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+branch = true
+source = ["joserfc", "tests"]
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
