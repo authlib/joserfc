@@ -22,6 +22,7 @@ build-backend = "setuptools.build_meta"
 version = {attr = "joserfc.__version__"}
 
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 testpaths = ["tests"]
 filterwarnings = ["error"]
 

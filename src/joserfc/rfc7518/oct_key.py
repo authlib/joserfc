@@ -4,10 +4,10 @@ from .._util import (
     urlsafe_b64decode,
     urlsafe_b64encode,
 )
-from .._types.keys import PlainKey, KeyOptions, RawKey, DictKey
+from .._types.keys import SymmetricKey, KeyOptions, RawKey, DictKey
 
 
-class OctKey(PlainKey):
+class OctKey(SymmetricKey):
     key_type: str = 'oct'
     required_fields: FrozenSet[str] = frozenset(['kty', 'k'])
 

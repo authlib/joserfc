@@ -30,6 +30,12 @@ class _KeyMixin(object):
         self._kid = None
         self._tokens = None
 
+    def keys(self):
+        return self.tokens.keys()
+
+    def __getitem__(self, k):
+        return self.tokens[k]
+
     @property
     def kty(self) -> str:
         return self.key_type
@@ -69,7 +75,7 @@ class _KeyMixin(object):
         tokens['kty'] = self.kty
         return tokens
 
-    def check_key_op(self, operation: str):
+    def check_key_op(self, operation: str) -> None:
         """Check if the given key_op is supported by this key.
 
         :param operation: key operation value, such as "sign", "encrypt".
@@ -87,7 +93,7 @@ class _KeyMixin(object):
             raise ValueError('Invalid key_op "{}" for public key'.format(operation))
 
 
-class PlainKey(_KeyMixin, metaclass=ABCMeta):
+class SymmetricKey(_KeyMixin, metaclass=ABCMeta):
     key_type: str = 'oct'
 
     @property
@@ -145,4 +151,4 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
         return self.as_bytes(encoding='DER', private=private, password=password)
 
 
-Key = Union[PlainKey, AsymmetricKey]
+Key = Union[SymmetricKey, AsymmetricKey]
