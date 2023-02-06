@@ -1,46 +1,86 @@
-from typing import Optional, Union, Dict
+from typing import Optional, Union, Dict, FrozenSet
 from abc import ABCMeta, abstractmethod
-from functools import cached_property
 
 
 KeyOptions = Optional[Dict[str, str]]
+RawKey = Union[str, bytes, Dict[str, str]]
 
 
 class _KeyMixin(object):
     key_type: str = 'oct'
+    required_fields: FrozenSet[str] = frozenset(['kty'])
+    private_key_ops: FrozenSet[str] = frozenset(['sign', 'decrypt', 'unwrapKey'])
+    public_key_ops: FrozenSet[str] = frozenset(['verify', 'encrypt', 'wrapKey'])
 
     def __init__(self, value, options: KeyOptions=None):
         self.value = value
         self.options = options or {}
+        self._tokens = None
 
     @property
     def kty(self) -> str:
         return self.key_type
 
-    @abstractmethod
-    def get_op_key(self, operation: str):
-        pass
+    @property
+    def is_private(self) -> bool:
+        return False
+
+    @property
+    def tokens(self) -> Dict[str, str]:
+        if self._tokens is None:
+            self._tokens = self.as_dict()
+        return self._tokens
+
+    @classmethod
+    def validate_tokens(cls, tokens: Dict[str, str]):
+        if not set(tokens.keys()).issuperset(self.required_fields):
+            raise ValueError("Missing required fields")
+        if tokens['kty'] != self.key_type:
+            raise ValueError("Mismatching `kty` value")
+        return tokens
+
+
+    def check_key_op(self, operation: str):
+        """Check if the given key_op is supported by this key.
+
+        :param operation: key operation value, such as "sign", "encrypt".
+        :raise: ValueError
+        """
+        # only check key in JSON(dict) format
+        if self._tokens is None:
+            return
+
+        key_ops = self._tokens.get('key_ops')
+        if key_ops is not None and operation not in key_ops:
+            raise ValueError('Unsupported key_op "{}"'.format(operation))
+
+        if operation in self.private_key_ops and not self.is_private:
+            raise ValueError('Invalid key_op "{}" for public key'.format(operation))
 
 
 class PlainKey(_KeyMixin, metaclass=ABCMeta):
     key_type: str = 'oct'
-    is_private: bool = True
 
-    @cached_property
-    def tokens(self) -> Dict[str, str]:
-        return self.as_dict()
+    @property
+    def is_private(self) -> bool:
+        return True
 
     @abstractmethod
-    def as_dict(self) -> Dict[str, str]:
+    def as_dict(self, **params) -> Dict[str, str]:
+        pass
+
+    @abstractmethod
+    def get_op_key(self, operation: str):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def import_key(cls, value: RawKey, options: KeyOptions=None):
         pass
 
 
 class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
     key_type: str = 'RSA'
-
-    @cached_property
-    def tokens(self) -> Dict[str, str]:
-        return self.as_dict()
 
     @property
     @abstractmethod
@@ -58,7 +98,11 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def as_dict(self, private=None) -> Dict[str, str]:
+    def get_op_key(self, operation: str):
+        pass
+
+    @abstractmethod
+    def as_dict(self, private=None, **params) -> Dict[str, str]:
         pass
 
     @abstractmethod

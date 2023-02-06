@@ -1,6 +1,6 @@
 from ._types.headers import SHeader
 from ._types.keys import Key
-from ._util.encode import json_b64encode, urlsafe_b64encode
+from ._util import json_b64encode, urlsafe_b64encode
 
 JWS_REGISTRY = {}
 
