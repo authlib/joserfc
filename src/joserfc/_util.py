@@ -26,8 +26,8 @@ def urlsafe_b64encode(s: bytes) -> bytes:
     return base64.urlsafe_b64encode(s).rstrip(b'=')
 
 
-def base64_to_int(s: bytes) -> int:
-    data = urlsafe_b64decode(s)
+def base64_to_int(s: str) -> int:
+    data = urlsafe_b64decode(to_bytes(s))
     buf = struct.unpack('%sB' % len(data), data)
     return int(''.join(["%02x" % byte for byte in buf]), 16)
 
