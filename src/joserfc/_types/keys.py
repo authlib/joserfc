@@ -61,9 +61,9 @@ class _KeyMixin(object):
 
     @classmethod
     def validate_tokens(cls, tokens: DictKey):
-        if not set(tokens.keys()).issuperset(self.required_fields):
+        if not set(tokens.keys()).issuperset(cls.required_fields):
             raise ValueError("Missing required fields")
-        if tokens['kty'] != self.key_type:
+        if tokens['kty'] != cls.key_type:
             raise ValueError("Mismatching `kty` value")
         return tokens
 

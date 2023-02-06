@@ -15,8 +15,11 @@ class OctKey(SymmetricKey):
         super().__init__(value, options)
 
     def as_dict(self, **params) -> DictKey:
-        k = urlsafe_b64encode(self.value).decode('utf-8')
-        data = self.render_tokens({'k': k})
+        if self._tokens:
+            data = self._tokens.copy()
+        else:
+            k = urlsafe_b64encode(self.value).decode('utf-8')
+            data = self.render_tokens({'k': k})
         data.update(params)
         return data
 
@@ -26,7 +29,7 @@ class OctKey(SymmetricKey):
     @classmethod
     def import_key(cls, value: RawKey, options: KeyOptions=None) -> 'OctKey':
         if isinstance(value, dict):
-            tokens = self.validate_tokens(value)
+            tokens = cls.validate_tokens(value)
             bytes_value = urlsafe_b64decode(to_bytes(value['k']))
             key = cls(bytes_value, options)
             key._tokens = key.render_tokens(tokens)
