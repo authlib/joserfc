@@ -4,7 +4,7 @@ from .._util import (
     urlsafe_b64decode,
     urlsafe_b64encode,
 )
-from .._types.keys import PlainKey, KeyOptions, RawKey
+from .._types.keys import PlainKey, KeyOptions, RawKey, DictKey
 
 
 class OctKey(PlainKey):
@@ -14,11 +14,14 @@ class OctKey(PlainKey):
     def __init__(self, value: bytes, options: KeyOptions=None):
         super().__init__(value, options)
 
-    def as_dict(self, **params) -> Dict[str, str]:
+    def as_dict(self, **params) -> DictKey:
         k = urlsafe_b64encode(self.value).decode('utf-8')
-        data = {'kty': self.kty, 'k': k}
+        data = self.render_tokens({'k': k})
         data.update(params)
         return data
+
+    def get_op_key(self, operation: str):
+        return self.value
 
     @classmethod
     def import_key(cls, value: RawKey, options: KeyOptions=None) -> 'OctKey':
@@ -26,7 +29,7 @@ class OctKey(PlainKey):
             tokens = self.validate_tokens(value)
             bytes_value = urlsafe_b64decode(to_bytes(value['k']))
             key = cls(bytes_value, options)
-            key._tokens = tokens
+            key._tokens = key.render_tokens(tokens)
             return key
         if isinstance(value, str):
             value = to_bytes(value)

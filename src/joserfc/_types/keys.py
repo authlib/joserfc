@@ -1,9 +1,21 @@
-from typing import Optional, Union, Dict, FrozenSet
+from typing import Optional, Union, Dict, List, FrozenSet, TypedDict
 from abc import ABCMeta, abstractmethod
 
 
-KeyOptions = Optional[Dict[str, str]]
-RawKey = Union[str, bytes, Dict[str, str]]
+DictKey = Dict[str, Union[str, List[str]]]
+
+RawKey = Union[str, bytes, DictKey]
+
+KeyOptions = Optional[TypedDict('KeyOptions', {
+    'use': str,
+    'key_ops': List[str],
+    'alg': str,
+    'kid': str,
+    'x5u': str,
+    'x5c': str,
+    'x5t': str,
+    'x5t#S256': str,
+}, total=False)]
 
 
 class _KeyMixin(object):
@@ -15,6 +27,7 @@ class _KeyMixin(object):
     def __init__(self, value, options: KeyOptions=None):
         self.value = value
         self.options = options or {}
+        self._kid = None
         self._tokens = None
 
     @property
@@ -22,23 +35,39 @@ class _KeyMixin(object):
         return self.key_type
 
     @property
+    def kid(self) -> Optional[str]:
+        return self._kid
+
+    @kid.setter
+    def kid(self, kid: str) -> str:
+        self._kid = kid
+        return kid
+
+    @property
     def is_private(self) -> bool:
         return False
 
     @property
-    def tokens(self) -> Dict[str, str]:
+    def tokens(self) -> DictKey:
         if self._tokens is None:
             self._tokens = self.as_dict()
         return self._tokens
 
     @classmethod
-    def validate_tokens(cls, tokens: Dict[str, str]):
+    def validate_tokens(cls, tokens: DictKey):
         if not set(tokens.keys()).issuperset(self.required_fields):
             raise ValueError("Missing required fields")
         if tokens['kty'] != self.key_type:
             raise ValueError("Mismatching `kty` value")
         return tokens
 
+    def render_tokens(self, tokens: DictKey) -> DictKey:
+        if self.options:
+            tokens.update(self.options)
+        if self.kid:
+            tokens['kid'] = self.kid
+        tokens['kty'] = self.kty
+        return tokens
 
     def check_key_op(self, operation: str):
         """Check if the given key_op is supported by this key.
@@ -66,7 +95,7 @@ class PlainKey(_KeyMixin, metaclass=ABCMeta):
         return True
 
     @abstractmethod
-    def as_dict(self, **params) -> Dict[str, str]:
+    def as_dict(self, **params) -> DictKey:
         pass
 
     @abstractmethod
@@ -102,7 +131,7 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def as_dict(self, private=None, **params) -> Dict[str, str]:
+    def as_dict(self, private=None, **params) -> DictKey:
         pass
 
     @abstractmethod
