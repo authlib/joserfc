@@ -45,9 +45,8 @@ class _KeyMixin(object):
         return self._kid
 
     @kid.setter
-    def kid(self, kid: str) -> str:
+    def kid(self, kid: str):
         self._kid = kid
-        return kid
 
     @property
     def is_private(self) -> bool:

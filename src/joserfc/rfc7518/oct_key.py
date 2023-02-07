@@ -1,10 +1,10 @@
-from typing import Dict, FrozenSet
+from typing import FrozenSet
 from .._util import (
     to_bytes,
     urlsafe_b64decode,
     urlsafe_b64encode,
 )
-from .._types.keys import SymmetricKey, KeyOptions, RawKey, DictKey
+from ..rfc7517.keys import SymmetricKey, KeyOptions, RawKey, DictKey
 
 
 class OctKey(SymmetricKey):

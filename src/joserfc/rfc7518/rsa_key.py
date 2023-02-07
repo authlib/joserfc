@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
     rsa_recover_prime_factors, rsa_crt_dmp1, rsa_crt_dmq1, rsa_crt_iqmp
 )
 from cryptography.hazmat.backends import default_backend
-from .._types.keys import AsymmetricKey, DictKey, RawKey, KeyOptions
+from ..rfc7517.keys import AsymmetricKey, DictKey, RawKey, KeyOptions
 from .._util import int_to_base64, base64_to_int
 
 
@@ -51,12 +51,12 @@ class RSAKey(AsymmetricKey):
 
     @property
     def public_key(self) -> RSAPublicKey:
-        if self.is_private():
+        if self.is_private:
             pass
 
     @property
     def private_key(self) -> Optional[RSAPrivateKeyWithSerialization]:
-        if self.is_private():
+        if self.is_private:
             return self.value
         return None
 
