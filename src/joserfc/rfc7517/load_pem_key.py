@@ -1,0 +1,31 @@
+from cryptography.x509 import load_pem_x509_certificate
+from cryptography.hazmat.primitives.serialization import (
+    load_pem_private_key, load_pem_public_key, load_ssh_public_key,
+)
+from cryptography.hazmat.backends import default_backend
+
+
+def load_pem_key(raw: bytes, ssh_type=None, key_type=None, password=None):
+    if ssh_type and raw.startswith(ssh_type):
+        return load_ssh_public_key(raw, backend=default_backend())
+
+    if key_type == 'public':
+        return load_pem_public_key(raw, backend=default_backend())
+
+    if key_type == 'private' or password is not None:
+        return load_pem_private_key(raw, password=password, backend=default_backend())
+
+    if b'PUBLIC' in raw:
+        return load_pem_public_key(raw, backend=default_backend())
+
+    if b'PRIVATE' in raw:
+        return load_pem_private_key(raw, password=password, backend=default_backend())
+
+    if b'CERTIFICATE' in raw:
+        cert = load_pem_x509_certificate(raw, default_backend())
+        return cert.public_key()
+
+    try:
+        return load_pem_private_key(raw, password=password, backend=default_backend())
+    except ValueError:
+        return load_pem_public_key(raw, backend=default_backend())

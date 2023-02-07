@@ -1,4 +1,5 @@
 from typing import Optional, Dict, FrozenSet
+from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import (
     RSAPublicKey, RSAPrivateKeyWithSerialization,
@@ -7,7 +8,8 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
 )
 from cryptography.hazmat.backends import default_backend
 from ..rfc7517.keys import AsymmetricKey, DictKey, RawKey, KeyOptions
-from .._util import int_to_base64, base64_to_int
+from ..rfc7517.load_pem_key import load_pem_key
+from .._util import to_bytes, int_to_base64, base64_to_int
 
 
 class RSAKey(AsymmetricKey):
@@ -49,10 +51,11 @@ class RSAKey(AsymmetricKey):
     def is_private(self) -> bool:
         return isinstance(self.value, RSAPrivateKeyWithSerialization)
 
-    @property
+    @cached_property
     def public_key(self) -> RSAPublicKey:
-        if self.is_private:
-            pass
+        if isinstance(self.value, RSAPrivateKeyWithSerialization):
+            return self.value.public_key()
+        return self.value
 
     @property
     def private_key(self) -> Optional[RSAPrivateKeyWithSerialization]:
@@ -71,9 +74,26 @@ class RSAKey(AsymmetricKey):
             key = cls(raw_key, options)
             key._tokens = key.render_tokens(tokens)
             return key
-        # TODO
-        return None
 
+        if isinstance(value, str):
+            value = to_bytes(value)
+        raw_key = load_pem_key(value, b'ssh-rsa')
+        return cls(raw_key, options)
+
+    @classmethod
+    def generate_key(cls, key_size: int=2048, options: KeyOptions=None, private=False) -> 'RSAKey':
+        if key_size < 512:
+            raise ValueError('key_size must not be less than 512')
+        if key_size % 8 != 0:
+            raise ValueError('Invalid key_size for RSAKey')
+        raw_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=key_size,
+            backend=default_backend(),
+        )
+        if not private:
+            raw_key = raw_key.public_key()
+        return cls(raw_key, options)
 
 
 def import_private_key(obj: DictKey) -> RSAPrivateKeyWithSerialization:

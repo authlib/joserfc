@@ -112,6 +112,11 @@ class SymmetricKey(_KeyMixin, metaclass=ABCMeta):
     def import_key(cls, value: RawKey, options: KeyOptions=None):
         pass
 
+    @classmethod
+    @abstractmethod
+    def generate_key(cls, key_size: int, options: KeyOptions = None, private=False):
+        pass
+
 
 class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
     key_type: str = 'RSA'
@@ -148,6 +153,17 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
 
     def as_der(self, private=None, password=None) -> bytes:
         return self.as_bytes(encoding='DER', private=private, password=password)
+
+    @classmethod
+    @abstractmethod
+    def import_key(cls, value: RawKey, options: KeyOptions=None):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def generate_key(cls, crv_or_size: Union[int, str], options: KeyOptions = None, private=False):
+        pass
+
 
 
 Key = Union[SymmetricKey, AsymmetricKey]

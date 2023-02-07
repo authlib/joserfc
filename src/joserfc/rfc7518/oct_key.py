@@ -3,6 +3,7 @@ from .._util import (
     to_bytes,
     urlsafe_b64decode,
     urlsafe_b64encode,
+    generate_token,
 )
 from ..rfc7517.keys import SymmetricKey, KeyOptions, RawKey, DictKey
 
@@ -37,3 +38,15 @@ class OctKey(SymmetricKey):
         if isinstance(value, str):
             value = to_bytes(value)
         return cls(value, options)
+
+    @classmethod
+    def generate_key(cls, key_size=256, options=None, private=True):
+        """Generate a ``OctKey`` with the given bit size."""
+        if not private:
+            raise ValueError('oct key can not be generated as public')
+
+        if key_size % 8 != 0:
+            raise ValueError('Invalid bit size for oct key')
+
+        value = generate_token(key_size // 8)
+        return cls(to_bytes(value), options)
