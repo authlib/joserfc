@@ -1,5 +1,5 @@
 from typing import Union
-from ._types.keys import Key
+from .rfc7517.keys import Key
 from ._types.headers import SHeader, EHeader
 from . import jws
 from . import jwe

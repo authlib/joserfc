@@ -1,5 +1,5 @@
 from ._types.headers import EHeader
-from ._types.keys import Key
+from .rfc7517.keys import Key
 
 
 JWE_REGISTRY = {}

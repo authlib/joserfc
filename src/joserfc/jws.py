@@ -1,5 +1,5 @@
+from .rfc7517.keys import Key
 from ._types.headers import SHeader
-from ._types.keys import Key
 from ._util import json_b64encode, urlsafe_b64encode
 
 JWS_REGISTRY = {}
