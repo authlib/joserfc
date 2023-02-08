@@ -2,6 +2,7 @@ from typing import Union
 from .rfc7517.keys import SymmetricKey, AsymmetricKey
 from .rfc7518.oct_key import OctKey
 from .rfc7518.rsa_key import RSAKey
+from .rfc7518.ec_key import ECKey
 
 
 __all__ = [
@@ -9,6 +10,7 @@ __all__ = [
     'AsymmetricKey',
     'OctKey',
     'RSAKey',
+    'ECKey',
     'JWK_REGISTRY',
     'generate_key',
 ]
@@ -17,6 +19,7 @@ __all__ = [
 JWK_REGISTRY = {
     OctKey.key_type: OctKey,
     RSAKey.key_type: RSAKey,
+    ECKey.key_type: ECKey,
 }
 
 

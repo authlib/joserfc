@@ -96,6 +96,10 @@ class SymmetricKey(_KeyMixin, metaclass=ABCMeta):
     key_type: str = 'oct'
 
     @property
+    def raw_key(self) -> bytes:
+        return self.value
+
+    @property
     def is_private(self) -> bool:
         return True
 
@@ -120,6 +124,10 @@ class SymmetricKey(_KeyMixin, metaclass=ABCMeta):
 
 class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
     key_type: str = 'RSA'
+
+    @property
+    def raw_key(self):
+        return self.value
 
     @property
     @abstractmethod

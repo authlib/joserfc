@@ -1,4 +1,4 @@
-from typing import Optional, Dict, FrozenSet
+from typing import Optional, Union, Dict, FrozenSet
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import (
@@ -8,8 +8,11 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
 )
 from cryptography.hazmat.backends import default_backend
 from ..rfc7517.keys import AsymmetricKey, DictKey, RawKey, KeyOptions
-from ..rfc7517.load_pem_key import load_pem_key
+from ..rfc7517.pem import load_pem_key, dump_pem_key
 from .._util import to_bytes, int_to_base64, base64_to_int
+
+
+NativeRSAKey = Union[RSAPublicKey, RSAPrivateKeyWithSerialization]
 
 
 class RSAKey(AsymmetricKey):
@@ -17,11 +20,22 @@ class RSAKey(AsymmetricKey):
     required_fields: FrozenSet[str] = frozenset(['kty', 'e', 'n'])
     private_only_fields = frozenset(['d', 'p', 'q', 'dp', 'dq', 'qi'])
 
-    def get_op_key(self, operation: str):
+    @property
+    def raw_key(self) -> NativeRSAKey:
+        return self.value
+
+    def get_op_key(self, operation: str) -> NativeRSAKey:
+        self.check_key_op(operation)
+        if operation in self.private_key_ops:
+            return self.private_key
         return self.public_key
 
     def as_bytes(self, encoding=None, private=None, password=None) -> bytes:
-        return b''
+        if private is True:
+            return dump_pem_key(self.private_key, encoding, private, password)
+        elif private is False:
+            return dump_pem_key(self.public_key, encoding, private, password)
+        return dump_pem_key(self.raw_key, encoding, self.is_private, password)
 
     def as_dict(self, private=None, **params) -> DictKey:
         if private is True and not self.is_private:

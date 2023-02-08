@@ -15,6 +15,10 @@ class OctKey(SymmetricKey):
     def __init__(self, value: bytes, options: KeyOptions=None):
         super().__init__(value, options)
 
+    def get_op_key(self, operation: str) -> bytes:
+        self.check_key_op(operation)
+        return self.raw_key
+
     def as_dict(self, **params) -> DictKey:
         if self._tokens:
             data = self._tokens.copy()
@@ -23,9 +27,6 @@ class OctKey(SymmetricKey):
             data = self.render_tokens({'k': k})
         data.update(params)
         return data
-
-    def get_op_key(self, operation: str):
-        return self.value
 
     @classmethod
     def import_key(cls, value: RawKey, options: KeyOptions=None) -> 'OctKey':
