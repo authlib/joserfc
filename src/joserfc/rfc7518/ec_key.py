@@ -4,7 +4,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric.ec import (
     EllipticCurvePublicKey, EllipticCurvePrivateKeyWithSerialization,
     EllipticCurvePrivateNumbers, EllipticCurvePublicNumbers,
-    SECP256R1, SECP384R1, SECP521R1, SECP256K1,
+    SECP256R1, SECP384R1, SECP521R1
 )
 from cryptography.hazmat.backends import default_backend
 from ..rfc7517.keys import CurveKey, DictKey, RawKey, KeyOptions
@@ -17,15 +17,11 @@ DSS_CURVES = {
     'P-256': SECP256R1,
     'P-384': SECP384R1,
     'P-521': SECP521R1,
-    # https://tools.ietf.org/html/rfc8812#section-3.1
-    'secp256k1': SECP256K1,
 }
 CURVES_DSS = {
     SECP256R1.name: 'P-256',
     SECP384R1.name: 'P-384',
     SECP521R1.name: 'P-521',
-    # https://tools.ietf.org/html/rfc8812#section-3.1
-    SECP256K1.name: 'secp256k1',
 }
 
 
@@ -91,6 +87,10 @@ class ECKey(CurveKey):
         if self.is_private:
             return self.value
         return None
+
+    @property
+    def curve_name(self) -> str:
+        return CURVES_DSS[self.raw_key.curve.name]
 
     @property
     def curve_key_size(self) -> int:
