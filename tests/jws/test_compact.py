@@ -3,17 +3,7 @@ from unittest import TestCase
 from pathlib import Path
 from joserfc.jws import serialize_compact, deserialize_compact
 from joserfc.jwk import Key, OctKey, RSAKey, ECKey
-from ..util import read_key
-
-CASES_PATH = Path(__file__).parent / "fixtures"
-
-
-def read_fixture(filename: str):
-    filepath = (CASES_PATH / filename).resolve()
-
-    with open(filepath) as f:
-        data = json.load(f)
-    return data
+from ..util import read_key, read_fixture
 
 
 class TestCompact(TestCase):
