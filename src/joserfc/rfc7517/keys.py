@@ -25,11 +25,21 @@ class _KeyMixin(object):
     private_key_ops: FrozenSet[str] = frozenset(['sign', 'decrypt', 'unwrapKey'])
     public_key_ops: FrozenSet[str] = frozenset(['verify', 'encrypt', 'wrapKey'])
 
-    def __init__(self, value, options: KeyOptions=None):
+    def __init__(self, value, options: KeyOptions=None, tokens: Optional[DictKey]=None):
         self.value = value
         self.options = options or {}
-        self._kid = None
-        self._tokens = None
+        if tokens is not None:
+            if 'kty' in tokens and tokens['kty'] != self.kty:
+                raise ValueError(f'Invalid key for type "{self.kty}"')
+
+            _tokens = {'kty': self.kty}
+            _tokens.update(self.options)
+            _tokens.update(tokens)
+            self._tokens = _tokens
+            self._kid = tokens.get('kid')
+        else:
+            self._tokens = None
+            self._kid = None
 
     def keys(self):
         return self.tokens.keys()

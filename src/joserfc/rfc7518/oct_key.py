@@ -1,4 +1,4 @@
-from typing import FrozenSet
+from typing import FrozenSet, Optional
 from .._util import (
     to_bytes,
     urlsafe_b64decode,
@@ -8,12 +8,17 @@ from .._util import (
 from ..rfc7517.keys import SymmetricKey, KeyOptions, RawKey, DictKey
 
 
+POSSIBLE_UNSAFE_KEYS = (
+    b'-----BEGIN ',
+    b'ssh-rsa ',
+    b'ssh-ed25519 ',
+    b'ecdsa-sha2-',
+)
+
+
 class OctKey(SymmetricKey):
     key_type: str = 'oct'
     required_fields: FrozenSet[str] = frozenset(['kty', 'k'])
-
-    def __init__(self, value: bytes, options: KeyOptions=None):
-        super().__init__(value, options)
 
     def get_op_key(self, operation: str) -> bytes:
         self.check_key_op(operation)
@@ -23,7 +28,7 @@ class OctKey(SymmetricKey):
         if self._tokens:
             data = self._tokens.copy()
         else:
-            k = urlsafe_b64encode(self.value).decode('utf-8')
+            k = urlsafe_b64encode(self.raw_key).decode('utf-8')
             data = self.render_tokens({'k': k})
         data.update(params)
         return data
@@ -33,11 +38,13 @@ class OctKey(SymmetricKey):
         if isinstance(value, dict):
             tokens = cls.validate_tokens(value)
             bytes_value = urlsafe_b64decode(to_bytes(value['k']))
-            key = cls(bytes_value, options)
-            key._tokens = key.render_tokens(tokens)
-            return key
+            return cls(bytes_value, options, tokens)
         if isinstance(value, str):
             value = to_bytes(value)
+
+        # security check
+        if value.startswith(POSSIBLE_UNSAFE_KEYS):
+            raise ValueError('This key may not be safe to import')
         return cls(value, options)
 
     @classmethod

@@ -104,9 +104,7 @@ class ECKey(CurveKey):
                 raw_key = import_private_key(value)
             else:
                 raw_key = import_public_key(value)
-            key = cls(raw_key, options)
-            key._tokens = key.render_tokens(tokens)
-            return key
+            return cls(raw_key, options, tokens)
 
         if isinstance(value, str):
             value = to_bytes(value)

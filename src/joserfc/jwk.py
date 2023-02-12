@@ -25,4 +25,8 @@ JWK_REGISTRY = {
 
 
 def generate_key(key_type: str, crv_or_size: Union[str, int], options=None, private=False):
-    pass
+    if key_type not in JWK_REGISTRY:
+        raise ValueError(f'Invalid key type: "{key_type}"')
+
+    key_class = JWK_REGISTRY[key_type]
+    return key_class.generate_key(crv_or_size, options, private)
