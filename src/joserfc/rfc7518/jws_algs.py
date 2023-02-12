@@ -163,27 +163,20 @@ class RSAPSSAlgorithm(JWSAlgorithm):
 
     def sign(self, msg: bytes, key: RSAKey) -> bytes:
         op_key = key.get_op_key('sign')
-        return op_key.sign(
-            msg,
-            padding.PSS(
-                mgf=padding.MGF1(self.hash_alg()),
-                salt_length=self.hash_alg.digest_size
-            ),
-            self.hash_alg()
+        pad = padding.PSS(
+            mgf=padding.MGF1(self.hash_alg()),
+            salt_length=self.hash_alg.digest_size
         )
+        return op_key.sign(msg, pad, self.hash_alg())
 
     def verify(self, msg: bytes, sig: bytes, key: RSAKey) -> bool:
         op_key = key.get_op_key('verify')
+        pad = padding.PSS(
+            mgf=padding.MGF1(self.hash_alg()),
+            salt_length=self.hash_alg.digest_size
+        )
         try:
-            op_key.verify(
-                sig,
-                msg,
-                padding.PSS(
-                    mgf=padding.MGF1(self.hash_alg()),
-                    salt_length=self.hash_alg.digest_size
-                ),
-                self.hash_alg()
-            )
+            op_key.verify(sig, msg, pad, self.hash_alg())
             return True
         except InvalidSignature:
             return False
