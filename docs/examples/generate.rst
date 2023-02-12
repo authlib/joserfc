@@ -69,3 +69,23 @@ EC key with crv P-512
     openssl ec -in ec-p512-private.pem -pubout -out ec-p512-public.pem
 
 .. note:: It is **secp521r1**, not secp512r1. But the "crv" value in EC Key is "P-512".
+
+
+EC key with crv secp256k1
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from joserfc import jwk
+
+    key = jwk.generate_key('EC', 'secp256k1', private=True)
+    private_pem = key.as_bytes(private=True)
+    public_pem = key.as_bytes(private=True)
+
+.. code-block:: shell
+
+    # generate private key
+    openssl ecparam -name secp256k1 -genkey -noout -out ec-secp256k1-private.pem
+
+    # extract public key
+    openssl ec -in ec-secp256k1-private.pem -pubout -out ec-secp256k1-public.pem

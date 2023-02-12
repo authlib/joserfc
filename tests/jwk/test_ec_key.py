@@ -30,3 +30,6 @@ class TestECKey(TestCase):
 
     def test_import_p512_key(self):
         self.run_import_key("p512")
+
+    def test_import_secp256k1_key(self):
+        self.run_import_key("secp256k1")
