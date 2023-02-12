@@ -1,8 +1,15 @@
+from .rfc7515 import compact
+from .rfc7515 import ProtectedHeader, CompactData, extract_compact
 from .rfc7517.keys import Key
 from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8812 import ES256K
-from ._types.headers import SHeader
-from ._util import json_b64encode, urlsafe_b64encode
+from .errors import BadSignatureError
+
+__all__ = [
+    'serialize_compact',
+    'extract_compact',
+    'deserialize_compact',
+]
 
 # supported algs
 JWS_REGISTRY = {alg.name: alg for alg in JWS_ALGORITHMS}
@@ -10,16 +17,15 @@ JWS_REGISTRY[ES256K.name] = ES256K
 
 # predefined allowed algorithms
 DEFAULT_ALLOWED_ALGORITHMS = [
+    'HS256', 'RS256',
 ]
 
 
 def serialize_compact(
-    header: SHeader,
+    header: ProtectedHeader,
     payload: bytes,
     key: Key,
     allowed_algorithms=None) -> bytes:
-
-    assert key.is_private, "Private key is required to serialize the signature"
 
     if allowed_algorithms is None:
         allowed_algorithms = DEFAULT_ALLOWED_ALGORITHMS
@@ -29,25 +35,19 @@ def serialize_compact(
         raise ValueError(f'Algorithm "{alg}" is not allowed in {allowed_algorithms}')
 
     algorithm = JWS_REGISTRY[alg]
-
-    protected_segment = json_b64encode(header)
-    payload_segment = urlsafe_b64encode(payload)
-
-    # calculate signature
-    signing_input = b'.'.join([protected_segment, payload_segment])
-    signature = urlsafe_b64encode(algorithm.sign(signing_input, key))
-    return b'.'.join([protected_segment, payload_segment, signature])
+    return compact.serialize_compact(header, payload, algorithm, key)
 
 
-def extract_compact(text: str, allowed_algorithms=None):
+def deserialize_compact(text: str, key: Key, allowed_algorithms=None) -> CompactData:
     if allowed_algorithms is None:
         allowed_algorithms = DEFAULT_ALLOWED_ALGORITHMS
 
+    obj = extract_compact(text)
+    alg = obj.header['alg']
 
-def deserialize_compact(text: str, key: Key, allowed_algorithms=None):
-    pass
+    if alg not in allowed_algorithms:
+        raise ValueError(f'Algorithm "{alg}" is not allowed in {allowed_algorithms}')
 
-
-def extract(text: str):
-    if text.count('.') == 2:
-        return extract_compact(text)
+    if obj.verify(algorithm, key):
+        return obj
+    raise BadSignatureError()

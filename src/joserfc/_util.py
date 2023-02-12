@@ -48,6 +48,10 @@ def json_b64encode(text) -> bytes:
     return urlsafe_b64encode(to_bytes(text))
 
 
+def json_b64decode(text) -> dict:
+    return json.loads(urlsafe_b64decode(to_bytes(text)))
+
+
 def generate_token(length=30):
     rand = random.SystemRandom()
     chars = string.ascii_letters + string.digits
