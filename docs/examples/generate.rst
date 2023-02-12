@@ -14,7 +14,7 @@ EC key with crv P-256
 
     key = jwk.generate_key('EC', 'P-256', private=True)
     private_pem = key.as_bytes(private=True)
-    public_pem = key.as_bytes(private=True)
+    public_pem = key.as_bytes(private=False)
 
 Using OpenSSL command line tool:
 
@@ -38,7 +38,7 @@ EC key with crv P-384
 
     key = jwk.generate_key('EC', 'P-384', private=True)
     private_pem = key.as_bytes(private=True)
-    public_pem = key.as_bytes(private=True)
+    public_pem = key.as_bytes(private=False)
 
 .. code-block:: shell
 
@@ -58,7 +58,7 @@ EC key with crv P-512
 
     key = jwk.generate_key('EC', 'P-512', private=True)
     private_pem = key.as_bytes(private=True)
-    public_pem = key.as_bytes(private=True)
+    public_pem = key.as_bytes(private=False)
 
 .. code-block:: shell
 
@@ -80,7 +80,7 @@ EC key with crv secp256k1
 
     key = jwk.generate_key('EC', 'secp256k1', private=True)
     private_pem = key.as_bytes(private=True)
-    public_pem = key.as_bytes(private=True)
+    public_pem = key.as_bytes(private=False)
 
 .. code-block:: shell
 
