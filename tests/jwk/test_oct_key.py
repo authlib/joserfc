@@ -1,5 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import OctKey
+from ..util import read_key
 
 
 class TestOctKey(TestCase):
@@ -20,3 +21,14 @@ class TestOctKey(TestCase):
         }
         key = OctKey.import_key(data)
         self.assertEqual(key.as_dict(), data)
+
+    def test_import_pem_key(self):
+        public_pem = read_key("ec-p256-public.pem")
+        self.assertRaises(ValueError, OctKey.import_key, public_pem)
+
+    def test_generate_key(self):
+        key = OctKey.generate_key()
+        self.assertEqual(len(key.raw_key), 32)
+
+        self.assertRaises(ValueError, OctKey.generate_key, private=False)
+        self.assertRaises(ValueError, OctKey.generate_key, 251)

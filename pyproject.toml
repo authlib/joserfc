@@ -28,7 +28,7 @@ filterwarnings = ["error"]
 
 [tool.coverage.run]
 branch = true
-source = ["joserfc", "tests"]
+source = ["joserfc"]
 
 [tool.coverage.paths]
-source = ["src", "*/site-packages"]
+source = ["src"]
