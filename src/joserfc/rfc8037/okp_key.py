@@ -14,8 +14,8 @@ from cryptography.hazmat.primitives.asymmetric.x448 import (
 from cryptography.hazmat.primitives.serialization import (
     Encoding, PublicFormat, PrivateFormat, NoEncryption
 )
-from ..rfc7517.keys import AsymmetricKey
-from ..rfc7517.pem import load_pem_key, dump_pem_key
+from ..rfc7517.keys import CurveKey
+from ..rfc7517.pem import load_pem_key
 from .._util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 
 
@@ -52,11 +52,10 @@ ExchangeKeys = (X25519PrivateKey, X448PrivateKey)
 
 
 
-class OKPKey(AsymmetricKey):
+class OKPKey(CurveKey):
     """Key class of the ``OKP`` key type."""
 
     key_type: str = 'OKP'
-
     required_fields: FrozenSet[str] = frozenset(['crv', 'x'])
     private_only_fields = frozenset(['d'])
 
@@ -75,16 +74,6 @@ class OKPKey(AsymmetricKey):
         if operation in self.private_key_ops:
             return self.private_key
         return self.public_key
-
-    def as_bytes(self,
-                 encoding: Optional[str]=None,
-                 private: Optional[bool]=None,
-                 password: Optional[str]=None) -> bytes:
-        if private is True:
-            return dump_pem_key(self.private_key, encoding, private, password)
-        elif private is False:
-            return dump_pem_key(self.public_key, encoding, private, password)
-        return dump_pem_key(self.raw_key, encoding, self.is_private, password)
 
     def as_dict(self, private: Optional[bool]=None, **params) -> DictKey:
         if private is True and not self.is_private:

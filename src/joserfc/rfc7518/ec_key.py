@@ -7,8 +7,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256R1, SECP384R1, SECP521R1, SECP256K1,
 )
 from cryptography.hazmat.backends import default_backend
-from ..rfc7517.keys import AsymmetricKey, DictKey, RawKey, KeyOptions
-from ..rfc7517.pem import load_pem_key, dump_pem_key
+from ..rfc7517.keys import CurveKey, DictKey, RawKey, KeyOptions
+from ..rfc7517.pem import load_pem_key
 from .._util import base64_to_int, int_to_base64
 
 
@@ -29,7 +29,7 @@ CURVES_DSS = {
 }
 
 
-class ECKey(AsymmetricKey):
+class ECKey(CurveKey):
     """Key class of the ``EC`` key type."""
 
     key_type: str = 'EC'
@@ -51,16 +51,6 @@ class ECKey(AsymmetricKey):
         if operation in self.private_key_ops:
             return self.private_key
         return self.public_key
-
-    def as_bytes(self,
-                 encoding: Optional[str]=None,
-                 private: Optional[bool]=None,
-                 password: Optional[str]=None) -> bytes:
-        if private is True:
-            return dump_pem_key(self.private_key, encoding, private, password)
-        elif private is False:
-            return dump_pem_key(self.public_key, encoding, private, password)
-        return dump_pem_key(self.raw_key, encoding, self.is_private, password)
 
     def as_dict(self, private: Optional[bool]=None, **params) -> DictKey:
         if private is True and not self.is_private:

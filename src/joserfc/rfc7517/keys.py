@@ -1,5 +1,6 @@
 from typing import Optional, Union, Dict, List, FrozenSet, TypedDict
 from abc import ABCMeta, abstractmethod
+from .pem import dump_pem_key
 
 
 DictKey = Dict[str, Union[str, List[str]]]
@@ -152,9 +153,15 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
     def as_dict(self, private=None, **params) -> DictKey:
         pass
 
-    @abstractmethod
-    def as_bytes(self, encoding=None, private=None, password=None) -> bytes:
-        pass
+    def as_bytes(self,
+                 encoding: Optional[str]=None,
+                 private: Optional[bool]=None,
+                 password: Optional[str]=None) -> bytes:
+        if private is True:
+            return dump_pem_key(self.private_key, encoding, private, password)
+        elif private is False:
+            return dump_pem_key(self.public_key, encoding, private, password)
+        return dump_pem_key(self.raw_key, encoding, self.is_private, password)
 
     def as_pem(self, private=None, password=None) -> bytes:
         return self.as_bytes(private=private, password=password)
@@ -169,9 +176,49 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def generate_key(cls, crv_or_size: Union[int, str], options: KeyOptions = None, private=False):
+    def generate_key(cls, key_size: int, options: KeyOptions = None, private=False):
         pass
 
 
+class CurveKey(AsymmetricKey):
+    key_type: str = 'EC'
 
-Key = Union[SymmetricKey, AsymmetricKey]
+    @abstractmethod
+    def exchange_shared_key(self, pubkey):
+        pass
+
+    @property
+    @abstractmethod
+    def is_private(self):
+        pass
+
+    @property
+    @abstractmethod
+    def public_key(self):
+        pass
+
+    @property
+    @abstractmethod
+    def private_key(self):
+        pass
+
+    @abstractmethod
+    def get_op_key(self, operation: str):
+        pass
+
+    @abstractmethod
+    def as_dict(self, private=None, **params) -> DictKey:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def import_key(cls, value: RawKey, options: KeyOptions=None):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def generate_key(cls, crv: str, options: KeyOptions = None, private=False):
+        pass
+
+
+Key = Union[SymmetricKey, AsymmetricKey, CurveKey]
