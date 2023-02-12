@@ -1,0 +1,17 @@
+{
+  "payload": "hello",
+  "cases": [
+    {
+      "alg": "HS256",
+      "value": "eyJhbGciOiJIUzI1NiJ9.aGVsbG8.92P-6BQfptptqR5ESrsFD2Zv31kczcmHOR6eQXIaxVE"
+    },
+    {
+      "alg": "HS384",
+      "value": "eyJhbGciOiJIUzM4NCJ9.aGVsbG8.LIiSePQNBOB6KwvO6EWcnfF6QC2lkijalXBokVRzNSltOmTSI3ujNBPqADnMaTvb"
+    },
+    {
+      "alg": "HS512",
+      "value": "eyJhbGciOiJIUzUxMiJ9.aGVsbG8.QN5Ic-wF0VAKSpTjIlSqxYSS0Th6hiiDRoBVjqOweUmYsqZ5qM8jIez77l1rXxLycyWqrhzfwVvwrAdCBzCm1Q"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 from typing import Union
-from .rfc7517.keys import SymmetricKey, AsymmetricKey
+from .rfc7517.keys import SymmetricKey, AsymmetricKey, Key
 from .rfc7518.oct_key import OctKey
 from .rfc7518.rsa_key import RSAKey
 from .rfc7518.ec_key import ECKey
@@ -8,6 +8,7 @@ from .rfc7518.ec_key import ECKey
 __all__ = [
     'SymmetricKey',
     'AsymmetricKey',
+    'Key',
     'OctKey',
     'RSAKey',
     'ECKey',
