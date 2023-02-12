@@ -34,7 +34,8 @@ class CompactData:
         return self.signing_input + b'.' + self.signature
 
     def verify(self, algorithm: JWSAlgorithm, key) -> bool:
-        return algorithm.verify(self.signing_input, self.signature, key)
+        sig = urlsafe_b64decode(self.signature)
+        return algorithm.verify(self.signing_input, sig, key)
 
 
 def serialize_compact(
@@ -54,7 +55,7 @@ def extract_compact(text: bytes) -> CompactData:
 
     header_segment, payload_segment, signature = parts
     try:
-        header = json_b64decode(header_text)
+        header = json_b64decode(header_segment)
         if 'alg' not in header:
             raise MissingAlgorithmError()
     except (TypeError, ValueError, binascii.Error):

@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import RSAKey
-from .util import read_key
+from ..util import read_key
 
 
 class TestRSAKey(TestCase):

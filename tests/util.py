@@ -1,6 +1,6 @@
 from pathlib import Path
 
-KEYS_PATH = Path(__file__).parent.parent / "keys"
+KEYS_PATH = Path(__file__).parent / "keys"
 
 
 def read_key(filename, mode="rb"):

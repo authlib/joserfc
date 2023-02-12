@@ -9,6 +9,7 @@ __all__ = [
     'serialize_compact',
     'extract_compact',
     'deserialize_compact',
+    'validate_compact',
 ]
 
 # supported algs
@@ -38,16 +39,20 @@ def serialize_compact(
     return compact.serialize_compact(header, payload, algorithm, key)
 
 
-def deserialize_compact(text: str, key: Key, allowed_algorithms=None) -> CompactData:
+def validate_compact(obj: CompactData, key: Key, allowed_algorithms=None) -> bool:
     if allowed_algorithms is None:
         allowed_algorithms = DEFAULT_ALLOWED_ALGORITHMS
 
-    obj = extract_compact(text)
     alg = obj.header['alg']
-
     if alg not in allowed_algorithms:
         raise ValueError(f'Algorithm "{alg}" is not allowed in {allowed_algorithms}')
 
-    if obj.verify(algorithm, key):
+    algorithm = JWS_REGISTRY[alg]
+    return obj.verify(algorithm, key)
+
+
+def deserialize_compact(text: str, key: Key, allowed_algorithms=None) -> CompactData:
+    obj = extract_compact(text)
+    if validate_compact(obj, key, allowed_algorithms):
         return obj
     raise BadSignatureError()

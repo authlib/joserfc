@@ -9,6 +9,9 @@ class JWSAlgorithm(object, metaclass=ABCMeta):
     description = None
     location = 'alg'
 
+    def __str__(self):
+        return self.name
+
     @abstractmethod
     def sign(self, msg: bytes, key) -> bytes:
         """Sign the text msg with a private/sign key.
