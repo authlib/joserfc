@@ -8,8 +8,8 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
 )
 from cryptography.hazmat.backends import default_backend
 from ..rfc7517 import AsymmetricKey, load_pem_key, dump_pem_key
-from ..rfc7517.types import DictKey, RawKey, KeyOptions
-from .._util import to_bytes, int_to_base64, base64_to_int
+from ..rfc7517.types import KeyDict, KeyAny, KeyOptions
+from ..util import to_bytes, int_to_base64, base64_to_int
 
 
 NativeRSAKey = Union[RSAPublicKey, RSAPrivateKeyWithSerialization]
@@ -37,7 +37,7 @@ class RSAKey(AsymmetricKey):
             return dump_pem_key(self.public_key, encoding, private, password)
         return dump_pem_key(self.raw_key, encoding, self.is_private, password)
 
-    def as_dict(self, private=None, **params) -> DictKey:
+    def as_dict(self, private=None, **params) -> KeyDict:
         if private is True and not self.is_private:
             raise ValueError("This is a public RSA key")
 
@@ -78,7 +78,7 @@ class RSAKey(AsymmetricKey):
         return None
 
     @classmethod
-    def import_key(cls, value: RawKey, options: KeyOptions=None) -> 'RSAKey':
+    def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'RSAKey':
         if isinstance(value, dict):
             tokens = cls.validate_tokens(value)
             if 'd' in value:
@@ -108,7 +108,7 @@ class RSAKey(AsymmetricKey):
         return cls(raw_key, options)
 
 
-def import_private_key(obj: DictKey) -> RSAPrivateKeyWithSerialization:
+def import_private_key(obj: KeyDict) -> RSAPrivateKeyWithSerialization:
     if 'oth' in obj:  # pragma: no cover
         # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
         raise ValueError('"oth" is not supported yet')
@@ -155,7 +155,7 @@ def export_private_key(key: RSAPrivateKeyWithSerialization) -> Dict[str, str]:
     }
 
 
-def import_public_key(obj: DictKey) -> RSAPublicKey:
+def import_public_key(obj: KeyDict) -> RSAPublicKey:
     numbers = RSAPublicNumbers(
         base64_to_int(obj['e']),
         base64_to_int(obj['n'])

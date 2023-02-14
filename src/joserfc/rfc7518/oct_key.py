@@ -1,12 +1,12 @@
 from typing import FrozenSet, Optional
-from .._util import (
+from ..util import (
     to_bytes,
     urlsafe_b64decode,
     urlsafe_b64encode,
     generate_token,
 )
 from ..rfc7517 import SymmetricKey
-from ..rfc7517.types import KeyOptions, RawKey, DictKey
+from ..rfc7517.types import KeyOptions, KeyAny, KeyDict
 
 
 POSSIBLE_UNSAFE_KEYS = (
@@ -25,7 +25,7 @@ class OctKey(SymmetricKey):
         self.check_key_op(operation)
         return self.raw_key
 
-    def as_dict(self, **params) -> DictKey:
+    def as_dict(self, **params) -> KeyDict:
         if self._tokens:
             data = self._tokens.copy()
         else:
@@ -35,7 +35,7 @@ class OctKey(SymmetricKey):
         return data
 
     @classmethod
-    def import_key(cls, value: RawKey, options: KeyOptions=None) -> 'OctKey':
+    def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'OctKey':
         if isinstance(value, dict):
             tokens = cls.validate_tokens(value)
             bytes_value = urlsafe_b64decode(to_bytes(value['k']))

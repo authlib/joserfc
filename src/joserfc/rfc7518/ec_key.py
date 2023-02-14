@@ -8,8 +8,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
 )
 from cryptography.hazmat.backends import default_backend
 from ..rfc7517 import CurveKey, load_pem_key
-from ..rfc7517.types import DictKey, RawKey, KeyOptions
-from .._util import base64_to_int, int_to_base64
+from ..rfc7517.types import KeyDict, KeyAny, KeyOptions
+from ..util import base64_to_int, int_to_base64
 
 
 NativeECKey = Union[EllipticCurvePublicKey, EllipticCurvePrivateKeyWithSerialization]
@@ -48,7 +48,7 @@ class ECKey(CurveKey):
             return self.private_key
         return self.public_key
 
-    def as_dict(self, private: Optional[bool]=None, **params) -> DictKey:
+    def as_dict(self, private: Optional[bool]=None, **params) -> KeyDict:
         if private is True and not self.is_private:
             raise ValueError("This is a public EC key")
 
@@ -97,7 +97,7 @@ class ECKey(CurveKey):
         return self.raw_key.curve.key_size
 
     @classmethod
-    def import_key(cls, value: RawKey, options: KeyOptions=None) -> 'ECKey':
+    def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'ECKey':
         if isinstance(value, dict):
             tokens = cls.validate_tokens(value)
             if 'd' in value:
@@ -127,7 +127,7 @@ class ECKey(CurveKey):
         return cls(raw_key, options)
 
 
-def import_private_key(obj: DictKey) -> EllipticCurvePrivateKeyWithSerialization:
+def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKeyWithSerialization:
     curve = DSS_CURVES[obj['crv']]()
     public_numbers = EllipticCurvePublicNumbers(
         base64_to_int(obj['x']),
@@ -151,7 +151,7 @@ def export_private_key(key: EllipticCurvePrivateKeyWithSerialization) -> Dict[st
     }
 
 
-def import_public_key(obj: DictKey) -> EllipticCurvePublicKey:
+def import_public_key(obj: KeyDict) -> EllipticCurvePublicKey:
     curve = DSS_CURVES[obj['crv']]()
     public_numbers = EllipticCurvePublicNumbers(
         base64_to_int(obj['x']),

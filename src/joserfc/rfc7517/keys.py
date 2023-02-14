@@ -1,24 +1,16 @@
-from typing import (
-    Optional,
-    Union,
-    Dict,
-    List,
-    FrozenSet,
-    TypedDict,
-    Callable,
-)
+import typing as t
 from abc import ABCMeta, abstractmethod
 from .pem import dump_pem_key
-from .types import DictKey, RawKey, KeyOptions
+from .types import KeyDict, KeyAny, KeyOptions
 
 
 class _KeyMixin(object):
     key_type: str = 'oct'
-    required_fields: FrozenSet[str] = frozenset(['kty'])
-    private_key_ops: FrozenSet[str] = frozenset(['sign', 'decrypt', 'unwrapKey'])
-    public_key_ops: FrozenSet[str] = frozenset(['verify', 'encrypt', 'wrapKey'])
+    required_fields: t.FrozenSet[str] = frozenset(['kty'])
+    private_key_ops: t.FrozenSet[str] = frozenset(['sign', 'decrypt', 'unwrapKey'])
+    public_key_ops: t.FrozenSet[str] = frozenset(['verify', 'encrypt', 'wrapKey'])
 
-    def __init__(self, value, options: KeyOptions=None, tokens: Optional[DictKey]=None):
+    def __init__(self, value, options: KeyOptions=None, tokens: t.Optional[KeyDict]=None):
         self.value = value
         self.options = options or {}
         if tokens is not None:
@@ -45,7 +37,7 @@ class _KeyMixin(object):
         return self.key_type
 
     @property
-    def kid(self) -> Optional[str]:
+    def kid(self) -> t.Optional[str]:
         return self._kid
 
     @kid.setter
@@ -57,20 +49,20 @@ class _KeyMixin(object):
         return False
 
     @property
-    def tokens(self) -> DictKey:
+    def tokens(self) -> KeyDict:
         if self._tokens is None:
             self._tokens = self.as_dict()
         return self._tokens
 
     @classmethod
-    def validate_tokens(cls, tokens: DictKey):
+    def validate_tokens(cls, tokens: KeyDict):
         if not set(tokens.keys()).issuperset(cls.required_fields):
             raise ValueError("Missing required fields")
         if tokens['kty'] != cls.key_type:
             raise ValueError("Mismatching `kty` value")
         return tokens
 
-    def render_tokens(self, tokens: DictKey) -> DictKey:
+    def render_tokens(self, tokens: KeyDict) -> KeyDict:
         if self.options:
             tokens.update(self.options)
         if self.kid:
@@ -108,7 +100,7 @@ class SymmetricKey(_KeyMixin, metaclass=ABCMeta):
         return True
 
     @abstractmethod
-    def as_dict(self, **params) -> DictKey:
+    def as_dict(self, **params) -> KeyDict:
         pass
 
     @abstractmethod
@@ -117,7 +109,7 @@ class SymmetricKey(_KeyMixin, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def import_key(cls, value: RawKey, options: KeyOptions=None):
+    def import_key(cls, value: KeyAny, options: KeyOptions=None):
         pass
 
     @classmethod
@@ -153,13 +145,13 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def as_dict(self, private=None, **params) -> DictKey:
+    def as_dict(self, private=None, **params) -> KeyDict:
         pass
 
     def as_bytes(self,
-                 encoding: Optional[str]=None,
-                 private: Optional[bool]=None,
-                 password: Optional[str]=None) -> bytes:
+                 encoding: t.Optional[str]=None,
+                 private: t.Optional[bool]=None,
+                 password: t.Optional[str]=None) -> bytes:
         if private is True:
             return dump_pem_key(self.private_key, encoding, private, password)
         elif private is False:
@@ -174,7 +166,7 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def import_key(cls, value: RawKey, options: KeyOptions=None):
+    def import_key(cls, value: KeyAny, options: KeyOptions=None):
         pass
 
     @classmethod
@@ -210,12 +202,12 @@ class CurveKey(AsymmetricKey):
         pass
 
     @abstractmethod
-    def as_dict(self, private=None, **params) -> DictKey:
+    def as_dict(self, private=None, **params) -> KeyDict:
         pass
 
     @classmethod
     @abstractmethod
-    def import_key(cls, value: RawKey, options: KeyOptions=None):
+    def import_key(cls, value: KeyAny, options: KeyOptions=None):
         pass
 
     @classmethod
@@ -225,37 +217,4 @@ class CurveKey(AsymmetricKey):
 
 
 #: Key type for all SymmetricKey, AsymmetricKey, and CurveKey
-Key = Union[SymmetricKey, AsymmetricKey, CurveKey]
-
-#: registry to store all registered keys
-JWK_REGISTRY: Dict[str, Key] = {}
-
-
-class KeySet:
-    thumbprint: Optional[Callable[[Key], str]] = None
-
-    def __init__(self, keys: List[Key]):
-        self.keys = keys
-
-    def as_dict(self):
-        keys = []
-
-        for key in self.keys:
-            if self.thumbprint is not None and key.kid is None:
-                key.kid = self.thumbprint(key)
-
-            keys.append(key.tokens)
-
-        return {"keys": keys}
-
-    @classmethod
-    def import_key(cls, keys: List[DictKey], options: KeyOptions=None) -> 'KeySet':
-        rv = []
-
-        for _key in keys:
-            kty = _key['kty']
-            key_cls = JWK_REGISTRY[kty]
-            key = key_cls.import_key(_key, options)
-            rv.append(key)
-
-        return cls(rv)
+Key = t.Union[SymmetricKey, AsymmetricKey, CurveKey]

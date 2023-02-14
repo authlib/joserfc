@@ -3,11 +3,11 @@ from .rfc7515 import (
     CompactData,
     extract_compact,
 )
+from .rfc7515.types import Header, check_header
 from .rfc7517.keys import Key
 from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8812 import ES256K
 from .errors import BadSignatureError
-from ._types import Header, check_header
 
 __all__ = [
     'CompactData',

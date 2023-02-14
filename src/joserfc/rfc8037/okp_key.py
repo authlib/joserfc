@@ -1,4 +1,5 @@
 from typing import Optional, Union, Dict, FrozenSet
+from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.ed25519 import (
     Ed25519PublicKey, Ed25519PrivateKey
 )
@@ -15,8 +16,9 @@ from cryptography.hazmat.primitives.serialization import (
     Encoding, PublicFormat, PrivateFormat, NoEncryption
 )
 from ..rfc7517.keys import CurveKey
+from ..rfc7517.types import KeyDict, KeyAny, KeyOptions
 from ..rfc7517.pem import load_pem_key
-from .._util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
+from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 
 
 PUBLIC_KEYS_MAP = {
@@ -75,7 +77,7 @@ class OKPKey(CurveKey):
             return self.private_key
         return self.public_key
 
-    def as_dict(self, private: Optional[bool]=None, **params) -> DictKey:
+    def as_dict(self, private: Optional[bool]=None, **params) -> KeyDict:
         if private is True and not self.is_private:
             raise ValueError("This is a public OKP key")
 
@@ -120,7 +122,7 @@ class OKPKey(CurveKey):
         return get_key_curve(self.value)
 
     @classmethod
-    def import_key(cls, value: RawKey, options: KeyOptions=None) -> 'OKPKey':
+    def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'OKPKey':
         if isinstance(value, dict):
             tokens = cls.validate_tokens(value)
             if 'd' in value:
@@ -163,13 +165,13 @@ def get_key_curve(key: NativeOKPKey):
     raise ValueError("Invalid key")
 
 
-def import_private_key(obj: DictKey) -> PrivateOKPKey:
+def import_private_key(obj: KeyDict) -> PrivateOKPKey:
     crv_key = PRIVATE_KEYS_MAP[obj['crv']]
     d_bytes = urlsafe_b64decode(to_bytes(obj['d']))
     return crv_key.from_private_bytes(d_bytes)
 
 
-def import_public_key(obj: DictKey) -> PublicOKPKey:
+def import_public_key(obj: KeyDict) -> PublicOKPKey:
     crv_key = PUBLIC_KEYS_MAP[obj['crv']]
     x_bytes = urlsafe_b64decode(to_bytes(obj['x']))
     return crv_key.from_public_bytes(x_bytes)

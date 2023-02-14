@@ -1,18 +1,15 @@
-from typing import (
-    Optional,
-    Union,
-    Dict,
-    List,
-    TypedDict,
-)
+import typing as t
 
-DictKey = Dict[str, Union[str, List[str]]]
+#: JSON Web Key in dict
+KeyDict = t.Dict[str, t.Union[str, t.List[str]]]
 
-RawKey = Union[str, bytes, DictKey]
+#: Key in str, bytes and dict
+KeyAny = t.Union[str, bytes, KeyDict]
 
-KeyOptions = Optional[TypedDict('KeyOptions', {
+#: extra options for JWK
+KeyOptions = t.Optional[t.TypedDict('KeyOptions', {
     'use': str,
-    'key_ops': List[str],
+    'key_ops': t.List[str],
     'alg': str,
     'kid': str,
     'x5u': str,
@@ -20,3 +17,8 @@ KeyOptions = Optional[TypedDict('KeyOptions', {
     'x5t': str,
     'x5t#S256': str,
 }, total=False)]
+
+#: JWKs in dict
+KeySetDict = t.TypedDict('KeySetDict', {
+    'keys': t.List[KeyDict],
+})

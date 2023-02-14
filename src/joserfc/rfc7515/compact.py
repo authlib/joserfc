@@ -1,9 +1,9 @@
 import binascii
 from typing import Union, Optional, Dict, Any
 from .alg import JWSAlgorithm
+from .types import Header
 from ..errors import DecodeError, MissingAlgorithmError
-from .._types import Header
-from .._util import (
+from ..util import (
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,

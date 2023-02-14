@@ -1,7 +1,7 @@
-from typing import Dict, Union, List, Any
+import typing as t
 
 
-Header = Dict[str, Any]
+Header = t.Dict[str, t.Any]
 
 _str_fields = [
     'alg',
@@ -19,7 +19,7 @@ _str_fields = [
 ]
 
 
-def check_header(header: Header, required: List[str]) -> Header:
+def check_header(header: Header, required: t.List[str]) -> Header:
     for key in required:
         if key not in header:
             raise ValueError(f'Missing "{key}" in header')
