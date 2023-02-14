@@ -33,15 +33,15 @@ class ClaimsRequests:
         if option_values and value not in option_values:
             raise InvalidClaimError(claim_name)
 
-    def validate(self, payload: Dict[str, Any]):
+    def validate(self, claims: Dict[str, Any]):
         for key in self.options:
             option: ClaimsOption = self.options[key]
-            if key not in payload:
+            if key not in claims:
                 # validate essential claims
                 if option.get('essential'):
                     raise MissingClaimError(key)
             else:
-                value = payload[key]
+                value = claims[key]
                 func = getattr(self, 'validate_' + key, None)
                 if func:
                     func(value)

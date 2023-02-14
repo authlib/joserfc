@@ -40,7 +40,7 @@ class InvalidUseError(JoseError):
 
 
 class InvalidClaimError(JoseError):
-    error = 'invalid_claim'
+    error: str = 'invalid_claim'
 
     def __init__(self, claim):
         description = f'Invalid claim: "{claim}"'
@@ -48,7 +48,7 @@ class InvalidClaimError(JoseError):
 
 
 class MissingClaimError(JoseError):
-    error = 'missing_claim'
+    error: str = 'missing_claim'
 
     def __init__(self, claim):
         description = f'Missing claim: "{claim}"'
@@ -56,7 +56,7 @@ class MissingClaimError(JoseError):
 
 
 class InsecureClaimError(JoseError):
-    error = 'insecure_claim'
+    error: str = 'insecure_claim'
 
     def __init__(self, claim):
         description = f'Insecure claim "{claim}"'
@@ -64,10 +64,15 @@ class InsecureClaimError(JoseError):
 
 
 class ExpiredTokenError(JoseError):
-    error = 'expired_token'
-    description = 'The token is expired'
+    error: str = 'expired_token'
+    description: str = 'The token is expired'
 
 
 class InvalidTokenError(JoseError):
-    error = 'invalid_token'
-    description = 'The token is not valid yet'
+    error: str = 'invalid_token'
+    description: str = 'The token is not valid yet'
+
+
+class InvalidTypeError(JoseError):
+    error: str = 'invalid_type'
+    description: str = 'The "typ" value in header is invalid'

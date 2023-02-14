@@ -56,7 +56,7 @@ def serialize_compact(
 def validate_compact(
     obj: CompactData,
     key: KeyFlexible,
-    allowed_algorithms: Optional[List[str]]=None) -> bool:
+    allowed_algorithms: Optional[List[str]]=None):
 
     if allowed_algorithms is None:
         allowed_algorithms = RECOMMENDED_ALGORITHMS
@@ -67,7 +67,9 @@ def validate_compact(
 
     algorithm = JWS_REGISTRY[alg]
     key: Key = guess_key(key, obj, 'verify')
-    return obj.verify(algorithm, key)
+
+    if not obj.verify(algorithm, key):
+        raise BadSignatureError()
 
 
 def deserialize_compact(
@@ -76,8 +78,5 @@ def deserialize_compact(
     allowed_algorithms: Optional[List[str]]=None) -> CompactData:
 
     obj = extract_compact(text)
-
-    if validate_compact(obj, key, allowed_algorithms):
-        return obj
-
-    raise BadSignatureError()
+    validate_compact(obj, key, allowed_algorithms)
+    return obj
