@@ -32,3 +32,10 @@ source = ["joserfc"]
 
 [tool.coverage.paths]
 source = ["src"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+  "@(abc\\.)?abstractmethod",
+]
