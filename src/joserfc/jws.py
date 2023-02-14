@@ -4,22 +4,18 @@ from .rfc7515 import (
     extract_compact,
 )
 from .rfc7515.types import Header, check_header
-from .rfc7517.keys import Key
 from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8812 import ES256K
 from .errors import BadSignatureError
+from .jwk import Key, KeyFlexible, guess_key
 
 __all__ = [
     'CompactData',
-    'FlexibleKey',
     'serialize_compact',
     'extract_compact',
     'deserialize_compact',
     'validate_compact',
 ]
-
-#: The union of various keys
-FlexibleKey = Union[Key, Callable[[CompactData], Key]]
 
 # supported algs
 JWS_REGISTRY = {alg.name: alg for alg in JWS_ALGORITHMS}
@@ -38,7 +34,7 @@ RECOMMENDED_ALGORITHMS = [
 def serialize_compact(
     header: Header,
     payload: bytes,
-    key: Key,
+    key: KeyFlexible,
     allowed_algorithms: Optional[List[str]]=None) -> bytes:
 
     check_header(header, ['alg'])
@@ -53,12 +49,13 @@ def serialize_compact(
     algorithm = JWS_REGISTRY[alg]
 
     obj = CompactData(header, payload)
+    key: Key = guess_key(key, obj, 'sign')
     return obj.sign(algorithm, key)
 
 
 def validate_compact(
     obj: CompactData,
-    key: Key,
+    key: KeyFlexible,
     allowed_algorithms: Optional[List[str]]=None) -> bool:
 
     if allowed_algorithms is None:
@@ -69,19 +66,18 @@ def validate_compact(
         raise ValueError(f'Algorithm "{alg}" is not allowed in {allowed_algorithms}')
 
     algorithm = JWS_REGISTRY[alg]
+    key: Key = guess_key(key, obj, 'verify')
     return obj.verify(algorithm, key)
 
 
 def deserialize_compact(
     text: str,
-    key: FlexibleKey,
+    key: KeyFlexible,
     allowed_algorithms: Optional[List[str]]=None) -> CompactData:
 
     obj = extract_compact(text)
 
-    if callable(key):
-        key: Key = key(obj)
-
     if validate_compact(obj, key, allowed_algorithms):
         return obj
+
     raise BadSignatureError()

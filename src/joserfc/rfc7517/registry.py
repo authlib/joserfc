@@ -52,6 +52,15 @@ class KeySet:
 
         return {"keys": keys}
 
+    def get_by_kid(self, kid: Optional[str]=None) -> Key:
+        if kid is None and len(self.keys) == 1:
+            return self.keys[0]
+
+        for key in self.keys:
+            if key.kid == kid:
+                return key
+        raise ValueError(f'No key for kid: "{kid}"')
+
     @classmethod
     def import_key(cls, value: KeySetDict, options: KeyOptions=None) -> 'KeySet':
         keys = []
