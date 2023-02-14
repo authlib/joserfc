@@ -1,5 +1,5 @@
 import binascii
-from typing import Union, Optional, Any
+from typing import Union, Optional, Dict, Any
 from .alg import JWSAlgorithm
 from ..errors import DecodeError, MissingAlgorithmError
 from .._types import Header
@@ -18,6 +18,7 @@ class CompactData:
         self.payload = payload
         self.signature = signature
         self._signing_input = None
+        self._claims = None
 
     @property
     def signing_input(self) -> bytes:
@@ -28,6 +29,12 @@ class CompactData:
         payload_segment = urlsafe_b64encode(self.payload)
         self._signing_input = protected_segment + b'.' + payload_segment
         return self._signing_input
+
+    @property
+    def claims(self) -> Dict[str, Any]:
+        if self._claims is None:
+            self._claims = json.loads(self.payload)
+        return self._claims
 
     def sign(self, algorithm: JWSAlgorithm, key) -> bytes:
         self.signature = urlsafe_b64encode(algorithm.sign(self.signing_input, key))
