@@ -2,7 +2,7 @@ import re
 import datetime
 import calendar
 from typing import Dict, Any
-from .._util import to_bytes, json_dumps
+from ..util import to_bytes, json_dumps
 from ..errors import InsecureClaimError
 
 

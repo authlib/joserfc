@@ -1,5 +1,5 @@
-from typing import Optional, List
-from .rfc7515 import extract_compact
+from typing import Optional, List, Union
+from .rfc7515 import CompactData, extract_compact
 from .rfc7515.types import Header
 from .rfc7519.claims import Claims, convert_claims
 from .rfc7519.validators import JWTClaimsRequests
@@ -23,12 +23,12 @@ def encode(
 
 
 def decode(
-    text: str,
+    value: Union[str, bytes],
     key: KeyFlexible,
     validator: Optional[JWTClaimsRequests]=None,
     allowed_algorithms: Optional[List[str]]=None) -> CompactData:
 
-    obj = extract_compact(text)
+    obj = extract_compact(to_bytes(value))
     validate(obj, key, validator, allowed_algorithms)
     return obj
 
@@ -36,12 +36,13 @@ def decode(
 def validate(
     obj: CompactData,
     key: KeyFlexible,
-    validator: JWTClaimsRequests
+    validator: Optional[JWTClaimsRequests]=None,
     allowed_algorithms: Optional[List[str]]=None):
 
-    typ = header.get('typ')
+    typ = obj.header.get('typ')
     if typ and typ != 'JWT':
         raise InvalidTypeError()
 
-    validator.validate(obj.claims)
+    if validator is not None:
+        validator.validate(obj.claims)
     validate_compact(obj, key, allowed_algorithms)

@@ -1,5 +1,3 @@
-import json
-from unittest import TestCase
 from joserfc.jws import serialize_compact, deserialize_compact
 from joserfc.jwk import Key, OctKey, RSAKey, ECKey
 from joserfc.util import to_bytes

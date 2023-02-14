@@ -1,3 +1,4 @@
+import json
 import binascii
 from typing import Union, Optional, Dict, Any
 from .alg import JWSAlgorithm

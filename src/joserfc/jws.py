@@ -8,6 +8,7 @@ from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8812 import ES256K
 from .errors import BadSignatureError
 from .jwk import Key, KeyFlexible, guess_key
+from .util import to_bytes
 
 __all__ = [
     'CompactData',
@@ -73,10 +74,10 @@ def validate_compact(
 
 
 def deserialize_compact(
-    text: str,
+    value: Union[str, bytes],
     key: KeyFlexible,
     allowed_algorithms: Optional[List[str]]=None) -> CompactData:
 
-    obj = extract_compact(text)
+    obj = extract_compact(to_bytes(value))
     validate_compact(obj, key, allowed_algorithms)
     return obj
