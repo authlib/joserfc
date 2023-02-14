@@ -7,8 +7,8 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
     rsa_recover_prime_factors, rsa_crt_dmp1, rsa_crt_dmq1, rsa_crt_iqmp
 )
 from cryptography.hazmat.backends import default_backend
-from ..rfc7517.keys import AsymmetricKey, DictKey, RawKey, KeyOptions
-from ..rfc7517.pem import load_pem_key, dump_pem_key
+from ..rfc7517 import AsymmetricKey, load_pem_key, dump_pem_key
+from ..rfc7517.types import DictKey, RawKey, KeyOptions
 from .._util import to_bytes, int_to_base64, base64_to_int
 
 

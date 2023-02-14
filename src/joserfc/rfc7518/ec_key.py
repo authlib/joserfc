@@ -7,8 +7,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256R1, SECP384R1, SECP521R1
 )
 from cryptography.hazmat.backends import default_backend
-from ..rfc7517.keys import CurveKey, DictKey, RawKey, KeyOptions
-from ..rfc7517.pem import load_pem_key
+from ..rfc7517 import CurveKey, load_pem_key
+from ..rfc7517.types import DictKey, RawKey, KeyOptions
 from .._util import base64_to_int, int_to_base64
 
 

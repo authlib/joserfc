@@ -1,6 +1,6 @@
 import hashlib
 from collections import OrderedDict
-from .._types.keys import Key
+from ..rfc7517 import Key
 from .._util import to_bytes, json_dumps, urlsafe_b64encode
 
 

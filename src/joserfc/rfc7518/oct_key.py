@@ -5,7 +5,8 @@ from .._util import (
     urlsafe_b64encode,
     generate_token,
 )
-from ..rfc7517.keys import SymmetricKey, KeyOptions, RawKey, DictKey
+from ..rfc7517 import SymmetricKey
+from ..rfc7517.types import KeyOptions, RawKey, DictKey
 
 
 POSSIBLE_UNSAFE_KEYS = (

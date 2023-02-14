@@ -1,22 +1,15 @@
-from typing import Optional, Union, Dict, List, FrozenSet, TypedDict
+from typing import (
+    Optional,
+    Union,
+    Dict,
+    List,
+    FrozenSet,
+    TypedDict,
+    Callable,
+)
 from abc import ABCMeta, abstractmethod
 from .pem import dump_pem_key
-
-
-DictKey = Dict[str, Union[str, List[str]]]
-
-RawKey = Union[str, bytes, DictKey]
-
-KeyOptions = Optional[TypedDict('KeyOptions', {
-    'use': str,
-    'key_ops': List[str],
-    'alg': str,
-    'kid': str,
-    'x5u': str,
-    'x5c': str,
-    'x5t': str,
-    'x5t#S256': str,
-}, total=False)]
+from .types import DictKey, RawKey, KeyOptions
 
 
 class _KeyMixin(object):
@@ -227,8 +220,42 @@ class CurveKey(AsymmetricKey):
 
     @classmethod
     @abstractmethod
-    def generate_key(cls, crv: str, options: KeyOptions = None, private=False):
+    def generate_key(cls, crv: str, options: KeyOptions=None, private=False):
         pass
 
 
+#: Key type for all SymmetricKey, AsymmetricKey, and CurveKey
 Key = Union[SymmetricKey, AsymmetricKey, CurveKey]
+
+#: registry to store all registered keys
+JWK_REGISTRY: Dict[str, Key] = {}
+
+
+class KeySet:
+    thumbprint: Optional[Callable[[Key], str]] = None
+
+    def __init__(self, keys: List[Key]):
+        self.keys = keys
+
+    def as_dict(self):
+        keys = []
+
+        for key in self.keys:
+            if self.thumbprint is not None and key.kid is None:
+                key.kid = self.thumbprint(key)
+
+            keys.append(key.tokens)
+
+        return {"keys": keys}
+
+    @classmethod
+    def import_key(cls, keys: List[DictKey], options: KeyOptions=None) -> 'KeySet':
+        rv = []
+
+        for _key in keys:
+            kty = _key['kty']
+            key_cls = JWK_REGISTRY[kty]
+            key = key_cls.import_key(_key, options)
+            rv.append(key)
+
+        return cls(rv)
