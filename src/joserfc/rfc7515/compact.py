@@ -1,8 +1,8 @@
 import binascii
 from typing import Union, Optional, Any
-from .types import ProtectedHeader
 from .alg import JWSAlgorithm
 from ..errors import DecodeError, MissingAlgorithmError
+from .._types import Header
 from .._util import (
     json_b64encode,
     json_b64decode,
@@ -12,7 +12,7 @@ from .._util import (
 
 
 class CompactData:
-    def __init__(self, header: ProtectedHeader, payload: bytes,
+    def __init__(self, header: Header, payload: bytes,
                  signature: Optional[bytes]=None):
         self.header = header
         self.payload = payload
@@ -36,16 +36,6 @@ class CompactData:
     def verify(self, algorithm: JWSAlgorithm, key) -> bool:
         sig = urlsafe_b64decode(self.signature)
         return algorithm.verify(self.signing_input, sig, key)
-
-
-def serialize_compact(
-    header: ProtectedHeader,
-    payload: bytes,
-    algorithm: JWSAlgorithm,
-    key: Any) -> bytes:
-
-    obj = CompactData(header, payload)
-    return obj.sign(algorithm, key)
 
 
 def extract_compact(text: bytes) -> CompactData:
