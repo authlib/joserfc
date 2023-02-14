@@ -1,38 +1,23 @@
 import json
 from unittest import TestCase
-from pathlib import Path
 from joserfc.jws import serialize_compact, deserialize_compact
 from joserfc.jwk import Key, OctKey, RSAKey, ECKey
-from ..util import read_key, read_fixture
+from joserfc.util import to_bytes
+from tests.fixtures import TestFixture
+from tests.util import read_key, read_fixture
 
 
-class TestCompact(TestCase):
-    @classmethod
-    def load_fixture(cls, filename: str, private_key, public_key):
-        data = read_fixture(filename)
-        payload = data['payload'].encode('utf-8')
-
-        for case in data['cases']:
-            cls.attach_case(payload, case, private_key, public_key)
-
-    @classmethod
-    def attach_case(cls, payload: bytes, case, private_key, public_key):
+class TestCompact(TestFixture):
+    def run_test(self, case, private_key, public_key):
         alg = case['alg']
+
         if 'value' in case:
-            expect = case['value'].encode('utf-8')
+            expect = to_bytes(case['value'])
         else:
             expect = None
 
-        def method(self):
-            self.run_compact(alg, payload, expect, private_key, public_key)
-
-        name = 'test_{}'.format(alg)
-        method.__name__ = name
-        method.__doc__ = f'Run fixture {alg}'
-        setattr(cls, name, method)
-
-    def run_compact(self, alg: str, payload: bytes, expect, private_key, public_key):
         header = {'alg': alg}
+        payload = to_bytes(case['payload'])
         value = serialize_compact(header, payload, private_key, [alg])
 
         if expect:
@@ -54,14 +39,16 @@ def add_rsa_tests():
 
 
 def add_ec_tests():
-    ec_data = read_fixture('jws_ec.json')
-    payload = ec_data['payload'].encode('utf-8')
+    fixture = read_fixture('jws_ec.json')
+    payload = fixture['payload']
 
-    for case in ec_data['cases']:
+    for index, case in enumerate(fixture['cases']):
         key = case['key']
+        case['payload'] = payload
+        case['id'] = f'EC_{key}_{index}'
         private_key = ECKey.import_key(read_key(f'ec-{key}-private.pem'))
         public_key = ECKey.import_key(read_key(f'ec-{key}-public.pem'))
-        TestCompact.attach_case(payload, case, private_key, public_key)
+        TestCompact.attach_case(case, private_key, public_key)
 
 
 add_oct_tests()
