@@ -34,6 +34,7 @@ __all__ = [
     'JWK_REGISTRY',
     'generate_key',
     'import_key',
+    'guess_key',
 ]
 
 # register thumbprint method

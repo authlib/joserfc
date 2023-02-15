@@ -21,7 +21,3 @@ class EdDSAAlgorithm(JWSAlgorithm):
             return True
         except InvalidSignature:
             return False
-
-
-def register_jws_rfc8037(cls):
-    cls.register_algorithm(EdDSAAlgorithm())

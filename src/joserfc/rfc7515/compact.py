@@ -13,6 +13,14 @@ from ..util import (
 
 
 class CompactData:
+    """The object of a JWS Compact Serialization.
+
+    The Compact data contains:
+
+    - protected header in dict
+    - payload in bytes
+    - signature in bytes
+    """
     def __init__(self, header: Header, payload: bytes,
                  signature: Optional[bytes]=None):
         self.header = header
@@ -33,21 +41,39 @@ class CompactData:
 
     @property
     def claims(self) -> Dict[str, Any]:
+        """Convert payload into claims if payload is an encoded JSON string."""
         if self._claims is None:
             self._claims = json.loads(self.payload)
         return self._claims
 
     def sign(self, algorithm: JWSAlgorithm, key) -> bytes:
+        """Sign the signature of this compact serialization with the given
+        algorithm and key.
+
+        :param algorithm: a registered algorithm instance
+        :param key: a private key
+        """
         self.signature = urlsafe_b64encode(algorithm.sign(self.signing_input, key))
         return self.signing_input + b'.' + self.signature
 
     def verify(self, algorithm: JWSAlgorithm, key) -> bool:
+        """Verify the signature of this compact serialization with the given
+        algorithm and key.
+
+        :param algorithm: a registered algorithm instance
+        :param key: a public key
+        """
         sig = urlsafe_b64decode(self.signature)
         return algorithm.verify(self.signing_input, sig, key)
 
 
-def extract_compact(text: bytes) -> CompactData:
-    parts = text.split(b'.')
+def extract_compact(value: bytes) -> CompactData:
+    """Extract the JWS Compact Serialization from bytes to object.
+
+    :param value: JWS in bytes
+    :raise: DecodeError
+    """
+    parts = value.split(b'.')
     if len(parts) != 3:
         raise ValueError('Invalid JSON Web Signature')
 

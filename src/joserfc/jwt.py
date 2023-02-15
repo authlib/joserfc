@@ -8,6 +8,8 @@ from .jwk import KeyFlexible
 from .errors import InvalidTypeError
 from .util import to_bytes, json_dumps
 
+__all__ = ['encode', 'decode', 'validate']
+
 
 def encode(
     header: Header,

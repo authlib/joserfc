@@ -1,5 +1,6 @@
 from typing import Optional, AnyStr, Callable
 from .rfc7515 import (
+    JWSAlgorithm,
     CompactData,
     extract_compact,
 )
@@ -16,6 +17,8 @@ __all__ = [
     'extract_compact',
     'deserialize_compact',
     'validate_compact',
+    'JWSAlgorithm',
+    'JWS_REGISTRY',
 ]
 
 # supported algs
@@ -37,6 +40,24 @@ def serialize_compact(
     payload: bytes,
     key: KeyFlexible,
     allowed_algorithms: Optional[list[str]]=None) -> bytes:
+    """Generate a JWS Compact Serialization. The JWS Compact Serialization
+    represents digitally signed or MACed content as a compact, URL-safe
+    string, per Section 7.1.
+
+    .. code-block:: text
+
+        BASE64URL(UTF8(JWS Protected Header)) || '.' ||
+        BASE64URL(JWS Payload) || '.' ||
+        BASE64URL(JWS Signature)
+
+    :param header: protected header part of the JWS, in dict
+    :param payload: payload data of the JWS, in bytes
+    :param key: a flexible private key to sign the signature
+    :param allowed_algorithms: allowed algorithms to use, default to HS256, RS256, ES256
+    :return: JWS in bytes
+
+    .. note:: The returned value is in bytes
+    """
 
     check_header(header, ['alg'])
 
@@ -60,6 +81,14 @@ def validate_compact(
     obj: CompactData,
     key: KeyFlexible,
     allowed_algorithms: Optional[list[str]]=None):
+    """Validate the JWS Compact Serialization with the given key.
+    This method is usually used together with ``extract_compact``.
+
+    :param obj: object of the JWS Compact Serialization
+    :param key: a flexible public key to verify the signature
+    :param allowed_algorithms: allowed algorithms to use, default to HS256, RS256, ES256
+    :raise: ValueError or BadSignatureError
+    """
 
     if allowed_algorithms is None:
         allowed_algorithms = RECOMMENDED_ALGORITHMS
@@ -81,6 +110,13 @@ def deserialize_compact(
     value: AnyStr,
     key: KeyFlexible,
     allowed_algorithms: Optional[list[str]]=None) -> CompactData:
+    """Extract and validate the JWS (in string) with the given key.
+
+    :param value: a string (or bytes) of the JWS
+    :param key: a flexible public key to verify the signature
+    :param allowed_algorithms: allowed algorithms to use, default to HS256, RS256, ES256
+    :return: object of the JWS Compact Serialization
+    """
 
     obj = extract_compact(to_bytes(value))
     validate_compact(obj, key, allowed_algorithms)
