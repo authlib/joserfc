@@ -1,6 +1,6 @@
 import random
 from typing import Callable, Union, Any
-from .rfc7515 import CompactData
+from .rfc7515.compact import CompactData
 from .rfc7517 import (
     SymmetricKey,
     AsymmetricKey,

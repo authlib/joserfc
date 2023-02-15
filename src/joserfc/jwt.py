@@ -1,5 +1,5 @@
 from typing import Optional, AnyStr
-from .rfc7515 import CompactData, extract_compact
+from .rfc7515.compact import CompactData, extract_compact
 from .rfc7515.types import Header
 from .rfc7519.claims import Claims, convert_claims
 from .rfc7519.validators import JWTClaimsRequests

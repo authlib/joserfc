@@ -1,8 +1,12 @@
 from typing import Optional, AnyStr, Callable
-from .rfc7515 import (
-    JWSAlgorithm,
+from .rfc7515 import JWSAlgorithm
+from .rfc7515.compact import (
     CompactData,
     extract_compact,
+)
+from .rfc7515.json import (
+    JSONData,
+    extract_json,
 )
 from .rfc7515.types import Header, check_header
 from .rfc7518.jws_algs import JWS_ALGORITHMS
@@ -17,6 +21,8 @@ __all__ = [
     'extract_compact',
     'deserialize_compact',
     'validate_compact',
+    'JSONData',
+    'extract_json',
     'JWSAlgorithm',
     'JWS_REGISTRY',
 ]
