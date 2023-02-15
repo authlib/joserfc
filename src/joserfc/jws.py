@@ -1,4 +1,4 @@
-from typing import Optional, List, Union, Callable
+from typing import Optional, AnyStr, Callable
 from .rfc7515 import (
     CompactData,
     extract_compact,
@@ -36,7 +36,7 @@ def serialize_compact(
     header: Header,
     payload: bytes,
     key: KeyFlexible,
-    allowed_algorithms: Optional[List[str]]=None) -> bytes:
+    allowed_algorithms: Optional[list[str]]=None) -> bytes:
 
     check_header(header, ['alg'])
 
@@ -47,17 +47,19 @@ def serialize_compact(
     if alg not in allowed_algorithms:
         raise ValueError(f'Algorithm "{alg}" is not allowed in {allowed_algorithms}')
 
-    algorithm = JWS_REGISTRY[alg]
-
     obj = CompactData(header, payload)
     key: Key = guess_key(key, obj, 'sign')
+    # if key is designed for the "use"
+    key.check_use('sig')
+
+    algorithm = JWS_REGISTRY[alg]
     return obj.sign(algorithm, key)
 
 
 def validate_compact(
     obj: CompactData,
     key: KeyFlexible,
-    allowed_algorithms: Optional[List[str]]=None):
+    allowed_algorithms: Optional[list[str]]=None):
 
     if allowed_algorithms is None:
         allowed_algorithms = RECOMMENDED_ALGORITHMS
@@ -66,17 +68,19 @@ def validate_compact(
     if alg not in allowed_algorithms:
         raise ValueError(f'Algorithm "{alg}" is not allowed in {allowed_algorithms}')
 
-    algorithm = JWS_REGISTRY[alg]
     key: Key = guess_key(key, obj, 'verify')
+    # if key is designed for the "use"
+    key.check_use('sig')
 
+    algorithm = JWS_REGISTRY[alg]
     if not obj.verify(algorithm, key):
         raise BadSignatureError()
 
 
 def deserialize_compact(
-    value: Union[str, bytes],
+    value: AnyStr,
     key: KeyFlexible,
-    allowed_algorithms: Optional[List[str]]=None) -> CompactData:
+    allowed_algorithms: Optional[list[str]]=None) -> CompactData:
 
     obj = extract_compact(to_bytes(value))
     validate_compact(obj, key, allowed_algorithms)

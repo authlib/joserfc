@@ -1,4 +1,4 @@
-from typing import Optional, Union, Dict, FrozenSet
+from typing import Optional, Union, Dict
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -29,7 +29,7 @@ class ECKey(CurveKey):
     """Key class of the ``EC`` key type."""
 
     key_type: str = 'EC'
-    required_fields: FrozenSet[str] = frozenset(['crv', 'x', 'y'])
+    required_fields = frozenset(['crv', 'x', 'y'])
     private_only_fields = frozenset(['d'])
 
     def exchange_shared_key(self, pubkey):

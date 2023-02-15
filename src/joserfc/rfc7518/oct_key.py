@@ -1,4 +1,4 @@
-from typing import FrozenSet, Optional
+from typing import Optional
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
@@ -19,7 +19,7 @@ POSSIBLE_UNSAFE_KEYS = (
 
 class OctKey(SymmetricKey):
     key_type: str = 'oct'
-    required_fields: FrozenSet[str] = frozenset(['kty', 'k'])
+    required_fields = frozenset(['kty', 'k'])
 
     def get_op_key(self, operation: str) -> bytes:
         self.check_key_op(operation)

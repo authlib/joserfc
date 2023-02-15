@@ -9,13 +9,15 @@ _str_fields = [
     'jwk',
     'kid',
     'x5u',
-    'x5c',
     'x5t',
     'x5t#S256',
     'typ',
     'cty',
-    'enc',
-    'zip',
+]
+
+_list_str_fields = [
+    'x5c',
+    'crit',
 ]
 
 

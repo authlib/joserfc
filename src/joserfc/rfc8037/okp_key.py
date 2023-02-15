@@ -1,4 +1,4 @@
-from typing import Optional, Union, Dict, FrozenSet
+from typing import Optional, Union, Dict
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.ed25519 import (
     Ed25519PublicKey, Ed25519PrivateKey
@@ -58,7 +58,7 @@ class OKPKey(CurveKey):
     """Key class of the ``OKP`` key type."""
 
     key_type: str = 'OKP'
-    required_fields: FrozenSet[str] = frozenset(['crv', 'x'])
+    required_fields = frozenset(['crv', 'x'])
     private_only_fields = frozenset(['d'])
 
     def exchange_shared_key(self, pubkey):

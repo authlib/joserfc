@@ -1,4 +1,4 @@
-from typing import Optional, List, Union
+from typing import Optional, AnyStr
 from .rfc7515 import CompactData, extract_compact
 from .rfc7515.types import Header
 from .rfc7519.claims import Claims, convert_claims
@@ -13,7 +13,7 @@ def encode(
     header: Header,
     claims: Claims,
     key: KeyFlexible,
-    allowed_algorithms: Optional[List[str]]=None) -> str:
+    allowed_algorithms: Optional[list[str]]=None) -> str:
 
     # add ``typ`` in header
     header['typ'] = 'JWT'
@@ -23,10 +23,10 @@ def encode(
 
 
 def decode(
-    value: Union[str, bytes],
+    value: AnyStr,
     key: KeyFlexible,
     validator: Optional[JWTClaimsRequests]=None,
-    allowed_algorithms: Optional[List[str]]=None) -> CompactData:
+    allowed_algorithms: Optional[list[str]]=None) -> CompactData:
 
     obj = extract_compact(to_bytes(value))
     validate(obj, key, validator, allowed_algorithms)
@@ -37,7 +37,7 @@ def validate(
     obj: CompactData,
     key: KeyFlexible,
     validator: Optional[JWTClaimsRequests]=None,
-    allowed_algorithms: Optional[List[str]]=None):
+    allowed_algorithms: Optional[list[str]]=None):
 
     typ = obj.header.get('typ')
     if typ and typ != 'JWT':

@@ -1,4 +1,4 @@
-from typing import Optional, Union, Dict, FrozenSet
+from typing import Optional, Union, Dict
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import (
@@ -17,7 +17,7 @@ NativeRSAKey = Union[RSAPublicKey, RSAPrivateKeyWithSerialization]
 
 class RSAKey(AsymmetricKey):
     key_type: str = 'RSA'
-    required_fields: FrozenSet[str] = frozenset(['kty', 'e', 'n'])
+    required_fields = frozenset(['kty', 'e', 'n'])
     private_only_fields = frozenset(['d', 'p', 'q', 'dp', 'dq', 'qi'])
 
     @property

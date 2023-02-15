@@ -1,18 +1,17 @@
 [project]
 name = "joserfc"
-description = ""
-license = {text = "BSD-3-Clause"}
+description = "The ultimate Python library for JOSE RFCs, including JWS, JWE, JWK, JWA, JWT"
 authors = [{name = "Hsiaoming Yang", email="me@lepture.com"}]
-
 dependencies = [
   "cryptography",
 ]
+license = {file = "LICENSE"}
 requires-python = ">=3.8"
 dynamic = ["version"]
 
 [project.urls]
 Documentation = "https://jose.authlib.org/"
-Twitter = "https://twitter.com/authlib"
+Blog = "https://blog.authlib.org/"
 
 [build-system]
 requires = ["setuptools"]
@@ -20,6 +19,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
 version = {attr = "joserfc.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

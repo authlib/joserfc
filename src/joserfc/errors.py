@@ -34,11 +34,6 @@ class BadSignatureError(JoseError):
     error: str = 'bad_signature'
 
 
-class InvalidUseError(JoseError):
-    error: str = 'invalid_use'
-    description: str = 'Key "use" is not valid for your usage'
-
-
 class InvalidClaimError(JoseError):
     error: str = 'invalid_claim'
 

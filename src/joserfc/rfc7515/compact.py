@@ -1,6 +1,6 @@
 import json
 import binascii
-from typing import Union, Optional, Dict, Any
+from typing import Optional, Dict, Any
 from .alg import JWSAlgorithm
 from .types import Header
 from ..errors import DecodeError, MissingAlgorithmError

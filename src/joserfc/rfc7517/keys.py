@@ -6,9 +6,9 @@ from .types import KeyDict, KeyAny, KeyOptions
 
 class _KeyMixin(object):
     key_type: str = 'oct'
-    required_fields: t.FrozenSet[str] = frozenset(['kty'])
-    private_key_ops: t.FrozenSet[str] = frozenset(['sign', 'decrypt', 'unwrapKey'])
-    public_key_ops: t.FrozenSet[str] = frozenset(['verify', 'encrypt', 'wrapKey'])
+    required_fields = frozenset(['kty'])
+    private_key_ops = frozenset(['sign', 'decrypt', 'unwrapKey'])
+    public_key_ops = frozenset(['verify', 'encrypt', 'wrapKey'])
 
     def __init__(self, value, options: KeyOptions=None, tokens: t.Optional[KeyDict]=None):
         self.value = value
@@ -82,10 +82,24 @@ class _KeyMixin(object):
 
         key_ops = self._tokens.get('key_ops')
         if key_ops is not None and operation not in key_ops:
-            raise ValueError('Unsupported key_op "{}"'.format(operation))
+            raise ValueError(f'Unsupported key_op "{operation}"')
 
         if operation in self.private_key_ops and not self.is_private:
-            raise ValueError('Invalid key_op "{}" for public key'.format(operation))
+            raise ValueError(f'Invalid key_op "{operation}" for public key')
+
+    def check_use(self, use: str) -> None:
+        """Check if the given "use" is supported by this key.
+
+        :param use: key use value, such as "sig", "enc".
+        :raise: ValueError
+        """
+        # only check key in JSON(dict) format
+        if self._tokens is None:
+            return
+
+        key_use = self._tokens.get('use')
+        if key_use is not None and key_use != use:
+            raise ValueError(f'Unsupported use of "{use}"')
 
 
 class SymmetricKey(_KeyMixin, metaclass=ABCMeta):
