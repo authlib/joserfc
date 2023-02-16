@@ -17,6 +17,7 @@ from .rfc7515.json import (
 from .rfc7515.types import Header, HeaderMember, JSONSerialization
 from .rfc7515.header import check_header
 from .rfc7518.jws_algs import JWS_ALGORITHMS
+from .rfc8037.jws_eddsa import EdDSA
 from .rfc8812 import ES256K
 from .errors import BadSignatureError
 from .jwk import Key, KeyFlexible, guess_key
@@ -39,8 +40,14 @@ __all__ = [
 
 # register supported alg models
 def __register():
+    # register alg in RFC7518
     for _alg in JWS_ALGORITHMS:
         register_alg_model(_alg)
+
+    # register alg in RFC8037
+    register_alg_model(EdDSA)
+
+    # register alg in RFC8812
     register_alg_model(ES256K)
 
     #: Recommended "alg" (Algorithm) Header Parameter Values for JWS

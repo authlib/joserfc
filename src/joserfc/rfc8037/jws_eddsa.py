@@ -18,3 +18,5 @@ class EdDSAAlgModel(JWSAlgModel):
             return True
         except InvalidSignature:
             return False
+
+EdDSA = EdDSAAlgModel()
