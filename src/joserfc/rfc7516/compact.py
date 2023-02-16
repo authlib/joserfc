@@ -1,5 +1,5 @@
 from typing import Optional
-from .algs import JWEAlgModel, JWEEncModel, JWEZipModel
+from .models import JWEAlgModel, JWEEncModel, JWEZipModel
 from .types import Header
 
 

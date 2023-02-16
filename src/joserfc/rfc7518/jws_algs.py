@@ -18,14 +18,14 @@ from cryptography.hazmat.primitives.asymmetric.utils import (
 from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
-from ..rfc7515 import JWSAlgorithm
+from ..rfc7515.model import JWSAlgModel
 from .oct_key import OctKey
 from .rsa_key import RSAKey
 from .ec_key import ECKey
 from .util import encode_int, decode_int
 
 
-class NoneAlgorithm(JWSAlgorithm):
+class NoneAlgModel(JWSAlgModel):
     name = 'none'
     description = 'No digital signature or MAC performed'
 
@@ -36,7 +36,7 @@ class NoneAlgorithm(JWSAlgorithm):
         return False
 
 
-class HMACAlgorithm(JWSAlgorithm):
+class HMACAlgModel(JWSAlgModel):
     """HMAC using SHA algorithms for JWS. Available algorithms:
 
     - HS256: HMAC using SHA-256
@@ -47,10 +47,10 @@ class HMACAlgorithm(JWSAlgorithm):
     SHA384 = hashlib.sha384
     SHA512 = hashlib.sha512
 
-    def __init__(self, sha_type: str):
-        self.name = 'HS{}'.format(sha_type)
-        self.description = 'HMAC using SHA-{}'.format(sha_type)
-        self.hash_alg = getattr(self, 'SHA{}'.format(sha_type))
+    def __init__(self, sha_type: int):
+        self.name = f'HS{sha_type}'
+        self.description = f'HMAC using SHA-{sha_type}'
+        self.hash_alg = getattr(self, f'SHA{sha_type}')
 
     def sign(self, msg: bytes, key: OctKey) -> bytes:
         # it is faster than the one in cryptography
@@ -63,7 +63,7 @@ class HMACAlgorithm(JWSAlgorithm):
         return hmac.compare_digest(sig, v_sig)
 
 
-class RSAAlgorithm(JWSAlgorithm):
+class RSAAlgModel(JWSAlgModel):
     """RSA using SHA algorithms for JWS. Available algorithms:
 
     - RS256: RSASSA-PKCS1-v1_5 using SHA-256
@@ -74,10 +74,10 @@ class RSAAlgorithm(JWSAlgorithm):
     SHA384 = hashes.SHA384
     SHA512 = hashes.SHA512
 
-    def __init__(self, sha_type: str):
-        self.name = 'RS{}'.format(sha_type)
-        self.description = 'RSASSA-PKCS1-v1_5 using SHA-{}'.format(sha_type)
-        self.hash_alg = getattr(self, 'SHA{}'.format(sha_type))
+    def __init__(self, sha_type: int):
+        self.name = f'RS{sha_type}'
+        self.description = f'RSASSA-PKCS1-v1_5 using SHA-{sha_type}'
+        self.hash_alg = getattr(self, f'SHA{sha_type}')
         self.padding = padding.PKCS1v15()
 
     def sign(self, msg: bytes, key: RSAKey) -> bytes:
@@ -93,7 +93,7 @@ class RSAAlgorithm(JWSAlgorithm):
             return False
 
 
-class ECAlgorithm(JWSAlgorithm):
+class ECAlgModel(JWSAlgModel):
     """ECDSA using SHA algorithms for JWS. Available algorithms:
 
     - ES256: ECDSA using P-256 and SHA-256
@@ -104,11 +104,11 @@ class ECAlgorithm(JWSAlgorithm):
     SHA384 = hashes.SHA384
     SHA512 = hashes.SHA512
 
-    def __init__(self, name: str, curve: str, sha_type: str):
+    def __init__(self, name: str, curve: str, sha_type: int):
         self.name = name
         self.curve = curve
         self.description = f'ECDSA using {self.curve} and SHA-{sha_type}'
-        self.hash_alg = getattr(self, 'SHA{}'.format(sha_type))
+        self.hash_alg = getattr(self, f'SHA{sha_type}')
 
     def _check_key(self, key: ECKey):
         if key.curve_name != self.curve:
@@ -144,7 +144,7 @@ class ECAlgorithm(JWSAlgorithm):
             return False
 
 
-class RSAPSSAlgorithm(JWSAlgorithm):
+class RSAPSSAlgModel(JWSAlgModel):
     """RSASSA-PSS using SHA algorithms for JWS. Available algorithms:
 
     - PS256: RSASSA-PSS using SHA-256 and MGF1 with SHA-256
@@ -155,11 +155,10 @@ class RSAPSSAlgorithm(JWSAlgorithm):
     SHA384 = hashes.SHA384
     SHA512 = hashes.SHA512
 
-    def __init__(self, sha_type: str):
-        self.name = 'PS{}'.format(sha_type)
-        tpl = 'RSASSA-PSS using SHA-{} and MGF1 with SHA-{}'
-        self.description = tpl.format(sha_type, sha_type)
-        self.hash_alg = getattr(self, 'SHA{}'.format(sha_type))
+    def __init__(self, sha_type: int):
+        self.name = f'PS{sha_type}'
+        self.description = f'RSASSA-PSS using SHA-{sha_type} and MGF1 with SHA-{sha_type}'
+        self.hash_alg = getattr(self, f'SHA{sha_type}')
 
     def sign(self, msg: bytes, key: RSAKey) -> bytes:
         op_key = key.get_op_key('sign')
@@ -183,17 +182,17 @@ class RSAPSSAlgorithm(JWSAlgorithm):
 
 
 JWS_ALGORITHMS = [
-    NoneAlgorithm(),  # none
-    HMACAlgorithm(256),  # HS256
-    HMACAlgorithm(384),  # HS384
-    HMACAlgorithm(512),  # HS512
-    RSAAlgorithm(256),  # RS256
-    RSAAlgorithm(384),  # RS384
-    RSAAlgorithm(512),  # RS512
-    ECAlgorithm('ES256', 'P-256', 256),
-    ECAlgorithm('ES384', 'P-384', 384),
-    ECAlgorithm('ES512', 'P-521', 512),
-    RSAPSSAlgorithm(256),  # PS256
-    RSAPSSAlgorithm(384),  # PS384
-    RSAPSSAlgorithm(512),  # PS512
+    NoneAlgModel(),  # none
+    HMACAlgModel(256),  # HS256
+    HMACAlgModel(384),  # HS384
+    HMACAlgModel(512),  # HS512
+    RSAAlgModel(256),  # RS256
+    RSAAlgModel(384),  # RS384
+    RSAAlgModel(512),  # RS512
+    ECAlgModel('ES256', 'P-256', 256),
+    ECAlgModel('ES384', 'P-384', 384),
+    ECAlgModel('ES512', 'P-521', 512),
+    RSAPSSAlgModel(256),  # PS256
+    RSAPSSAlgModel(384),  # PS384
+    RSAPSSAlgModel(512),  # PS512
 ]

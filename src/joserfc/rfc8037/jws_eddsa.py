@@ -1,20 +1,17 @@
 from cryptography.exceptions import InvalidSignature
-from ..rfc7515 import JWSAlgorithm
+from ..rfc7515.model import JWSAlgModel
 from .okp_key import OKPKey
 
 
-class EdDSAAlgorithm(JWSAlgorithm):
+class EdDSAAlgModel(JWSAlgModel):
     name = 'EdDSA'
     description = 'Edwards-curve Digital Signature Algorithm for JWS'
 
-    def prepare_key(self, raw_data):
-        return OKPKey.import_key(raw_data)
-
-    def sign(self, msg, key):
+    def sign(self, msg: bytes, key: OKPKey) -> bytes:
         op_key = key.get_op_key('sign')
         return op_key.sign(msg)
 
-    def verify(self, msg, sig, key):
+    def verify(self, msg: bytes, sig: bytes, key: OKPKey) -> bool:
         op_key = key.get_op_key('verify')
         try:
             op_key.verify(sig, msg)

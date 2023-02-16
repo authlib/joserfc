@@ -1,7 +1,7 @@
 import json
 import binascii
 from typing import Optional, Dict, Any
-from .alg import JWSAlgorithm
+from .model import JWSAlgModel
 from .types import Header
 from ..errors import DecodeError, MissingAlgorithmError
 from ..util import (
@@ -60,27 +60,27 @@ class CompactData:
             self._claims = json.loads(self.payload)
         return self._claims
 
-    def sign(self, algorithm: JWSAlgorithm, key) -> bytes:
+    def sign(self, alg: JWSAlgModel, key) -> bytes:
         """Sign the signature of this compact serialization with the given
         algorithm and key.
 
-        :param algorithm: a registered algorithm instance
+        :param alg: a registered algorithm instance
         :param key: a private key
         """
         key.check_use('sig')
-        self.signature = urlsafe_b64encode(algorithm.sign(self.signing_input, key))
+        self.signature = urlsafe_b64encode(alg.sign(self.signing_input, key))
         return self.signing_input + b'.' + self.signature
 
-    def verify(self, algorithm: JWSAlgorithm, key) -> bool:
+    def verify(self, alg: JWSAlgModel, key) -> bool:
         """Verify the signature of this compact serialization with the given
         algorithm and key.
 
-        :param algorithm: a registered algorithm instance
+        :param alg: a registered algorithm instance
         :param key: a public key
         """
         key.check_use('sig')
         sig = urlsafe_b64decode(self.signature)
-        return algorithm.verify(self.signing_input, sig, key)
+        return alg.verify(self.signing_input, sig, key)
 
 
 def extract_compact(value: bytes) -> CompactData:

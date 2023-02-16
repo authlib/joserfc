@@ -1,7 +1,7 @@
 import typing as t
 import json
 import binascii
-from .alg import JWSAlgorithm
+from .model import JWSAlgModel
 from .types import (
     Header,
     Signature,
@@ -18,7 +18,7 @@ from ..util import (
 )
 from ..errors import DecodeError
 
-FindAlgorithm = t.Callable[[str], JWSAlgorithm]
+FindAlgorithm = t.Callable[[str], JWSAlgModel]
 
 
 class _CompactData:
@@ -65,7 +65,7 @@ class JSONData:
         """Sign the signature of this JSON serialization with the given
         algorithm and key.
 
-        :param find_alg: a function to return algorithm
+        :param find_alg: a function to return "alg" model
         :param find_key: a function to return private key
         """
         self.signatures: t.List[Signature] = []
@@ -88,7 +88,7 @@ class JSONData:
         """Verify the signature of this JSON serialization with the given
         algorithm and key.
 
-        :param find_alg: a function to return algorithm
+        :param find_alg: a function to return "alg" model
         :param find_key: a function to return public key
         """
         for index, signature in enumerate(self.signatures):
@@ -101,10 +101,10 @@ class JSONData:
                 return False
         return True
 
-    def _sign_member(self, member: HeaderMember, algorithm: JWSAlgorithm, key) -> Signature:
+    def _sign_member(self, member: HeaderMember, alg: JWSAlgModel, key) -> Signature:
         protected_segment = json_b64encode(member['protected'])
         signing_input = b'.'.join([protected_segment, self.payload_segment])
-        signature = urlsafe_b64encode(algorithm.sign(signing_input, key))
+        signature = urlsafe_b64encode(alg.sign(signing_input, key))
         rv = {
             'protected': protected_segment.decode('utf-8'),
             'signature': signature.decode('utf-8'),
@@ -113,12 +113,12 @@ class JSONData:
             rv['header'] = member['header']
         return rv
 
-    def _verify_signature(self, signature: Signature, algorithm: JWSAlgorithm, key) -> bool:
+    def _verify_signature(self, signature: Signature, alg: JWSAlgModel, key) -> bool:
 
         protected_segment = signature['protected'].encode('utf-8')
         sig = urlsafe_b64decode(signature['signature'].encode('utf-8'))
         signing_input = b'.'.join([protected_segment, self.payload_segment])
-        return algorithm.verify(signing_input, sig, key)
+        return alg.verify(signing_input, sig, key)
 
 
 def extract_json(value: JSONSerialization) -> JSONData:

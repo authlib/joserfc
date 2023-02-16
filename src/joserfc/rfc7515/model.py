@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class JWSAlgorithm(object, metaclass=ABCMeta):
+class JWSAlgModel(object, metaclass=ABCMeta):
     """Interface for JWS algorithm. JWA specification (RFC7518) SHOULD
     implement the algorithms for JWS with this base implementation.
     """
