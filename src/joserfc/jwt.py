@@ -1,12 +1,12 @@
 from typing import Optional, AnyStr, List
 from .rfc7515.compact import CompactData, extract_compact
-from .rfc7515.types import Header
 from .rfc7519.claims import Claims, convert_claims
 from .rfc7519.validators import JWTClaimsRequests
 from .jws import serialize_compact, validate_compact
 from .jwk import KeyFlexible
 from .errors import InvalidTypeError
 from .util import to_bytes
+from ._shared import Header
 
 __all__ = ['encode', 'decode', 'validate']
 

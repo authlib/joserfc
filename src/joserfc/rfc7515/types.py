@@ -1,4 +1,5 @@
 import typing as t
+from .._shared import Header
 
 __all__ = [
     'Header',
@@ -10,8 +11,6 @@ __all__ = [
     'CompactProtocol',
 ]
 
-
-Header = t.Dict[str, t.Any]
 
 Signature = t.TypedDict('Signature', {
     'protected': str,
