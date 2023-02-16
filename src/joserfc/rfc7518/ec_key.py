@@ -7,7 +7,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP256R1, SECP384R1, SECP521R1
 )
 from cryptography.hazmat.backends import default_backend
-from ..rfc7517 import CurveKey, load_pem_key
+from ..rfc7517 import CurveKey
+from ..rfc7517.pem import CryptographyBinding
 from ..rfc7517.types import KeyDict, KeyAny, KeyOptions
 from ..util import base64_to_int, int_to_base64
 
@@ -51,26 +52,14 @@ class ECKey(CurveKey):
     def as_dict(self, private: Optional[bool]=None, **params) -> KeyDict:
         if private is True and not self.is_private:
             raise ValueError("This is a public EC key")
+        return ECBinding.as_dict(self, private, **params)
 
-        if self._tokens:
-            data = self._tokens.copy()
-            # clear private fields
-            if private is False and self.is_private:
-                for k in self.private_only_fields:
-                    if k in data:
-                        del data[k]
-
-        elif private is True:
-            data = export_private_key(self.private_key)
-        elif private is False:
-            data = export_public_key(self.public_key)
-        elif self.is_private:
-            data = export_private_key(self.private_key)
-        else:
-            data = export_public_key(self.public_key)
-
-        data.update(params)
-        return data
+    def as_bytes(
+            self,
+            encoding: Optional[str]=None,
+            private: Optional[bool]=None,
+            password: Optional[str]=None) -> bytes:
+        return ECBinding.as_bytes(self, encoding, private, password)
 
     @property
     def is_private(self) -> bool:
@@ -98,19 +87,7 @@ class ECKey(CurveKey):
 
     @classmethod
     def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'ECKey':
-        if isinstance(value, dict):
-            tokens = cls.validate_tokens(value)
-            if 'd' in value:
-                raw_key = import_private_key(value)
-            else:
-                raw_key = import_public_key(value)
-            return cls(raw_key, options, tokens)
-
-        if isinstance(value, str):
-            value = to_bytes(value)
-
-        raw_key = load_pem_key(value, b'ecdsa-sha2-')
-        return cls(raw_key, options)
+        return ECBinding.import_key(cls, value, options)
 
     @classmethod
     def generate_key(cls, crv: str='P-256',
@@ -127,44 +104,48 @@ class ECKey(CurveKey):
         return cls(raw_key, options)
 
 
-def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKeyWithSerialization:
-    curve = DSS_CURVES[obj['crv']]()
-    public_numbers = EllipticCurvePublicNumbers(
-        base64_to_int(obj['x']),
-        base64_to_int(obj['y']),
-        curve,
-    )
-    private_numbers = EllipticCurvePrivateNumbers(
-        base64_to_int(obj['d']),
-        public_numbers
-    )
-    return private_numbers.private_key(default_backend())
+class ECBinding(CryptographyBinding):
+    ssh_type = b'ecdsa-sha2-'
 
+    @staticmethod
+    def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKeyWithSerialization:
+        curve = DSS_CURVES[obj['crv']]()
+        public_numbers = EllipticCurvePublicNumbers(
+            base64_to_int(obj['x']),
+            base64_to_int(obj['y']),
+            curve,
+        )
+        private_numbers = EllipticCurvePrivateNumbers(
+            base64_to_int(obj['d']),
+            public_numbers
+        )
+        return private_numbers.private_key(default_backend())
 
-def export_private_key(key: EllipticCurvePrivateKeyWithSerialization) -> Dict[str, str]:
-    numbers = key.private_numbers()
-    return {
-        'crv': CURVES_DSS[key.curve.name],
-        'x': int_to_base64(numbers.public_numbers.x),
-        'y': int_to_base64(numbers.public_numbers.y),
-        'd': int_to_base64(numbers.private_value),
-    }
+    @staticmethod
+    def export_private_key(key: EllipticCurvePrivateKeyWithSerialization) -> Dict[str, str]:
+        numbers = key.private_numbers()
+        return {
+            'crv': CURVES_DSS[key.curve.name],
+            'x': int_to_base64(numbers.public_numbers.x),
+            'y': int_to_base64(numbers.public_numbers.y),
+            'd': int_to_base64(numbers.private_value),
+        }
 
+    @staticmethod
+    def import_public_key(obj: KeyDict) -> EllipticCurvePublicKey:
+        curve = DSS_CURVES[obj['crv']]()
+        public_numbers = EllipticCurvePublicNumbers(
+            base64_to_int(obj['x']),
+            base64_to_int(obj['y']),
+            curve,
+        )
+        return public_numbers.public_key(default_backend())
 
-def import_public_key(obj: KeyDict) -> EllipticCurvePublicKey:
-    curve = DSS_CURVES[obj['crv']]()
-    public_numbers = EllipticCurvePublicNumbers(
-        base64_to_int(obj['x']),
-        base64_to_int(obj['y']),
-        curve,
-    )
-    return public_numbers.public_key(default_backend())
-
-
-def export_public_key(key: EllipticCurvePublicKey) -> Dict[str, str]:
-    numbers = key.public_numbers()
-    return {
-        'crv': CURVES_DSS[numbers.curve.name],
-        'x': int_to_base64(numbers.x),
-        'y': int_to_base64(numbers.y)
-    }
+    @staticmethod
+    def export_public_key(key: EllipticCurvePublicKey) -> Dict[str, str]:
+        numbers = key.public_numbers()
+        return {
+            'crv': CURVES_DSS[numbers.curve.name],
+            'x': int_to_base64(numbers.x),
+            'y': int_to_base64(numbers.y)
+        }

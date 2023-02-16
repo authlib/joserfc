@@ -21,7 +21,7 @@ class Test_JWT_RSA(TestFixture):
             self.assertEqual(value, expect)
 
         obj = jwt.decode(value, public_key, allowed_algorithms=[alg])
-        self.assertEqual(obj.claims, claims)
+        self.assertEqual(obj.claims(), claims)
 
 
 def add_rsa_tests():

@@ -1,5 +1,15 @@
 import typing as t
 
+__all__ = [
+    'Header',
+    'HeaderMember',
+    'Signature',
+    'CompleteJSONSerialization',
+    'FlattenJSONSerialization',
+    'JSONSerialization',
+    'CompactProtocol',
+]
+
 
 Header = t.Dict[str, t.Any]
 
@@ -29,32 +39,12 @@ FlattenJSONSerialization = t.TypedDict('FlattenJSONSerialization', {
 JSONSerialization = t.Union[CompleteJSONSerialization, FlattenJSONSerialization]
 
 
-_str_fields = [
-    'alg',
-    'jku',
-    'jwk',
-    'kid',
-    'x5u',
-    'x5t',
-    'x5t#S256',
-    'typ',
-    'cty',
-]
+class CompactProtocol(t.Protocol):
+    def claims(self) -> t.Dict[str, t.Any]:
+        ...
 
-_list_str_fields = [
-    'x5c',
-    'crit',
-]
+    def headers(self) -> Header:
+        ...
 
-
-def check_header(header: Header, required: t.List[str]) -> Header:
-    for key in required:
-        if key not in header:
-            raise ValueError(f'Missing "{key}" in header')
-
-    for key in header:
-        if key in _str_fields and not isinstance(header[key], str):
-            raise ValueError(f'"{key}" in header must be a str')
-
-    # TODO check crit: List[str]
-    return header
+    def set_kid(self, kid: str):
+        ...

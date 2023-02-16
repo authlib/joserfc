@@ -1,6 +1,5 @@
 from .keys import SymmetricKey, AsymmetricKey, CurveKey, Key
 from .registry import JWK_REGISTRY, import_key, generate_key, KeySet
-from .pem import load_pem_key, dump_pem_key
 
 
 __all__ = [
@@ -12,6 +11,4 @@ __all__ = [
     'JWK_REGISTRY',
     'import_key',
     'generate_key',
-    'load_pem_key',
-    'dump_pem_key',
 ]

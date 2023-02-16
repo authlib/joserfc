@@ -39,10 +39,24 @@ class CompactData:
         self._signing_input = protected_segment + b'.' + payload_segment
         return self._signing_input
 
-    @property
+    def headers(self) -> Header:
+        """A method to return header value.
+        This method is designed for CompactProtocol.
+        """
+        return self.header
+
+    def set_kid(self, kid: str):
+        """A method to update "kid" value in header.
+        This method is designed for CompactProtocol.
+        """
+        self.header['kid'] = kid
+
     def claims(self) -> Dict[str, Any]:
-        """Convert payload into claims if payload is an encoded JSON string."""
+        """Convert payload from bytes to dict.
+        This method is usually used in JWT.
+        """
         if self._claims is None:
+            # cache it, since the payload won't change
             self._claims = json.loads(self.payload)
         return self._claims
 
@@ -53,6 +67,7 @@ class CompactData:
         :param algorithm: a registered algorithm instance
         :param key: a private key
         """
+        key.check_use('sig')
         self.signature = urlsafe_b64encode(algorithm.sign(self.signing_input, key))
         return self.signing_input + b'.' + self.signature
 
@@ -63,6 +78,7 @@ class CompactData:
         :param algorithm: a registered algorithm instance
         :param key: a public key
         """
+        key.check_use('sig')
         sig = urlsafe_b64decode(self.signature)
         return algorithm.verify(self.signing_input, sig, key)
 

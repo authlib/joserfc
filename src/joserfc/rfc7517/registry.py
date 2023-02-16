@@ -1,10 +1,10 @@
-from typing import Dict, List, Union, Optional, Callable
+from typing import Type, Dict, List, Union, Optional, Callable
 from .keys import Key
 from .types import KeyAny, KeyOptions, KeySetDict
 from ..util import to_bytes
 
 #: registry to store all registered keys
-JWK_REGISTRY: Dict[str, Key] = {}
+JWK_REGISTRY: Dict[str, Type[Key]] = {}
 
 
 def import_key(
@@ -67,6 +67,6 @@ class KeySet:
 
         for data in value['keys']:
             key_type = data['kty']
-            keys.append(import_key(key_type, value, options))
+            keys.append(import_key(key_type, data, options))
 
         return cls(keys)

@@ -1,5 +1,5 @@
 from joserfc.jws import serialize_compact, deserialize_compact
-from joserfc.jwk import Key, OctKey, RSAKey, ECKey
+from joserfc.jwk import OctKey, RSAKey, ECKey
 from joserfc.util import to_bytes
 from tests.fixtures import TestFixture
 from tests.util import read_key, read_fixture

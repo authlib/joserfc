@@ -1,6 +1,5 @@
 import typing as t
 from abc import ABCMeta, abstractmethod
-from .pem import dump_pem_key
 from .types import KeyDict, KeyAny, KeyOptions
 
 
@@ -54,13 +53,15 @@ class _KeyMixin(object):
             self._tokens = self.as_dict()
         return self._tokens
 
+    def as_dict(self) -> KeyDict:
+        raise NotImplementedError()
+
     @classmethod
     def validate_tokens(cls, tokens: KeyDict):
         if not set(tokens.keys()).issuperset(cls.required_fields):
             raise ValueError("Missing required fields")
         if tokens['kty'] != cls.key_type:
             raise ValueError("Mismatching `kty` value")
-        return tokens
 
     def render_tokens(self, tokens: KeyDict) -> KeyDict:
         if self.options:
@@ -162,15 +163,13 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
     def as_dict(self, private=None, **params) -> KeyDict:
         pass
 
-    def as_bytes(self,
-                 encoding: t.Optional[str]=None,
-                 private: t.Optional[bool]=None,
-                 password: t.Optional[str]=None) -> bytes:
-        if private is True:
-            return dump_pem_key(self.private_key, encoding, private, password)
-        elif private is False:
-            return dump_pem_key(self.public_key, encoding, private, password)
-        return dump_pem_key(self.raw_key, encoding, self.is_private, password)
+    @abstractmethod
+    def as_bytes(
+            self,
+            encoding: t.Optional[str]=None,
+            private: t.Optional[bool]=None,
+            password: t.Optional[str]=None) -> bytes:
+        pass
 
     def as_pem(self, private=None, password=None) -> bytes:
         return self.as_bytes(private=private, password=password)
@@ -230,5 +229,4 @@ class CurveKey(AsymmetricKey):
         pass
 
 
-#: Key type for all SymmetricKey, AsymmetricKey, and CurveKey
 Key = t.Union[SymmetricKey, AsymmetricKey, CurveKey]

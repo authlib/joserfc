@@ -7,9 +7,10 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
     rsa_recover_prime_factors, rsa_crt_dmp1, rsa_crt_dmq1, rsa_crt_iqmp
 )
 from cryptography.hazmat.backends import default_backend
-from ..rfc7517 import AsymmetricKey, load_pem_key, dump_pem_key
+from ..rfc7517 import AsymmetricKey
+from ..rfc7517.pem import CryptographyBinding
 from ..rfc7517.types import KeyDict, KeyAny, KeyOptions
-from ..util import to_bytes, int_to_base64, base64_to_int
+from ..util import int_to_base64, base64_to_int
 
 
 NativeRSAKey = Union[RSAPublicKey, RSAPrivateKeyWithSerialization]
@@ -30,36 +31,17 @@ class RSAKey(AsymmetricKey):
             return self.private_key
         return self.public_key
 
-    def as_bytes(self, encoding=None, private=None, password=None) -> bytes:
-        if private is True:
-            return dump_pem_key(self.private_key, encoding, private, password)
-        elif private is False:
-            return dump_pem_key(self.public_key, encoding, private, password)
-        return dump_pem_key(self.raw_key, encoding, self.is_private, password)
+    def as_bytes(
+            self,
+            encoding: Optional[str]=None,
+            private: Optional[bool]=None,
+            password: Optional[str]=None) -> bytes:
+        return RSABinding.as_bytes(self, encoding, private, password)
 
     def as_dict(self, private=None, **params) -> KeyDict:
         if private is True and not self.is_private:
             raise ValueError("This is a public RSA key")
-
-        if self._tokens:
-            data = self._tokens.copy()
-            # clear private fields
-            if private is False and self.is_private:
-                for k in self.private_only_fields:
-                    if k in data:
-                        del data[k]
-
-        elif private is True:
-            data = export_private_key(self.private_key)
-        elif private is False:
-            data = export_public_key(self.public_key)
-        elif self.is_private:
-            data = export_private_key(self.private_key)
-        else:
-            data = export_public_key(self.public_key)
-
-        data.update(params)
-        return data
+        return RSABinding.as_dict(self, private, *params)
 
     @property
     def is_private(self) -> bool:
@@ -79,18 +61,7 @@ class RSAKey(AsymmetricKey):
 
     @classmethod
     def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'RSAKey':
-        if isinstance(value, dict):
-            tokens = cls.validate_tokens(value)
-            if 'd' in value:
-                raw_key = import_private_key(value)
-            else:
-                raw_key = import_public_key(value)
-            return cls(raw_key, options, tokens)
-
-        if isinstance(value, str):
-            value = to_bytes(value)
-        raw_key = load_pem_key(value, b'ssh-rsa')
-        return cls(raw_key, options)
+        return RSABinding.import_key(cls, value, options)
 
     @classmethod
     def generate_key(cls, key_size: int=2048, options: KeyOptions=None, private=False) -> 'RSAKey':
@@ -108,67 +79,71 @@ class RSAKey(AsymmetricKey):
         return cls(raw_key, options)
 
 
-def import_private_key(obj: KeyDict) -> RSAPrivateKeyWithSerialization:
-    if 'oth' in obj:  # pragma: no cover
-        # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
-        raise ValueError('"oth" is not supported yet')
+class RSABinding(CryptographyBinding):
+    ssh_type = b'ssh-rsa'
 
-    public_numbers = RSAPublicNumbers(
-        base64_to_int(obj['e']), base64_to_int(obj['n']))
+    @staticmethod
+    def import_private_key(obj: KeyDict) -> RSAPrivateKeyWithSerialization:
+        if 'oth' in obj:  # pragma: no cover
+            # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
+            raise ValueError('"oth" is not supported yet')
 
-    if has_all_prime_factors(obj):
-        numbers = RSAPrivateNumbers(
-            d=base64_to_int(obj['d']),
-            p=base64_to_int(obj['p']),
-            q=base64_to_int(obj['q']),
-            dmp1=base64_to_int(obj['dp']),
-            dmq1=base64_to_int(obj['dq']),
-            iqmp=base64_to_int(obj['qi']),
-            public_numbers=public_numbers)
-    else:
-        d = base64_to_int(obj['d'])
-        p, q = rsa_recover_prime_factors(
-            public_numbers.n, d, public_numbers.e)
-        numbers = RSAPrivateNumbers(
-            d=d,
-            p=p,
-            q=q,
-            dmp1=rsa_crt_dmp1(d, p),
-            dmq1=rsa_crt_dmq1(d, q),
-            iqmp=rsa_crt_iqmp(p, q),
-            public_numbers=public_numbers)
+        public_numbers = RSAPublicNumbers(
+            base64_to_int(obj['e']), base64_to_int(obj['n']))
 
-    return numbers.private_key(default_backend())
+        if has_all_prime_factors(obj):
+            numbers = RSAPrivateNumbers(
+                d=base64_to_int(obj['d']),
+                p=base64_to_int(obj['p']),
+                q=base64_to_int(obj['q']),
+                dmp1=base64_to_int(obj['dp']),
+                dmq1=base64_to_int(obj['dq']),
+                iqmp=base64_to_int(obj['qi']),
+                public_numbers=public_numbers)
+        else:
+            d = base64_to_int(obj['d'])
+            p, q = rsa_recover_prime_factors(
+                public_numbers.n, d, public_numbers.e)
+            numbers = RSAPrivateNumbers(
+                d=d,
+                p=p,
+                q=q,
+                dmp1=rsa_crt_dmp1(d, p),
+                dmq1=rsa_crt_dmq1(d, q),
+                iqmp=rsa_crt_iqmp(p, q),
+                public_numbers=public_numbers)
 
+        return numbers.private_key(default_backend())
 
-def export_private_key(key: RSAPrivateKeyWithSerialization) -> Dict[str, str]:
-    numbers = key.private_numbers()
-    return {
-        'n': int_to_base64(numbers.public_numbers.n),
-        'e': int_to_base64(numbers.public_numbers.e),
-        'd': int_to_base64(numbers.d),
-        'p': int_to_base64(numbers.p),
-        'q': int_to_base64(numbers.q),
-        'dp': int_to_base64(numbers.dmp1),
-        'dq': int_to_base64(numbers.dmq1),
-        'qi': int_to_base64(numbers.iqmp)
-    }
+    @staticmethod
+    def export_private_key(key: RSAPrivateKeyWithSerialization) -> Dict[str, str]:
+        numbers = key.private_numbers()
+        return {
+            'n': int_to_base64(numbers.public_numbers.n),
+            'e': int_to_base64(numbers.public_numbers.e),
+            'd': int_to_base64(numbers.d),
+            'p': int_to_base64(numbers.p),
+            'q': int_to_base64(numbers.q),
+            'dp': int_to_base64(numbers.dmp1),
+            'dq': int_to_base64(numbers.dmq1),
+            'qi': int_to_base64(numbers.iqmp)
+        }
 
+    @staticmethod
+    def import_public_key(obj: KeyDict) -> RSAPublicKey:
+        numbers = RSAPublicNumbers(
+            base64_to_int(obj['e']),
+            base64_to_int(obj['n'])
+        )
+        return numbers.public_key(default_backend())
 
-def import_public_key(obj: KeyDict) -> RSAPublicKey:
-    numbers = RSAPublicNumbers(
-        base64_to_int(obj['e']),
-        base64_to_int(obj['n'])
-    )
-    return numbers.public_key(default_backend())
-
-
-def export_public_key(key: RSAPublicKey) -> Dict[str, str]:
-    numbers = key.public_numbers()
-    return {
-        'n': int_to_base64(numbers.n),
-        'e': int_to_base64(numbers.e)
-    }
+    @staticmethod
+    def export_public_key(key: RSAPublicKey) -> Dict[str, str]:
+        numbers = key.public_numbers()
+        return {
+            'n': int_to_base64(numbers.n),
+            'e': int_to_base64(numbers.e)
+        }
 
 
 def has_all_prime_factors(obj) -> bool:

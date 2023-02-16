@@ -1,4 +1,3 @@
-from typing import Optional
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
@@ -37,9 +36,9 @@ class OctKey(SymmetricKey):
     @classmethod
     def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'OctKey':
         if isinstance(value, dict):
-            tokens = cls.validate_tokens(value)
+            cls.validate_tokens(value)
             bytes_value = urlsafe_b64decode(to_bytes(value['k']))
-            return cls(bytes_value, options, tokens)
+            return cls(bytes_value, options, value)
         if isinstance(value, str):
             value = to_bytes(value)
 

@@ -1,4 +1,4 @@
-from typing import Optional, AnyStr, Callable
+from typing import Optional, AnyStr, List, Union
 from .rfc7515 import JWSAlgorithm
 from .rfc7515.compact import (
     CompactData,
@@ -8,7 +8,8 @@ from .rfc7515.json import (
     JSONData,
     extract_json,
 )
-from .rfc7515.types import Header, check_header
+from .rfc7515.types import Header, HeaderMember, JSONSerialization
+from .rfc7515.header import check_header
 from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8812 import ES256K
 from .errors import BadSignatureError
@@ -22,12 +23,15 @@ __all__ = [
     'deserialize_compact',
     'validate_compact',
     'JSONData',
+    'serialize_json',
     'extract_json',
+    'validate_json',
+    'deserialize_json',
     'JWSAlgorithm',
     'JWS_REGISTRY',
 ]
 
-# supported algs
+# supported algorithms
 JWS_REGISTRY = {alg.name: alg for alg in JWS_ALGORITHMS}
 JWS_REGISTRY[ES256K.name] = ES256K
 
@@ -42,10 +46,10 @@ RECOMMENDED_ALGORITHMS = [
 
 
 def serialize_compact(
-    header: Header,
-    payload: bytes,
-    key: KeyFlexible,
-    allowed_algorithms: Optional[list[str]]=None) -> bytes:
+        header: Header,
+        payload: bytes,
+        key: KeyFlexible,
+        allowed_algorithms: Optional[List[str]]=None) -> bytes:
     """Generate a JWS Compact Serialization. The JWS Compact Serialization
     represents digitally signed or MACed content as a compact, URL-safe
     string, per Section 7.1.
@@ -64,7 +68,6 @@ def serialize_compact(
 
     .. note:: The returned value is in bytes
     """
-
     check_header(header, ['alg'])
 
     if allowed_algorithms is None:
@@ -76,17 +79,14 @@ def serialize_compact(
 
     obj = CompactData(header, payload)
     key: Key = guess_key(key, obj, 'sign')
-    # if key is designed for the "use"
-    key.check_use('sig')
-
     algorithm = JWS_REGISTRY[alg]
     return obj.sign(algorithm, key)
 
 
 def validate_compact(
-    obj: CompactData,
-    key: KeyFlexible,
-    allowed_algorithms: Optional[list[str]]=None):
+        obj: CompactData,
+        key: KeyFlexible,
+        allowed_algorithms: Optional[List[str]]=None):
     """Validate the JWS Compact Serialization with the given key.
     This method is usually used together with ``extract_compact``.
 
@@ -104,18 +104,15 @@ def validate_compact(
         raise ValueError(f'Algorithm "{alg}" is not allowed in {allowed_algorithms}')
 
     key: Key = guess_key(key, obj, 'verify')
-    # if key is designed for the "use"
-    key.check_use('sig')
-
     algorithm = JWS_REGISTRY[alg]
     if not obj.verify(algorithm, key):
         raise BadSignatureError()
 
 
 def deserialize_compact(
-    value: AnyStr,
-    key: KeyFlexible,
-    allowed_algorithms: Optional[list[str]]=None) -> CompactData:
+        value: AnyStr,
+        key: KeyFlexible,
+        allowed_algorithms: Optional[List[str]]=None) -> CompactData:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a string (or bytes) of the JWS
@@ -127,3 +124,78 @@ def deserialize_compact(
     obj = extract_compact(to_bytes(value))
     validate_compact(obj, key, allowed_algorithms)
     return obj
+
+
+def serialize_json(
+        members: Union[HeaderMember, List[HeaderMember]],
+        payload: bytes,
+        key: KeyFlexible,
+        allowed_algorithms: Optional[List[str]] = None) -> JSONSerialization:
+
+    if isinstance(members, dict):
+        flatten = True
+        _check_member_header(members)
+        members = [members]
+    else:
+        flatten = False
+        for member in members:
+            _check_member_header(member)
+
+    find_alg, find_key = _create_find_funcs(key, allowed_algorithms)
+    obj = JSONData(members, payload, flatten)
+    return obj.sign(find_alg, find_key)
+
+
+def validate_json(
+        obj: JSONData,
+        key: KeyFlexible,
+        allowed_algorithms: Optional[List[str]]=None):
+    """Validate the JWS JSON Serialization with the given key.
+    This method is usually used together with ``extract_json``.
+
+    :param obj: object of the JWS JSON Serialization
+    :param key: a flexible public key to verify the signature
+    :param allowed_algorithms: allowed algorithms to use, default to HS256, RS256, ES256
+    :raise: ValueError or BadSignatureError
+    """
+    find_alg, find_key = _create_find_funcs(key, allowed_algorithms)
+    if not obj.verify(find_alg, find_key):
+        raise BadSignatureError()
+
+
+def deserialize_json(
+        value: JSONSerialization,
+        key: KeyFlexible,
+        allowed_algorithms: Optional[List[str]]=None) -> JSONData:
+    """Extract and validate the JWS (in string) with the given key.
+
+    :param value: a dict of the JSON signature
+    :param key: a flexible public key to verify the signature
+    :param allowed_algorithms: allowed algorithms to use, default to HS256, RS256, ES256
+    :return: object of the JWS Compact Serialization
+    """
+    obj = extract_json(value)
+    validate_json(obj, key, allowed_algorithms)
+    return obj
+
+
+def _check_member_header(member: HeaderMember):
+    check_header(member['protected'], ['alg'])
+    if 'header' in member:
+        check_header(member['header'], [])
+
+
+def _create_find_funcs(
+        key: KeyFlexible,
+        allowed_algorithms: Optional[List[str]]=None):
+
+    if allowed_algorithms is None:
+        allowed_algorithms = RECOMMENDED_ALGORITHMS
+
+    def _find_alg(alg: str) -> JWSAlgorithm:
+        if alg not in allowed_algorithms:
+            raise ValueError(f'Algorithm "{alg}" is not allowed in {allowed_algorithms}')
+        return JWS_REGISTRY[alg]
+
+    _find_key = lambda d, operation: guess_key(key, d, operation)
+    return _find_alg, _find_key

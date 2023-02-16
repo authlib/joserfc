@@ -17,7 +17,7 @@ from cryptography.hazmat.primitives.serialization import (
 )
 from ..rfc7517.keys import CurveKey
 from ..rfc7517.types import KeyDict, KeyAny, KeyOptions
-from ..rfc7517.pem import load_pem_key
+from ..rfc7517.pem import CryptographyBinding
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 
 
@@ -33,6 +33,8 @@ PRIVATE_KEYS_MAP = {
     'X25519': X25519PrivateKey,
     'X448': X448PrivateKey,
 }
+
+PRIVATE_KEY_TYPES = tuple(PRIVATE_KEYS_MAP.values())
 
 PublicOKPKey = Union[
     Ed25519PublicKey,
@@ -80,34 +82,22 @@ class OKPKey(CurveKey):
     def as_dict(self, private: Optional[bool]=None, **params) -> KeyDict:
         if private is True and not self.is_private:
             raise ValueError("This is a public OKP key")
+        return OKPBinding.as_dict(self, private, **params)
 
-        if self._tokens:
-            data = self._tokens.copy()
-            # clear private fields
-            if private is False and self.is_private:
-                for k in self.private_only_fields:
-                    if k in data:
-                        del data[k]
-
-        elif private is True:
-            data = export_private_key(self.private_key)
-        elif private is False:
-            data = export_public_key(self.public_key)
-        elif self.is_private:
-            data = export_private_key(self.private_key)
-        else:
-            data = export_public_key(self.public_key)
-
-        data.update(params)
-        return data
+    def as_bytes(
+            self,
+            encoding: Optional[str]=None,
+            private: Optional[bool]=None,
+            password: Optional[str]=None) -> bytes:
+        return OKPBinding.as_bytes(self, encoding, private, password)
 
     @property
     def is_private(self) -> bool:
-        return isinstance(self.value, PrivateOKPKey)
+        return isinstance(self.value, PRIVATE_KEY_TYPES)
 
     @cached_property
     def public_key(self) -> PublicOKPKey:
-        if isinstance(self.value, EllipticCurvePrivateKeyWithSerialization):
+        if self.is_private:
             return self.value.public_key()
         return self.value
 
@@ -123,21 +113,7 @@ class OKPKey(CurveKey):
 
     @classmethod
     def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'OKPKey':
-        if isinstance(value, dict):
-            tokens = cls.validate_tokens(value)
-            if 'd' in value:
-                raw_key = import_private_key(value)
-            else:
-                raw_key = import_public_key(value)
-            key = cls(raw_key, options)
-            key._tokens = key.render_tokens(tokens)
-            return key
-
-        if isinstance(value, str):
-            value = to_bytes(value)
-
-        raw_key = load_pem_key(value, b'ssh-ed25519')
-        return cls(raw_key, options)
+        return OKPBinding.import_key(cls, value, options)
 
     @classmethod
     def generate_key(cls, crv: str='Ed25519',
@@ -165,32 +141,36 @@ def get_key_curve(key: NativeOKPKey):
     raise ValueError("Invalid key")
 
 
-def import_private_key(obj: KeyDict) -> PrivateOKPKey:
-    crv_key = PRIVATE_KEYS_MAP[obj['crv']]
-    d_bytes = urlsafe_b64decode(to_bytes(obj['d']))
-    return crv_key.from_private_bytes(d_bytes)
+class OKPBinding(CryptographyBinding):
+    ssh_type = b'ssh-ed25519'
 
+    @staticmethod
+    def import_private_key(obj: KeyDict) -> PrivateOKPKey:
+        crv_key = PRIVATE_KEYS_MAP[obj['crv']]
+        d_bytes = urlsafe_b64decode(to_bytes(obj['d']))
+        return crv_key.from_private_bytes(d_bytes)
 
-def import_public_key(obj: KeyDict) -> PublicOKPKey:
-    crv_key = PUBLIC_KEYS_MAP[obj['crv']]
-    x_bytes = urlsafe_b64decode(to_bytes(obj['x']))
-    return crv_key.from_public_bytes(x_bytes)
+    @staticmethod
+    def import_public_key(obj: KeyDict) -> PublicOKPKey:
+        crv_key = PUBLIC_KEYS_MAP[obj['crv']]
+        x_bytes = urlsafe_b64decode(to_bytes(obj['x']))
+        return crv_key.from_public_bytes(x_bytes)
 
+    @staticmethod
+    def export_private_key(key: PrivateOKPKey) -> Dict[str, str]:
+        obj = OKPBinding.export_public_key(key.public_key())
+        d_bytes = key.private_bytes(
+            Encoding.Raw,
+            PrivateFormat.Raw,
+            NoEncryption()
+        )
+        obj['d'] = urlsafe_b64encode(d_bytes).decode('utf-8')
+        return obj
 
-def export_private_key(key: PrivateOKPKey) -> Dict[str, str]:
-    obj = export_public_key(key.public_key())
-    d_bytes = key.private_bytes(
-        Encoding.Raw,
-        PrivateFormat.Raw,
-        NoEncryption()
-    )
-    obj['d'] = urlsafe_b64encode(d_bytes).decode('utf-8')
-    return obj
-
-
-def export_public_key(key: PublicOKPKey) -> Dict[str, str]:
-    x_bytes = key.public_bytes(Encoding.Raw, PublicFormat.Raw)
-    return {
-        'crv': get_key_curve(key),
-        'x': to_unicode(urlsafe_b64encode(x_bytes)),
-    }
+    @staticmethod
+    def export_public_key(key: PublicOKPKey) -> Dict[str, str]:
+        x_bytes = key.public_bytes(Encoding.Raw, PublicFormat.Raw)
+        return {
+            'crv': get_key_curve(key),
+            'x': urlsafe_b64encode(x_bytes).decode('utf-8'),
+        }

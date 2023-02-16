@@ -1,19 +1,55 @@
 import typing as t
+import json
+import binascii
 from .alg import JWSAlgorithm
-from .types import Header, Signature, HeaderMember, JSONSerialization
+from .types import (
+    Header,
+    Signature,
+    HeaderMember,
+    JSONSerialization,
+    CompleteJSONSerialization,
+    FlattenJSONSerialization,
+)
 from ..util import (
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
     urlsafe_b64decode,
 )
+from ..errors import DecodeError
 
-FindAlgorithm = t.Callable[[HeaderMember], JWSAlgorithm]
+FindAlgorithm = t.Callable[[str], JWSAlgorithm]
+
+
+class _CompactData:
+    def __init__(self, payload: bytes, member: HeaderMember):
+        self.payload = payload
+        self.member = member
+        self._claims = None
+
+    def headers(self) -> Header:
+        if 'header' not in self.member:
+            return self.member['protected']
+        rv = {}
+        rv.update(self.member['protected'])
+        rv.update(self.member['header'])
+        return rv
+
+    def claims(self) -> t.Dict[str, t.Any]:
+        if self._claims is None:
+            self._claims = json.loads(self.payload)
+        return self._claims
+
+    def set_kid(self, kid: str):
+        if 'header' in self.member:
+            self.member['header']['kid'] = kid
+        else:
+            self.member['header'] = {'kid': kid}
 
 
 class JSONData:
     def __init__(self, members: t.List[HeaderMember], payload: bytes, flatten: bool=False):
-        self.members = []
+        self.members = members
         self.payload = payload
         self.flatten = flatten
         self.signatures: t.List[Signature] = []
@@ -26,16 +62,24 @@ class JSONData:
         return self._payload_segment
 
     def sign(self, find_alg: FindAlgorithm, find_key) -> JSONSerialization:
+        """Sign the signature of this JSON serialization with the given
+        algorithm and key.
+
+        :param find_alg: a function to return algorithm
+        :param find_key: a function to return private key
+        """
         self.signatures: t.List[Signature] = []
         for member in self.members:
-            alg = find_alg(member)
-            key = find_key(member)
+            alg = find_alg(member['protected']['alg'])
+            obj = _CompactData(self.payload, member)
+            key = find_key(obj, 'sign')
+            key.check_use('sig')
             signature = self._sign_member(member, alg, key)
             self.signatures.append(signature)
 
         rv = {'payload': self.payload_segment.decode('utf-8')}
         if self.flatten and len(self.signatures) == 1:
-            rv.update(self.signatures[0])
+            rv.update(dict(self.signatures[0]))
         else:
             rv['signatures'] = self.signatures
         return rv
@@ -44,12 +88,15 @@ class JSONData:
         """Verify the signature of this JSON serialization with the given
         algorithm and key.
 
-        :param algorithm: a registered algorithm instance
+        :param find_alg: a function to return algorithm
         :param find_key: a function to return public key
         """
         for index, signature in enumerate(self.signatures):
-            alg = find_alg(self.members[index])
-            key = find_key(self.members[index])
+            member = self.members[index]
+            alg = find_alg(member['protected']['alg'])
+            obj = _CompactData(self.payload, member)
+            key = find_key(obj, 'verify')
+            key.check_use('sig')
             if not self._verify_signature(signature, alg, key):
                 return False
         return True
@@ -79,7 +126,7 @@ def extract_json(value: JSONSerialization) -> JSONData:
 
     :param value: JWS in dict
     """
-    payload_segment = value['payload']
+    payload_segment = value['payload'].encode('utf-8')
 
     try:
         payload = urlsafe_b64decode(payload_segment)
@@ -88,10 +135,12 @@ def extract_json(value: JSONSerialization) -> JSONData:
 
     if 'signatures' in value:
         flatten = False
-        signatures = value['signatures']
+        value: CompleteJSONSerialization
+        signatures: t.List[Signature] = value['signatures']
     else:
         flatten = True
-        _sig = {
+        value: FlattenJSONSerialization
+        _sig: Signature = {
             'protected': value['protected'],
             'signature': value['signature'],
         }
@@ -102,14 +151,16 @@ def extract_json(value: JSONSerialization) -> JSONData:
     members = []
     for sig in signatures:
         protected_segment = sig['protected']
-        _member = {
+        _member: HeaderMember = {
             'protected': json_b64decode(protected_segment),
         }
         if 'header' in sig:
-            _member['header'] = sig['header']
+            header = sig['header']
+            _member['header'] = header
         members.append(_member)
 
     obj = JSONData(members, payload, flatten)
     obj.signatures = signatures
+    # cache payload segment
     obj._payload_segment = payload_segment
     return obj

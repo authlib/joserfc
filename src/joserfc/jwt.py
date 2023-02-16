@@ -1,4 +1,4 @@
-from typing import Optional, AnyStr
+from typing import Optional, AnyStr, List
 from .rfc7515.compact import CompactData, extract_compact
 from .rfc7515.types import Header
 from .rfc7519.claims import Claims, convert_claims
@@ -6,16 +6,16 @@ from .rfc7519.validators import JWTClaimsRequests
 from .jws import serialize_compact, validate_compact
 from .jwk import KeyFlexible
 from .errors import InvalidTypeError
-from .util import to_bytes, json_dumps
+from .util import to_bytes
 
 __all__ = ['encode', 'decode', 'validate']
 
 
 def encode(
-    header: Header,
-    claims: Claims,
-    key: KeyFlexible,
-    allowed_algorithms: Optional[list[str]]=None) -> str:
+        header: Header,
+        claims: Claims,
+        key: KeyFlexible,
+        allowed_algorithms: Optional[List[str]]=None) -> str:
 
     # add ``typ`` in header
     header['typ'] = 'JWT'
@@ -25,10 +25,10 @@ def encode(
 
 
 def decode(
-    value: AnyStr,
-    key: KeyFlexible,
-    validator: Optional[JWTClaimsRequests]=None,
-    allowed_algorithms: Optional[list[str]]=None) -> CompactData:
+        value: AnyStr,
+        key: KeyFlexible,
+        validator: Optional[JWTClaimsRequests]=None,
+        allowed_algorithms: Optional[List[str]]=None) -> CompactData:
 
     obj = extract_compact(to_bytes(value))
     validate(obj, key, validator, allowed_algorithms)
@@ -36,15 +36,15 @@ def decode(
 
 
 def validate(
-    obj: CompactData,
-    key: KeyFlexible,
-    validator: Optional[JWTClaimsRequests]=None,
-    allowed_algorithms: Optional[list[str]]=None):
+        obj: CompactData,
+        key: KeyFlexible,
+        validator: Optional[JWTClaimsRequests]=None,
+        allowed_algorithms: Optional[List[str]]=None):
 
     typ = obj.header.get('typ')
     if typ and typ != 'JWT':
         raise InvalidTypeError()
 
     if validator is not None:
-        validator.validate(obj.claims)
+        validator.validate(obj.claims())
     validate_compact(obj, key, allowed_algorithms)
