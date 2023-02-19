@@ -10,10 +10,10 @@ class JWEEncModel(object, metaclass=ABCMeta):
     algorithm_location = 'enc'
 
     IV_SIZE: int
-    CEK_SIZE: int
+    cek_size: int
 
     def generate_cek(self) -> bytes:
-        return os.urandom(self.CEK_SIZE // 8)
+        return os.urandom(self.cek_size // 8)
 
     def generate_iv(self) -> bytes:
         return os.urandom(self.IV_SIZE // 8)
@@ -55,11 +55,11 @@ class JWEZipModel(object, metaclass=ABCMeta):
     algorithm_location = 'zip'
 
     @abstractmethod
-    def compress(self, s):
+    def compress(self, s: bytes) -> bytes:
         pass
 
     @abstractmethod
-    def decompress(self, s):
+    def decompress(self, s: bytes) -> bytes:
         pass
 
 
