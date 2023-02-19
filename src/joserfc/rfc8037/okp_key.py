@@ -118,7 +118,7 @@ class OKPKey(CurveKey):
     @classmethod
     def generate_key(cls, crv: str='Ed25519',
                      options: KeyOptions=None,
-                     private: bool=False) -> 'OKPKey':
+                     private: bool=True) -> 'OKPKey':
         if crv not in PRIVATE_KEYS_MAP:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
 

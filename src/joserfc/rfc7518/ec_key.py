@@ -90,9 +90,10 @@ class ECKey(CurveKey):
         return ECBinding.import_key(cls, value, options)
 
     @classmethod
-    def generate_key(cls, crv: str='P-256',
-                     options: KeyOptions=None,
-                     private: bool=False) -> 'ECKey':
+    def generate_key(
+            cls, crv: str='P-256',
+            options: KeyOptions=None,
+            private: bool=True) -> 'ECKey':
         if crv not in DSS_CURVES:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
         raw_key = ec.generate_private_key(

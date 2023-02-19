@@ -129,7 +129,7 @@ class SymmetricKey(_KeyMixin, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def generate_key(cls, key_size: int, options: KeyOptions = None, private=False):
+    def generate_key(cls, key_size: int, options: KeyOptions = None, private: bool=True):
         pass
 
 
@@ -184,7 +184,7 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def generate_key(cls, key_size: int, options: KeyOptions = None, private=False):
+    def generate_key(cls, key_size: int, options: KeyOptions = None, private: bool=True):
         pass
 
 
@@ -225,7 +225,7 @@ class CurveKey(AsymmetricKey):
 
     @classmethod
     @abstractmethod
-    def generate_key(cls, crv: str, options: KeyOptions=None, private=False):
+    def generate_key(cls, crv: str, options: KeyOptions=None, private: bool=True):
         pass
 
 

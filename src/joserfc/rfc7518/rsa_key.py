@@ -64,7 +64,11 @@ class RSAKey(AsymmetricKey):
         return RSABinding.import_key(cls, value, options)
 
     @classmethod
-    def generate_key(cls, key_size: int=2048, options: KeyOptions=None, private=False) -> 'RSAKey':
+    def generate_key(
+            cls,
+            key_size: int=2048,
+            options: KeyOptions=None,
+            private: bool=True) -> 'RSAKey':
         if key_size < 512:
             raise ValueError('key_size must not be less than 512')
         if key_size % 8 != 0:
