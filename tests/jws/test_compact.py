@@ -27,17 +27,17 @@ class TestCompact(TestFixture):
 
 def add_oct_tests():
     oct_key = OctKey.import_key('rfc')
-    TestCompact.load_fixture('jws_oct.json', oct_key, oct_key)
+    TestCompact.load_fixture('jws_compact_oct.json', oct_key, oct_key)
 
 
 def add_rsa_tests():
     private_key = RSAKey.import_key(read_key("openssl-rsa-private.pem"))
     public_key = RSAKey.import_key(read_key("openssl-rsa-public.pem"))
-    TestCompact.load_fixture('jws_rsa.json', private_key, public_key)
+    TestCompact.load_fixture('jws_compact_rsa.json', private_key, public_key)
 
 
 def add_ec_tests():
-    fixture = read_fixture('jws_ec.json')
+    fixture = read_fixture('jws_compact_ec.json')
     payload = fixture['payload']
 
     for index, case in enumerate(fixture['cases']):
