@@ -38,7 +38,7 @@ __all__ = [
 ]
 
 # register thumbprint method
-KeySet.thumbprint = thumbprint
+KeySet.thumbprint = staticmethod(thumbprint)
 
 # register all key types
 JWK_REGISTRY[OctKey.key_type] = OctKey

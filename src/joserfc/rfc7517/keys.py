@@ -51,6 +51,7 @@ class _KeyMixin(object):
     def tokens(self) -> KeyDict:
         if self._tokens is None:
             self._tokens = self.as_dict()
+            self._tokens['kty'] = self.kty
         return self._tokens
 
     def as_dict(self) -> KeyDict:

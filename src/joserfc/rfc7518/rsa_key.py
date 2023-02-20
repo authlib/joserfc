@@ -41,7 +41,7 @@ class RSAKey(AsymmetricKey):
     def as_dict(self, private=None, **params) -> KeyDict:
         if private is True and not self.is_private:
             raise ValueError("This is a public RSA key")
-        return RSABinding.as_dict(self, private, *params)
+        return RSABinding.as_dict(self, private, **params)
 
     @property
     def is_private(self) -> bool:
