@@ -21,6 +21,17 @@ default_list_str_fields = [
 ]
 
 
+class CompactProtocol(t.Protocol):
+    def claims(self) -> t.Dict[str, t.Any]:
+        ...
+
+    def headers(self) -> Header:
+        ...
+
+    def set_kid(self, kid: str):
+        ...
+
+
 def check_header(
         header: Header,
         required: t.List[str],

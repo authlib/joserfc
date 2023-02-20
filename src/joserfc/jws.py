@@ -24,18 +24,20 @@ from .jwk import Key, KeyFlexible, guess_key
 from .util import to_bytes
 
 __all__ = [
-    'CompactData',
-    'serialize_compact',
-    'extract_compact',
-    'deserialize_compact',
-    'validate_compact',
-    'JSONData',
-    'serialize_json',
-    'extract_json',
-    'validate_json',
-    'deserialize_json',
     'JWSAlgModel',
     'JWS_ALG_REGISTRY',
+
+    'CompactData',
+    'serialize_compact',
+    'deserialize_compact',
+    'extract_compact',
+    'validate_compact',
+
+    'JSONData',
+    'serialize_json',
+    'deserialize_json',
+    'extract_json',
+    'validate_json',
 ]
 
 # register supported alg models

@@ -20,7 +20,7 @@ Claims = Dict[str, Any]
 
 
 def convert_claims(claims: Claims) -> bytes:
-    # convert datetime into timestamp
+    """Turn claims into bytes payload."""
     for k in ['exp', 'iat', 'nbf']:
         claim = claims.get(k)
         if isinstance(claim, datetime.datetime):

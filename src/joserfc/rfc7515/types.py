@@ -8,7 +8,6 @@ __all__ = [
     'CompleteJSONSerialization',
     'FlattenJSONSerialization',
     'JSONSerialization',
-    'CompactProtocol',
 ]
 
 
@@ -36,14 +35,3 @@ FlattenJSONSerialization = t.TypedDict('FlattenJSONSerialization', {
 }, total=False)
 
 JSONSerialization = t.Union[CompleteJSONSerialization, FlattenJSONSerialization]
-
-
-class CompactProtocol(t.Protocol):
-    def claims(self) -> t.Dict[str, t.Any]:
-        ...
-
-    def headers(self) -> Header:
-        ...
-
-    def set_kid(self, kid: str):
-        ...

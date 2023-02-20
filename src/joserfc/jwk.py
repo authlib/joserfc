@@ -1,6 +1,6 @@
 import random
 from typing import Callable, Union, Any
-from .rfc7515.types import CompactProtocol
+from ._shared import CompactProtocol
 from .rfc7517 import (
     SymmetricKey,
     AsymmetricKey,
@@ -21,17 +21,17 @@ KeyCallable = Callable[[Any, bool], Key]
 KeyFlexible = Union[Key, KeySet, KeyCallable]
 
 __all__ = [
+    'JWK_REGISTRY',
     'SymmetricKey',
     'AsymmetricKey',
     'Key',
     'KeyCallable',
     'KeyFlexible',
-    'KeySet',
     'OctKey',
     'RSAKey',
     'ECKey',
     'OKPKey',
-    'JWK_REGISTRY',
+    'KeySet',
     'generate_key',
     'import_key',
     'guess_key',
