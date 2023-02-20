@@ -1,6 +1,7 @@
 import os
 from typing import Optional
 from abc import ABCMeta, abstractmethod
+from .types import EncryptionData, Recipient
 
 
 class JWEEncModel(object, metaclass=ABCMeta):
@@ -23,15 +24,7 @@ class JWEEncModel(object, metaclass=ABCMeta):
             raise ValueError('Invalid "iv" size')
 
     @abstractmethod
-    def encrypt(self, msg: bytes, aad: bytes, iv: bytes, key: bytes) -> (bytes, bytes):
-        """Encrypt the given "msg" text.
-
-        :param msg: text to be encrypt in bytes
-        :param aad: additional authenticated data in bytes
-        :param iv: initialization vector in bytes
-        :param key: encrypted key in bytes
-        :return: (ciphertext, tag)
-        """
+    def encrypt(self, msg: bytes, obj: EncryptionData):
         pass
 
     @abstractmethod
@@ -69,3 +62,8 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     key_size: Optional[int] = None
     algorithm_type = 'JWE'
     algorithm_location = 'alg'
+
+    @abstractmethod
+    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
+             public_key, sender_key=None):
+        pass

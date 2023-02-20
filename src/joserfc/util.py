@@ -42,14 +42,14 @@ def int_to_base64(num: int) -> str:
     return urlsafe_b64encode(s).decode('utf-8', 'strict')
 
 
-def json_b64encode(text) -> bytes:
+def json_b64encode(text, charset='utf-8') -> bytes:
     if isinstance(text, dict):
         text = json_dumps(text)
-    return urlsafe_b64encode(to_bytes(text))
+    return urlsafe_b64encode(to_bytes(text, charset))
 
 
-def json_b64decode(text) -> dict:
-    return json.loads(urlsafe_b64decode(to_bytes(text)))
+def json_b64decode(text, charset='utf-8') -> dict:
+    return json.loads(urlsafe_b64decode(to_bytes(text, charset)))
 
 
 def generate_token(length=30):

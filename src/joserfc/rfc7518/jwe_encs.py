@@ -16,6 +16,7 @@ from cryptography.hazmat.primitives.ciphers.modes import GCM, CBC
 from cryptography.hazmat.primitives.padding import PKCS7
 from cryptography.exceptions import InvalidTag
 from ..rfc7516.models import JWEEncModel
+from ..rfc7516.types import EncryptionData
 from .util import encode_int
 
 
@@ -42,27 +43,23 @@ class CBCHS2EncModel(JWEEncModel):
         d = hmac.new(key, msg, self.hash_alg).digest()
         return d[:self.key_len]
 
-    def encrypt(self, msg: bytes, aad: bytes, iv: bytes, key: bytes) -> (bytes, bytes):
+    def encrypt(self, msg: bytes, obj: EncryptionData):
         """Key Encryption with AES_CBC_HMAC_SHA2.
 
         :param msg: text to be encrypt in bytes
-        :param aad: additional authenticated data in bytes
-        :param iv: initialization vector in bytes
-        :param key: encrypted key in bytes
-        :return: (ciphertext, tag)
+        :param obj: encryption data instance
         """
-        self.check_iv(iv)
-        hkey = key[:self.key_len]
-        ekey = key[self.key_len:]
+        self.check_iv(obj.iv)
+        hkey = obj.cek[:self.key_len]
+        ekey = obj.cek[self.key_len:]
 
         pad = PKCS7(AES.block_size).padder()
         padded_data = pad.update(msg) + pad.finalize()
 
-        cipher = Cipher(AES(ekey), CBC(iv), backend=default_backend())
+        cipher = Cipher(AES(ekey), CBC(obj.iv), backend=default_backend())
         enc = cipher.encryptor()
-        ciphertext = enc.update(padded_data) + enc.finalize()
-        tag = self._hmac(ciphertext, aad, iv, hkey)
-        return ciphertext, tag
+        obj.ciphertext = enc.update(padded_data) + enc.finalize()
+        obj.tag = self._hmac(obj.ciphertext, obj.aad, obj.iv, hkey)
 
     def decrypt(self, ciphertext: bytes, aad: bytes, iv: bytes, tag: bytes, key: bytes) -> bytes:
         """Key Decryption with AES AES_CBC_HMAC_SHA2.
@@ -100,21 +97,18 @@ class GCMEncModel(JWEEncModel):
         self.key_size = key_size
         self.cek_size = key_size
 
-    def encrypt(self, msg: bytes, aad: bytes, iv: bytes, key: bytes) -> (bytes, bytes):
+    def encrypt(self, msg: bytes, obj: EncryptionData):
         """Key Encryption with AES GCM
 
         :param msg: text to be encrypt in bytes
-        :param aad: additional authenticated data in bytes
-        :param iv: initialization vector in bytes
-        :param key: encrypted key in bytes
-        :return: (ciphertext, tag)
+        :param obj: encryption data instance
         """
-        self.check_iv(iv)
-        cipher = Cipher(AES(key), GCM(iv), backend=default_backend())
+        self.check_iv(obj.iv)
+        cipher = Cipher(AES(obj.cek), GCM(obj.iv), backend=default_backend())
         enc = cipher.encryptor()
-        enc.authenticate_additional_data(aad)
-        ciphertext = enc.update(msg) + enc.finalize()
-        return ciphertext, enc.tag
+        enc.authenticate_additional_data(obj.aad)
+        obj.ciphertext = enc.update(msg) + enc.finalize()
+        obj.tag = enc.tag
 
     def decrypt(self, ciphertext: bytes, aad: bytes, iv: bytes, tag: bytes, key: bytes) -> bytes:
         """Key Decryption with AES GCM
