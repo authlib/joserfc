@@ -7,6 +7,7 @@ class JWSAlgModel(object, metaclass=ABCMeta):
     """
     name: str
     description: str
+    recommended: bool = False
     algorithm_type = 'JWS'
     algorithm_location = 'sig'
 

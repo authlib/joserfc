@@ -21,7 +21,7 @@ default_list_str_fields = [
 ]
 
 
-class CompactProtocol(t.Protocol):
+class RecipientProtocol(t.Protocol):
     def headers(self) -> Header:
         ...
 

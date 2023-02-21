@@ -1,6 +1,6 @@
 import random
 from typing import Callable, Union, Any
-from ._shared import CompactProtocol
+from ._shared import RecipientProtocol
 from .rfc7517 import (
     SymmetricKey,
     AsymmetricKey,
@@ -47,29 +47,29 @@ JWK_REGISTRY[ECKey.key_type] = ECKey
 JWK_REGISTRY[OKPKey.key_type] = OKPKey
 
 
-def guess_key(key: KeyFlexible, obj: CompactProtocol, operation: str='verify') -> Key:
+def guess_key(key: KeyFlexible, recipient: RecipientProtocol, operation: str= 'verify') -> Key:
     """Guess key from a various sources.
 
     :param key: a very flexible key
-    :param obj: a JWS compact data
+    :param recipient: a protocol that has ``headers`` and ``set_kid`` methods
     :param operation: key operation
     """
     if isinstance(key, (SymmetricKey, AsymmetricKey)):
         return key
 
     elif isinstance(key, KeySet):
-        headers = obj.headers()
+        headers = recipient.headers()
         kid = headers.get('kid')
 
         if not kid and operation in OctKey.private_key_ops:
             # choose one key by random
             key: Key = random.choice(key.keys)
             # use side effect to add kid information
-            obj.set_kid(key.kid)
+            recipient.set_kid(key.kid)
             return key
         return key.get_by_kid(kid)
 
     elif callable(key):
-        return key(obj, operation)
+        return key(recipient, operation)
 
     raise ValueError("Invalid key")
