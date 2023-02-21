@@ -28,6 +28,12 @@ class DecodeError(JoseError):
 
 class MissingAlgorithmError(JoseError):
     error: str = 'missing_algorithm'
+    description: str = 'Missing "alg" value in header'
+
+
+class MissingEncryptionError(JoseError):
+    error: str = 'missing_encryption'
+    description: str = 'Missing "enc" value in header'
 
 
 class BadSignatureError(JoseError):

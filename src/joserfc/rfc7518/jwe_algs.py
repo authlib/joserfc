@@ -19,18 +19,21 @@ from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode
 class DirectAlgModel(JWEAlgModel):
     name = 'dir'
     description = 'Direct use of a shared symmetric key'
+    recommended = True
 
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey, sender_key=None):
+             public_key: OctKey, sender_key=None) -> EncryptionData:
         cek = public_key.get_op_key('encrypt')
         if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
         recipient.ek = b''
         obj.cek = cek
+        return obj
 
-    def unwrap(self, enc_alg, ek, headers, key):
-        cek = key.get_op_key('decrypt')
-        if len(cek) * 8 != enc_alg.CEK_SIZE:
+    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
+               private_key: OctKey, sender_key=None) -> bytes:
+        cek = private_key.get_op_key('decrypt')
+        if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
         return cek
 
@@ -40,12 +43,16 @@ class RSAAlgModel(JWEAlgModel):
     #: RSA1_5, RSA-OAEP, RSA-OAEP-256
     key_size = 2048
 
-    def __init__(self, name, description, pad_fn):
+    def __init__(self, name: str, description: str,
+                 pad_fn: padding.AsymmetricPadding,
+                 recommended: bool=False):
         self.name = name
         self.description = description
         self.padding = pad_fn
+        self.recommended = recommended
+
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: RSAKey, sender_key=None):
+             public_key: RSAKey, sender_key=None) -> EncryptionData:
 
         if obj.cek is None:
             obj.cek = enc.generate_cek()
@@ -54,21 +61,24 @@ class RSAAlgModel(JWEAlgModel):
         if op_key.key_size < self.key_size:
             raise ValueError('A key of size 2048 bits or larger MUST be used')
         recipient.ek = op_key.encrypt(obj.cek, self.padding)
+        return obj
 
-    def unwrap(self, enc_alg, ek, headers, key):
+    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
+               private_key: RSAKey, sender_key=None) -> bytes:
         # it will raise ValueError if failed
-        op_key = key.get_op_key('unwrapKey')
-        cek = op_key.decrypt(ek, self.padding)
-        if len(cek) * 8 != enc_alg.CEK_SIZE:
+        op_key = private_key.get_op_key('unwrapKey')
+        cek = op_key.decrypt(recipient.ek, self.padding)
+        if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
         return cek
 
 
 class AESAlgModel(JWEAlgModel):
-    def __init__(self, key_size):
-        self.name = 'A{}KW'.format(key_size)
-        self.description = 'AES Key Wrap using {}-bit key'.format(key_size)
+    def __init__(self, key_size: int, recommended: bool=False):
+        self.name = f'A{key_size}KW'
+        self.description = f'AES Key Wrap using {key_size}-bit key'
         self.key_size = key_size
+        self.recommended = recommended
 
     def _check_key(self, key):
         if len(key) * 8 != self.key_size:
@@ -76,7 +86,7 @@ class AESAlgModel(JWEAlgModel):
                 'A key of size {} bits is required.'.format(self.key_size))
 
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey, sender_key=None):
+             public_key: OctKey, sender_key=None) -> EncryptionData:
 
         if obj.cek is None:
             obj.cek = enc.generate_cek()
@@ -84,12 +94,14 @@ class AESAlgModel(JWEAlgModel):
         op_key = public_key.get_op_key('wrapKey')
         self._check_key(op_key)
         recipient.ek = aes_key_wrap(op_key, obj.cek, default_backend())
+        return obj
 
-    def unwrap(self, enc_alg, ek, headers, key):
-        op_key = key.get_op_key('unwrapKey')
+    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
+               private_key: OctKey, sender_key=None) -> bytes:
+        op_key = private_key.get_op_key('unwrapKey')
         self._check_key(op_key)
-        cek = aes_key_unwrap(op_key, ek, default_backend())
-        if len(cek) * 8 != enc_alg.CEK_SIZE:
+        cek = aes_key_unwrap(op_key, recipient.ek, default_backend())
+        if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
         return cek
 
@@ -132,15 +144,17 @@ class AESGCMAlgModel(JWEAlgModel):
         }
         obj.protected.update(header)
 
-    def unwrap(self, enc_alg, ek, headers, key):
-        op_key = key.get_op_key('unwrapKey')
+    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
+               private_key: OctKey, sender_key=None) -> bytes:
+        # def unwrap(self, enc_alg, ek, headers, key):
+        op_key = private_key.get_op_key('unwrapKey')
         self._check_key(op_key)
 
-        iv = headers.get('iv')
+        iv = obj.protected.get('iv')
         if not iv:
             raise ValueError('Missing "iv" in headers')
 
-        tag = headers.get('tag')
+        tag = obj.protected.get('tag')
         if not tag:
             raise ValueError('Missing "tag" in headers')
 
@@ -149,8 +163,8 @@ class AESGCMAlgModel(JWEAlgModel):
 
         cipher = Cipher(AES(op_key), GCM(iv, tag), backend=default_backend())
         d = cipher.decryptor()
-        cek = d.update(ek) + d.finalize()
-        if len(cek) * 8 != enc_alg.CEK_SIZE:
+        cek = d.update(recipient.ek) + d.finalize()
+        if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
         return cek
 
@@ -170,14 +184,16 @@ JWE_ALG_MODELS = [
     RSAAlgModel('RSA1_5', 'RSAES-PKCS1-v1_5', padding.PKCS1v15()),
     RSAAlgModel(
         'RSA-OAEP', 'RSAES OAEP using default parameters',
-        padding.OAEP(padding.MGF1(hashes.SHA1()), hashes.SHA1(), None)),
+        padding.OAEP(padding.MGF1(hashes.SHA1()), hashes.SHA1(), None),
+        True,
+    ),
     RSAAlgModel(
         'RSA-OAEP-256', 'RSAES OAEP using SHA-256 and MGF1 with SHA-256',
-        padding.OAEP(padding.MGF1(hashes.SHA256()), hashes.SHA256(), None)),
-
-    AESAlgModel(128),  # A128KW
+        padding.OAEP(padding.MGF1(hashes.SHA256()), hashes.SHA256(), None)
+    ),
+    AESAlgModel(128, True),  # A128KW
     AESAlgModel(192),  # A192KW
-    AESAlgModel(256),  # A256KW
+    AESAlgModel(256, True),  # A256KW
     AESGCMAlgModel(128),  # A128GCMKW
     AESGCMAlgModel(192),  # A192GCMKW
     AESGCMAlgModel(256),  # A256GCMKW

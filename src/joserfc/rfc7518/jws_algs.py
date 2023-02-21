@@ -47,9 +47,10 @@ class HMACAlgModel(JWSAlgModel):
     SHA384 = hashlib.sha384
     SHA512 = hashlib.sha512
 
-    def __init__(self, sha_type: int):
+    def __init__(self, sha_type: int, recommended: bool=False):
         self.name = f'HS{sha_type}'
         self.description = f'HMAC using SHA-{sha_type}'
+        self.recommended = recommended
         self.hash_alg = getattr(self, f'SHA{sha_type}')
 
     def sign(self, msg: bytes, key: OctKey) -> bytes:
@@ -74,9 +75,10 @@ class RSAAlgModel(JWSAlgModel):
     SHA384 = hashes.SHA384
     SHA512 = hashes.SHA512
 
-    def __init__(self, sha_type: int):
+    def __init__(self, sha_type: int, recommended: bool=False):
         self.name = f'RS{sha_type}'
         self.description = f'RSASSA-PKCS1-v1_5 using SHA-{sha_type}'
+        self.recommended = recommended
         self.hash_alg = getattr(self, f'SHA{sha_type}')
         self.padding = padding.PKCS1v15()
 
@@ -104,10 +106,11 @@ class ECAlgModel(JWSAlgModel):
     SHA384 = hashes.SHA384
     SHA512 = hashes.SHA512
 
-    def __init__(self, name: str, curve: str, sha_type: int):
+    def __init__(self, name: str, curve: str, sha_type: int, recommended: bool=False):
         self.name = name
         self.curve = curve
         self.description = f'ECDSA using {self.curve} and SHA-{sha_type}'
+        self.recommended = recommended
         self.hash_alg = getattr(self, f'SHA{sha_type}')
 
     def _check_key(self, key: ECKey):
@@ -183,13 +186,13 @@ class RSAPSSAlgModel(JWSAlgModel):
 
 JWS_ALGORITHMS = [
     NoneAlgModel(),  # none
-    HMACAlgModel(256),  # HS256
+    HMACAlgModel(256, True),  # HS256
     HMACAlgModel(384),  # HS384
     HMACAlgModel(512),  # HS512
-    RSAAlgModel(256),  # RS256
+    RSAAlgModel(256, True),  # RS256
     RSAAlgModel(384),  # RS384
     RSAAlgModel(512),  # RS512
-    ECAlgModel('ES256', 'P-256', 256),
+    ECAlgModel('ES256', 'P-256', 256, True),
     ECAlgModel('ES384', 'P-384', 384),
     ECAlgModel('ES512', 'P-521', 512),
     RSAPSSAlgModel(256),  # PS256

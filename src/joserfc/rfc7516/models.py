@@ -7,6 +7,7 @@ from .types import EncryptionData, Recipient
 class JWEEncModel(object, metaclass=ABCMeta):
     name: str
     description: str
+    recommended: bool = True
     algorithm_type = 'JWE'
     algorithm_location = 'enc'
 
@@ -24,26 +25,18 @@ class JWEEncModel(object, metaclass=ABCMeta):
             raise ValueError('Invalid "iv" size')
 
     @abstractmethod
-    def encrypt(self, msg: bytes, obj: EncryptionData):
+    def encrypt(self, msg: bytes, obj: EncryptionData) -> EncryptionData:
         pass
 
     @abstractmethod
-    def decrypt(self, ciphertext: bytes, aad: bytes, iv: bytes, tag: bytes, key: bytes) -> bytes:
-        """Decrypt the given cipher text.
-
-        :param ciphertext: ciphertext in bytes
-        :param aad: additional authenticated data in bytes
-        :param iv: initialization vector in bytes
-        :param tag: authentication tag in bytes
-        :param key: encrypted key in bytes
-        :return: message
-        """
+    def decrypt(self, obj: EncryptionData) -> bytes:
         pass
 
 
 class JWEZipModel(object, metaclass=ABCMeta):
     name: str
     description: str
+    recommended: bool = True
     algorithm_type = 'JWE'
     algorithm_location = 'zip'
 
@@ -59,6 +52,7 @@ class JWEZipModel(object, metaclass=ABCMeta):
 class JWEAlgModel(object, metaclass=ABCMeta):
     name: str
     description: str
+    recommended: bool = False
     key_size: Optional[int] = None
     algorithm_type = 'JWE'
     algorithm_location = 'alg'
@@ -66,4 +60,9 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     @abstractmethod
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
              public_key, sender_key=None):
+        pass
+
+    @abstractmethod
+    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
+               private_key, sender_key):
         pass
