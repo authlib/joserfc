@@ -1,4 +1,6 @@
 import typing as t
+import json
+from functools import cached_property
 from .._shared import Header
 
 __all__ = [
@@ -39,10 +41,20 @@ class SignatureData:
     def __init__(self, members: t.List[HeaderMember], payload: bytes):
         self.members = members
         self.payload = payload
+        self.payload_segment: t.Optional[bytes] = None
         self.signatures: t.List[SignatureDict] = []
-        self.payload_segment = None
-        self.compact = False
-        self.flatten = False
+        self.compact: bool = False
+        self.flatten: bool = False
+
+    def headers(self) -> Header:
+        if self.compact and len(self.members) == 1:
+            return self.members[0].protected
+        elif self.flatten and len(self.members) == 1:
+            return self.members[0].headers()
+
+    @cached_property
+    def claims(self) -> t.Dict[str, t.Any]:
+        return json.loads(self.payload)
 
 
 HeaderDict = t.TypedDict('HeaderDict', {

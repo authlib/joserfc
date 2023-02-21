@@ -1,10 +1,9 @@
-import json
 import binascii
-from typing import Optional, Dict, Any
 from .model import JWSAlgModel
-from .types import Header
+from .types import HeaderMember, SignatureData
 from ..errors import DecodeError, MissingAlgorithmError
 from ..util import (
+    to_bytes,
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
@@ -12,78 +11,18 @@ from ..util import (
 )
 
 
-class CompactData:
-    """The object of a JWS Compact Serialization.
-
-    The Compact data contains:
-
-    - protected header in dict
-    - payload in bytes
-    - signature in bytes
-    """
-    def __init__(self, header: Header, payload: bytes,
-                 signature: Optional[bytes]=None):
-        self.header = header
-        self.payload = payload
-        self.signature = signature
-        self._signing_input = None
-        self._claims = None
-
-    @property
-    def signing_input(self) -> bytes:
-        if self._signing_input:
-            return self._signing_input
-
-        protected_segment = json_b64encode(self.header)
-        payload_segment = urlsafe_b64encode(self.payload)
-        self._signing_input = protected_segment + b'.' + payload_segment
-        return self._signing_input
-
-    def headers(self) -> Header:
-        """A method to return header value.
-        This method is designed for CompactProtocol.
-        """
-        return self.header
-
-    def set_kid(self, kid: str):
-        """A method to update "kid" value in header.
-        This method is designed for CompactProtocol.
-        """
-        self.header['kid'] = kid
-
-    def claims(self) -> Dict[str, Any]:
-        """Convert payload from bytes to dict.
-        This method is usually used in JWT.
-        """
-        if self._claims is None:
-            # cache it, since the payload won't change
-            self._claims = json.loads(self.payload)
-        return self._claims
-
-    def sign(self, alg: JWSAlgModel, key) -> bytes:
-        """Sign the signature of this compact serialization with the given
-        algorithm and key.
-
-        :param alg: a registered algorithm instance
-        :param key: a private key
-        """
-        key.check_use('sig')
-        self.signature = urlsafe_b64encode(alg.sign(self.signing_input, key))
-        return self.signing_input + b'.' + self.signature
-
-    def verify(self, alg: JWSAlgModel, key) -> bool:
-        """Verify the signature of this compact serialization with the given
-        algorithm and key.
-
-        :param alg: a registered algorithm instance
-        :param key: a public key
-        """
-        key.check_use('sig')
-        sig = urlsafe_b64decode(self.signature)
-        return alg.verify(self.signing_input, sig, key)
+def sign_compact(obj: SignatureData, alg: JWSAlgModel, key):
+    key.check_use('sig')
+    member = obj.members[0]
+    header_segment = json_b64encode(member.protected)
+    if obj.payload_segment is None:
+        obj.payload_segment = urlsafe_b64encode(obj.payload)
+    signing_input = header_segment + b'.' + obj.payload_segment
+    signature = urlsafe_b64encode(alg.sign(signing_input, key))
+    return signing_input + b'.' + signature
 
 
-def extract_compact(value: bytes) -> CompactData:
+def extract_compact(value: bytes) -> SignatureData:
     """Extract the JWS Compact Serialization from bytes to object.
 
     :param value: JWS in bytes
@@ -95,8 +34,8 @@ def extract_compact(value: bytes) -> CompactData:
 
     header_segment, payload_segment, signature = parts
     try:
-        header = json_b64decode(header_segment)
-        if 'alg' not in header:
+        protected = json_b64decode(header_segment)
+        if 'alg' not in protected:
             raise MissingAlgorithmError()
     except (TypeError, ValueError, binascii.Error):
         raise DecodeError('Invalid header')
@@ -106,6 +45,23 @@ def extract_compact(value: bytes) -> CompactData:
     except (TypeError, ValueError, binascii.Error):
         raise DecodeError('Invalid payload')
 
-    obj = CompactData(header, payload, signature)
-    obj._signing_input = header_segment + b'.' + payload_segment
+    member = HeaderMember(protected)
+    obj = SignatureData([member], payload)
+    obj.compact = True
+    obj.signatures = [
+        {
+            'protected': header_segment.decode('utf-8'),
+            'signature': signature.decode('utf-8'),
+        }
+    ]
+    obj.payload_segment = payload_segment
     return obj
+
+
+def verify_compact(obj: SignatureData, alg: JWSAlgModel, key) -> bool:
+    key.check_use('sig')
+    data = obj.signatures[0]
+    header_segment = data['protected']
+    signing_input = to_bytes(header_segment) + b'.' + obj.payload_segment
+    sig = urlsafe_b64decode(to_bytes(data['signature']))
+    return alg.verify(signing_input, sig, key)

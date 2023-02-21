@@ -1,5 +1,6 @@
 import json
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
+from functools import cached_property
 from .._shared import Header
 
 __all__ = [
@@ -38,3 +39,7 @@ class EncryptionData:
 
     def add_recipient(self, recipient: Recipient):
         self.recipients.append(recipient)
+
+    @cached_property
+    def claims(self):
+        return json.loads(self.payload)

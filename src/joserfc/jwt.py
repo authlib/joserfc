@@ -1,5 +1,5 @@
 from typing import Optional, AnyStr, List
-from .rfc7515.compact import CompactData, extract_compact
+from .rfc7515.compact import SignatureData, extract_compact
 from .rfc7519.claims import Claims, convert_claims
 from .rfc7519.validators import ClaimsOption, JWTClaimsRequests
 from .jws import serialize_compact, validate_compact
@@ -12,6 +12,7 @@ from ._shared import Header
 __all__ = [
     'Header',
     'Claims',
+    'Token',
     'convert_claims',
     'ClaimsOption',
     'JWTClaimsRequests',
@@ -20,6 +21,12 @@ __all__ = [
     'extract',
     'validate',
 ]
+
+
+class Token:
+    def __init__(self, header: Header, claims: Claims):
+        self.header = header
+        self.claims = claims
 
 
 def encode(
@@ -46,7 +53,7 @@ def decode(
         value: AnyStr,
         key: KeyFlexible,
         validator: Optional[JWTClaimsRequests]=None,
-        allowed_algorithms: Optional[List[str]]=None) -> CompactData:
+        allowed_algorithms: Optional[List[str]]=None) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests. This method is a combination of the
     :function:`extract` and :function:`validate`.
@@ -60,23 +67,23 @@ def decode(
     """
     obj = extract_compact(to_bytes(value))
     validate(obj, key, validator, allowed_algorithms)
-    return obj
+    return Token(obj.headers(), obj.claims)
 
 
-def extract(value: AnyStr) -> CompactData:
+def extract(value: AnyStr) -> SignatureData:
     return extract_compact(to_bytes(value))
 
 
 def validate(
-        obj: CompactData,
+        obj: SignatureData,
         key: KeyFlexible,
         validator: Optional[JWTClaimsRequests]=None,
         allowed_algorithms: Optional[List[str]]=None):
 
-    typ = obj.header.get('typ')
+    typ = obj.headers().get('typ')
     if typ and typ != 'JWT':
         raise InvalidTypeError()
 
     if validator is not None:
-        validator.validate(obj.claims())
+        validator.validate(obj.claims)
     validate_compact(obj, key, allowed_algorithms)

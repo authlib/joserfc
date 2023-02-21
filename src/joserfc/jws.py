@@ -5,8 +5,9 @@ from .rfc7515.registry import (
     get_alg_model,
 )
 from .rfc7515.compact import (
-    CompactData,
+    sign_compact,
     extract_compact,
+    verify_compact,
 )
 from .rfc7515.json import (
     sign_json,
@@ -33,7 +34,6 @@ __all__ = [
     'register_alg_model',
     'SignatureData',
 
-    'CompactData',
     'serialize_compact',
     'deserialize_compact',
     'extract_compact',
@@ -82,14 +82,16 @@ def serialize_compact(
     .. note:: The returned value is in bytes
     """
     check_header(header, ['alg'])
-    obj = CompactData(header, payload)
+    member = HeaderMember(header)
+    obj = SignatureData([member], payload)
+    obj.compact = True
     alg: JWSAlgModel = get_alg_model(header['alg'], allowed_algorithms)
-    key: Key = guess_key(key, obj, 'sign')
-    return obj.sign(alg, key)
+    key: Key = guess_key(key, member, 'sign')
+    return sign_compact(obj, alg, key)
 
 
 def validate_compact(
-        obj: CompactData,
+        obj: SignatureData,
         key: KeyFlexible,
         allowed_algorithms: Optional[List[str]]=None):
     """Validate the JWS Compact Serialization with the given key.
@@ -100,16 +102,17 @@ def validate_compact(
     :param allowed_algorithms: allowed "alg" models to use, default to HS256, RS256, ES256
     :raise: ValueError or BadSignatureError
     """
-    alg: JWSAlgModel = get_alg_model(obj.header['alg'], allowed_algorithms)
-    key: Key = guess_key(key, obj, 'verify')
-    if not obj.verify(alg, key):
+    member = obj.members[0]
+    alg: JWSAlgModel = get_alg_model(member.protected['alg'], allowed_algorithms)
+    key: Key = guess_key(key, member, 'verify')
+    if not verify_compact(obj, alg, key):
         raise BadSignatureError()
 
 
 def deserialize_compact(
         value: AnyStr,
         key: KeyFlexible,
-        allowed_algorithms: Optional[List[str]]=None) -> CompactData:
+        allowed_algorithms: Optional[List[str]]=None) -> SignatureData:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a string (or bytes) of the JWS
