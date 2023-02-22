@@ -77,3 +77,7 @@ class InvalidTokenError(JoseError):
 class InvalidTypeError(JoseError):
     error: str = 'invalid_type'
     description: str = 'The "typ" value in header is invalid'
+
+
+class InvalidPayloadError(JoseError):
+    error: str = 'invalid_payload'

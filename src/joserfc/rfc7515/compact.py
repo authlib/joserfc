@@ -3,7 +3,6 @@ from .model import JWSAlgModel
 from .types import HeaderMember, SignatureData
 from ..errors import DecodeError, MissingAlgorithmError
 from ..util import (
-    to_bytes,
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
@@ -11,14 +10,16 @@ from ..util import (
 )
 
 
-def sign_compact(obj: SignatureData, alg: JWSAlgModel, key):
+def sign_compact(obj: SignatureData, alg: JWSAlgModel, key) -> bytes:
     key.check_use('sig')
     member = obj.members[0]
-    header_segment = json_b64encode(member.protected)
-    if obj.payload_segment is None:
-        obj.payload_segment = urlsafe_b64encode(obj.payload)
-    signing_input = header_segment + b'.' + obj.payload_segment
+    if 'header' not in obj.segments:
+        obj.segments['header'] = json_b64encode(member.protected)
+    if 'payload' not in obj.segments:
+        obj.segments['payload'] = urlsafe_b64encode(obj.payload)
+    signing_input = obj.segments['header'] + b'.' +  obj.segments['payload']
     signature = urlsafe_b64encode(alg.sign(signing_input, key))
+    obj.segments['signature'] = signature
     return signing_input + b'.' + signature
 
 
@@ -32,7 +33,7 @@ def extract_compact(value: bytes) -> SignatureData:
     if len(parts) != 3:
         raise ValueError('Invalid JSON Web Signature')
 
-    header_segment, payload_segment, signature = parts
+    header_segment, payload_segment, signature_segment = parts
     try:
         protected = json_b64decode(header_segment)
         if 'alg' not in protected:
@@ -45,23 +46,16 @@ def extract_compact(value: bytes) -> SignatureData:
     except (TypeError, ValueError, binascii.Error):
         raise DecodeError('Invalid payload')
 
-    member = HeaderMember(protected)
-    obj = SignatureData([member], payload)
+    obj = SignatureData([HeaderMember(protected)], payload)
     obj.compact = True
-    obj.signatures = [
-        {
-            'protected': header_segment.decode('utf-8'),
-            'signature': signature.decode('utf-8'),
-        }
-    ]
-    obj.payload_segment = payload_segment
+    obj.segments['header'] = header_segment
+    obj.segments['payload'] = payload_segment
+    obj.segments['signature'] = signature_segment
     return obj
 
 
 def verify_compact(obj: SignatureData, alg: JWSAlgModel, key) -> bool:
     key.check_use('sig')
-    data = obj.signatures[0]
-    header_segment = data['protected']
-    signing_input = to_bytes(header_segment) + b'.' + obj.payload_segment
-    sig = urlsafe_b64decode(to_bytes(data['signature']))
+    signing_input = obj.segments['header'] + b'.' + obj.segments['payload']
+    sig = urlsafe_b64decode(obj.segments['signature'])
     return alg.verify(signing_input, sig, key)

@@ -120,7 +120,6 @@ def deserialize_compact(
     :param allowed_algorithms: allowed "alg" models to use, default to HS256, RS256, ES256
     :return: object of the JWS Compact Serialization
     """
-
     obj = extract_compact(to_bytes(value))
     validate_compact(obj, key, allowed_algorithms)
     return obj

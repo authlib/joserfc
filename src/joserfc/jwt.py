@@ -1,10 +1,10 @@
 from typing import Optional, AnyStr, List
-from .rfc7515.compact import SignatureData, extract_compact
+from .rfc7515.compact import extract_compact
 from .rfc7519.claims import Claims, convert_claims
 from .rfc7519.validators import ClaimsOption, JWTClaimsRequests
 from .jws import serialize_compact, validate_compact
 from .jwk import KeyFlexible
-from .errors import InvalidTypeError
+from .errors import InvalidTypeError, InvalidPayloadError
 from .util import to_bytes
 from ._shared import Header
 
@@ -13,13 +13,11 @@ __all__ = [
     'Header',
     'Claims',
     'Token',
-    'convert_claims',
     'ClaimsOption',
     'JWTClaimsRequests',
     'encode',
     'decode',
-    'extract',
-    'validate',
+    'validate_token',
 ]
 
 
@@ -66,24 +64,19 @@ def decode(
     :raise: BadSignatureError
     """
     obj = extract_compact(to_bytes(value))
-    validate(obj, key, validator, allowed_algorithms)
-    return Token(obj.headers(), obj.claims)
+    try:
+        token = Token(obj.headers(), obj.claims)
+    except ValueError:
+        raise InvalidPayloadError('Payload should be a JSON dict')
+    validate_token(token, validator)
+    validate_compact(obj, key, allowed_algorithms)
+    return token
 
 
-def extract(value: AnyStr) -> SignatureData:
-    return extract_compact(to_bytes(value))
-
-
-def validate(
-        obj: SignatureData,
-        key: KeyFlexible,
-        validator: Optional[JWTClaimsRequests]=None,
-        allowed_algorithms: Optional[List[str]]=None):
-
-    typ = obj.headers().get('typ')
+def validate_token(obj: Token, validator: Optional[JWTClaimsRequests]=None):
+    typ = obj.header.get('typ')
     if typ and typ != 'JWT':
         raise InvalidTypeError()
 
     if validator is not None:
         validator.validate(obj.claims)
-    validate_compact(obj, key, allowed_algorithms)

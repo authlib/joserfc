@@ -8,7 +8,7 @@ __all__ = [
     'HeaderMember',
     'HeaderDict',
     'SignatureData',
-    'SignatureDict',
+    'JSONSignatureDict',
     'CompleteJSONSerialization',
     'FlattenJSONSerialization',
     'JSONSerialization',
@@ -41,16 +41,18 @@ class SignatureData:
     def __init__(self, members: t.List[HeaderMember], payload: bytes):
         self.members = members
         self.payload = payload
-        self.payload_segment: t.Optional[bytes] = None
-        self.signatures: t.List[SignatureDict] = []
+        self.signatures: t.List[JSONSignatureDict] = []
         self.compact: bool = False
         self.flatten: bool = False
+        # segments for compact data
+        self.segments = {}
 
     def headers(self) -> Header:
         if self.compact and len(self.members) == 1:
             return self.members[0].protected
         elif self.flatten and len(self.members) == 1:
             return self.members[0].headers()
+        raise ValueError("Only compact or flatten data has .headers() method.")
 
     @cached_property
     def claims(self) -> t.Dict[str, t.Any]:
@@ -63,7 +65,7 @@ HeaderDict = t.TypedDict('HeaderDict', {
 }, total=False)
 
 
-SignatureDict = t.TypedDict('SignatureDict', {
+JSONSignatureDict = t.TypedDict('JSONSignatureDict', {
     'protected': str,
     'header': Header,
     'signature': str,
@@ -72,7 +74,7 @@ SignatureDict = t.TypedDict('SignatureDict', {
 
 CompleteJSONSerialization = t.TypedDict('CompleteJSONSerialization', {
     'payload': str,
-    'signatures': t.List[SignatureDict],
+    'signatures': t.List[JSONSignatureDict],
 })
 
 FlattenJSONSerialization = t.TypedDict('FlattenJSONSerialization', {

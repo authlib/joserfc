@@ -4,7 +4,7 @@ from .model import JWSAlgModel
 from .types import (
     HeaderMember,
     SignatureData,
-    SignatureDict,
+    JSONSignatureDict,
     JSONSerialization,
     CompleteJSONSerialization,
     FlattenJSONSerialization,
@@ -21,7 +21,7 @@ FindAlgorithm = t.Callable[[str], JWSAlgModel]
 
 
 def sign_json(obj: SignatureData, find_alg: FindAlgorithm, find_key) -> JSONSerialization:
-    signatures: t.List[SignatureDict] = []
+    signatures: t.List[JSONSignatureDict] = []
 
     for member in obj.members:
         alg = find_alg(member.protected['alg'])
@@ -40,7 +40,7 @@ def sign_json(obj: SignatureData, find_alg: FindAlgorithm, find_key) -> JSONSeri
     return rv
 
 
-def _sign_member(payload_segment, member: HeaderMember, alg: JWSAlgModel, key) -> SignatureDict:
+def _sign_member(payload_segment, member: HeaderMember, alg: JWSAlgModel, key) -> JSONSignatureDict:
     protected_segment = json_b64encode(member.protected)
     signing_input = b'.'.join([protected_segment, payload_segment])
     signature = urlsafe_b64encode(alg.sign(signing_input, key))
@@ -68,11 +68,11 @@ def extract_json(value: JSONSerialization) -> SignatureData:
     if 'signatures' in value:
         flatten = False
         value: CompleteJSONSerialization
-        signatures: t.List[SignatureDict] = value['signatures']
+        signatures: t.List[JSONSignatureDict] = value['signatures']
     else:
         flatten = True
         value: FlattenJSONSerialization
-        _sig: SignatureDict = {
+        _sig: JSONSignatureDict = {
             'protected': value['protected'],
             'signature': value['signature'],
         }
@@ -114,7 +114,7 @@ def verify_json(obj: SignatureData, find_alg: FindAlgorithm, find_key) -> bool:
     return True
 
 
-def _verify_signature(signature: SignatureDict, payload_segment, alg: JWSAlgModel, key) -> bool:
+def _verify_signature(signature: JSONSignatureDict, payload_segment, alg: JWSAlgModel, key) -> bool:
 
     protected_segment = signature['protected'].encode('utf-8')
     sig = urlsafe_b64decode(signature['signature'].encode('utf-8'))
