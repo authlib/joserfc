@@ -109,6 +109,7 @@ class CryptographyBinding(object, metaclass=ABCMeta):
         else:
             data = cls.export_public_key(key.public_key)
 
+        data['kty'] = key.kty
         data.update(params)
         return data
 

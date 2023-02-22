@@ -86,6 +86,6 @@ def _get_algorithms(protected: Header, allowed_algorithms: Optional[AllowedAlgor
 
 def _get_allowed_algorithms(key: str, allowed_algorithms: Optional[AllowedAlgorithms]):
     if allowed_algorithms and key in allowed_algorithms:
-        return allowed_algorithms['enc']
+        return allowed_algorithms[key]
     else:
         return None

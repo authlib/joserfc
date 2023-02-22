@@ -33,7 +33,7 @@ class ECKey(CurveKey):
     required_fields = frozenset(['crv', 'x', 'y'])
     private_only_fields = frozenset(['d'])
 
-    def exchange_shared_key(self, pubkey):
+    def exchange_shared_key(self, pubkey: EllipticCurvePublicKey) -> bytes:
         # used in ECDHESAlgorithm
         if self.private_key:
             return self.private_key.exchange(ec.ECDH(), pubkey)

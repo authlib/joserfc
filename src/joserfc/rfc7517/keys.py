@@ -192,13 +192,18 @@ class AsymmetricKey(_KeyMixin, metaclass=ABCMeta):
 class CurveKey(AsymmetricKey):
     key_type: str = 'EC'
 
+    @property
     @abstractmethod
-    def exchange_shared_key(self, pubkey):
+    def curve_name(self) -> str:
+        pass
+
+    @abstractmethod
+    def exchange_shared_key(self, pubkey) -> bytes:
         pass
 
     @property
     @abstractmethod
-    def is_private(self):
+    def is_private(self) -> bool:
         pass
 
     @property
