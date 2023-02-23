@@ -16,7 +16,7 @@ from ..rfc7516.models import JWEAlgModel, JWEEncModel
 from ..rfc7516.types import EncryptionData, Recipient, Header
 from ..rfc7517.keys import CurveKey
 from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode
-from .._registry import HeaderParameter, is_str, is_int, is_jwk
+from ..registry import HeaderParameter, is_str, is_int, is_jwk
 
 
 class DirectAlgModel(JWEAlgModel):

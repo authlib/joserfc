@@ -9,18 +9,20 @@ from .rfc7517 import (
     generate_key,
     import_key,
 )
+from .rfc7517 import types
 from .rfc7518.oct_key import OctKey
 from .rfc7518.rsa_key import RSAKey
 from .rfc7518.ec_key import ECKey
 from .rfc8037.okp_key import OKPKey
 from .rfc7638 import thumbprint
-from ._registry import Header
+from .registry import Header
 
 
 KeyCallable = Callable[[Any, bool], Key]
 KeyFlexible = Union[Key, KeySet, KeyCallable]
 
 __all__ = [
+    'types',
     'JWK_REGISTRY',
     'SymmetricKey',
     'AsymmetricKey',

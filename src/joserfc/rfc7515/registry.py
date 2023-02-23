@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 from .model import JWSAlgModel
-from .._registry import (
+from ..registry import (
     JWS_HEADER_REGISTRY,
     Header,
     HeaderRegistryDict,

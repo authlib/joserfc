@@ -1,6 +1,6 @@
 import typing as t
 from .models import JWEAlgModel, JWEEncModel, JWEZipModel
-from .._registry import (
+from ..registry import (
     Header,
     HeaderRegistryDict,
     JWE_HEADER_REGISTRY,

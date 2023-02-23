@@ -2,7 +2,7 @@ import os
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from .types import EncryptionData, Recipient
-from .._registry import HeaderRegistryDict
+from ..registry import HeaderRegistryDict
 
 
 class JWEEncModel(object, metaclass=ABCMeta):

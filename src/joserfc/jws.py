@@ -1,4 +1,5 @@
 from typing import Optional, AnyStr, List, Union
+from .rfc7515 import types
 from .rfc7515.model import JWSAlgModel
 from .rfc7515.registry import (
     JWSRegistry,
@@ -29,6 +30,7 @@ from .jwk import Key, KeyFlexible, guess_key
 from .util import to_bytes, urlsafe_b64encode
 
 __all__ = [
+    'types',
     'JWSAlgModel',
     'JWSRegistry',
     'SignatureData',

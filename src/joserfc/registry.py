@@ -89,4 +89,4 @@ def check_crit_header(header: Header):
     if 'crit' in header:
         for k in header['crit']:
             if k not in header:
-                raise ValueError(f'"{k}" is a critical field')
+                raise ValueError(f'"{k}" is a critical header')

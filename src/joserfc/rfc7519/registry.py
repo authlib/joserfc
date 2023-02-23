@@ -1,7 +1,7 @@
 from typing import Optional, List
 from .validators import JWTClaimsRequests
 from .claims import Claims
-from .._registry import HeaderRegistryDict
+from ..registry import HeaderRegistryDict
 from ..rfc7515.registry import JWSRegistry
 
 

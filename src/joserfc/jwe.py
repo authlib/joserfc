@@ -1,4 +1,5 @@
 from typing import Optional, AnyStr
+from .rfc7516 import types
 from .rfc7516.types import Header, EncryptionData, Recipient
 from .rfc7516.registry import (
     JWERegistry,
@@ -17,6 +18,7 @@ from .util import to_bytes
 
 
 __all__ = [
+    'types',
     'JWERegistry',
     'encrypt_compact',
     'decrypt_compact',

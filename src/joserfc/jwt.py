@@ -7,7 +7,7 @@ from .jws import serialize_compact, validate_compact
 from .jwk import KeyFlexible
 from .errors import InvalidTypeError, InvalidPayloadError
 from .util import to_bytes
-from ._registry import Header
+from .registry import Header
 
 
 __all__ = [
