@@ -1,4 +1,8 @@
+import typing as t
 from collections import namedtuple
+
+Header = t.Dict[str, t.Any]
+
 
 def is_str(key:str, value: str):
     if not isinstance(value, str):
@@ -29,11 +33,19 @@ def is_jwk(key, value):
         raise ValueError(f'"{key}" in header must be a dict[str, str]')
 
 
+def check_crit(header: Header):
+    for k in header['crit']:
+        if k not in header:
+            raise ValueError(f'"{k}" is a critical field')
+
+
 #: Define header parameters
 HeaderParameter = namedtuple('HeaderParameter', ['description', 'required', 'check_value'])
 
+HeaderRegistryDict = t.Dict[str, HeaderParameter]
+
 #: Basic JWS header registry
-JWS_HEADER_REGISTRY = {
+JWS_HEADER_REGISTRY: HeaderRegistryDict = {
     'alg': HeaderParameter('Algorithm', True, is_str),
     'jku': HeaderParameter('JWK Set URL', False, is_url),
     'jwk': HeaderParameter('JSON Web Key', False, is_jwk),

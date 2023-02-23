@@ -1,7 +1,7 @@
 import typing as t
 import json
 from functools import cached_property
-from .._shared import Header
+from .._registry import Header
 
 __all__ = [
     'Header',

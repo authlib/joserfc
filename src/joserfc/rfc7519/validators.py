@@ -16,15 +16,14 @@ ClaimsOption = TypedDict('ClaimsOption', {
 })
 
 
-
 class ClaimsRequests:
     """Requesting "claims" for JWT with the given conditions."""
 
     def __init__(self, **kwargs: ClaimsOption):
         self.options = kwargs
 
-    @staticmethod
-    def check_value(self, option: ClaimsOption, value: Any):
+    def check_value(self, claim_name: str, value: Any):
+        option: ClaimsOption = self.options.get(claim_name)
         option_value = option.get('value')
         if option_value and value != option_value:
             raise InvalidClaimError(claim_name)
@@ -46,7 +45,7 @@ class ClaimsRequests:
                 if func:
                     func(value)
                 else:
-                    self.check_value(option, value)
+                    self.check_value(key, value)
 
 
 class JWTClaimsRequests(ClaimsRequests):
@@ -74,7 +73,7 @@ class JWTClaimsRequests(ClaimsRequests):
         option_values = option.get('values')
 
         if not option_values:
-            option_value = options.get('value')
+            option_value = option.get('value')
             if option_value:
                 option_values = option_value
 
@@ -100,9 +99,9 @@ class JWTClaimsRequests(ClaimsRequests):
         """
         if not _validate_numeric_time(value):
             raise InvalidClaimError('exp')
-        if value < (now - leeway):
+        if value < (self.now - self.leeway):
             raise ExpiredTokenError()
-        self.check_value(self.options['exp'], value)
+        self.check_value('exp', value)
 
     def validate_nbf(self, value: int):
         """The "nbf" (not before) claim identifies the time before which the JWT
@@ -115,9 +114,9 @@ class JWTClaimsRequests(ClaimsRequests):
         """
         if not _validate_numeric_time(value):
             raise InvalidClaimError('nbf')
-        if value > (now + leeway):
+        if value > (self.now + self.leeway):
             raise InvalidTokenError()
-        self.check_value(self.options['nbf'], value)
+        self.check_value('nbf', value)
 
     def validate_iat(self, value: int):
         """The "iat" (issued at) claim identifies the time at which the JWT was
@@ -127,7 +126,7 @@ class JWTClaimsRequests(ClaimsRequests):
         """
         if not _validate_numeric_time(value):
             raise InvalidClaimError('iat')
-        self.check_value(self.options['iat'], value)
+        self.check_value('iat', value)
 
 
 def _validate_numeric_time(s):

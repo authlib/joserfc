@@ -15,12 +15,13 @@ class Test_JWT_RSA(TestFixture):
 
         header = {'alg': alg}
         claims = case['payload']
-        value = jwt.encode(header, claims, private_key, [alg])
+        registry = jwt.JWTRegistry(algorithms=[alg])
+        value = jwt.encode(header, claims, private_key, registry)
 
         if expect:
             self.assertEqual(value, expect)
 
-        obj = jwt.decode(value, public_key, allowed_algorithms=[alg])
+        obj = jwt.decode(value, public_key, registry)
         self.assertEqual(obj.claims, claims)
 
 

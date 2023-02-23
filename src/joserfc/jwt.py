@@ -1,7 +1,8 @@
-from typing import Optional, AnyStr, List
+from typing import Optional, AnyStr
 from .rfc7515.compact import extract_compact
 from .rfc7519.claims import Claims, convert_claims
 from .rfc7519.validators import ClaimsOption, JWTClaimsRequests
+from .rfc7519.registry import JWTRegistry, default_registry
 from .jws import serialize_compact, validate_compact
 from .jwk import KeyFlexible
 from .errors import InvalidTypeError, InvalidPayloadError
@@ -14,10 +15,10 @@ __all__ = [
     'Claims',
     'Token',
     'ClaimsOption',
+    'JWTRegistry',
     'JWTClaimsRequests',
     'encode',
     'decode',
-    'validate_token',
 ]
 
 
@@ -31,36 +32,34 @@ def encode(
         header: Header,
         claims: Claims,
         key: KeyFlexible,
-        allowed_algorithms: Optional[List[str]]=None) -> str:
+        registry: Optional[JWTRegistry]=None) -> str:
     """Encode a JSON Web Token with the given header, and claims.
 
     :param header: A dict of the JWT header
     :param claims: A dict of the JWT claims to be encoded
     :param key: key used to sign the signature
-    :param allowed_algorithms: allowed "alg" models to use, default to HS256, RS256, ES256
+    :param registry: a JWTRegistry to use
     """
-
     # add ``typ`` in header
     header['typ'] = 'JWT'
     payload = convert_claims(claims)
-    result = serialize_compact(header, payload, key, allowed_algorithms)
+    if registry is None:
+        registry = default_registry
+    result = serialize_compact(header, payload, key, registry)
     return result.decode('utf-8')
 
 
 def decode(
         value: AnyStr,
         key: KeyFlexible,
-        validator: Optional[JWTClaimsRequests]=None,
-        allowed_algorithms: Optional[List[str]]=None) -> Token:
+        registry: Optional[JWTRegistry]=None) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests. This method is a combination of the
     :function:`extract` and :function:`validate`.
 
     :param value: text of the JWT
     :param key: key used to verify the signature
-    :param validator: claims requests validator
-    :param allowed_algorithms: allowed "alg" models to use,
-        default to HS256, RS256, ES256
+    :param registry: a JWTRegistry to use
     :raise: BadSignatureError
     """
     obj = extract_compact(to_bytes(value))
@@ -68,15 +67,13 @@ def decode(
         token = Token(obj.headers(), obj.claims)
     except ValueError:
         raise InvalidPayloadError('Payload should be a JSON dict')
-    validate_token(token, validator)
-    validate_compact(obj, key, allowed_algorithms)
-    return token
+    if registry is None:
+        registry = default_registry
 
-
-def validate_token(obj: Token, validator: Optional[JWTClaimsRequests]=None):
-    typ = obj.header.get('typ')
+    typ = token.header.get('typ')
     if typ and typ != 'JWT':
         raise InvalidTypeError()
 
-    if validator is not None:
-        validator.validate(obj.claims)
+    registry.check_claims(token.claims)
+    validate_compact(obj, key, registry)
+    return token

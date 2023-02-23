@@ -1,4 +1,4 @@
-from joserfc.jws import serialize_compact, deserialize_compact
+from joserfc.jws import JWSRegistry, serialize_compact, deserialize_compact
 from joserfc.jwk import OctKey, RSAKey, ECKey
 from joserfc.util import to_bytes
 from tests.fixtures import TestFixture
@@ -16,12 +16,13 @@ class TestCompact(TestFixture):
 
         header = {'alg': alg}
         payload = to_bytes(case['payload'])
-        value = serialize_compact(header, payload, private_key, [alg])
+        registry = JWSRegistry(algorithms=[alg])
+        value = serialize_compact(header, payload, private_key, registry)
 
         if expect:
             self.assertEqual(value, expect)
 
-        obj = deserialize_compact(value, public_key, [alg])
+        obj = deserialize_compact(value, public_key, registry)
         self.assertEqual(obj.payload, payload)
 
 
