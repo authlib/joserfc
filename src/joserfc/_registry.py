@@ -33,12 +33,6 @@ def is_jwk(key, value):
         raise ValueError(f'"{key}" in header must be a dict[str, str]')
 
 
-def check_crit(header: Header):
-    for k in header['crit']:
-        if k not in header:
-            raise ValueError(f'"{k}" is a critical field')
-
-
 #: Define header parameters
 HeaderParameter = namedtuple('HeaderParameter', ['description', 'required', 'check_value'])
 
@@ -65,3 +59,34 @@ JWE_HEADER_REGISTRY = {
     'zip': HeaderParameter('Compression Algorithm', False, is_str),
     **JWS_HEADER_REGISTRY
 }
+
+
+def check_header(registry: HeaderRegistryDict, header: Header, strict: bool=True):
+    check_crit_header(header)
+    if strict:
+        check_supported_header(registry, header)
+    check_registry_header(registry, header)
+
+
+def check_supported_header(registry: HeaderRegistryDict, header: Header):
+    allowed_keys = set(registry.keys())
+    unsupported_keys = set(header.keys()) - allowed_keys
+    if unsupported_keys:
+        raise ValueError(f'Unsupported "{unsupported_keys} in header')
+
+
+def check_registry_header(registry: HeaderRegistryDict, header: Header):
+    for key in registry:
+        reg: HeaderParameter = registry[key]
+        if reg.required and key not in header:
+            raise ValueError(f'Required "{key}" is missing in header')
+        if key in header:
+            reg.check_value(key, header[key])
+
+
+def check_crit_header(header: Header):
+    # check crit header
+    if 'crit' in header:
+        for k in header['crit']:
+            if k not in header:
+                raise ValueError(f'"{k}" is a critical field')

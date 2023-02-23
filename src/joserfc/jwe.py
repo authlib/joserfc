@@ -1,13 +1,8 @@
-from typing import Optional, List, AnyStr, TypedDict
+from typing import Optional, AnyStr
 from .rfc7516.types import Header, EncryptionData, Recipient
-from .rfc7516.header import check_header
 from .rfc7516.registry import (
-    register_alg_model,
-    register_enc_model,
-    register_zip_model,
-    get_alg_model,
-    get_enc_model,
-    get_zip_model,
+    JWERegistry,
+    default_registry,
 )
 from .rfc7516.compact import (
     extract_compact,
@@ -20,14 +15,9 @@ from .rfc7518.jwe_zips import JWE_ZIP_MODELS
 from .jwk import KeyFlexible, guess_key
 from .util import to_bytes
 
-AllowedAlgorithms = TypedDict('AllowedAlgorithms', {
-    'alg': List[str],
-    'enc': List[str],
-    'zip': List[str],
-}, total=False)
-
 
 __all__ = [
+    'JWERegistry',
     'encrypt_compact',
     'decrypt_compact',
     'extract_compact',
@@ -35,13 +25,13 @@ __all__ = [
 
 def __register():
     for _alg in JWE_ALG_MODELS:
-        register_alg_model(_alg)
+        JWERegistry.register(_alg)
 
     for _enc in JWE_ENC_MODELS:
-        register_enc_model(_enc)
+        JWERegistry.register(_enc)
 
     for _zip in JWE_ZIP_MODELS:
-        register_zip_model(_zip)
+        JWERegistry.register(_zip)
 
 __register()
 
@@ -50,11 +40,12 @@ def encrypt_compact(
         protected: Header,
         payload: bytes,
         public_key: KeyFlexible,
-        sender_key=None,
-        allowed_algorithms: Optional[AllowedAlgorithms]=None) -> bytes:
-
-    check_header(protected, ['alg', 'enc'])
-    alg, enc, zip_ = _get_algorithms(protected, allowed_algorithms)
+        registry: Optional[JWERegistry]=None,
+        sender_key=None) -> bytes:
+    if registry is None:
+        registry = default_registry
+    registry.check_header(protected)
+    alg, enc, zip_ = registry.get_algorithms(protected)
     recipient = Recipient(protected)
     wrap_key = guess_key(public_key, recipient, 'wrapKey')
     obj = EncryptionData(recipient.header, payload)
@@ -65,27 +56,13 @@ def encrypt_compact(
 def decrypt_compact(
         value: AnyStr,
         private_key: KeyFlexible,
-        sender_key=None,
-        allowed_algorithms: Optional[AllowedAlgorithms] = None) -> EncryptionData:
+        registry: Optional[JWERegistry]=None,
+        sender_key=None) -> EncryptionData:
     value = to_bytes(value)
     obj = extract_compact(value)
-    check_header(obj.protected, ['alg', 'enc'])
-    alg, enc, zip_ = _get_algorithms(obj.protected, allowed_algorithms)
+    if registry is None:
+        registry = default_registry
+    registry.check_header(obj.protected, True)
+    alg, enc, zip_ = registry.get_algorithms(obj.protected)
     unwrap_key = guess_key(private_key, obj.recipients[0], 'unwrapKey')
     return _decrypt_compact(obj, unwrap_key, alg, enc, zip_, sender_key)
-
-
-def _get_algorithms(protected: Header, allowed_algorithms: Optional[AllowedAlgorithms]):
-    alg = get_alg_model(protected['alg'], _get_allowed_algorithms('alg', allowed_algorithms))
-    enc = get_enc_model(protected['enc'], _get_allowed_algorithms('enc', allowed_algorithms))
-    if 'zip' in protected:
-        zip_ = get_zip_model(protected['zip'], _get_allowed_algorithms('zip', allowed_algorithms))
-    else:
-        zip_ = None
-    return alg, enc, zip_
-
-def _get_allowed_algorithms(key: str, allowed_algorithms: Optional[AllowedAlgorithms]):
-    if allowed_algorithms and key in allowed_algorithms:
-        return allowed_algorithms[key]
-    else:
-        return None

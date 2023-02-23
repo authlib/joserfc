@@ -1,60 +1,97 @@
-from typing import Dict, Optional, List
+import typing as t
 from .models import JWEAlgModel, JWEEncModel, JWEZipModel
+from .._registry import (
+    Header,
+    HeaderRegistryDict,
+    JWE_HEADER_REGISTRY,
+    check_header,
+    check_registry_header,
+)
 
-#: registry to store all the models for "alg"
-JWE_ALG_REGISTRY: Dict[str, JWEAlgModel] = {}
+JWEAlgorithm = t.Union[JWEAlgModel, JWEEncModel, JWEZipModel]
 
-#: registry to store all the models for "enc"
-JWE_ENC_REGISTRY: Dict[str, JWEEncModel] = {}
+AlgorithmsDict = t.TypedDict('AlgorithmsDict', {
+    'alg': t.Dict[str, JWEAlgModel],
+    'enc': t.Dict[str, JWEEncModel],
+    'zip': t.Dict[str, JWEZipModel],
+})
+AlgorithmNamesDict = t.TypedDict('AlgorithmNamesDict', {
+    'alg': t.List[str],
+    'enc': t.List[str],
+    'zip': t.List[str],
+}, total=False)
 
-#: registry to store all the models for "zip"
-JWE_ZIP_REGISTRY: Dict[str, JWEZipModel] = {}
+class JWERegistry:
+    algorithms: AlgorithmsDict = {
+        'alg': {},
+        'enc': {},
+        'zip': {},
+    }
+    recommended: AlgorithmNamesDict = {
+        'alg': [],
+        'enc': [],
+        'zip': [],
+    }
 
-#: recommended alg models
-RECOMMENDED_ALG_NAMES: List[str] = []
+    def __init__(
+            self,
+            headers: t.Optional[HeaderRegistryDict]=None,
+            algorithms: t.Optional[AlgorithmNamesDict]=None):
+        self.headers: HeaderRegistryDict = {}
+        self.headers.update(JWE_HEADER_REGISTRY)
+        if headers is not None:
+            self.headers.update(headers)
+        self.allowed = algorithms
 
-#: recommended enc models
-RECOMMENDED_ENC_NAMES: List[str] = []
+    @classmethod
+    def register(cls, model: JWEAlgorithm):
+        location = model.algorithm_location
+        cls.algorithms[location][model.name] = model  # type: ignore
+        if model.recommended:
+            cls.recommended[location].append(model.name) # type: ignore
 
-#: recommended zip models
-RECOMMENDED_ZIP_NAMES: List[str] = []
+    def check_header(self, header: Header, check_extra=False):
+        if check_extra:
+            check_header(self.headers, header, False)
+            alg = self.get_alg(header['alg'])
+            if alg.extra_headers:
+                check_registry_header(alg.extra_headers, header)
+        else:
+            check_header(self.headers, header, True)
+
+    def get_alg(self, name: str) -> JWEAlgModel:
+        return self._get_algorithm('alg', name)
+
+    def get_enc(self, name: str) -> JWEEncModel:
+        return self._get_algorithm('enc', name)
+
+    def get_zip(self, name: str) -> JWEZipModel:
+        return self._get_algorithm('zip', name)
+
+    def get_algorithms(self, header: Header) -> t.Tuple[JWEAlgModel, JWEEncModel, t.Optional[JWEZipModel]]:
+        alg = self.get_alg(header['alg'])
+        enc = self.get_enc(header['enc'])
+        if 'zip' in header:
+            zip_ = self.get_zip(header['zip'])
+        else:
+            zip_ = None
+        return alg, enc, zip_
+
+    def _get_algorithm(self, location: str, name: str):
+        if location not in self.algorithms:
+            raise ValueError(f'Invalid location "{location}"')
+        registry: t.Dict[str, JWEAlgorithm] = self.algorithms[location]  # type: ignore
+        if name not in registry:
+            raise ValueError(f'Algorithm of "{name}" is not supported')
+
+        if self.allowed:
+            allowed: t.List[str] = self.allowed[location] # type: ignore
+        else:
+            allowed: t.List[str] = self.recommended[location] # type: ignore
+
+        if name not in allowed:
+            raise ValueError(f'Algorithm of "{name}" is not allowed')
+        return registry[name]
 
 
-def register_alg_model(model: JWEAlgModel):
-    _register_model(model, JWE_ALG_REGISTRY, RECOMMENDED_ALG_NAMES)
-
-
-def get_alg_model(name: str, allowed: Optional[List[str]]=None) -> JWEAlgModel:
-    return _get_model(name, JWE_ALG_REGISTRY, allowed, RECOMMENDED_ALG_NAMES)
-
-
-def register_enc_model(model: JWEEncModel):
-    _register_model(model, JWE_ENC_REGISTRY, RECOMMENDED_ENC_NAMES)
-
-
-def get_enc_model(name: str, allowed: Optional[List[str]]=None) -> JWEEncModel:
-    return _get_model(name, JWE_ENC_REGISTRY, allowed, RECOMMENDED_ENC_NAMES)
-
-
-def register_zip_model(model: JWEZipModel):
-    _register_model(model, JWE_ZIP_REGISTRY, RECOMMENDED_ZIP_NAMES)
-
-
-def get_zip_model(name: str, allowed: Optional[List[str]]=None) -> JWEAlgModel:
-    return _get_model(name, JWE_ZIP_REGISTRY, allowed, RECOMMENDED_ZIP_NAMES)
-
-
-def _get_model(name: str, registry, allowed, recommended):
-    if name not in registry:
-        raise ValueError(f'Model of "{name}" is not supported')
-    if allowed is None:
-        allowed = recommended
-    if name not in allowed:
-        raise ValueError(f'Model of "{name}" is not allowed')
-    return registry[name]
-
-
-def _register_model(model, registry, recommended):
-    registry[model.name] = model
-    if model.recommended:
-        recommended.append(model.name)
+default_registry = JWERegistry()

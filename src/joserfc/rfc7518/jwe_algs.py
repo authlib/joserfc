@@ -16,6 +16,7 @@ from ..rfc7516.models import JWEAlgModel, JWEEncModel
 from ..rfc7516.types import EncryptionData, Recipient, Header
 from ..rfc7517.keys import CurveKey
 from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode
+from .._registry import HeaderParameter, is_str, is_int, is_jwk
 
 
 class DirectAlgModel(JWEAlgModel):
@@ -111,7 +112,10 @@ AES_KW_MAP: t.Dict[int, AESAlgModel] = {
 }
 
 class AESGCMAlgModel(JWEAlgModel):
-    EXTRA_HEADERS = frozenset(['iv', 'tag'])
+    extra_headers = {
+        'iv': HeaderParameter('Initialization vector', True, is_str),
+        'tag': HeaderParameter('Authentication tag', True, is_str),
+    }
 
     def __init__(self, key_size: int):
         self.name = f'A{key_size}GCMKW'
@@ -152,16 +156,8 @@ class AESGCMAlgModel(JWEAlgModel):
         op_key = private_key.get_op_key('unwrapKey')
         self._check_key(op_key)
 
-        iv = obj.protected.get('iv')
-        if not iv:
-            raise ValueError('Missing "iv" in headers')
-
-        tag = obj.protected.get('tag')
-        if not tag:
-            raise ValueError('Missing "tag" in headers')
-
-        iv = urlsafe_b64decode(to_bytes(iv))
-        tag = urlsafe_b64decode(to_bytes(tag))
+        iv = urlsafe_b64decode(to_bytes(obj.protected['iv']))
+        tag = urlsafe_b64decode(to_bytes(obj.protected['tag']))
 
         cipher = Cipher(AES(op_key), GCM(iv, tag), backend=default_backend())
         d = cipher.decryptor()
@@ -172,7 +168,11 @@ class AESGCMAlgModel(JWEAlgModel):
 
 
 class ECDHESAlgModel(JWEAlgModel):
-    EXTRA_HEADERS = ['epk', 'apu', 'apv']
+    extra_headers = {
+        'epk': HeaderParameter('Ephemeral Public Key', True, is_jwk),
+        'apu': HeaderParameter('Agreement PartyUInfo', False, is_str),
+        'apv': HeaderParameter('Agreement PartyVInfo', False, is_str),
+    }
 
     # https://tools.ietf.org/html/rfc7518#section-4.6
     def __init__(self, key_size: t.Optional[int]=None, recommended: bool=False):
@@ -239,10 +239,6 @@ class ECDHESAlgModel(JWEAlgModel):
 
     def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
                private_key: CurveKey, sender_key=None) -> bytes:
-
-        if 'epk' not in obj.protected:
-            raise ValueError('Missing "epk" in headers')
-
         bit_size = self.get_bit_size(enc)
         epk = private_key.import_key(obj.protected['epk'])
         delivery_key = self.deliver(private_key, epk, obj.protected, bit_size)
@@ -257,7 +253,11 @@ class ECDHESAlgModel(JWEAlgModel):
 
 class PBES2HSAlgModel(JWEAlgModel):
     # https://www.rfc-editor.org/rfc/rfc7518#section-4.8
-    EXTRA_HEADERS = frozenset(['p2s', 'p2c'])
+    extra_headers = {
+        'p2s': HeaderParameter('PBES2 Salt Input', True, is_str),
+        'p2c': HeaderParameter('PBES2 Count', True, is_int),
+    }
+
     DEFAULT_P2C = 2048
 
     def __init__(self, hash_size: int, key_size: int):
@@ -311,12 +311,6 @@ class PBES2HSAlgModel(JWEAlgModel):
 
     def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
                private_key: OctKey, sender_key=None) -> bytes:
-
-        if 'p2s' not in obj.protected:
-            raise ValueError('Invalid protected header, missing "p2s" parameter')
-        if 'p2c' not in obj.protected:
-            raise ValueError('Invalid protected header, missing "p2c" parameter')
-
         p2s = getattr(obj, '_p2s', None)
         if not p2s:
             p2s = urlsafe_b64decode(to_bytes(obj.protected['p2s']))

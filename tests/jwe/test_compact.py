@@ -1,5 +1,5 @@
-from joserfc.jwe import encrypt_compact, decrypt_compact
-from joserfc.jwk import RSAKey, ECKey, OctKey
+from joserfc.jwe import encrypt_compact, decrypt_compact, JWERegistry
+from joserfc.jwk import RSAKey, ECKey
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from unittest import TestCase
 from tests.util import read_key
@@ -9,16 +9,17 @@ class TestJWECompact(TestCase):
     def run_case(self, alg, enc, private_key, public_key):
         protected = {"alg": alg, "enc": enc}
         payload = b'hello'
-        allowed_algorithms = {"alg": [alg], "enc": [enc]}
+        algorithms = {"alg": [alg], "enc": [enc]}
+        registry = JWERegistry(algorithms=algorithms)
         result = encrypt_compact(
             protected, payload, public_key,
-            allowed_algorithms=allowed_algorithms,
+            registry=registry,
         )
         self.assertEqual(result.count(b'.'), 4)
 
         obj = decrypt_compact(
             result, private_key,
-            allowed_algorithms=allowed_algorithms,
+            registry=registry,
         )
         self.assertEqual(obj.payload, payload)
 

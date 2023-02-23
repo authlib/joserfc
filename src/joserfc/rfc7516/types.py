@@ -1,7 +1,7 @@
 import json
 from typing import Optional, List
 from functools import cached_property
-from .._shared import Header
+from .._registry import Header
 
 __all__ = [
     'Header',
@@ -14,7 +14,7 @@ class Recipient:
     def __init__(self, header: Optional[Header]=None):
         self.header = header
         self.ek = None  # encrypt key
-        self.epk = None  # ephemeral_key
+        self.epk = None  # ephemeral public key
 
     def headers(self) -> Header:
         return self.header

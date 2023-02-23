@@ -1,6 +1,5 @@
 import random
-from typing import Callable, Union, Any
-from ._shared import RecipientProtocol
+from typing import Callable, Union, Any, Protocol
 from .rfc7517 import (
     SymmetricKey,
     AsymmetricKey,
@@ -15,6 +14,7 @@ from .rfc7518.rsa_key import RSAKey
 from .rfc7518.ec_key import ECKey
 from .rfc8037.okp_key import OKPKey
 from .rfc7638 import thumbprint
+from ._registry import Header
 
 
 KeyCallable = Callable[[Any, bool], Key]
@@ -47,29 +47,37 @@ JWK_REGISTRY[ECKey.key_type] = ECKey
 JWK_REGISTRY[OKPKey.key_type] = OKPKey
 
 
-def guess_key(key: KeyFlexible, recipient: RecipientProtocol, operation: str= 'verify') -> Key:
+class GuestProtocol(Protocol):
+    def headers(self) -> Header:
+        ...
+
+    def set_kid(self, kid: str):
+        ...
+
+
+def guess_key(key: KeyFlexible, obj: GuestProtocol, operation: str= 'verify') -> Key:
     """Guess key from a various sources.
 
     :param key: a very flexible key
-    :param recipient: a protocol that has ``headers`` and ``set_kid`` methods
+    :param obj: a protocol that has ``headers`` and ``set_kid`` methods
     :param operation: key operation
     """
     if isinstance(key, (SymmetricKey, AsymmetricKey)):
         return key
 
     elif isinstance(key, KeySet):
-        headers = recipient.headers()
+        headers = obj.headers()
         kid = headers.get('kid')
 
         if not kid and operation in OctKey.private_key_ops:
             # choose one key by random
             key: Key = random.choice(key.keys)
             # use side effect to add kid information
-            recipient.set_kid(key.kid)
+            obj.set_kid(key.kid)
             return key
         return key.get_by_kid(kid)
 
     elif callable(key):
-        return key(recipient, operation)
+        return key(obj, operation)
 
     raise ValueError("Invalid key")

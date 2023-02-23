@@ -2,6 +2,7 @@ import os
 from typing import Optional
 from abc import ABCMeta, abstractmethod
 from .types import EncryptionData, Recipient
+from .._registry import HeaderRegistryDict
 
 
 class JWEEncModel(object, metaclass=ABCMeta):
@@ -56,6 +57,7 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     key_size: Optional[int] = None
     algorithm_type = 'JWE'
     algorithm_location = 'alg'
+    extra_headers: HeaderRegistryDict = {}
 
     @abstractmethod
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
