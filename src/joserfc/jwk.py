@@ -6,8 +6,10 @@ from .rfc7517 import (
     Key,
     KeySet,
     JWK_REGISTRY,
-    generate_key,
+)
+from .rfc7517.keygen import (
     import_key,
+    generate_key,
 )
 from .rfc7517 import types
 from .rfc7518.oct_key import OctKey
