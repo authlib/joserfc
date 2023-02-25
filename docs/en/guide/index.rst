@@ -1,0 +1,6 @@
+Guide
+=====
+
+.. toctree::
+    quickstart
+    registry

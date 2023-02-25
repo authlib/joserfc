@@ -1,5 +1,5 @@
-Guide
-=====
+References
+==========
 
 
 .. toctree::
