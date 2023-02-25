@@ -47,12 +47,11 @@ def encrypt_compact(
     if registry is None:
         registry = default_registry
     registry.check_header(protected)
-    alg, enc, zip_ = registry.get_algorithms(protected)
     recipient = Recipient(protected)
     wrap_key = guess_key(public_key, recipient, 'wrapKey')
-    obj = EncryptionData(recipient.header, payload)
+    obj = EncryptionData(protected, payload)
     obj.compact = True
-    return _encrypt_compact(obj, wrap_key, alg, enc, zip_, sender_key)
+    return _encrypt_compact(obj, wrap_key, registry, sender_key)
 
 
 def decrypt_compact(
@@ -65,6 +64,5 @@ def decrypt_compact(
     if registry is None:
         registry = default_registry
     registry.check_header(obj.protected, True)
-    alg, enc, zip_ = registry.get_algorithms(obj.protected)
     unwrap_key = guess_key(private_key, obj.recipients[0], 'unwrapKey')
-    return _decrypt_compact(obj, unwrap_key, alg, enc, zip_, sender_key)
+    return _decrypt_compact(obj, unwrap_key, registry, sender_key)

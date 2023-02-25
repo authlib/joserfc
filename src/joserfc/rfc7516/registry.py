@@ -21,6 +21,7 @@ AlgorithmNamesDict = t.TypedDict('AlgorithmNamesDict', {
     'zip': t.List[str],
 }, total=False)
 
+
 class JWERegistry:
     algorithms: AlgorithmsDict = {
         'alg': {},

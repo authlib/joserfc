@@ -1,7 +1,6 @@
-from typing import Optional
 import binascii
-from .models import JWEAlgModel, JWEEncModel, JWEZipModel
 from .types import EncryptionData, Recipient
+from .registry import JWERegistry
 from ..errors import (
     MissingAlgorithmError,
     MissingEncryptionError,
@@ -18,11 +17,10 @@ from ..util import (
 def encrypt_compact(
         obj: EncryptionData,
         public_key,
-        alg: JWEAlgModel,
-        enc: JWEEncModel,
-        zip_: Optional[JWEZipModel]=None,
+        registry: JWERegistry,
         sender_key=None) -> bytes:
 
+    alg, enc, zip_ = registry.get_algorithms(obj.protected)
     recipient = Recipient()
 
     # Generate a random Content Encryption Key (CEK)
@@ -88,14 +86,13 @@ def extract_compact(value: bytes) -> EncryptionData:
 def decrypt_compact(
         obj: EncryptionData,
         private_key,
-        alg: JWEAlgModel,
-        enc: JWEEncModel,
-        zip_: Optional[JWEZipModel]=None,
+        registry: JWERegistry,
         sender_key=None) -> EncryptionData:
 
     if not obj.compact or len(obj.recipients) != 1:
         raise ValueError("Invalid encryption data")
 
+    alg, enc, zip_ = registry.get_algorithms(obj.protected)
     recipient = obj.recipients[0]
     cek = alg.unwrap(enc, obj, recipient, private_key, sender_key)
     obj.cek = cek
