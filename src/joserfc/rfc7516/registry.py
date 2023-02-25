@@ -55,8 +55,8 @@ class JWERegistry:
         if check_extra:
             check_header(self.headers, header, False)
             alg = self.get_alg(header['alg'])
-            if alg.extra_headers:
-                check_registry_header(alg.extra_headers, header)
+            if alg.more_header:
+                check_registry_header(alg.more_header, header)
         else:
             check_header(self.headers, header, True)
 

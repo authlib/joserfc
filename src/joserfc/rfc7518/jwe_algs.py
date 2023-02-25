@@ -112,7 +112,7 @@ AES_KW_MAP: t.Dict[int, AESAlgModel] = {
 }
 
 class AESGCMAlgModel(JWEAlgModel):
-    extra_headers = {
+    more_header = {
         'iv': HeaderParameter('Initialization vector', True, is_str),
         'tag': HeaderParameter('Authentication tag', True, is_str),
     }
@@ -168,7 +168,7 @@ class AESGCMAlgModel(JWEAlgModel):
 
 
 class ECDHESAlgModel(JWEAlgModel):
-    extra_headers = {
+    more_header = {
         'epk': HeaderParameter('Ephemeral Public Key', True, is_jwk),
         'apu': HeaderParameter('Agreement PartyUInfo', False, is_str),
         'apv': HeaderParameter('Agreement PartyVInfo', False, is_str),
@@ -253,7 +253,7 @@ class ECDHESAlgModel(JWEAlgModel):
 
 class PBES2HSAlgModel(JWEAlgModel):
     # https://www.rfc-editor.org/rfc/rfc7518#section-4.8
-    extra_headers = {
+    more_header = {
         'p2s': HeaderParameter('PBES2 Salt Input', True, is_str),
         'p2c': HeaderParameter('PBES2 Count', True, is_int),
     }
