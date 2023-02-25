@@ -24,9 +24,12 @@ class Recipient:
 
 
 class EncryptionData:
-    def __init__(self, protected: Header, payload: Optional[bytes]=None):
+    def __init__(self, protected: Header, payload: Optional[bytes]=None,
+                 unprotected: Optional[Header]=None):
+
         self.protected = protected
         self.payload = payload
+        self.unprotected = unprotected
         self.iv = None  # initialization vector
         self.aad = None
         self.cek = None  # ciphertext encrypt key

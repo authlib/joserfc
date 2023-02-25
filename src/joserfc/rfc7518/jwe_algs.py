@@ -25,7 +25,7 @@ class DirectAlgModel(JWEAlgModel):
     recommended = True
 
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey, sender_key=None) -> EncryptionData:
+             public_key: OctKey) -> EncryptionData:
         cek = public_key.get_op_key('encrypt')
         if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
@@ -34,7 +34,7 @@ class DirectAlgModel(JWEAlgModel):
         return obj
 
     def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: OctKey, sender_key=None) -> bytes:
+               private_key: OctKey) -> bytes:
         cek = private_key.get_op_key('decrypt')
         if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
@@ -55,7 +55,7 @@ class RSAAlgModel(JWEAlgModel):
         self.recommended = recommended
 
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: RSAKey, sender_key=None) -> EncryptionData:
+             public_key: RSAKey) -> EncryptionData:
         op_key = public_key.get_op_key('wrapKey')
         if op_key.key_size < self.key_size:
             raise ValueError('A key of size 2048 bits or larger MUST be used')
@@ -63,7 +63,7 @@ class RSAAlgModel(JWEAlgModel):
         return obj
 
     def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: RSAKey, sender_key=None) -> bytes:
+               private_key: RSAKey) -> bytes:
         # it will raise ValueError if failed
         op_key = private_key.get_op_key('unwrapKey')
         cek = op_key.decrypt(recipient.ek, self.padding)
@@ -85,14 +85,14 @@ class AESAlgModel(JWEAlgModel):
                 'A key of size {} bits is required.'.format(self.key_size))
 
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey, sender_key=None) -> EncryptionData:
+             public_key: OctKey) -> EncryptionData:
         op_key = public_key.get_op_key('wrapKey')
         self._check_key(op_key)
         recipient.ek = aes_key_wrap(op_key, obj.cek, default_backend())
         return obj
 
     def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: OctKey, sender_key=None) -> bytes:
+               private_key: OctKey) -> bytes:
         op_key = private_key.get_op_key('unwrapKey')
         self._check_key(op_key)
         cek = aes_key_unwrap(op_key, recipient.ek, default_backend())
@@ -128,7 +128,7 @@ class AESGCMAlgModel(JWEAlgModel):
                 'A key of size {} bits is required.'.format(self.key_size))
 
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey, sender_key=None) -> EncryptionData:
+             public_key: OctKey) -> EncryptionData:
 
         op_key = public_key.get_op_key('wrapKey')
         self._check_key(op_key)
@@ -151,7 +151,7 @@ class AESGCMAlgModel(JWEAlgModel):
         return obj
 
     def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: OctKey, sender_key=None) -> bytes:
+               private_key: OctKey) -> bytes:
         # def unwrap(self, enc_alg, ek, headers, key):
         op_key = private_key.get_op_key('unwrapKey')
         self._check_key(op_key)
@@ -220,7 +220,7 @@ class ECDHESAlgModel(JWEAlgModel):
         return ckdf.derive(shared_key)
 
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: CurveKey, sender_key=None) -> EncryptionData:
+             public_key: CurveKey) -> EncryptionData:
 
         if recipient.epk is None:
             recipient.epk = public_key.generate_key(public_key.curve_name, private=True)
@@ -238,7 +238,7 @@ class ECDHESAlgModel(JWEAlgModel):
         return obj
 
     def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: CurveKey, sender_key=None) -> bytes:
+               private_key: CurveKey) -> bytes:
         bit_size = self.get_bit_size(enc)
         epk = private_key.import_key(obj.protected['epk'])
         delivery_key = self.deliver(private_key, epk, obj.protected, bit_size)
@@ -291,7 +291,7 @@ class PBES2HSAlgModel(JWEAlgModel):
         return p2s
 
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey, sender_key=None) -> EncryptionData:
+             public_key: OctKey) -> EncryptionData:
 
         p2s = getattr(obj, '_p2s', None)
         if p2s is None:
@@ -310,7 +310,7 @@ class PBES2HSAlgModel(JWEAlgModel):
         return aeskw.wrap(enc, obj, recipient, kek)
 
     def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: OctKey, sender_key=None) -> bytes:
+               private_key: OctKey) -> bytes:
         p2s = getattr(obj, '_p2s', None)
         if not p2s:
             p2s = urlsafe_b64decode(to_bytes(obj.protected['p2s']))

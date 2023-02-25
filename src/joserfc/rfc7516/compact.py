@@ -24,14 +24,16 @@ def encrypt_compact(
     recipient = Recipient()
 
     # Generate a random Content Encryption Key (CEK)
-    if alg.key_size is not None:
+    if obj.cek is None and alg.key_size is not None:
         obj.cek = enc.generate_cek()
 
-    # add cek, ek, epk
-    alg.wrap(enc, obj, recipient, public_key, sender_key)
+    # TODO: key agreement
+    # add ek, epk
+    alg.wrap(enc, obj, recipient, public_key)
 
     # Generate a random JWE Initialization Vector
-    obj.iv = enc.generate_iv()
+    if obj.iv is None:
+        obj.iv = enc.generate_iv()
 
     # Let the Additional Authenticated Data encryption parameter
     # be ASCII(BASE64URL(UTF8(JWE Protected Header)))
@@ -94,7 +96,7 @@ def decrypt_compact(
 
     alg, enc, zip_ = registry.get_algorithms(obj.protected)
     recipient = obj.recipients[0]
-    cek = alg.unwrap(enc, obj, recipient, private_key, sender_key)
+    cek = alg.unwrap(enc, obj, recipient, private_key)
     obj.cek = cek
     msg = enc.decrypt(obj)
     if zip_:

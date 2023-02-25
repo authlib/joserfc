@@ -60,11 +60,9 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     extra_headers: HeaderRegistryDict = {}
 
     @abstractmethod
-    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key, sender_key=None):
+    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient, public_key):
         pass
 
     @abstractmethod
-    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key, sender_key):
+    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient, private_key):
         pass
