@@ -6,6 +6,7 @@ from ..registry import (
     JWE_HEADER_REGISTRY,
     check_header,
     check_registry_header,
+    check_crit_header,
 )
 
 JWEAlgorithm = t.Union[JWEAlgModel, JWEEncModel, JWEZipModel]
@@ -38,10 +39,10 @@ class JWERegistry:
             self,
             headers: t.Optional[HeaderRegistryDict]=None,
             algorithms: t.Optional[AlgorithmNamesDict]=None):
-        self.headers: HeaderRegistryDict = {}
-        self.headers.update(JWE_HEADER_REGISTRY)
+        self.header_registry: HeaderRegistryDict = {}
+        self.header_registry.update(JWE_HEADER_REGISTRY)
         if headers is not None:
-            self.headers.update(headers)
+            self.header_registry.update(headers)
         self.allowed = algorithms
 
     @classmethod
@@ -51,14 +52,15 @@ class JWERegistry:
         if model.recommended:
             cls.recommended[location].append(model.name) # type: ignore
 
-    def check_header(self, header: Header, check_extra=False):
-        if check_extra:
-            check_header(self.headers, header, False)
+    def check_header(self, header: Header, check_more=False):
+        if check_more:
+            check_crit_header(header)
+            check_registry_header(self.header_registry, header)
             alg = self.get_alg(header['alg'])
-            if alg.more_header:
-                check_registry_header(alg.more_header, header)
+            if alg.more_header_registry:
+                check_registry_header(alg.more_header_registry, header)
         else:
-            check_header(self.headers, header, True)
+            check_header(self.header_registry, header)
 
     def get_alg(self, name: str) -> JWEAlgModel:
         return self._get_algorithm('alg', name)

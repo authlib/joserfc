@@ -118,10 +118,9 @@ JWK_OPERATION_REGISTRY = {
 }
 
 
-def check_header(registry: HeaderRegistryDict, header: Header, strict: bool=True):
+def check_header(registry: HeaderRegistryDict, header: Header):
     check_crit_header(header)
-    if strict:
-        check_supported_header(registry, header)
+    check_supported_header(registry, header)
     check_registry_header(registry, header)
 
 

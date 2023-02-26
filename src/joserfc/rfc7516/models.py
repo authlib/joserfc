@@ -57,7 +57,7 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     key_size: Optional[int] = None
     algorithm_type = 'JWE'
     algorithm_location = 'alg'
-    more_header: HeaderRegistryDict = {}
+    more_header_registry: HeaderRegistryDict = {}
 
     @abstractmethod
     def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient, public_key):
