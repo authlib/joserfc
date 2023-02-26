@@ -9,7 +9,7 @@ KeyDict = t.Dict[str, t.Union[str, t.List[str]]]
 KeyAny = t.Union[str, bytes, KeyDict]
 
 #: extra options for JWK
-KeyOptions = t.Optional[t.TypedDict('KeyOptions', {
+KeyOptions = t.TypedDict('KeyOptions', {
     'use': str,
     'key_ops': t.List[str],
     'alg': str,
@@ -18,7 +18,7 @@ KeyOptions = t.Optional[t.TypedDict('KeyOptions', {
     'x5c': t.List[str],
     'x5t': str,
     'x5t#S256': str,
-}, total=False)]
+}, total=False)
 
 #: JWKs in dict
 KeySetDict = t.TypedDict('KeySetDict', {

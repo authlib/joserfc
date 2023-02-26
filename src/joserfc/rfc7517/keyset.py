@@ -1,12 +1,10 @@
-from typing import List, Union, Optional, Callable
-from .keys import Key, SymmetricKey
+from typing import List, Union, Optional
+from .models import Key, SymmetricKey
 from .types import KeyOptions, KeySetDict
 from .keygen import import_key, generate_key
 
 
 class KeySet:
-    thumbprint: Callable[[Key], str]
-
     def __init__(self, keys: List[Key]):
         self.keys = keys
 
@@ -14,14 +12,12 @@ class KeySet:
         keys = []
 
         for key in self.keys:
-            if self.thumbprint and key.kid is None:
-                key.kid = self.thumbprint(key)
-
+            # trigger key to generate kid via thumbprint
+            assert key.kid is not None
             if isinstance(key, SymmetricKey):
                 keys.append(key.as_dict(**params))
             else:
                 keys.append(key.as_dict(private=private, **params))
-
         return {"keys": keys}
 
     def get_by_kid(self, kid: Optional[str]=None) -> Key:
@@ -55,8 +51,6 @@ class KeySet:
         keys = []
         for i in range(count):
             key = generate_key(key_type, crv_or_size, options, private)
-            if cls.thumbprint:
-                key.kid = cls.thumbprint(key)
             keys.append(key)
 
         return cls(keys)

@@ -19,8 +19,8 @@ class TestECKey(TestCase):
             key1.as_bytes(private=False),
         )
 
-        self.assertNotIn("d", key1.tokens)
-        self.assertIn("d", key2.tokens)
+        self.assertNotIn("d", key1.dict_value)
+        self.assertIn("d", key2.dict_value)
 
     def test_import_p256_key(self):
         self.run_import_key("p256")

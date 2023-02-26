@@ -1,6 +1,6 @@
-from .keys import SymmetricKey, AsymmetricKey, CurveKey, Key
 from .keyset import KeySet
-from .registry import JWK_REGISTRY
+from .models import SymmetricKey, AsymmetricKey, CurveKey, Key
+from .keygen import JWK_REGISTRY
 
 
 __all__ = [

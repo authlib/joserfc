@@ -16,7 +16,7 @@ from .rfc7518.oct_key import OctKey
 from .rfc7518.rsa_key import RSAKey
 from .rfc7518.ec_key import ECKey
 from .rfc8037.okp_key import OKPKey
-from .rfc7638 import thumbprint
+from .rfc8812 import register_secp256k1
 from .registry import Header
 
 
@@ -42,7 +42,7 @@ __all__ = [
 ]
 
 # register thumbprint method
-KeySet.thumbprint = staticmethod(thumbprint)
+register_secp256k1()
 
 # register all key types
 JWK_REGISTRY[OctKey.key_type] = OctKey

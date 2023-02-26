@@ -7,80 +7,13 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
     rsa_recover_prime_factors, rsa_crt_dmp1, rsa_crt_dmq1, rsa_crt_iqmp
 )
 from cryptography.hazmat.backends import default_backend
-from ..rfc7517 import AsymmetricKey
+from ..registry import KeyParameter, is_str, not_support
+from ..rfc7517.models import AsymmetricKey
 from ..rfc7517.pem import CryptographyBinding
-from ..rfc7517.types import KeyDict, KeyAny, KeyOptions
+from ..rfc7517.types import KeyDict, KeyOptions
 from ..util import int_to_base64, base64_to_int
 
-
 NativeRSAKey = Union[RSAPublicKey, RSAPrivateKeyWithSerialization]
-
-
-class RSAKey(AsymmetricKey):
-    key_type: str = 'RSA'
-    required_fields = frozenset(['kty', 'e', 'n'])
-    private_only_fields = frozenset(['d', 'p', 'q', 'dp', 'dq', 'qi'])
-
-    @property
-    def raw_key(self) -> NativeRSAKey:
-        return self.value
-
-    def get_op_key(self, operation: str) -> NativeRSAKey:
-        self.check_key_op(operation)
-        if operation in self.private_key_ops:
-            return self.private_key
-        return self.public_key
-
-    def as_bytes(
-            self,
-            encoding: Optional[str]=None,
-            private: Optional[bool]=None,
-            password: Optional[str]=None) -> bytes:
-        return RSABinding.as_bytes(self, encoding, private, password)
-
-    def as_dict(self, private=None, **params) -> KeyDict:
-        if private is True and not self.is_private:
-            raise ValueError("This is a public RSA key")
-        return RSABinding.as_dict(self, private, **params)
-
-    @property
-    def is_private(self) -> bool:
-        return isinstance(self.value, RSAPrivateKeyWithSerialization)
-
-    @cached_property
-    def public_key(self) -> RSAPublicKey:
-        if isinstance(self.value, RSAPrivateKeyWithSerialization):
-            return self.value.public_key()
-        return self.value
-
-    @property
-    def private_key(self) -> Optional[RSAPrivateKeyWithSerialization]:
-        if self.is_private:
-            return self.value
-        return None
-
-    @classmethod
-    def import_key(cls, value: KeyAny, options: KeyOptions=None) -> 'RSAKey':
-        return RSABinding.import_key(cls, value, options)
-
-    @classmethod
-    def generate_key(
-            cls,
-            key_size: int=2048,
-            options: KeyOptions=None,
-            private: bool=True) -> 'RSAKey':
-        if key_size < 512:
-            raise ValueError('key_size must not be less than 512')
-        if key_size % 8 != 0:
-            raise ValueError('Invalid key_size for RSAKey')
-        raw_key = rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=key_size,
-            backend=default_backend(),
-        )
-        if not private:
-            raw_key = raw_key.public_key()
-        return cls(raw_key, options)
 
 
 class RSABinding(CryptographyBinding):
@@ -148,6 +81,63 @@ class RSABinding(CryptographyBinding):
             'n': int_to_base64(numbers.n),
             'e': int_to_base64(numbers.e)
         }
+
+
+class RSAKey(AsymmetricKey):
+    key_type: str = 'RSA'
+    #: Registry definition for RSA Key
+    #: https://www.rfc-editor.org/rfc/rfc7518#section-6.3
+    value_registry = {
+        'n': KeyParameter('Modulus', True, False, is_str),
+        'e': KeyParameter('Exponent', True, False, is_str),
+        'd': KeyParameter('Private Exponent', False, True, is_str),
+        'p': KeyParameter('First Prime Factor', False, True, is_str),
+        'q': KeyParameter('Second Prime Factor', False, True, is_str),
+        'dp': KeyParameter('First Factor CRT Exponent', False, True, is_str),
+        'dq': KeyParameter('Second Factor CRT Exponent', False, True, is_str),
+        'qi': KeyParameter('First CRT Coefficient', False, True, is_str),
+        'oth': KeyParameter('Other Primes Info', False, True, not_support),
+    }
+    binding = RSABinding
+
+    @property
+    def raw_value(self) -> NativeRSAKey:
+        return self._raw_value
+
+    @property
+    def is_private(self) -> bool:
+        return isinstance(self.raw_value, RSAPrivateKeyWithSerialization)
+
+    @cached_property
+    def public_key(self) -> RSAPublicKey:
+        if isinstance(self.raw_value, RSAPrivateKeyWithSerialization):
+            return self.raw_value.public_key()
+        return self.raw_value
+
+    @property
+    def private_key(self) -> Optional[RSAPrivateKeyWithSerialization]:
+        if self.is_private:
+            return self.raw_value
+        return None
+
+    @classmethod
+    def generate_key(
+            cls,
+            key_size: int=2048,
+            options: KeyOptions=None,
+            private: bool=True) -> 'RSAKey':
+        if key_size < 512:
+            raise ValueError('key_size must not be less than 512')
+        if key_size % 8 != 0:
+            raise ValueError('Invalid key_size for RSAKey')
+        raw_key = rsa.generate_private_key(
+            public_exponent=65537,
+            key_size=key_size,
+            backend=default_backend(),
+        )
+        if not private:
+            raw_key = raw_key.public_key()
+        return cls(raw_key, raw_key, options)
 
 
 def has_all_prime_factors(obj) -> bool:

@@ -1,8 +1,9 @@
-from typing import Type, Dict, List, Union, Optional, Callable
-from .keys import Key, SymmetricKey
-from .types import KeyAny, KeyOptions, KeySetDict
-from .registry import JWK_REGISTRY
+from typing import Union, Dict, Type
+from .models import Key
+from .types import KeyAny, KeyOptions
 from ..util import to_bytes
+
+JWK_REGISTRY: Dict[str, Type[Key]] = {}
 
 
 def import_key(

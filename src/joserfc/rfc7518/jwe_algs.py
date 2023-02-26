@@ -14,7 +14,7 @@ from .rsa_key import RSAKey
 from .oct_key import OctKey
 from ..rfc7516.models import JWEAlgModel, JWEEncModel
 from ..rfc7516.types import EncryptionData, Recipient, Header
-from ..rfc7517.keys import CurveKey
+from ..rfc7517.models import CurveKey
 from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode
 from ..registry import HeaderParameter, is_str, is_int, is_jwk
 
