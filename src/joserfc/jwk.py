@@ -59,12 +59,11 @@ class GuestProtocol(Protocol):
         ...
 
 
-def guess_key(key: KeyFlexible, obj: GuestProtocol, operation: str= 'verify') -> Key:
+def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
     """Guess key from a various sources.
 
     :param key: a very flexible key
     :param obj: a protocol that has ``headers`` and ``set_kid`` methods
-    :param operation: key operation
     """
     if isinstance(key, (SymmetricKey, AsymmetricKey)):
         return key
@@ -73,7 +72,7 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, operation: str= 'verify') ->
         headers = obj.headers()
         kid = headers.get('kid')
 
-        if not kid and operation in OctKey.private_key_ops:
+        if not kid:
             # choose one key by random
             key: Key = random.choice(key.keys)
             # use side effect to add kid information
@@ -82,6 +81,6 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, operation: str= 'verify') ->
         return key.get_by_kid(kid)
 
     elif callable(key):
-        return key(obj, operation)
+        return key(obj)
 
     raise ValueError("Invalid key")

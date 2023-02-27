@@ -48,9 +48,11 @@ def extract_compact(value: bytes) -> SignatureData:
 
     obj = SignatureData([HeaderMember(protected)], payload)
     obj.compact = True
-    obj.segments['header'] = header_segment
-    obj.segments['payload'] = payload_segment
-    obj.segments['signature'] = signature_segment
+    obj.segments.update({
+        'header': header_segment,
+        'payload': payload_segment,
+        'signature': signature_segment,
+    })
     return obj
 
 

@@ -14,6 +14,12 @@ __all__ = [
     'JSONSerialization',
 ]
 
+SegmentsDict = t.TypedDict('SegmentsDict', {
+    'header': bytes,
+    'payload': bytes,
+    'signature': bytes,
+}, total=False)
+
 
 class HeaderMember:
     def __init__(self, protected: Header, header: t.Optional[Header]=None):
@@ -44,8 +50,7 @@ class SignatureData:
         self.signatures: t.List[JSONSignatureDict] = []
         self.compact: bool = False
         self.flatten: bool = False
-        # segments for compact data
-        self.segments = {}
+        self.segments: SegmentsDict = {}
 
     def headers(self) -> Header:
         if self.compact and len(self.members) == 1:

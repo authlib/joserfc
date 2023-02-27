@@ -23,14 +23,15 @@ FindAlgorithm = t.Callable[[str], JWSAlgModel]
 def sign_json(obj: SignatureData, find_alg: FindAlgorithm, find_key) -> JSONSerialization:
     signatures: t.List[JSONSignatureDict] = []
 
+    payload_segment = obj.segments['payload']
     for member in obj.members:
         alg = find_alg(member.protected['alg'])
-        key = find_key(member, 'sign')
+        key = find_key(member)
         key.check_use('sig')
-        signature = _sign_member(obj.payload_segment, member, alg, key)
+        signature = _sign_member(payload_segment, member, alg, key)
         signatures.append(signature)
 
-    rv = {'payload': obj.payload_segment.decode('utf-8')}
+    rv = {'payload': payload_segment.decode('utf-8')}
     if obj.flatten and len(signatures) == 1:
         rv.update(dict(signatures[0]))
     else:
@@ -58,7 +59,7 @@ def extract_json(value: JSONSerialization) -> SignatureData:
 
     :param value: JWS in dict
     """
-    payload_segment = value['payload'].encode('utf-8')
+    payload_segment: bytes = value['payload'].encode('utf-8')
 
     try:
         payload = urlsafe_b64decode(payload_segment)
@@ -90,9 +91,9 @@ def extract_json(value: JSONSerialization) -> SignatureData:
         members.append(member)
 
     obj = SignatureData(members, payload)
+    obj.segments.update({'payload': payload_segment})
     obj.flatten = flatten
     obj.signatures = signatures
-    obj.payload_segment = payload_segment
     return obj
 
 
@@ -104,18 +105,18 @@ def verify_json(obj: SignatureData, find_alg: FindAlgorithm, find_key) -> bool:
     :param find_alg: a function to return "alg" model
     :param find_key: a function to return public key
     """
+    payload_segment = obj.segments['payload']
     for index, signature in enumerate(obj.signatures):
         member = obj.members[index]
         alg = find_alg(member.protected['alg'])
-        key = find_key(member, 'verify')
+        key = find_key(member)
         key.check_use('sig')
-        if not _verify_signature(signature, obj.payload_segment, alg, key):
+        if not _verify_signature(signature, payload_segment, alg, key):
             return False
     return True
 
 
 def _verify_signature(signature: JSONSignatureDict, payload_segment, alg: JWSAlgModel, key) -> bool:
-
     protected_segment = signature['protected'].encode('utf-8')
     sig = urlsafe_b64decode(signature['signature'].encode('utf-8'))
     signing_input = b'.'.join([protected_segment, payload_segment])

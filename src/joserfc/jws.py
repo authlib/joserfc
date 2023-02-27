@@ -90,7 +90,7 @@ def serialize_compact(
     obj = SignatureData([member], payload)
     obj.compact = True
     alg: JWSAlgModel = registry.get_alg(header['alg'])
-    key: Key = guess_key(key, member, 'sign')
+    key: Key = guess_key(key, member)
     return sign_compact(obj, alg, key)
 
 
@@ -110,7 +110,7 @@ def validate_compact(
         registry = default_registry
     member = obj.members[0]
     alg: JWSAlgModel = registry.get_alg(member.protected['alg'])
-    key: Key = guess_key(key, member, 'verify')
+    key: Key = guess_key(key, member)
     if not verify_compact(obj, alg, key):
         raise BadSignatureError()
 
@@ -150,10 +150,10 @@ def serialize_json(
 
     members = [HeaderMember(**member) for member in members]
     obj = SignatureData(members, payload)
-    obj.payload_segment = urlsafe_b64encode(payload)
+    obj.segments['payload'] = urlsafe_b64encode(payload)
     obj.flatten = flatten
 
-    find_key = lambda d, operation: guess_key(key, d, operation)
+    find_key = lambda d: guess_key(key, d)
     return sign_json(obj, registry.get_alg, find_key)
 
 
@@ -171,7 +171,7 @@ def validate_json(
     """
     if registry is None:
         registry = default_registry
-    find_key = lambda d, operation: guess_key(key, d, operation)
+    find_key = lambda d: guess_key(key, d)
     if not verify_json(obj, registry.get_alg, find_key):
         raise BadSignatureError()
 
