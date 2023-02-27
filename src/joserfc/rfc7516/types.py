@@ -15,7 +15,7 @@ class Recipient:
         self.parent = parent
         self.header = header
         self.recipient_key = None
-        self.encrypted_key: bytes = b''
+        self.encrypted_key: Optional[bytes] = None
         self.ephemeral_key = None
         self.segments = {}  # store temporary segments
 
@@ -35,7 +35,7 @@ class Recipient:
             self.header.update({key: value})
 
     def set_kid(self, kid: str):
-        self.header['kid'] = kid
+        self.add_header('kid', kid)
 
 
 class EncryptionData:
@@ -46,7 +46,7 @@ class EncryptionData:
         self.payload = payload
         self.unprotected = unprotected
         self.recipients: List[Recipient] = []
-        self.cek: bytes = b''  # content encryption key
+        self.cek: Optional[bytes] = None  # content encryption key
         self.plaintext: bytes = b''
         self.encoded = {}  # store the encoded segments
         self.decoded = {}  # store the decoded segments

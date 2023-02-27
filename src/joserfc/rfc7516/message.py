@@ -21,7 +21,9 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
         # generate a random CEK value.
         if not alg.direct_mode:
             obj.cek = enc.generate_cek()
-        alg.encrypt_recipient(enc, recipient, recipient.recipient_key)
+
+        ek = alg.encrypt_recipient(enc, recipient, recipient.recipient_key)
+        recipient.encrypted_key = ek
 
     # Step 9, Generate a random JWE Initialization Vector of the correct size
     # for the content encryption algorithm (if required for the algorithm);
@@ -66,16 +68,23 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
 def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
     enc = registry.get_enc(obj.protected['enc'])
 
+    cek_set = set()
+
     for recipient in obj.recipients:
         # Step 6, Determine the Key Management Mode employed by the algorithm
         # specified by the "alg" (algorithm) Header Parameter.
         headers = recipient.headers()
         alg = registry.get_alg(headers['alg'])
-        alg.decrypt_recipient(enc, recipient, recipient.recipient_key)
+        cek = alg.decrypt_recipient(enc, recipient, recipient.recipient_key)
+        cek_set.add(cek)
 
-    if len(obj.cek) * 8 != enc.cek_size:
+    if len(cek_set) > 1:
+        raise
+
+    if len(cek) * 8 != enc.cek_size:
         raise ValueError('Invalid "cek" length')
 
+    obj.cek = cek
     msg = enc.decrypt(obj)
     if 'zip' in obj.protected:
         zip_ = registry.get_zip(obj.protected['zip'])

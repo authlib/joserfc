@@ -224,7 +224,8 @@ class ECDHESAlgModel(JWEAlgModel):
         bit_size = self.get_bit_size(enc)
         pubkey = key.get_op_key('deriveKey')
         shared_key = recipient.ephemeral_key.exchange_shared_key(pubkey)
-        dk = self.compute_derived_key(shared_key, recipient.header, bit_size)
+        headers = recipient.headers()
+        dk = self.compute_derived_key(shared_key, headers, bit_size)
 
         obj: EncryptionData = recipient.parent
         recipient.add_header('epk', recipient.ephemeral_key.as_dict(private=False))
