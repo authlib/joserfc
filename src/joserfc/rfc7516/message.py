@@ -10,18 +10,22 @@ from ..util import (
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
     enc = registry.get_enc(obj.protected['enc'])
 
-    # Step 1 to step 8 for each recipient
+    # Step 8 for each recipient
     for recipient in obj.recipients:
+        headers = recipient.headers()
+        registry.check_header(headers)
+
         # Step 1, determine the algorithms
         # https://www.rfc-editor.org/rfc/rfc7516#section-5.1
-        headers = recipient.headers()
         alg = registry.get_alg(headers['alg'])
+
         # Step 2, When Key Wrapping, Key Encryption,
         # or Key Agreement with Key Wrapping are employed,
         # generate a random CEK value.
         if not alg.direct_mode:
             obj.cek = enc.generate_cek()
 
+        # from step 3 to step 7
         ek = alg.encrypt_recipient(enc, recipient, recipient.recipient_key)
         recipient.encrypted_key = ek
 
@@ -71,9 +75,11 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     cek_set = set()
 
     for recipient in obj.recipients:
+        headers = recipient.headers()
+        registry.check_header(obj.protected, True)
+
         # Step 6, Determine the Key Management Mode employed by the algorithm
         # specified by the "alg" (algorithm) Header Parameter.
-        headers = recipient.headers()
         alg = registry.get_alg(headers['alg'])
         cek = alg.decrypt_recipient(enc, recipient, recipient.recipient_key)
         cek_set.add(cek)
