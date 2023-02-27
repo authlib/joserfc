@@ -1,58 +1,32 @@
 import binascii
 from .types import EncryptionData, Recipient
 from .registry import JWERegistry
+from .message import perform_encrypt, perform_decrypt
 from ..errors import (
     MissingAlgorithmError,
     MissingEncryptionError,
     DecodeError,
 )
 from ..util import (
-    json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
     urlsafe_b64decode,
 )
 
 
-def encrypt_compact(
-        obj: EncryptionData,
-        public_key,
-        registry: JWERegistry,
-        sender_key=None) -> bytes:
+def encrypt_compact(obj: EncryptionData, registry: JWERegistry) -> bytes:
+    perform_encrypt(obj, registry)
+    return represent_compact(obj)
 
-    alg, enc, zip_ = registry.get_algorithms(obj.protected)
-    recipient = Recipient()
 
-    # Generate a random Content Encryption Key (CEK)
-    if obj.cek is None and alg.key_size is not None:
-        obj.cek = enc.generate_cek()
-
-    # TODO: key agreement
-    # add ek, epk
-    alg.wrap(enc, obj, recipient, public_key)
-
-    # Generate a random JWE Initialization Vector
-    if obj.iv is None:
-        obj.iv = enc.generate_iv()
-
-    # Let the Additional Authenticated Data encryption parameter
-    # be ASCII(BASE64URL(UTF8(JWE Protected Header)))
-    obj.aad = json_b64encode(obj.protected, 'ascii')
-
-    # compress message if required
-    if zip_:
-        msg = zip_.compress(obj.payload)
-    else:
-        msg = obj.payload
-
-    # perform encryption
-    enc.encrypt(msg, obj)
+def represent_compact(obj: EncryptionData) -> bytes:
+    recipient = obj.recipients[0]
     return b'.'.join([
-        obj.aad,
-        urlsafe_b64encode(recipient.ek),
-        urlsafe_b64encode(obj.iv),
-        urlsafe_b64encode(obj.ciphertext),
-        urlsafe_b64encode(obj.tag)
+        obj.encoded['aad'],
+        urlsafe_b64encode(recipient.encrypted_key),
+        obj.encoded['iv'],
+        urlsafe_b64encode(obj.decoded['ciphertext']),
+        urlsafe_b64encode(obj.decoded['tag'])
     ])
 
 
@@ -73,34 +47,26 @@ def extract_compact(value: bytes) -> EncryptionData:
 
     obj = EncryptionData(protected)
     obj.compact = True
-    obj.aad = header_segment
-
-    recipient = Recipient()
-    recipient.ek = urlsafe_b64decode(ek_segment)
-
-    obj.iv = urlsafe_b64decode(iv_segment)
-    obj.ciphertext = urlsafe_b64decode(ciphertext_segment)
-    obj.tag = urlsafe_b64decode(tag_segment)
-    obj.add_recipient(recipient)
+    obj.encoded.update({
+        'aad': header_segment,
+        'iv': iv_segment,
+        'ciphertext': ciphertext_segment,
+        'tag': tag_segment,
+    })
+    obj.decoded.update({
+        'iv': urlsafe_b64decode(iv_segment),
+        'ciphertext': urlsafe_b64decode(ciphertext_segment),
+        'tag': urlsafe_b64decode(tag_segment),
+    })
+    recipient = Recipient(obj)
+    recipient.encrypted_key = urlsafe_b64decode(ek_segment)
+    obj.recipients.append(recipient)
     return obj
 
 
-def decrypt_compact(
-        obj: EncryptionData,
-        private_key,
-        registry: JWERegistry,
-        sender_key=None) -> EncryptionData:
-
+def decrypt_compact(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
     if not obj.compact or len(obj.recipients) != 1:
         raise ValueError("Invalid encryption data")
 
-    alg, enc, zip_ = registry.get_algorithms(obj.protected)
-    recipient = obj.recipients[0]
-    cek = alg.unwrap(enc, obj, recipient, private_key)
-    obj.cek = cek
-    msg = enc.decrypt(obj)
-    if zip_:
-        obj.payload = zip_.decompress(msg)
-    else:
-        obj.payload = msg
+    perform_decrypt(obj, registry)
     return obj

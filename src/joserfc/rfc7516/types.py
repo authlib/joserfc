@@ -11,13 +11,28 @@ __all__ = [
 
 
 class Recipient:
-    def __init__(self, header: Optional[Header]=None):
+    def __init__(self, parent: 'EncryptionData', header: Optional[Header]=None):
+        self.parent = parent
         self.header = header
-        self.ek = None  # encrypt key
-        self.epk = None  # ephemeral public key
+        self.recipient_key = None
+        self.encrypted_key: bytes = b''
+        self.ephemeral_key = None
+        self.segments = {}  # store temporary segments
 
     def headers(self) -> Header:
-        return self.header
+        rv = {}
+        rv.update(self.parent.protected)
+        if not self.parent.compact and self.parent.unprotected:
+            rv.update(self.parent.unprotected)
+        if self.header:
+            rv.update(self.header)
+        return rv
+
+    def add_header(self, key: str, value):
+        if self.parent.compact:
+            self.parent.protected.update({key: value})
+        else:
+            self.header.update({key: value})
 
     def set_kid(self, kid: str):
         self.header['kid'] = kid
@@ -30,17 +45,17 @@ class EncryptionData:
         self.protected = protected
         self.payload = payload
         self.unprotected = unprotected
-        self.iv = None  # initialization vector
-        self.aad = None
-        self.cek = None  # ciphertext encrypt key
-        self.ciphertext = None
-        self.tag = None
         self.recipients: List[Recipient] = []
-
+        self.cek: bytes = b''  # content encryption key
+        self.plaintext: bytes = b''
+        self.encoded = {}  # store the encoded segments
+        self.decoded = {}  # store the decoded segments
         self.compact = False
         self.flatten = False
 
-    def add_recipient(self, recipient: Recipient):
+    def add_recipient(self, key, header: Optional[Header]=None):
+        recipient = Recipient(self, header)
+        recipient.recipient_key = key
         self.recipients.append(recipient)
 
     @cached_property

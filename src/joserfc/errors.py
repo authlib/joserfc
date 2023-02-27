@@ -36,6 +36,11 @@ class MissingEncryptionError(JoseError):
     description: str = 'Missing "enc" value in header'
 
 
+class InvalidKeyManagementModeError(JoseError):
+    error: str = 'invalid_key_management_mode'
+    description: str = ''
+
+
 class BadSignatureError(JoseError):
     error: str = 'bad_signature'
 

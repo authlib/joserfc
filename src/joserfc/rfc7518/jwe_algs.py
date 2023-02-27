@@ -23,21 +23,22 @@ class DirectAlgModel(JWEAlgModel):
     name = 'dir'
     description = 'Direct use of a shared symmetric key'
     recommended = True
+    key_encryption = True
 
-    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey) -> EncryptionData:
-        cek = public_key.get_op_key('encrypt')
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        obj: EncryptionData = recipient.parent
+        assert obj.cek is None
+
+        cek = key.get_op_key('encrypt')
         if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
-        recipient.ek = b''
+
+        # attach CEK to parent
         obj.cek = cek
-        return obj
+        return b''
 
-    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: OctKey) -> bytes:
-        cek = private_key.get_op_key('decrypt')
-        if len(cek) * 8 != enc.cek_size:
-            raise ValueError('Invalid "cek" length')
+    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        cek = key.get_op_key('decrypt')
         return cek
 
 
@@ -45,6 +46,7 @@ class RSAAlgModel(JWEAlgModel):
     #: A key of size 2048 bits or larger MUST be used with these algorithms
     #: RSA1_5, RSA-OAEP, RSA-OAEP-256
     key_size = 2048
+    key_encryption = True
 
     def __init__(self, name: str, description: str,
                  pad_fn: padding.AsymmetricPadding,
@@ -54,25 +56,21 @@ class RSAAlgModel(JWEAlgModel):
         self.padding = pad_fn
         self.recommended = recommended
 
-    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: RSAKey) -> EncryptionData:
-        op_key = public_key.get_op_key('wrapKey')
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: RSAKey) -> bytes:
+        op_key = key.get_op_key('encrypt')
         if op_key.key_size < self.key_size:
             raise ValueError('A key of size 2048 bits or larger MUST be used')
-        recipient.ek = op_key.encrypt(obj.cek, self.padding)
-        return obj
+        return op_key.encrypt(recipient.parent.cek, self.padding)
 
-    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: RSAKey) -> bytes:
-        # it will raise ValueError if failed
-        op_key = private_key.get_op_key('unwrapKey')
-        cek = op_key.decrypt(recipient.ek, self.padding)
-        if len(cek) * 8 != enc.cek_size:
-            raise ValueError('Invalid "cek" length')
+    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: RSAKey) -> bytes:
+        op_key = key.get_op_key('decrypt')
+        cek = op_key.decrypt(recipient.encrypted_key, self.padding)
         return cek
 
 
 class AESAlgModel(JWEAlgModel):
+    key_wrapping = True
+
     def __init__(self, key_size: int, recommended: bool=False):
         self.name = f'A{key_size}KW'
         self.description = f'AES Key Wrap using {key_size}-bit key'
@@ -84,18 +82,21 @@ class AESAlgModel(JWEAlgModel):
             raise ValueError(
                 'A key of size {} bits is required.'.format(self.key_size))
 
-    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey) -> EncryptionData:
-        op_key = public_key.get_op_key('wrapKey')
+    def wrap_cek(self, cek: bytes, key: OctKey) -> bytes:
+        op_key = key.get_op_key('wrapKey')
         self._check_key(op_key)
-        recipient.ek = aes_key_wrap(op_key, obj.cek, default_backend())
-        return obj
+        return aes_key_wrap(op_key, cek, default_backend())
 
-    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: OctKey) -> bytes:
-        op_key = private_key.get_op_key('unwrapKey')
+    def unwrap_cek(self, encrypted_key: bytes, key: OctKey) -> bytes:
+        op_key = key.get_op_key('unwrapKey')
         self._check_key(op_key)
-        cek = aes_key_unwrap(op_key, recipient.ek, default_backend())
+        return aes_key_unwrap(op_key, encrypted_key, default_backend())
+
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        return self.wrap_cek(recipient.parent.cek, key)
+
+    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        cek = self.unwrap_cek(recipient.encrypted_key, key)
         if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
         return cek
@@ -116,6 +117,7 @@ class AESGCMAlgModel(JWEAlgModel):
         'iv': HeaderParameter('Initialization vector', True, is_str),
         'tag': HeaderParameter('Authentication tag', True, is_str),
     }
+    key_wrapping = True
 
     def __init__(self, key_size: int):
         self.name = f'A{key_size}GCMKW'
@@ -127,10 +129,8 @@ class AESGCMAlgModel(JWEAlgModel):
             raise ValueError(
                 'A key of size {} bits is required.'.format(self.key_size))
 
-    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey) -> EncryptionData:
-
-        op_key = public_key.get_op_key('wrapKey')
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        op_key = key.get_op_key('wrapKey')
         self._check_key(op_key)
 
         #: https://tools.ietf.org/html/rfc7518#section-4.7.1.1
@@ -141,29 +141,26 @@ class AESGCMAlgModel(JWEAlgModel):
 
         cipher = Cipher(AES(op_key), GCM(iv), backend=default_backend())
         enc = cipher.encryptor()
-        recipient.ek = enc.update(obj.cek) + enc.finalize()
+        obj: EncryptionData = recipient.parent
 
-        header = {
-            'iv': urlsafe_b64encode(iv).decode('ascii'),
-            'tag': urlsafe_b64encode(enc.tag).decode('ascii')
-        }
-        obj.protected.update(header)
-        return obj
+        encrypted_key = enc.update(obj.cek) + enc.finalize()
+        recipient.add_header('iv', urlsafe_b64encode(iv).decode('ascii'))
+        recipient.add_header('tag', urlsafe_b64encode(enc.tag).decode('ascii'))
+        return encrypted_key
 
-    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: OctKey) -> bytes:
-        # def unwrap(self, enc_alg, ek, headers, key):
-        op_key = private_key.get_op_key('unwrapKey')
+    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        op_key = key.get_op_key('unwrapKey')
         self._check_key(op_key)
 
-        iv = urlsafe_b64decode(to_bytes(obj.protected['iv']))
-        tag = urlsafe_b64decode(to_bytes(obj.protected['tag']))
+        headers = recipient.headers()
+        assert 'iv' in headers
+        assert 'tag' in headers
+        iv = urlsafe_b64decode(to_bytes(headers['iv']))
+        tag = urlsafe_b64decode(to_bytes(headers['tag']))
 
         cipher = Cipher(AES(op_key), GCM(iv, tag), backend=default_backend())
         d = cipher.decryptor()
-        cek = d.update(recipient.ek) + d.finalize()
-        if len(cek) * 8 != enc.cek_size:
-            raise ValueError('Invalid "cek" length')
+        cek = d.update(recipient.encrypted_key) + d.finalize()
         return cek
 
 
@@ -173,15 +170,18 @@ class ECDHESAlgModel(JWEAlgModel):
         'apu': HeaderParameter('Agreement PartyUInfo', False, is_str),
         'apv': HeaderParameter('Agreement PartyVInfo', False, is_str),
     }
+    key_agreement = True
 
     # https://tools.ietf.org/html/rfc7518#section-4.6
     def __init__(self, key_size: t.Optional[int]=None, recommended: bool=False):
         if key_size is None:
             self.name = 'ECDH-ES'
             self.description = 'ECDH-ES in the Direct Key Agreement mode'
+            self.key_wrapping = False
         else:
             self.name = f'ECDH-ES+A{key_size}KW'
             self.description = f'ECDH-ES using Concat KDF and CEK wrapped with A{key_size}KW'
+            self.key_wrapping = True
         self.key_size = key_size
         self.recommended = recommended
 
@@ -192,25 +192,23 @@ class ECDHESAlgModel(JWEAlgModel):
             bit_size = self.key_size
         return bit_size
 
-    def compute_fixed_info(self, protected: Header, bit_size: int):
+    def compute_fixed_info(self, header: Header, bit_size: int):
         # AlgorithmID
         if self.key_size is None:
-            alg_id = u32be_len_input(protected['enc'])
+            alg_id = u32be_len_input(header['enc'])
         else:
-            alg_id = u32be_len_input(protected['alg'])
+            alg_id = u32be_len_input(header['alg'])
 
         # PartyUInfo
-        apu_info = u32be_len_input(protected.get('apu'), True)
+        apu_info = u32be_len_input(header.get('apu'), True)
         # PartyVInfo
-        apv_info = u32be_len_input(protected.get('apv'), True)
+        apv_info = u32be_len_input(header.get('apv'), True)
         # SuppPubInfo
         pub_info = struct.pack('>I', bit_size)
         return alg_id + apu_info + apv_info + pub_info
 
-    def deliver(self, private_key: CurveKey, public_key: CurveKey, protected: Header, bit_size: int) -> bytes:
-        pubkey = public_key.get_op_key('wrapKey')
-        shared_key = private_key.exchange_shared_key(pubkey)
-        fixed_info = self.compute_fixed_info(protected, bit_size)
+    def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int) -> bytes:
+        fixed_info = self.compute_fixed_info(header, bit_size)
         ckdf = ConcatKDFHash(
             algorithm=hashes.SHA256(),
             length=bit_size // 8,
@@ -219,36 +217,42 @@ class ECDHESAlgModel(JWEAlgModel):
         )
         return ckdf.derive(shared_key)
 
-    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: CurveKey) -> EncryptionData:
-
-        if recipient.epk is None:
-            recipient.epk = public_key.generate_key(public_key.curve_name, private=True)
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: CurveKey) -> bytes:
+        if recipient.ephemeral_key is None:
+            recipient.ephemeral_key = key.generate_key(key.curve_name, private=True)
 
         bit_size = self.get_bit_size(enc)
-        deliver_key = self.deliver(recipient.epk, public_key, obj.protected, bit_size)
+        pubkey = key.get_op_key('deriveKey')
+        shared_key = recipient.ephemeral_key.exchange_shared_key(pubkey)
+        dk = self.compute_derived_key(shared_key, recipient.header, bit_size)
 
-        obj.protected.update({'epk': recipient.epk.as_dict(private=False)})
+        obj: EncryptionData = recipient.parent
+        recipient.add_header('epk', recipient.ephemeral_key.as_dict(private=False))
+
         if self.key_size is None:
-            recipient.ek = b''
-            obj.cek = deliver_key
+            assert obj.cek is None
+            obj.cek = dk
+            return b''
         else:
             aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
-            aeskw.wrap(enc, obj, recipient, OctKey.import_key(deliver_key))
-        return obj
+            return aeskw.wrap_cek(obj.cek, OctKey.import_key(dk))
 
-    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: CurveKey) -> bytes:
+    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: CurveKey) -> bytes:
+        headers = recipient.headers()
+        assert 'epk' in headers
+        epk = key.import_key(headers['epk'])
+
         bit_size = self.get_bit_size(enc)
-        epk = private_key.import_key(obj.protected['epk'])
-        delivery_key = self.deliver(private_key, epk, obj.protected, bit_size)
+        pubkey = epk.get_op_key('deriveKey')
+        shared_key = key.exchange_shared_key(pubkey)
+
+        dk = self.compute_derived_key(shared_key, headers, bit_size)
         if self.key_size is None:
             # delivery_key is ciphertext's encrypt key
-            return delivery_key
-
-        wrap_key = OctKey.import_key(delivery_key)
-        aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
-        return aeskw.unwrap(enc, obj, recipient, wrap_key)
+            return dk
+        else:
+            aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
+            return aeskw.unwrap_cek(recipient.encrypted_key, OctKey.import_key(dk))
 
 
 class PBES2HSAlgModel(JWEAlgModel):
@@ -257,7 +261,9 @@ class PBES2HSAlgModel(JWEAlgModel):
         'p2s': HeaderParameter('PBES2 Salt Input', True, is_str),
         'p2c': HeaderParameter('PBES2 Count', True, is_int),
     }
+    key_wrapping = True
 
+    # A minimum iteration count of 1000 is RECOMMENDED.
     DEFAULT_P2C = 2048
 
     def __init__(self, hash_size: int, key_size: int):
@@ -266,7 +272,8 @@ class PBES2HSAlgModel(JWEAlgModel):
         self.key_size = key_size
         self.hash_alg = getattr(hashes, f'SHA{hash_size}')()
 
-    def get_aes_key(self, key: bytes, p2s: bytes, p2c: int) -> OctKey:
+    def compute_derived_key(self, key: bytes, header: Header, p2c: int) -> bytes:
+        p2s = urlsafe_b64decode(to_bytes(header['p2s']))
         # The salt value used is (UTF8(Alg) || 0x00 || Salt Input)
         salt = to_bytes(self.name) + b'\x00' + p2s
         kdf = PBKDF2HMAC(
@@ -276,49 +283,38 @@ class PBES2HSAlgModel(JWEAlgModel):
             iterations=p2c,
             backend=default_backend(),
         )
-        dk = kdf.derive(key)
-        return OctKey.import_key(dk, {'use': 'enc'})
+        return kdf.derive(key)
 
-    @staticmethod
-    def _get_p2s(obj: EncryptionData) -> bytes:
-        if 'p2s' in obj.protected:
-            p2s = urlsafe_b64decode(to_bytes(obj.protected['p2s']))
-            if len(p2s) < 8:
-                raise ValueError('PBES2 Salt Input must be 8 or more octets')
-        else:
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        obj: EncryptionData = recipient.parent
+        headers = recipient.headers()
+
+        if 'p2s' not in headers:
             p2s = os.urandom(16)
-            obj.protected['p2s'] = urlsafe_b64encode(p2s)
-        return p2s
+            recipient.add_header('p2s', urlsafe_b64encode(p2s).decode('ascii'))
 
-    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-             public_key: OctKey) -> EncryptionData:
-
-        p2s = getattr(obj, '_p2s', None)
-        if p2s is None:
-            p2s = self._get_p2s(obj)
-            setattr(obj, '_p2s', p2s)
-
-        if 'p2c' in obj.protected:
-            p2c = obj.protected['p2c']
+        if 'p2c' in headers:
+            p2c = headers['p2c']
         else:
             # A minimum iteration count of 1000 is RECOMMENDED.
             p2c = self.DEFAULT_P2C
-            obj.protected['p2c'] = p2c
+            recipient.add_header('p2c', p2c)
 
-        kek = self.get_aes_key(public_key.get_op_key('wrapKey'), p2s, p2c)
+        kek = self.compute_derived_key(key.get_op_key('deriveKey'), headers, p2c)
         aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
-        return aeskw.wrap(enc, obj, recipient, kek)
+        return aeskw.wrap_cek(obj.cek, OctKey.import_key(kek))
 
-    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient,
-               private_key: OctKey) -> bytes:
-        p2s = getattr(obj, '_p2s', None)
-        if not p2s:
-            p2s = urlsafe_b64decode(to_bytes(obj.protected['p2s']))
-            setattr(obj, '_p2s', p2s)
-        p2c = obj.protected['p2c']
-        kek = self.get_aes_key(private_key.get_op_key('unwrapKey'), p2s, p2c)
+    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        headers = recipient.headers()
+        obj: EncryptionData = recipient.parent
+
+        assert 'p2s' in headers
+        assert 'p2c' in headers
+
+        p2c = headers['p2c']
+        kek = self.compute_derived_key(key.get_op_key('deriveKey'), headers, p2c)
         aeskw = AES_KW_MAP[self.key_size]
-        return aeskw.unwrap(enc, obj, recipient, kek)
+        return aeskw.unwrap_cek(recipient.encrypted_key, OctKey.import_key(kek))
 
 
 def u32be_len_input(s, base64=False):

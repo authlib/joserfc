@@ -42,27 +42,30 @@ def encrypt_compact(
         protected: Header,
         payload: bytes,
         public_key: KeyFlexible,
-        registry: Optional[JWERegistry]=None,
-        sender_key=None) -> bytes:
+        registry: Optional[JWERegistry]=None) -> bytes:
     if registry is None:
         registry = default_registry
     registry.check_header(protected)
-    recipient = Recipient(protected)
-    wrap_key = guess_key(public_key, recipient, 'wrapKey')
     obj = EncryptionData(protected, payload)
+    recipient = Recipient(obj)
+    key = guess_key(public_key, recipient)
+    recipient.recipient_key = key
+    obj.recipients.append(recipient)
     obj.compact = True
-    return _encrypt_compact(obj, wrap_key, registry, sender_key)
+    return _encrypt_compact(obj, registry)
 
 
 def decrypt_compact(
         value: AnyStr,
         private_key: KeyFlexible,
-        registry: Optional[JWERegistry]=None,
-        sender_key=None) -> EncryptionData:
+        registry: Optional[JWERegistry]=None) -> EncryptionData:
     value = to_bytes(value)
     obj = extract_compact(value)
     if registry is None:
         registry = default_registry
+
     registry.check_header(obj.protected, True)
-    unwrap_key = guess_key(private_key, obj.recipients[0], 'unwrapKey')
-    return _decrypt_compact(obj, unwrap_key, registry, sender_key)
+    recipient = obj.recipients[0]
+    key = guess_key(private_key, recipient)
+    recipient.recipient_key = key
+    return _decrypt_compact(obj, registry)

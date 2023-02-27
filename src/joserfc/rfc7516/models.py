@@ -21,12 +21,14 @@ class JWEEncModel(object, metaclass=ABCMeta):
     def generate_iv(self) -> bytes:
         return os.urandom(self.IV_SIZE // 8)
 
-    def check_iv(self, iv: bytes):
+    def check_iv(self, obj: EncryptionData) -> bytes:
+        iv: bytes = obj.decoded['iv']
         if len(iv) * 8 != self.IV_SIZE:
             raise ValueError('Invalid "iv" size')
+        return iv
 
     @abstractmethod
-    def encrypt(self, msg: bytes, obj: EncryptionData) -> EncryptionData:
+    def encrypt(self, obj: EncryptionData) -> bytes:
         pass
 
     @abstractmethod
@@ -59,10 +61,19 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     algorithm_location = 'alg'
     more_header_registry: HeaderRegistryDict = {}
 
+    # key management mode
+    key_encryption: bool = False
+    key_wrapping: bool = False
+    key_agreement: bool = False
+
+    @property
+    def direct_mode(self) -> bool:
+        return self.key_size is None
+
     @abstractmethod
-    def wrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient, public_key):
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key) -> bytes:
         pass
 
     @abstractmethod
-    def unwrap(self, enc: JWEEncModel, obj: EncryptionData, recipient: Recipient, private_key):
+    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key) -> bytes:
         pass

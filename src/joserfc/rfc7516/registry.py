@@ -71,15 +71,6 @@ class JWERegistry:
     def get_zip(self, name: str) -> JWEZipModel:
         return self._get_algorithm('zip', name)
 
-    def get_algorithms(self, header: Header) -> t.Tuple[JWEAlgModel, JWEEncModel, t.Optional[JWEZipModel]]:
-        alg = self.get_alg(header['alg'])
-        enc = self.get_enc(header['enc'])
-        if 'zip' in header:
-            zip_ = self.get_zip(header['zip'])
-        else:
-            zip_ = None
-        return alg, enc, zip_
-
     def _get_algorithm(self, location: str, name: str):
         if location not in self.algorithms:
             raise ValueError(f'Invalid location "{location}"')
