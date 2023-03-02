@@ -4,7 +4,9 @@ from ..registry import (
     JWS_HEADER_REGISTRY,
     Header,
     HeaderRegistryDict,
-    check_header,
+    check_registry_header,
+    check_crit_header,
+    check_supported_header,
 )
 
 
@@ -12,12 +14,17 @@ class JWSRegistry(object):
     algorithms: Dict[str, JWSAlgModel] = {}
     recommended: List[str] = []
 
-    def __init__(self, headers: Optional[HeaderRegistryDict]=None, algorithms: Optional[List[str]]=None):
-        self.headers: HeaderRegistryDict = {}
-        self.headers.update(JWS_HEADER_REGISTRY)
+    def __init__(
+            self,
+            headers: Optional[HeaderRegistryDict]=None,
+            algorithms: Optional[List[str]]=None,
+            strict_check_header: bool=True):
+        self.header_registry: HeaderRegistryDict = {}
+        self.header_registry.update(JWS_HEADER_REGISTRY)
         if headers is not None:
-            self.headers.update(headers)
+            self.header_registry.update(headers)
         self.allowed = algorithms
+        self.strict_check_header = strict_check_header
 
     @classmethod
     def register(cls, alg: JWSAlgModel):
@@ -38,7 +45,10 @@ class JWSRegistry(object):
         return self.algorithms[name]
 
     def check_header(self, header: Header):
-        check_header(self.headers, header)
+        check_crit_header(header)
+        check_registry_header(self.header_registry, header)
+        if self.strict_check_header:
+            check_supported_header(self.header_registry, header)
 
 
 #: default JWS registry

@@ -118,12 +118,6 @@ JWK_OPERATION_REGISTRY = {
 }
 
 
-def check_header(registry: HeaderRegistryDict, header: Header):
-    check_crit_header(header)
-    check_supported_header(registry, header)
-    check_registry_header(registry, header)
-
-
 def check_supported_header(registry: HeaderRegistryDict, header: Header):
     allowed_keys = set(registry.keys())
     unsupported_keys = set(header.keys()) - allowed_keys
