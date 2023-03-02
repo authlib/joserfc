@@ -4,7 +4,7 @@ from ..registry import (
     Header,
     HeaderRegistryDict,
     JWE_HEADER_REGISTRY,
-    check_header,
+    check_supported_header,
     check_registry_header,
     check_crit_header,
 )
@@ -38,12 +38,14 @@ class JWERegistry:
     def __init__(
             self,
             headers: t.Optional[HeaderRegistryDict]=None,
-            algorithms: t.Optional[AlgorithmNamesDict]=None):
+            algorithms: t.Optional[AlgorithmNamesDict]=None,
+            strict_check_header: bool=True):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(JWE_HEADER_REGISTRY)
         if headers is not None:
             self.header_registry.update(headers)
         self.allowed = algorithms
+        self.strict_check_header = strict_check_header
 
     @classmethod
     def register(cls, model: JWEAlgorithm):
@@ -53,14 +55,18 @@ class JWERegistry:
             cls.recommended[location].append(model.name) # type: ignore
 
     def check_header(self, header: Header, check_more=False):
+        check_crit_header(header)
+        check_registry_header(self.header_registry, header)
         if check_more:
-            check_crit_header(header)
-            check_registry_header(self.header_registry, header)
             alg = self.get_alg(header['alg'])
             if alg.more_header_registry:
                 check_registry_header(alg.more_header_registry, header)
-        else:
-            check_header(self.header_registry, header)
+            if self.strict_check_header:
+                allowed_registry = self.header_registry.copy()
+                allowed_registry.update(alg.more_header_registry)
+                check_supported_header(allowed_registry, header)
+        elif self.strict_check_header:
+            check_supported_header(self.header_registry, header)
 
     def get_alg(self, name: str) -> JWEAlgModel:
         return self._get_algorithm('alg', name)

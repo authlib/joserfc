@@ -1,7 +1,5 @@
 import binascii
 from .types import EncryptionData, Recipient
-from .registry import JWERegistry
-from .message import perform_encrypt, perform_decrypt
 from ..errors import (
     MissingAlgorithmError,
     MissingEncryptionError,
@@ -12,11 +10,6 @@ from ..util import (
     urlsafe_b64encode,
     urlsafe_b64decode,
 )
-
-
-def encrypt_compact(obj: EncryptionData, registry: JWERegistry) -> bytes:
-    perform_encrypt(obj, registry)
-    return represent_compact(obj)
 
 
 def represent_compact(obj: EncryptionData) -> bytes:
@@ -61,12 +54,4 @@ def extract_compact(value: bytes) -> EncryptionData:
     recipient = Recipient(obj)
     recipient.encrypted_key = urlsafe_b64decode(ek_segment)
     obj.recipients.append(recipient)
-    return obj
-
-
-def decrypt_compact(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
-    if not obj.compact or len(obj.recipients) != 1:
-        raise ValueError("Invalid encryption data")
-
-    perform_decrypt(obj, registry)
     return obj

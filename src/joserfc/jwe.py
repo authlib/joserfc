@@ -5,11 +5,8 @@ from .rfc7516.registry import (
     JWERegistry,
     default_registry,
 )
-from .rfc7516.compact import (
-    extract_compact,
-    encrypt_compact as _encrypt_compact,
-    decrypt_compact as _decrypt_compact,
-)
+from .rfc7516.message import perform_encrypt, perform_decrypt
+from .rfc7516.compact import represent_compact, extract_compact
 from .rfc7518.jwe_algs import JWE_ALG_MODELS
 from .rfc7518.jwe_encs import JWE_ENC_MODELS
 from .rfc7518.jwe_zips import JWE_ZIP_MODELS
@@ -53,7 +50,8 @@ def encrypt_compact(
     recipient.recipient_key = key
     obj.recipients.append(recipient)
     obj.compact = True
-    return _encrypt_compact(obj, registry)
+    perform_encrypt(obj, registry)
+    return represent_compact(obj)
 
 
 def decrypt_compact(
@@ -69,4 +67,4 @@ def decrypt_compact(
     recipient = obj.recipients[0]
     key = guess_key(private_key, recipient)
     recipient.recipient_key = key
-    return _decrypt_compact(obj, registry)
+    return perform_decrypt(obj, registry)
