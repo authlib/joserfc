@@ -11,14 +11,17 @@ from tests.util import read_key
 
 
 class TestCompactExamples(TestCase):
-    def test_RSAES_OAEP_and_AES_GCM(self):
+    def test_A1(self):
         # https://www.rfc-editor.org/rfc/rfc7516#appendix-A.1
         # Example JWE using RSAES-OAEP and AES GCM
         payload = b'The true sign of intelligence is not knowledge but imagination.'
 
         # A.1.1.  JOSE Header
         protected = {"alg": "RSA-OAEP", "enc": "A256GCM"}
-        self.assertEqual(json_b64encode(protected), b"eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ")
+        self.assertEqual(
+            json_b64encode(protected),
+            b"eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ"
+        )
 
         obj = EncryptionData(protected, payload)
         obj.plaintext = payload
@@ -110,3 +113,59 @@ class TestCompactExamples(TestCase):
 
         jwe_data = decrypt_compact(expected, key)
         self.assertEqual(jwe_data.payload, payload)
+
+    def test_A4(self):
+        # A.4.1.  JWE Per-Recipient Unprotected Headers
+        recipient_headers = [
+            {"alg": "RSA1_5", "kid": "2011-04-29"},
+            {"alg": "A128KW", "kid": "7"},
+        ]
+
+        # A.4.2.  JWE Protected Header
+        protected = {"enc": "A128CBC-HS256"}
+        self.assertEqual(
+            json_b64encode(protected),
+            b'eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0'
+        )
+
+        # A.4.3.  JWE Shared Unprotected Header
+        shared_header = {"jku": "https://server.example.com/keys.jwks"}
+
+        # A.4.5.  Additional Authenticated Data
+        aad = bytes([
+            101, 121, 74, 108, 98, 109, 77, 105, 79, 105, 74, 66, 77, 84, 73,
+            52, 81, 48, 74, 68, 76, 85, 104, 84, 77, 106, 85, 50, 73, 110, 48
+        ])
+
+        # A.4.6.  Content Encryption
+        payload = b"Live long and prosper."
+        ciphertext = bytes([
+            40, 57, 83, 181, 119, 33, 133, 148, 198, 185, 243, 24, 152, 230, 6,
+            75, 129, 223, 127, 19, 210, 82, 183, 230, 168, 33, 215, 104, 143,
+            112, 56, 102
+        ])
+
+        # A.4.7.  Complete JWE JSON Serialization Representation
+        expected = {
+            "protected": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0",
+            "unprotected": {"jku":"https://server.example.com/keys.jwks"},
+            "recipients":[
+                {
+                    "header": {"alg":"RSA1_5","kid":"2011-04-29"},
+                    "encrypted_key": (
+                        "UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-"
+                        "kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKx"
+                        "GHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3"
+                        "YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPh"
+                        "cCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPg"
+                        "wCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A")
+                },
+                {
+                    "header": {"alg":"A128KW","kid":"7"},
+                    "encrypted_key": "6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ"
+                }
+            ],
+            "iv": "AxY8DCtDaGlsbGljb3RoZQ",
+            "ciphertext": "KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY",
+            "tag": "Mz-VPPyU4RlcuYv1IwIvzw"
+        }

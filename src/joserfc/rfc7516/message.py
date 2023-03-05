@@ -66,6 +66,8 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     # perform encryption
     ciphertext = enc.encrypt(obj)
     obj.decoded['ciphertext'] = ciphertext
+    obj.encoded['ciphertext'] = urlsafe_b64encode(ciphertext)
+    obj.encoded['tag'] = urlsafe_b64encode(obj.decoded['tag'])
     return obj
 
 
