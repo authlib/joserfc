@@ -1,2 +1,2 @@
-Quick Started
-=============
+Quick Starting
+==============
