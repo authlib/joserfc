@@ -7,6 +7,9 @@ __all__ = [
     'Header',
     'EncryptionData',
     'Recipient',
+    'JSONSerialization',
+    'FlattenJSONSerialization',
+    'CompleteJSONSerialization',
 ]
 
 
@@ -88,6 +91,6 @@ FlattenJSONSerialization = t.TypedDict('FlattenJSONSerialization', {
     'aad': str,
     'ciphertext': str,
     'tag': str,
-})
+}, total=False)
 
 JSONSerialization = t.Union[CompleteJSONSerialization, FlattenJSONSerialization]
