@@ -6,14 +6,19 @@ on:
     - 'wip-*'
     paths-ignore:
     - 'docs/**'
+    - '*.md'
+    - '*.rst'
   pull_request:
     branches-ignore:
     - 'wip-*'
     paths-ignore:
     - 'docs/**'
+    - '*.md'
+    - '*.rst'
+
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     strategy:

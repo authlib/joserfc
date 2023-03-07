@@ -18,8 +18,8 @@ def represent_compact(obj: EncryptionData) -> bytes:
         obj.encoded['aad'],
         urlsafe_b64encode(recipient.encrypted_key),
         obj.encoded['iv'],
-        urlsafe_b64encode(obj.decoded['ciphertext']),
-        urlsafe_b64encode(obj.decoded['tag'])
+        obj.encoded['ciphertext'],
+        obj.encoded['tag']
     ])
 
 
