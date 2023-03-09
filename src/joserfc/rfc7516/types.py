@@ -4,17 +4,17 @@ from functools import cached_property
 from ..registry import Header
 
 __all__ = [
-    'Header',
-    'EncryptionData',
-    'Recipient',
-    'JSONSerialization',
-    'FlattenJSONSerialization',
-    'CompleteJSONSerialization',
+    "Header",
+    "EncryptionData",
+    "Recipient",
+    "JSONSerialization",
+    "FlattenJSONSerialization",
+    "CompleteJSONSerialization",
 ]
 
 
 class Recipient:
-    def __init__(self, parent: 'EncryptionData', header: t.Optional[Header] = None):
+    def __init__(self, parent: "EncryptionData", header: t.Optional[Header] = None):
         self.parent = parent
         self.header = header
         self.recipient_key = None
@@ -38,12 +38,15 @@ class Recipient:
             self.header.update({key: value})
 
     def set_kid(self, kid: str):
-        self.add_header('kid', kid)
+        self.add_header("kid", kid)
 
 
 class EncryptionData:
-    def __init__(self, protected: Header, payload: t.Optional[bytes] = None,
-                 unprotected: t.Optional[Header] = None):
+    def __init__(
+            self,
+            protected: Header,
+            payload: t.Optional[bytes] = None,
+            unprotected: t.Optional[Header] = None):
         self.protected = protected
         self.payload = payload
         self.unprotected = unprotected
@@ -66,30 +69,30 @@ class EncryptionData:
         return json.loads(self.payload)
 
 
-JSONRecipientDict = t.TypedDict('JSONRecipientDict', {
-    'header': t.Dict[str, any],
-    'encrypted_key': str,
+JSONRecipientDict = t.TypedDict("JSONRecipientDict", {
+    "header": t.Dict[str, any],
+    "encrypted_key": str,
 }, total=False)
 
-CompleteJSONSerialization = t.TypedDict('CompleteJSONSerialization', {
-    'protected': str,
-    'unprotected': t.Dict[str, any],
-    'iv': str,
-    'aad': str,
-    'ciphertext': str,
-    'tag': str,
-    'recipients': t.List[JSONRecipientDict],
+CompleteJSONSerialization = t.TypedDict("CompleteJSONSerialization", {
+    "protected": str,
+    "unprotected": t.Dict[str, any],
+    "iv": str,
+    "aad": str,
+    "ciphertext": str,
+    "tag": str,
+    "recipients": t.List[JSONRecipientDict],
 }, total=False)
 
-FlattenJSONSerialization = t.TypedDict('FlattenJSONSerialization', {
-    'protected': str,
-    'unprotected': t.Dict[str, any],
-    'header': t.Dict[str, any],
-    'encrypted_key': str,
-    'iv': str,
-    'aad': str,
-    'ciphertext': str,
-    'tag': str,
+FlattenJSONSerialization = t.TypedDict("FlattenJSONSerialization", {
+    "protected": str,
+    "unprotected": t.Dict[str, any],
+    "header": t.Dict[str, any],
+    "encrypted_key": str,
+    "iv": str,
+    "aad": str,
+    "ciphertext": str,
+    "tag": str,
 }, total=False)
 
 JSONSerialization = t.Union[CompleteJSONSerialization, FlattenJSONSerialization]

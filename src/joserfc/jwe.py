@@ -15,13 +15,13 @@ from .jwk import KeyFlexible, guess_key
 from .util import to_bytes
 
 __all__ = [
-    'types',
-    'JWERegistry',
-    'encrypt_compact',
-    'decrypt_compact',
-    'extract_compact',
-    'encrypt_json',
-    'decrypt_json',
+    "types",
+    "JWERegistry",
+    "encrypt_compact",
+    "decrypt_compact",
+    "extract_compact",
+    "encrypt_json",
+    "decrypt_json",
 ]
 
 

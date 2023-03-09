@@ -9,16 +9,15 @@ from .errors import InvalidTypeError, InvalidPayloadError
 from .util import to_bytes
 from .registry import Header
 
-
 __all__ = [
-    'Header',
-    'Claims',
-    'Token',
-    'ClaimsOption',
-    'JWTRegistry',
-    'JWTClaimsRequests',
-    'encode',
-    'decode',
+    "Header",
+    "Claims",
+    "Token",
+    "ClaimsOption",
+    "JWTRegistry",
+    "JWTClaimsRequests",
+    "encode",
+    "decode",
 ]
 
 
@@ -32,7 +31,7 @@ def encode(
         header: Header,
         claims: Claims,
         key: KeyFlexible,
-        registry: Optional[JWTRegistry]=None) -> str:
+        registry: Optional[JWTRegistry] = None) -> str:
     """Encode a JSON Web Token with the given header, and claims.
 
     :param header: A dict of the JWT header
@@ -41,18 +40,15 @@ def encode(
     :param registry: a JWTRegistry to use
     """
     # add ``typ`` in header
-    header['typ'] = 'JWT'
+    header["typ"] = "JWT"
     payload = convert_claims(claims)
     if registry is None:
         registry = default_registry
     result = serialize_compact(header, payload, key, registry)
-    return result.decode('utf-8')
+    return result.decode("utf-8")
 
 
-def decode(
-        value: AnyStr,
-        key: KeyFlexible,
-        registry: Optional[JWTRegistry]=None) -> Token:
+def decode(value: AnyStr, key: KeyFlexible, registry: Optional[JWTRegistry] = None) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests. This method is a combination of the
     :function:`extract` and :function:`validate`.
@@ -66,12 +62,12 @@ def decode(
     try:
         token = Token(obj.headers(), obj.claims)
     except ValueError:
-        raise InvalidPayloadError('Payload should be a JSON dict')
+        raise InvalidPayloadError("Payload should be a JSON dict")
     if registry is None:
         registry = default_registry
 
-    typ = token.header.get('typ')
-    if typ and typ != 'JWT':
+    typ = token.header.get("typ")
+    if typ and typ != "JWT":
         raise InvalidTypeError()
 
     registry.check_claims(token.claims)

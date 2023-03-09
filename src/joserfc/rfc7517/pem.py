@@ -1,11 +1,15 @@
 from abc import ABCMeta, abstractmethod
-from typing import Optional
 
 from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.primitives.serialization import (
-    load_pem_private_key, load_pem_public_key, load_ssh_public_key,
-    Encoding, PrivateFormat, PublicFormat,
-    BestAvailableEncryption, NoEncryption,
+    load_pem_private_key,
+    load_pem_public_key,
+    load_ssh_public_key,
+    Encoding,
+    PrivateFormat,
+    PublicFormat,
+    BestAvailableEncryption,
+    NoEncryption,
 )
 from cryptography.hazmat.backends import default_backend
 from .models import NativeKeyBinding
@@ -17,19 +21,19 @@ def load_pem_key(raw: bytes, ssh_type=None, key_type=None, password=None):
     if ssh_type and raw.startswith(ssh_type):
         return load_ssh_public_key(raw, backend=default_backend())
 
-    if key_type == 'public':
+    if key_type == "public":
         return load_pem_public_key(raw, backend=default_backend())
 
-    if key_type == 'private' or password is not None:
+    if key_type == "private" or password is not None:
         return load_pem_private_key(raw, password=password, backend=default_backend())
 
-    if b'PUBLIC' in raw:
+    if b"PUBLIC" in raw:
         return load_pem_public_key(raw, backend=default_backend())
 
-    if b'PRIVATE' in raw:
+    if b"PRIVATE" in raw:
         return load_pem_private_key(raw, password=password, backend=default_backend())
 
-    if b'CERTIFICATE' in raw:
+    if b"CERTIFICATE" in raw:
         cert = load_pem_x509_certificate(raw, default_backend())
         return cert.public_key()
 
@@ -49,12 +53,12 @@ def dump_pem_key(key, encoding=None, private=False, password=None) -> bytes:
     :return: bytes
     """
 
-    if encoding is None or encoding == 'PEM':
+    if encoding is None or encoding == "PEM":
         encoding = Encoding.PEM
-    elif encoding == 'DER':
+    elif encoding == "DER":
         encoding = Encoding.DER
     else:
-        raise ValueError('Invalid encoding: {!r}'.format(encoding))
+        raise ValueError("Invalid encoding: {!r}".format(encoding))
 
     if private:
         if password is None:
@@ -83,7 +87,7 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
 
     @classmethod
     def import_from_dict(cls, value: KeyDict):
-        if 'd' in value:
+        if "d" in value:
             return cls.import_private_key(value)
         return cls.import_public_key(value)
 

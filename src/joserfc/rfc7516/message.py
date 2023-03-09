@@ -8,7 +8,7 @@ from ..util import (
 
 
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
-    enc = registry.get_enc(obj.protected['enc'])
+    enc = registry.get_enc(obj.protected["enc"])
 
     # Step 8 for each recipient
     for recipient in obj.recipients:
@@ -17,7 +17,7 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
 
         # Step 1, determine the algorithms
         # https://www.rfc-editor.org/rfc/rfc7516#section-5.1
-        alg = registry.get_alg(headers['alg'])
+        alg = registry.get_alg(headers["alg"])
 
         # Step 2, When Key Wrapping, Key Encryption,
         # or Key Agreement with Key Wrapping are employed,
@@ -33,22 +33,22 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     # for the content encryption algorithm (if required for the algorithm);
     # otherwise, let the JWE Initialization Vector be the empty octet sequence.
     iv = enc.generate_iv()
-    obj.decoded['iv'] = iv
+    obj.decoded["iv"] = iv
 
     # Step 10, Compute the encoded Initialization Vector value
     # BASE64URL(JWE Initialization Vector).
-    obj.encoded['iv'] = urlsafe_b64encode(iv)
+    obj.encoded["iv"] = urlsafe_b64encode(iv)
 
     # Step 11, If a "zip" parameter was included, compress the plaintext using
     # the specified compression algorithm and let M be the octet sequence
     # representing the compressed plaintext; otherwise, let M be the octet
     # sequence representing the plaintext.
-    if 'zip' in obj.protected:
-        zip_ = registry.get_zip(obj.protected['zip'])
+    if "zip" in obj.protected:
+        zip_ = registry.get_zip(obj.protected["zip"])
         obj.plaintext = zip_.compress(obj.payload)
 
     # Step 13, Compute the Encoded Protected Header value BASE64URL(UTF8(JWE Protected Header)).
-    aad = json_b64encode(obj.protected, 'ascii')
+    aad = json_b64encode(obj.protected, "ascii")
 
     # Step 14, Let the Additional Authenticated Data encryption parameter be
     # ASCII(Encoded Protected Header).  However, if a JWE AAD value is
@@ -56,24 +56,24 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     # instead let the Additional Authenticated Data encryption parameter be
     # ASCII(Encoded Protected Header || '.' || BASE64URL(JWE AAD)).
     if not obj.compact and obj.aad:
-        aad = aad + b'.' + urlsafe_b64encode(obj.aad)
-    obj.encoded['aad'] = aad
+        aad = aad + b"." + urlsafe_b64encode(obj.aad)
+    obj.encoded["aad"] = aad
 
     # perform encryption
     ciphertext = enc.encrypt(obj)
-    obj.decoded['ciphertext'] = ciphertext
-    obj.encoded['ciphertext'] = urlsafe_b64encode(ciphertext)
-    obj.encoded['tag'] = urlsafe_b64encode(obj.decoded['tag'])
+    obj.decoded["ciphertext"] = ciphertext
+    obj.encoded["ciphertext"] = urlsafe_b64encode(ciphertext)
+    obj.encoded["tag"] = urlsafe_b64encode(obj.decoded["tag"])
     return obj
 
 
 def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
-    enc = registry.get_enc(obj.protected['enc'])
+    enc = registry.get_enc(obj.protected["enc"])
 
-    aad = json_b64encode(obj.protected, 'ascii')
+    aad = json_b64encode(obj.protected, "ascii")
     if not obj.compact and obj.aad:
-        aad = aad + b'.' + urlsafe_b64encode(obj.aad)
-    obj.encoded['aad'] = aad
+        aad = aad + b"." + urlsafe_b64encode(obj.aad)
+    obj.encoded["aad"] = aad
 
     cek_set = set()
     for recipient in obj.recipients:
@@ -82,7 +82,7 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
 
         # Step 6, Determine the Key Management Mode employed by the algorithm
         # specified by the "alg" (algorithm) Header Parameter.
-        alg = registry.get_alg(headers['alg'])
+        alg = registry.get_alg(headers["alg"])
         cek = alg.decrypt_recipient(enc, recipient, recipient.recipient_key)
         cek_set.add(cek)
 
@@ -95,8 +95,8 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
 
     obj.cek = cek
     msg = enc.decrypt(obj)
-    if 'zip' in obj.protected:
-        zip_ = registry.get_zip(obj.protected['zip'])
+    if "zip" in obj.protected:
+        zip_ = registry.get_zip(obj.protected["zip"])
         obj.payload = zip_.decompress(msg)
     else:
         obj.payload = msg

@@ -26,31 +26,33 @@ class CBCHS2EncModel(JWEEncModel):
     IV_SIZE = 128
 
     def __init__(self, key_size: int, hash_type: int):
-        self.name = f'A{key_size}CBC-HS{hash_type}'
-        self.description = f'AES_{key_size}_CBC_HMAC_SHA_{hash_type} authenticated encryption algorithm'
+        self.name = f"A{key_size}CBC-HS{hash_type}"
+        self.description = (
+            f"AES_{key_size}_CBC_HMAC_SHA_{hash_type} authenticated encryption algorithm"
+        )
 
-        # bit length
+        # key size in bit
         self.key_size = key_size
-        # byte length
+        # key size in byte
         self.key_len = key_size // 8
 
         self.cek_size = key_size * 2
-        self.hash_alg = getattr(hashlib, f'sha{hash_type}')
+        self.hash_alg = getattr(hashlib, f"sha{hash_type}")
 
     def _hmac(self, ciphertext: bytes, aad: bytes, iv: bytes, key: bytes) -> bytes:
         al = encode_int(len(aad) * 8, 64)
         msg = aad + iv + ciphertext + al
         d = hmac.new(key, msg, self.hash_alg).digest()
-        return d[:self.key_len]
+        return d[: self.key_len]
 
-    def encrypt(self,obj: EncryptionData) -> bytes:
+    def encrypt(self, obj: EncryptionData) -> bytes:
         """Key Encryption with AES_CBC_HMAC_SHA2.
 
         :param obj: encryption data instance
         """
         iv = self.check_iv(obj)
-        hkey = obj.cek[:self.key_len]
-        ekey = obj.cek[self.key_len:]
+        hkey = obj.cek[: self.key_len]
+        ekey = obj.cek[self.key_len :]
 
         pad = PKCS7(AES.block_size).padder()
         padded_data = pad.update(obj.plaintext) + pad.finalize()
@@ -58,9 +60,9 @@ class CBCHS2EncModel(JWEEncModel):
         cipher = Cipher(AES(ekey), CBC(iv), backend=default_backend())
         enc = cipher.encryptor()
         ciphertext = enc.update(padded_data) + enc.finalize()
-        aad = obj.encoded['aad']
+        aad = obj.encoded["aad"]
         tag = self._hmac(ciphertext, aad, iv, hkey)
-        obj.decoded['tag'] = tag
+        obj.decoded["tag"] = tag
         return ciphertext
 
     def decrypt(self, obj: EncryptionData) -> bytes:
@@ -70,13 +72,13 @@ class CBCHS2EncModel(JWEEncModel):
         :return: payload in bytes
         """
         iv = self.check_iv(obj)
-        hkey = obj.cek[:self.key_len]
-        dkey = obj.cek[self.key_len:]
+        hkey = obj.cek[: self.key_len]
+        dkey = obj.cek[self.key_len :]
 
-        ciphertext = obj.decoded['ciphertext']
-        aad = obj.encoded['aad']
+        ciphertext = obj.decoded["ciphertext"]
+        aad = obj.encoded["aad"]
         ctag = self._hmac(ciphertext, aad, iv, hkey)
-        otag = obj.decoded['tag']
+        otag = obj.decoded["tag"]
         if not hmac.compare_digest(ctag, otag):
             raise InvalidTag()
 
@@ -93,8 +95,8 @@ class GCMEncModel(JWEEncModel):
     IV_SIZE = 96
 
     def __init__(self, key_size: int):
-        self.name = f'A{key_size}GCM'
-        self.description = f'AES GCM using {key_size}-bit key'
+        self.name = f"A{key_size}GCM"
+        self.description = f"AES GCM using {key_size}-bit key"
         self.key_size = key_size
         self.cek_size = key_size
 
@@ -106,10 +108,10 @@ class GCMEncModel(JWEEncModel):
         iv = self.check_iv(obj)
         cipher = Cipher(AES(obj.cek), GCM(iv), backend=default_backend())
         enc = cipher.encryptor()
-        aad = obj.encoded['aad']
+        aad = obj.encoded["aad"]
         enc.authenticate_additional_data(aad)
         ciphertext = enc.update(obj.plaintext) + enc.finalize()
-        obj.decoded['tag'] = enc.tag
+        obj.decoded["tag"] = enc.tag
         return ciphertext
 
     def decrypt(self, obj: EncryptionData) -> bytes:
@@ -119,12 +121,12 @@ class GCMEncModel(JWEEncModel):
         :return: payload in bytes
         """
         iv = self.check_iv(obj)
-        tag = obj.decoded['tag']
+        tag = obj.decoded["tag"]
         cipher = Cipher(AES(obj.cek), GCM(iv, tag), backend=default_backend())
         d = cipher.decryptor()
-        aad = obj.encoded['aad']
+        aad = obj.encoded["aad"]
         d.authenticate_additional_data(aad)
-        ciphertext = obj.decoded['ciphertext']
+        ciphertext = obj.decoded["ciphertext"]
         return d.update(ciphertext) + d.finalize()
 
 

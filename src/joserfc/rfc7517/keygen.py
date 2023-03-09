@@ -6,11 +6,7 @@ from ..util import to_bytes
 JWK_REGISTRY: Dict[str, Type[Key]] = {}
 
 
-def import_key(
-    key_type: str,
-    value: KeyAny,
-    options: KeyOptions=None) -> Key:
-
+def import_key(key_type: str, value: KeyAny, options: KeyOptions = None) -> Key:
     if key_type not in JWK_REGISTRY:
         raise ValueError(f'Invalid key type: "{key_type}"')
 
@@ -22,11 +18,10 @@ def import_key(
 
 
 def generate_key(
-    key_type: str,
-    crv_or_size: Union[str, int],
-    options: KeyOptions=None,
-    private: bool=True):
-
+        key_type: str,
+        crv_or_size: Union[str, int],
+        options: KeyOptions = None,
+        private: bool = True):
     if key_type not in JWK_REGISTRY:
         raise ValueError(f'Invalid key type: "{key_type}"')
 

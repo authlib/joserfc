@@ -3,8 +3,8 @@ from ..rfc7516.models import JWEZipModel
 
 
 class DeflateZipModel(JWEZipModel):
-    name = 'DEF'
-    description = 'DEFLATE'
+    name = "DEF"
+    description = "DEFLATE"
 
     def compress(self, s: bytes) -> bytes:
         """Compress bytes data with DEFLATE algorithm."""
@@ -17,6 +17,4 @@ class DeflateZipModel(JWEZipModel):
         return zlib.decompress(s, -zlib.MAX_WBITS)
 
 
-JWE_ZIP_MODELS = [
-    DeflateZipModel()
-]
+JWE_ZIP_MODELS = [DeflateZipModel()]

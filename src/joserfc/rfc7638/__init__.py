@@ -13,4 +13,4 @@ def thumbprint(dict_value: t.Dict[str, str], fields: t.List[str]) -> str:
 
     json_data = json_dumps(data)
     digest_data = hashlib.sha256(to_bytes(json_data)).digest()
-    return urlsafe_b64encode(digest_data).decode('utf-8')
+    return urlsafe_b64encode(digest_data).decode("utf-8")

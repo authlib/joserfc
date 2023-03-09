@@ -11,28 +11,28 @@ from ..registry import (
 
 JWEAlgorithm = t.Union[JWEAlgModel, JWEEncModel, JWEZipModel]
 
-AlgorithmsDict = t.TypedDict('AlgorithmsDict', {
-    'alg': t.Dict[str, JWEAlgModel],
-    'enc': t.Dict[str, JWEEncModel],
-    'zip': t.Dict[str, JWEZipModel],
+AlgorithmsDict = t.TypedDict("AlgorithmsDict", {
+    "alg": t.Dict[str, JWEAlgModel],
+    "enc": t.Dict[str, JWEEncModel],
+    "zip": t.Dict[str, JWEZipModel],
 })
-AlgorithmNamesDict = t.TypedDict('AlgorithmNamesDict', {
-    'alg': t.List[str],
-    'enc': t.List[str],
-    'zip': t.List[str],
+AlgorithmNamesDict = t.TypedDict("AlgorithmNamesDict", {
+    "alg": t.List[str],
+    "enc": t.List[str],
+    "zip": t.List[str],
 }, total=False)
 
 
 class JWERegistry:
     algorithms: AlgorithmsDict = {
-        'alg': {},
-        'enc': {},
-        'zip': {},
+        "alg": {},
+        "enc": {},
+        "zip": {},
     }
     recommended: AlgorithmNamesDict = {
-        'alg': [],
-        'enc': [],
-        'zip': [],
+        "alg": [],
+        "enc": [],
+        "zip": [],
     }
 
     def __init__(
@@ -58,7 +58,7 @@ class JWERegistry:
         check_crit_header(header)
         check_registry_header(self.header_registry, header)
         if check_more:
-            alg = self.get_alg(header['alg'])
+            alg = self.get_alg(header["alg"])
             if alg.more_header_registry:
                 check_registry_header(alg.more_header_registry, header)
             if self.strict_check_header:
@@ -69,13 +69,13 @@ class JWERegistry:
             check_supported_header(self.header_registry, header)
 
     def get_alg(self, name: str) -> JWEAlgModel:
-        return self._get_algorithm('alg', name)
+        return self._get_algorithm("alg", name)
 
     def get_enc(self, name: str) -> JWEEncModel:
-        return self._get_algorithm('enc', name)
+        return self._get_algorithm("enc", name)
 
     def get_zip(self, name: str) -> JWEZipModel:
-        return self._get_algorithm('zip', name)
+        return self._get_algorithm("zip", name)
 
     def _get_algorithm(self, location: str, name: str):
         if location not in self.algorithms:

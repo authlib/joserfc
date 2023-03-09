@@ -20,7 +20,7 @@ class KeySet:
                 keys.append(key.as_dict(private=private, **params))
         return {"keys": keys}
 
-    def get_by_kid(self, kid: Optional[str]=None) -> Key:
+    def get_by_kid(self, kid: Optional[str] = None) -> Key:
         if kid is None and len(self.keys) == 1:
             return self.keys[0]
 
@@ -30,11 +30,11 @@ class KeySet:
         raise ValueError(f'No key for kid: "{kid}"')
 
     @classmethod
-    def import_key_set(cls, value: KeySetDict, options: KeyOptions=None) -> 'KeySet':
+    def import_key_set(cls, value: KeySetDict, options: KeyOptions = None) -> "KeySet":
         keys = []
 
-        for data in value['keys']:
-            key_type = data['kty']
+        for data in value["keys"]:
+            key_type = data["kty"]
             keys.append(import_key(key_type, data, options))
 
         return cls(keys)
@@ -44,10 +44,9 @@ class KeySet:
             cls,
             key_type: str,
             crv_or_size: Union[str, int],
-            options: KeyOptions=None,
-            private: bool=True,
-            count: int=4) -> 'KeySet':
-
+            options: KeyOptions = None,
+            private: bool = True,
+            count: int = 4) -> "KeySet":
         keys = []
         for i in range(count):
             key = generate_key(key_type, crv_or_size, options, private)

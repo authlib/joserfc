@@ -8,9 +8,9 @@ from ..rfc7515.registry import JWSRegistry
 class JWTRegistry(JWSRegistry):
     def __init__(
             self,
-            headers: Optional[HeaderRegistryDict]=None,
-            algorithms: Optional[List[str]]=None,
-            claims: Optional[JWTClaimsRequests]=None):
+            headers: Optional[HeaderRegistryDict] = None,
+            algorithms: Optional[List[str]] = None,
+            claims: Optional[JWTClaimsRequests] = None):
         super().__init__(headers, algorithms)
         self.claims = claims
 

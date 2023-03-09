@@ -5,11 +5,12 @@ class JWSAlgModel(object, metaclass=ABCMeta):
     """Interface for JWS algorithm. JWA specification (RFC7518) SHOULD
     implement the algorithms for JWS with this base implementation.
     """
+
     name: str
     description: str
     recommended: bool = False
-    algorithm_type = 'JWS'
-    algorithm_location = 'sig'
+    algorithm_type = "JWS"
+    algorithm_location = "sig"
 
     def __str__(self):
         return self.name

@@ -24,21 +24,21 @@ KeyCallable = Callable[[Any, bool], Key]
 KeyFlexible = Union[Key, KeySet, KeyCallable]
 
 __all__ = [
-    'types',
-    'JWK_REGISTRY',
-    'SymmetricKey',
-    'AsymmetricKey',
-    'Key',
-    'KeyCallable',
-    'KeyFlexible',
-    'OctKey',
-    'RSAKey',
-    'ECKey',
-    'OKPKey',
-    'KeySet',
-    'generate_key',
-    'import_key',
-    'guess_key',
+    "types",
+    "JWK_REGISTRY",
+    "SymmetricKey",
+    "AsymmetricKey",
+    "Key",
+    "KeyCallable",
+    "KeyFlexible",
+    "OctKey",
+    "RSAKey",
+    "ECKey",
+    "OKPKey",
+    "KeySet",
+    "generate_key",
+    "import_key",
+    "guess_key",
 ]
 
 # register thumbprint method
@@ -70,7 +70,7 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
 
     elif isinstance(key, KeySet):
         headers = obj.headers()
-        kid = headers.get('kid')
+        kid = headers.get("kid")
 
         if not kid:
             # choose one key by random

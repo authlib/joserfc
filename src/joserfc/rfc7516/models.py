@@ -9,8 +9,8 @@ class JWEEncModel(object, metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = True
-    algorithm_type = 'JWE'
-    algorithm_location = 'enc'
+    algorithm_type = "JWE"
+    algorithm_location = "enc"
 
     IV_SIZE: int
     cek_size: int
@@ -22,7 +22,7 @@ class JWEEncModel(object, metaclass=ABCMeta):
         return os.urandom(self.IV_SIZE // 8)
 
     def check_iv(self, obj: EncryptionData) -> bytes:
-        iv: bytes = obj.decoded['iv']
+        iv: bytes = obj.decoded["iv"]
         if len(iv) * 8 != self.IV_SIZE:
             raise ValueError('Invalid "iv" size')
         return iv
@@ -40,8 +40,8 @@ class JWEZipModel(object, metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = True
-    algorithm_type = 'JWE'
-    algorithm_location = 'zip'
+    algorithm_type = "JWE"
+    algorithm_location = "zip"
 
     @abstractmethod
     def compress(self, s: bytes) -> bytes:
@@ -57,8 +57,8 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     description: str
     recommended: bool = False
     key_size: Optional[int] = None
-    algorithm_type = 'JWE'
-    algorithm_location = 'alg'
+    algorithm_type = "JWE"
+    algorithm_location = "alg"
     more_header_registry: HeaderRegistryDict = {}
 
     # key management mode

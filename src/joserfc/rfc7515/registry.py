@@ -16,9 +16,9 @@ class JWSRegistry(object):
 
     def __init__(
             self,
-            headers: Optional[HeaderRegistryDict]=None,
-            algorithms: Optional[List[str]]=None,
-            strict_check_header: bool=True):
+            headers: Optional[HeaderRegistryDict] = None,
+            algorithms: Optional[List[str]] = None,
+            strict_check_header: bool = True):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(JWS_HEADER_REGISTRY)
         if headers is not None:

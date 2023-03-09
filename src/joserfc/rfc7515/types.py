@@ -4,25 +4,25 @@ from functools import cached_property
 from ..registry import Header
 
 __all__ = [
-    'Header',
-    'HeaderMember',
-    'HeaderDict',
-    'SignatureData',
-    'JSONSignatureDict',
-    'CompleteJSONSerialization',
-    'FlattenJSONSerialization',
-    'JSONSerialization',
+    "Header",
+    "HeaderMember",
+    "HeaderDict",
+    "SignatureData",
+    "JSONSignatureDict",
+    "CompleteJSONSerialization",
+    "FlattenJSONSerialization",
+    "JSONSerialization",
 ]
 
-SegmentsDict = t.TypedDict('SegmentsDict', {
-    'header': bytes,
-    'payload': bytes,
-    'signature': bytes,
+SegmentsDict = t.TypedDict("SegmentsDict", {
+    "header": bytes,
+    "payload": bytes,
+    "signature": bytes,
 }, total=False)
 
 
 class HeaderMember:
-    def __init__(self, protected: Header, header: t.Optional[Header]=None):
+    def __init__(self, protected: Header, header: t.Optional[Header] = None):
         self.protected = protected
         self.header = header
         self.compact = False
@@ -36,11 +36,11 @@ class HeaderMember:
 
     def set_kid(self, kid: str):
         if self.compact:
-            self.protected['kid'] = kid
+            self.protected["kid"] = kid
         else:
             if self.header is None:
                 self.header = {}
-            self.header['kid'] = kid
+            self.header["kid"] = kid
 
 
 class SignatureData:
@@ -64,29 +64,29 @@ class SignatureData:
         return json.loads(self.payload)
 
 
-HeaderDict = t.TypedDict('HeaderDict', {
-    'protected': Header,
-    'header': Header,
+HeaderDict = t.TypedDict("HeaderDict", {
+    "protected": Header,
+    "header": Header,
 }, total=False)
 
 
-JSONSignatureDict = t.TypedDict('JSONSignatureDict', {
-    'protected': str,
-    'header': Header,
-    'signature': str,
+JSONSignatureDict = t.TypedDict("JSONSignatureDict", {
+    "protected": str,
+    "header": Header,
+    "signature": str,
 }, total=False)
 
 
-CompleteJSONSerialization = t.TypedDict('CompleteJSONSerialization', {
-    'payload': str,
-    'signatures': t.List[JSONSignatureDict],
+CompleteJSONSerialization = t.TypedDict("CompleteJSONSerialization", {
+    "payload": str,
+    "signatures": t.List[JSONSignatureDict],
 })
 
-FlattenJSONSerialization = t.TypedDict('FlattenJSONSerialization', {
-    'payload': str,
-    'protected': str,
-    'header': Header,
-    'signature': str,
+FlattenJSONSerialization = t.TypedDict("FlattenJSONSerialization", {
+    "payload": str,
+    "protected": str,
+    "header": Header,
+    "signature": str,
 }, total=False)
 
 JSONSerialization = t.Union[CompleteJSONSerialization, FlattenJSONSerialization]

@@ -4,10 +4,10 @@ from .keygen import JWK_REGISTRY
 
 
 __all__ = [
-    'SymmetricKey',
-    'AsymmetricKey',
-    'CurveKey',
-    'Key',
-    'KeySet',
-    'JWK_REGISTRY',
+    "SymmetricKey",
+    "AsymmetricKey",
+    "CurveKey",
+    "Key",
+    "KeySet",
+    "JWK_REGISTRY",
 ]
