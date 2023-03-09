@@ -15,6 +15,12 @@ def to_bytes(x, charset='utf-8', errors='strict'):
     return bytes(x)
 
 
+def to_unicode(x, charset='utf-8') -> str:
+    if isinstance(x, bytes):
+        return x.decode(charset)
+    return x
+
+
 def json_dumps(data: dict, ensure_ascii=False):
     return json.dumps(data, ensure_ascii=ensure_ascii, separators=(',', ':'))
 

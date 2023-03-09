@@ -1,7 +1,7 @@
 from .types import EncryptionData
 from .registry import JWERegistry
+from ..errors import DecodeError
 from ..util import (
-    to_bytes,
     json_b64encode,
     urlsafe_b64encode,
 )
@@ -22,7 +22,7 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
         # Step 2, When Key Wrapping, Key Encryption,
         # or Key Agreement with Key Wrapping are employed,
         # generate a random CEK value.
-        if not alg.direct_mode:
+        if not alg.direct_mode and not obj.cek:
             obj.cek = enc.generate_cek()
 
         # from step 3 to step 7
@@ -46,10 +46,6 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     if 'zip' in obj.protected:
         zip_ = registry.get_zip(obj.protected['zip'])
         obj.plaintext = zip_.compress(obj.payload)
-    else:
-        obj.plaintext = obj.payload
-
-    # Step 12
 
     # Step 13, Compute the Encoded Protected Header value BASE64URL(UTF8(JWE Protected Header)).
     aad = json_b64encode(obj.protected, 'ascii')
@@ -59,8 +55,8 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     # present (which can only be the case when using the JWE JSON Serialization),
     # instead let the Additional Authenticated Data encryption parameter be
     # ASCII(Encoded Protected Header || '.' || BASE64URL(JWE AAD)).
-    if not obj.compact and 'aad' in obj.protected:
-        aad = aad + b'.' + urlsafe_b64encode(to_bytes(obj.protected['aad']))
+    if not obj.compact and obj.aad:
+        aad = aad + b'.' + urlsafe_b64encode(obj.aad)
     obj.encoded['aad'] = aad
 
     # perform encryption
@@ -74,11 +70,15 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
 def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
     enc = registry.get_enc(obj.protected['enc'])
 
-    cek_set = set()
+    aad = json_b64encode(obj.protected, 'ascii')
+    if not obj.compact and obj.aad:
+        aad = aad + b'.' + urlsafe_b64encode(obj.aad)
+    obj.encoded['aad'] = aad
 
+    cek_set = set()
     for recipient in obj.recipients:
         headers = recipient.headers()
-        registry.check_header(obj.protected, True)
+        registry.check_header(headers, True)
 
         # Step 6, Determine the Key Management Mode employed by the algorithm
         # specified by the "alg" (algorithm) Header Parameter.
@@ -87,8 +87,9 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
         cek_set.add(cek)
 
     if len(cek_set) > 1:
-        raise
+        raise DecodeError('Multiple "cek" found')
 
+    cek = cek_set.pop()
     if len(cek) * 8 != enc.cek_size:
         raise ValueError('Invalid "cek" length')
 

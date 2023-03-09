@@ -14,14 +14,16 @@ from .rfc7518.jwe_zips import JWE_ZIP_MODELS
 from .jwk import KeyFlexible, guess_key
 from .util import to_bytes
 
-
 __all__ = [
     'types',
     'JWERegistry',
     'encrypt_compact',
     'decrypt_compact',
     'extract_compact',
+    'encrypt_json',
+    'decrypt_json',
 ]
+
 
 def __register():
     for _alg in JWE_ALG_MODELS:
@@ -33,6 +35,7 @@ def __register():
     for _zip in JWE_ZIP_MODELS:
         JWERegistry.register(_zip)
 
+
 __register()
 
 
@@ -40,8 +43,7 @@ def encrypt_compact(
         protected: Header,
         payload: bytes,
         public_key: KeyFlexible,
-        registry: Optional[JWERegistry]=None) -> bytes:
-
+        registry: Optional[JWERegistry] = None) -> bytes:
     if registry is None:
         registry = default_registry
 
@@ -58,8 +60,7 @@ def encrypt_compact(
 def decrypt_compact(
         value: AnyStr,
         private_key: KeyFlexible,
-        registry: Optional[JWERegistry]=None) -> EncryptionData:
-
+        registry: Optional[JWERegistry] = None) -> EncryptionData:
     value = to_bytes(value)
     obj = extract_compact(value)
     if registry is None:
@@ -74,8 +75,7 @@ def decrypt_compact(
 def encrypt_json(
         obj: EncryptionData,
         public_key: KeyFlexible,
-        registry: Optional[JWERegistry]=None) -> JSONSerialization:
-
+        registry: Optional[JWERegistry] = None) -> JSONSerialization:
     if registry is None:
         registry = default_registry
 
@@ -90,8 +90,7 @@ def encrypt_json(
 def decrypt_json(
         data: JSONSerialization,
         private_key: KeyFlexible,
-        registry: Optional[JWERegistry]=None) -> EncryptionData:
-
+        registry: Optional[JWERegistry] = None) -> EncryptionData:
     obj = extract_json(data)
     if registry is None:
         registry = default_registry

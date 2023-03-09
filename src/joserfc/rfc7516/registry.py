@@ -37,9 +37,9 @@ class JWERegistry:
 
     def __init__(
             self,
-            headers: t.Optional[HeaderRegistryDict]=None,
-            algorithms: t.Optional[AlgorithmNamesDict]=None,
-            strict_check_header: bool=True):
+            headers: t.Optional[HeaderRegistryDict] = None,
+            algorithms: t.Optional[AlgorithmNamesDict] = None,
+            strict_check_header: bool = True):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(JWE_HEADER_REGISTRY)
         if headers is not None:
@@ -52,7 +52,7 @@ class JWERegistry:
         location = model.algorithm_location
         cls.algorithms[location][model.name] = model  # type: ignore
         if model.recommended:
-            cls.recommended[location].append(model.name) # type: ignore
+            cls.recommended[location].append(model.name)  # type: ignore
 
     def check_header(self, header: Header, check_more=False):
         check_crit_header(header)
@@ -85,9 +85,9 @@ class JWERegistry:
             raise ValueError(f'Algorithm of "{name}" is not supported')
 
         if self.allowed:
-            allowed: t.List[str] = self.allowed[location] # type: ignore
+            allowed: t.List[str] = self.allowed[location]  # type: ignore
         else:
-            allowed: t.List[str] = self.recommended[location] # type: ignore
+            allowed: t.List[str] = self.recommended[location]  # type: ignore
 
         if name not in allowed:
             raise ValueError(f'Algorithm of "{name}" is not allowed')

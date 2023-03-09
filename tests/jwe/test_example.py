@@ -1,11 +1,12 @@
 import json
-from joserfc.jwe import decrypt_compact
-from joserfc.jwk import RSAKey, OctKey
+from joserfc.jwe import decrypt_compact, decrypt_json
+from joserfc.jwk import RSAKey, OctKey, KeySet
 from joserfc.util import json_b64encode, urlsafe_b64encode, to_bytes
 from joserfc.rfc7516.registry import JWERegistry, default_registry as registry
 from joserfc.rfc7516.types import EncryptionData
 from joserfc.rfc7516.message import perform_encrypt
 from joserfc.rfc7516.compact import represent_compact
+from joserfc.rfc7516.json import represent_json
 from unittest import TestCase
 from tests.util import read_key
 
@@ -24,7 +25,6 @@ class TestCompactExamples(TestCase):
         )
 
         obj = EncryptionData(protected, payload)
-        obj.plaintext = payload
 
         # A.1.2.  Content Encryption Key (CEK)
         CEK = bytes([
@@ -133,7 +133,6 @@ class TestCompactExamples(TestCase):
             b"eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0"
         )
         obj = EncryptionData(protected, payload)
-        obj.plaintext = payload
 
         # A.2.2.  Content Encryption Key (CEK)
         CEK = bytes([
@@ -233,7 +232,7 @@ class TestCompactExamples(TestCase):
         ])
         key = OctKey.import_key({
             "kty": "oct",
-            "k":"GawgguFyGrWKav7AX4VKUg"
+            "k": "GawgguFyGrWKav7AX4VKUg"
         })
 
         iv = bytes([3, 22, 60, 12, 43, 67, 104, 105, 108, 108, 105, 99, 111, 116, 104, 101])
@@ -252,11 +251,25 @@ class TestCompactExamples(TestCase):
         self.assertEqual(extract_data.decoded['iv'], iv)
 
     def test_A4(self):
+        # https://www.rfc-editor.org/rfc/rfc7516#appendix-A.4
         # A.4.1.  JWE Per-Recipient Unprotected Headers
-        recipient_headers = [
-            {"alg": "RSA1_5", "kid": "2011-04-29"},
-            {"alg": "A128KW", "kid": "7"},
-        ]
+        recipient1 = {"alg": "RSA1_5", "kid": "2011-04-29"}
+        recipient2 = {"alg": "A128KW", "kid": "7"}
+
+        # The algorithm and key used for the first recipient are the same as
+        # that used in Appendix A.2.
+        key1 = RSAKey.import_key(
+            json.loads(read_key('RFC7516-A.2.3.json')),
+            {"kid": "2011-04-29"}
+        )
+
+        # The algorithm and key used for the second recipient are the same as
+        # that used in Appendix A.3.
+        key2 = OctKey.import_key({
+            "kty": "oct",
+            "k": "GawgguFyGrWKav7AX4VKUg"
+        }, {"kid": "7"})
+        keys = KeySet([key1, key2])
 
         # A.4.2.  JWE Protected Header
         protected = {"enc": "A128CBC-HS256"}
@@ -268,14 +281,16 @@ class TestCompactExamples(TestCase):
         # A.4.3.  JWE Shared Unprotected Header
         shared_header = {"jku": "https://server.example.com/keys.jwks"}
 
-        # A.4.5.  Additional Authenticated Data
-        aad = bytes([
-            101, 121, 74, 108, 98, 109, 77, 105, 79, 105, 74, 66, 77, 84, 73,
-            52, 81, 48, 74, 68, 76, 85, 104, 84, 77, 106, 85, 50, 73, 110, 48
+        # same as A3
+        CEK = bytes([
+            4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106,
+            206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156,
+            44, 207
         ])
 
         # A.4.6.  Content Encryption
         payload = b"Live long and prosper."
+
         ciphertext = bytes([
             40, 57, 83, 181, 119, 33, 133, 148, 198, 185, 243, 24, 152, 230, 6,
             75, 129, 223, 127, 19, 210, 82, 183, 230, 168, 33, 215, 104, 143,
@@ -285,10 +300,10 @@ class TestCompactExamples(TestCase):
         # A.4.7.  Complete JWE JSON Serialization Representation
         expected = {
             "protected": "eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0",
-            "unprotected": {"jku":"https://server.example.com/keys.jwks"},
-            "recipients":[
+            "unprotected": {"jku": "https://server.example.com/keys.jwks"},
+            "recipients": [
                 {
-                    "header": {"alg":"RSA1_5","kid":"2011-04-29"},
+                    "header": {"alg": "RSA1_5", "kid": "2011-04-29"},
                     "encrypted_key": (
                         "UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-"
                         "kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKx"
@@ -298,7 +313,7 @@ class TestCompactExamples(TestCase):
                         "wCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A")
                 },
                 {
-                    "header": {"alg":"A128KW","kid":"7"},
+                    "header": {"alg": "A128KW", "kid": "7"},
                     "encrypted_key": "6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ"
                 }
             ],
@@ -306,3 +321,44 @@ class TestCompactExamples(TestCase):
             "ciphertext": "KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY",
             "tag": "Mz-VPPyU4RlcuYv1IwIvzw"
         }
+
+        _registry = JWERegistry(algorithms={
+            'alg': ['RSA1_5', 'A128KW'],
+            'enc': ['A128CBC-HS256']
+        })
+        jwe_data = decrypt_json(expected, keys, registry=_registry)
+        self.assertEqual(jwe_data.payload, payload)
+        self.assertEqual(jwe_data.protected, protected)
+        self.assertEqual(jwe_data.unprotected, shared_header)
+        self.assertEqual(jwe_data.decoded['ciphertext'], ciphertext)
+        self.assertEqual(jwe_data.cek, CEK)
+        self.assertEqual(jwe_data.recipients[0].header, recipient1)
+        self.assertEqual(jwe_data.recipients[1].header, recipient2)
+
+    def test_A4_perform(self):
+        recipient1 = {"alg": "RSA1_5", "kid": "2011-04-29"}
+        recipient2 = {"alg": "A128KW", "kid": "7"}
+        protected = {"enc": "A128CBC-HS256"}
+        shared_header = {"jku": "https://server.example.com/keys.jwks"}
+        key1 = RSAKey.import_key(
+            json.loads(read_key('RFC7516-A.2.3.json')),
+            {"kid": "2011-04-29"}
+        )
+        key2 = OctKey.import_key({
+            "kty": "oct",
+            "k": "GawgguFyGrWKav7AX4VKUg"
+        }, {"kid": "7"})
+        payload = b"Live long and prosper."
+        obj = EncryptionData(protected, payload, shared_header)
+        obj.add_recipient(key1, recipient1)
+        obj.add_recipient(key2, recipient2)
+        _registry = JWERegistry(algorithms={
+            'alg': ['RSA1_5', 'A128KW'],
+            'enc': ['A128CBC-HS256']
+        })
+        perform_encrypt(obj, _registry)
+        expected = represent_json(obj)
+
+        keys = KeySet([key1, key2])
+        jwe_data = decrypt_json(expected, keys, registry=_registry)
+        self.assertEqual(jwe_data.payload, payload)

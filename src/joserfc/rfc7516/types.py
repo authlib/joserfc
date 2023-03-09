@@ -14,7 +14,7 @@ __all__ = [
 
 
 class Recipient:
-    def __init__(self, parent: 'EncryptionData', header: t.Optional[Header]=None):
+    def __init__(self, parent: 'EncryptionData', header: t.Optional[Header] = None):
         self.parent = parent
         self.header = header
         self.recipient_key = None
@@ -42,21 +42,21 @@ class Recipient:
 
 
 class EncryptionData:
-    def __init__(self, protected: Header, payload: t.Optional[bytes]=None,
-                 unprotected: t.Optional[Header]=None):
-
+    def __init__(self, protected: Header, payload: t.Optional[bytes] = None,
+                 unprotected: t.Optional[Header] = None):
         self.protected = protected
         self.payload = payload
         self.unprotected = unprotected
         self.recipients: t.List[Recipient] = []
         self.cek: t.Optional[bytes] = None  # content encryption key
-        self.plaintext: bytes = b''
+        self.plaintext = payload
+        self.aad: t.Optional[bytes] = None  # aad for JSON serialization
         self.encoded = {}  # store the encoded segments
         self.decoded = {}  # store the decoded segments
         self.compact = False
         self.flatten = False
 
-    def add_recipient(self, key, header: t.Optional[Header]=None):
+    def add_recipient(self, key, header: t.Optional[Header] = None):
         recipient = Recipient(self, header)
         recipient.recipient_key = key
         self.recipients.append(recipient)
@@ -70,7 +70,6 @@ JSONRecipientDict = t.TypedDict('JSONRecipientDict', {
     'header': t.Dict[str, any],
     'encrypted_key': str,
 }, total=False)
-
 
 CompleteJSONSerialization = t.TypedDict('CompleteJSONSerialization', {
     'protected': str,
