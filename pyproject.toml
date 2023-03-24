@@ -5,7 +5,7 @@ authors = [{name = "Hsiaoming Yang", email="me@lepture.com"}]
 dependencies = [
   "cryptography",
 ]
-license = {file = "LICENSE"}
+license = {text = "BSD-3-Clause"}
 requires-python = ">=3.8"
 dynamic = ["version"]
 
