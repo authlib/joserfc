@@ -1,5 +1,4 @@
 import typing as t
-from cryptography.hazmat.primitives import hashes
 from ..rfc7516.models import JWEAlgModel, JWEEncModel
 from ..rfc7516.types import EncryptionData, Recipient, Header
 from ..rfc7517.models import CurveKey
@@ -25,17 +24,16 @@ class ECDH1PUAlgModel(JWEAlgModel):
     }
     key_agreement: bool = True
 
-    def __init__(self, key_size: int):
-        self.key_size = key_size
-        if key_size is None:
+    def __init__(self, key_wrapping: t.Optional[JWEAlgModel]=None):
+        if key_wrapping is None:
             self.name = "ECDH-1PU"
             self.description = "ECDH-1PU using one-pass KDF and CEK in the Direct Key Agreement mode"
-            self.key_wrapping = False
+            self.key_size = None
         else:
-            self.name = f"ECDH-1PU+A{key_size}KW"
-            self.description = f"ECDH-1PU using one-pass KDF and CEK wrapped with A{key_size}KW"
-            self.key_wrapping = True
-        self.key_size = key_size
+            self.name = f"ECDH-1PU+{key_wrapping.name}"
+            self.description = f"ECDH-1PU using one-pass KDF and CEK wrapped with {key_wrapping.name}"
+            self.key_wrapping = key_wrapping
+            self.key_size = key_wrapping.key_size
 
     def get_bit_size(self, enc: JWEEncModel) -> int:
         if self.key_size is None:

@@ -12,7 +12,7 @@ from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from .rsa_key import RSAKey
 from .oct_key import OctKey
-from ..rfc7516.models import JWEAlgModel, JWEWrappingAlgModel, JWEEncModel
+from ..rfc7516.models import JWEAlgModel, JWEEncModel
 from ..rfc7516.types import EncryptionData, Recipient, Header
 from ..rfc7517.models import CurveKey
 from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode, u32be_len_input
@@ -71,7 +71,7 @@ class RSAAlgModel(JWEAlgModel):
         return cek
 
 
-class AESAlgModel(JWEWrappingAlgModel):
+class AESAlgModel(JWEAlgModel):
     def __init__(self, key_size: int, recommended: bool = False):
         self.name = f"A{key_size}KW"
         self.description = f"AES Key Wrap using {key_size}-bit key"
@@ -161,7 +161,7 @@ class ECDHESAlgModel(JWEAlgModel):
     key_agreement = True
 
     # https://tools.ietf.org/html/rfc7518#section-4.6
-    def __init__(self, key_wrapping: t.Optional[JWEWrappingAlgModel] = None):
+    def __init__(self, key_wrapping: t.Optional[JWEAlgModel] = None):
         if key_wrapping is None:
             self.name = "ECDH-ES"
             self.description = "ECDH-ES in the Direct Key Agreement mode"
@@ -193,13 +193,11 @@ class ECDHESAlgModel(JWEAlgModel):
         pubkey = key.get_op_key("deriveKey")
         shared_key = recipient.ephemeral_key.exchange_shared_key(pubkey)
         dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size)
+        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
+        if self.key_wrapping:
+            return self.key_wrapping.encrypt_recipient(enc, recipient, OctKey.import_key(dk))
 
         obj: EncryptionData = recipient.parent
-        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
-
-        if self.key_wrapping:
-            return self.key_wrapping.wrap_cek(obj.cek, OctKey.import_key(dk))
-
         assert obj.cek is None
         obj.cek = dk
         return b""
@@ -215,7 +213,7 @@ class ECDHESAlgModel(JWEAlgModel):
         dk = self.compute_derived_key(shared_key, headers, bit_size)
 
         if self.key_wrapping:
-            return self.key_wrapping.unwrap_cek(recipient.encrypted_key, OctKey.import_key(dk))
+            return self.key_wrapping.decrypt_recipient(enc, recipient, OctKey.import_key(dk))
         return dk
 
 
@@ -229,7 +227,7 @@ class PBES2HSAlgModel(JWEAlgModel):
     # A minimum iteration count of 1000 is RECOMMENDED.
     DEFAULT_P2C = 2048
 
-    def __init__(self, hash_size: int, key_wrapping: JWEWrappingAlgModel):
+    def __init__(self, hash_size: int, key_wrapping: JWEAlgModel):
         self.name = f"PBES2-HS{hash_size}+{key_wrapping.name}"
         self.description = f"PBES2 with HMAC SHA-{hash_size} and {key_wrapping.name} wrapping"
         self.key_size = key_wrapping.key_size
@@ -250,7 +248,6 @@ class PBES2HSAlgModel(JWEAlgModel):
         return kdf.derive(key)
 
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
-        obj: EncryptionData = recipient.parent
         headers = recipient.headers()
 
         if "p2s" not in headers:
@@ -265,7 +262,7 @@ class PBES2HSAlgModel(JWEAlgModel):
             recipient.add_header("p2c", p2c)
 
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), headers, p2c)
-        return self.key_wrapping.wrap_cek(obj.cek, OctKey.import_key(kek))
+        return self.key_wrapping.encrypt_recipient(enc, recipient, OctKey.import_key(kek))
 
     def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         headers = recipient.headers()
@@ -273,7 +270,7 @@ class PBES2HSAlgModel(JWEAlgModel):
         assert "p2c" in headers
         p2c = headers["p2c"]
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), headers, p2c)
-        return self.key_wrapping.unwrap_cek(recipient.encrypted_key, OctKey.import_key(kek))
+        return self.key_wrapping.decrypt_recipient(enc, recipient, OctKey.import_key(kek))
 
 
 def compute_concat_kdf_info(key_size: t.Optional[int], header: Header, bit_size: int):
