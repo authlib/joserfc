@@ -4,7 +4,6 @@ from ..rfc7516.models import JWEAlgModel, JWEEncModel
 from ..rfc7516.types import EncryptionData, Recipient, Header
 from ..rfc7517.models import CurveKey
 from ..rfc7518.jwe_algs import (
-    AES_KW_MAP,
     compute_concat_kdf_info,
     compute_derived_key_for_concat_kdf,
 )

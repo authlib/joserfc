@@ -12,7 +12,7 @@ from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from .rsa_key import RSAKey
 from .oct_key import OctKey
-from ..rfc7516.models import JWEAlgModel, JWEEncModel
+from ..rfc7516.models import JWEAlgModel, JWEWrappingAlgModel, JWEEncModel
 from ..rfc7516.types import EncryptionData, Recipient, Header
 from ..rfc7517.models import CurveKey
 from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode, u32be_len_input
@@ -71,9 +71,7 @@ class RSAAlgModel(JWEAlgModel):
         return cek
 
 
-class AESAlgModel(JWEAlgModel):
-    key_wrapping = True
-
+class AESAlgModel(JWEWrappingAlgModel):
     def __init__(self, key_size: int, recommended: bool = False):
         self.name = f"A{key_size}KW"
         self.description = f"AES Key Wrap using {key_size}-bit key"
@@ -104,23 +102,11 @@ class AESAlgModel(JWEAlgModel):
         return cek
 
 
-A128KW = AESAlgModel(128, True)  # A128KW, Recommended
-A192KW = AESAlgModel(192)  # A192KW
-A256KW = AESAlgModel(256, True)  # A256KW, Recommended
-
-AES_KW_MAP: t.Dict[int, AESAlgModel] = {
-    128: A128KW,
-    192: A192KW,
-    256: A256KW,
-}
-
-
 class AESGCMAlgModel(JWEAlgModel):
     more_header_registry = {
         "iv": HeaderParameter("Initialization vector", True, is_str),
         "tag": HeaderParameter("Authentication tag", True, is_str),
     }
-    key_wrapping = True
 
     def __init__(self, key_size: int):
         self.name = f"A{key_size}GCMKW"
@@ -175,17 +161,18 @@ class ECDHESAlgModel(JWEAlgModel):
     key_agreement = True
 
     # https://tools.ietf.org/html/rfc7518#section-4.6
-    def __init__(self, key_size: t.Optional[int] = None, recommended: bool = False):
-        if key_size is None:
+    def __init__(self, key_wrapping: t.Optional[JWEWrappingAlgModel] = None):
+        if key_wrapping is None:
             self.name = "ECDH-ES"
             self.description = "ECDH-ES in the Direct Key Agreement mode"
-            self.key_wrapping = False
+            self.key_size = None
+            self.recommended = True
         else:
-            self.name = f"ECDH-ES+A{key_size}KW"
-            self.description = f"ECDH-ES using Concat KDF and CEK wrapped with A{key_size}KW"
-            self.key_wrapping = True
-        self.key_size = key_size
-        self.recommended = recommended
+            self.name = f"ECDH-ES+{key_wrapping.name}"
+            self.description = f"ECDH-ES using Concat KDF and CEK wrapped with {key_wrapping.name}"
+            self.key_size = key_wrapping.key_size
+            self.recommended = key_wrapping.recommended
+        self.key_wrapping = key_wrapping
 
     def get_bit_size(self, enc: JWEEncModel) -> int:
         if self.key_size is None:
@@ -211,8 +198,7 @@ class ECDHESAlgModel(JWEAlgModel):
         recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
 
         if self.key_wrapping:
-            aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
-            return aeskw.wrap_cek(obj.cek, OctKey.import_key(dk))
+            return self.key_wrapping.wrap_cek(obj.cek, OctKey.import_key(dk))
 
         assert obj.cek is None
         obj.cek = dk
@@ -229,8 +215,7 @@ class ECDHESAlgModel(JWEAlgModel):
         dk = self.compute_derived_key(shared_key, headers, bit_size)
 
         if self.key_wrapping:
-            aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
-            return aeskw.unwrap_cek(recipient.encrypted_key, OctKey.import_key(dk))
+            return self.key_wrapping.unwrap_cek(recipient.encrypted_key, OctKey.import_key(dk))
         return dk
 
 
@@ -240,15 +225,15 @@ class PBES2HSAlgModel(JWEAlgModel):
         "p2s": HeaderParameter("PBES2 Salt Input", True, is_str),
         "p2c": HeaderParameter("PBES2 Count", True, is_int),
     }
-    key_wrapping = True
 
     # A minimum iteration count of 1000 is RECOMMENDED.
     DEFAULT_P2C = 2048
 
-    def __init__(self, hash_size: int, key_size: int):
-        self.name = f"PBES2-HS{hash_size}+A{key_size}KW"
-        self.description = f"PBES2 with HMAC SHA-{hash_size} and A{key_size}KW wrapping"
-        self.key_size = key_size
+    def __init__(self, hash_size: int, key_wrapping: JWEWrappingAlgModel):
+        self.name = f"PBES2-HS{hash_size}+{key_wrapping.name}"
+        self.description = f"PBES2 with HMAC SHA-{hash_size} and {key_wrapping.name} wrapping"
+        self.key_size = key_wrapping.key_size
+        self.key_wrapping = key_wrapping
         self.hash_alg = getattr(hashes, f"SHA{hash_size}")()
 
     def compute_derived_key(self, key: bytes, header: Header, p2c: int) -> bytes:
@@ -280,20 +265,15 @@ class PBES2HSAlgModel(JWEAlgModel):
             recipient.add_header("p2c", p2c)
 
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), headers, p2c)
-        aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
-        return aeskw.wrap_cek(obj.cek, OctKey.import_key(kek))
+        return self.key_wrapping.wrap_cek(obj.cek, OctKey.import_key(kek))
 
     def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         headers = recipient.headers()
-        obj: EncryptionData = recipient.parent
-
         assert "p2s" in headers
         assert "p2c" in headers
-
         p2c = headers["p2c"]
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), headers, p2c)
-        aeskw = AES_KW_MAP[self.key_size]
-        return aeskw.unwrap_cek(recipient.encrypted_key, OctKey.import_key(kek))
+        return self.key_wrapping.unwrap_cek(recipient.encrypted_key, OctKey.import_key(kek))
 
 
 def compute_concat_kdf_info(key_size: t.Optional[int], header: Header, bit_size: int):
@@ -322,6 +302,11 @@ def compute_derived_key_for_concat_kdf(shared_key: bytes, bit_size: int, otherin
     return ckdf.derive(shared_key)
 
 
+A128KW = AESAlgModel(128, True)  # A128KW, Recommended
+A192KW = AESAlgModel(192)  # A192KW
+A256KW = AESAlgModel(256, True)  # A256KW, Recommended
+
+
 #: https://www.rfc-editor.org/rfc/rfc7518#section-4.1
 JWE_ALG_MODELS = [
     RSAAlgModel("RSA1_5", "RSAES-PKCS1-v1_5", padding.PKCS1v15()),  # Recommended-
@@ -341,13 +326,13 @@ JWE_ALG_MODELS = [
     A256KW,
     DirectAlgModel(),  # dir, Recommended
     ECDHESAlgModel(None),  # ECDH-ES, Recommended+
-    ECDHESAlgModel(128, True),  # ECDH-ES+A128KW, Recommended
-    ECDHESAlgModel(192),  # ECDH-ES+A192KW
-    ECDHESAlgModel(256, True),  # ECDH-ES+A256KW, Recommended
+    ECDHESAlgModel(A128KW),  # ECDH-ES+A128KW, Recommended
+    ECDHESAlgModel(A192KW),  # ECDH-ES+A192KW
+    ECDHESAlgModel(A256KW),  # ECDH-ES+A256KW, Recommended
     AESGCMAlgModel(128),  # A128GCMKW
     AESGCMAlgModel(192),  # A192GCMKW
     AESGCMAlgModel(256),  # A256GCMKW
-    PBES2HSAlgModel(256, 128),  # PBES2-HS256+A128KW
-    PBES2HSAlgModel(384, 192),  # PBES2-HS384+A192KW
-    PBES2HSAlgModel(512, 256),  # PBES2-HS512+A256KW
+    PBES2HSAlgModel(256, A128KW),  # PBES2-HS256+A128KW
+    PBES2HSAlgModel(384, A192KW),  # PBES2-HS384+A192KW
+    PBES2HSAlgModel(512, A256KW),  # PBES2-HS512+A256KW
 ]
