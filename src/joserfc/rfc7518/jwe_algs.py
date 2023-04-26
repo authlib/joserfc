@@ -15,7 +15,7 @@ from .oct_key import OctKey
 from ..rfc7516.models import JWEAlgModel, JWEEncModel
 from ..rfc7516.types import EncryptionData, Recipient, Header
 from ..rfc7517.models import CurveKey
-from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode
+from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode, u32be_len_input
 from ..registry import HeaderParameter, is_str, is_int, is_jwk
 
 
@@ -194,30 +194,9 @@ class ECDHESAlgModel(JWEAlgModel):
             bit_size = self.key_size
         return bit_size
 
-    def compute_fixed_info(self, header: Header, bit_size: int):
-        # AlgorithmID
-        if self.key_size is None:
-            alg_id = u32be_len_input(header["enc"])
-        else:
-            alg_id = u32be_len_input(header["alg"])
-
-        # PartyUInfo
-        apu_info = u32be_len_input(header.get("apu"), True)
-        # PartyVInfo
-        apv_info = u32be_len_input(header.get("apv"), True)
-        # SuppPubInfo
-        pub_info = struct.pack(">I", bit_size)
-        return alg_id + apu_info + apv_info + pub_info
-
-    def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int) -> bytes:
-        fixed_info = self.compute_fixed_info(header, bit_size)
-        ckdf = ConcatKDFHash(
-            algorithm=hashes.SHA256(),
-            length=bit_size // 8,
-            otherinfo=fixed_info,
-            backend=default_backend(),
-        )
-        return ckdf.derive(shared_key)
+    def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int):
+        fixed_info = compute_concat_kdf_info(self.key_size, header, bit_size)
+        return compute_derived_key_for_concat_kdf(shared_key, bit_size, fixed_info)
 
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: CurveKey) -> bytes:
         if recipient.ephemeral_key is None:
@@ -226,19 +205,18 @@ class ECDHESAlgModel(JWEAlgModel):
         bit_size = self.get_bit_size(enc)
         pubkey = key.get_op_key("deriveKey")
         shared_key = recipient.ephemeral_key.exchange_shared_key(pubkey)
-        headers = recipient.headers()
-        dk = self.compute_derived_key(shared_key, headers, bit_size)
+        dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size)
 
         obj: EncryptionData = recipient.parent
         recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
 
-        if self.key_size is None:
-            assert obj.cek is None
-            obj.cek = dk
-            return b""
-        else:
+        if self.key_wrapping:
             aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
             return aeskw.wrap_cek(obj.cek, OctKey.import_key(dk))
+
+        assert obj.cek is None
+        obj.cek = dk
+        return b""
 
     def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: CurveKey) -> bytes:
         headers = recipient.headers()
@@ -248,14 +226,12 @@ class ECDHESAlgModel(JWEAlgModel):
         bit_size = self.get_bit_size(enc)
         pubkey = epk.get_op_key("deriveKey")
         shared_key = key.exchange_shared_key(pubkey)
-
         dk = self.compute_derived_key(shared_key, headers, bit_size)
-        if self.key_size is None:
-            # delivery_key is ciphertext's encrypt key
-            return dk
-        else:
+
+        if self.key_wrapping:
             aeskw: AESAlgModel = AES_KW_MAP[self.key_size]
             return aeskw.unwrap_cek(recipient.encrypted_key, OctKey.import_key(dk))
+        return dk
 
 
 class PBES2HSAlgModel(JWEAlgModel):
@@ -320,14 +296,30 @@ class PBES2HSAlgModel(JWEAlgModel):
         return aeskw.unwrap_cek(recipient.encrypted_key, OctKey.import_key(kek))
 
 
-def u32be_len_input(s, base64=False):
-    if not s:
-        return b"\x00\x00\x00\x00"
-    if base64:
-        s = urlsafe_b64decode(to_bytes(s))
+def compute_concat_kdf_info(key_size: t.Optional[int], header: Header, bit_size: int):
+    # AlgorithmID
+    if key_size is None:
+        alg_id = u32be_len_input(header["enc"])
     else:
-        s = to_bytes(s)
-    return struct.pack(">I", len(s)) + s
+        alg_id = u32be_len_input(header["alg"])
+
+    # PartyUInfo
+    apu_info = u32be_len_input(header.get("apu"), True)
+    # PartyVInfo
+    apv_info = u32be_len_input(header.get("apv"), True)
+    # SuppPubInfo
+    pub_info = struct.pack(">I", bit_size)
+    return alg_id + apu_info + apv_info + pub_info
+
+
+def compute_derived_key_for_concat_kdf(shared_key: bytes, bit_size: int, otherinfo: bytes):
+    ckdf = ConcatKDFHash(
+        algorithm=hashes.SHA256(),
+        length=bit_size // 8,
+        otherinfo=otherinfo,
+        backend=default_backend(),
+    )
+    return ckdf.derive(shared_key)
 
 
 #: https://www.rfc-editor.org/rfc/rfc7518#section-4.1

@@ -7,7 +7,7 @@ from ..util import (
 )
 
 
-def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
+def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None) -> EncryptionData:
     enc = registry.get_enc(obj.protected["enc"])
 
     # Step 8 for each recipient
@@ -26,7 +26,10 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
             obj.cek = enc.generate_cek()
 
         # from step 3 to step 7
-        ek = alg.encrypt_recipient(enc, recipient, recipient.recipient_key)
+        if sender_key:
+            ek = alg.encrypt_recipient(enc, recipient, sender_key)
+        else:
+            ek = alg.encrypt_recipient(enc, recipient, recipient.recipient_key)
         recipient.encrypted_key = ek
 
     # Step 9, Generate a random JWE Initialization Vector of the correct size
@@ -67,7 +70,7 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     return obj
 
 
-def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
+def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None) -> EncryptionData:
     enc = registry.get_enc(obj.protected["enc"])
 
     aad = json_b64encode(obj.protected, "ascii")
@@ -83,7 +86,10 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
         # Step 6, Determine the Key Management Mode employed by the algorithm
         # specified by the "alg" (algorithm) Header Parameter.
         alg = registry.get_alg(headers["alg"])
-        cek = alg.decrypt_recipient(enc, recipient, recipient.recipient_key)
+        if sender_key:
+            cek = alg.decrypt_recipient(enc, recipient, sender_key)
+        else:
+            cek = alg.decrypt_recipient(enc, recipient, recipient.recipient_key)
         cek_set.add(cek)
 
     if len(cek_set) > 1:
