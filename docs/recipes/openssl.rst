@@ -1,6 +1,10 @@
-Generating keys with OpenSSL
-============================
+Using OpenSSL command
+=====================
 
+JOSE RFC provides a method :meth:`joserfc.jwk.generate_key` for
+generating keys to be used for JWS/JWE/JWT. However, you can also
+use other tools to generate the keys, here lists some of the
+commands you might find helpful for ``openssl``.
 
 Generating EC keys
 ------------------

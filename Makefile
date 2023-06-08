@@ -1,11 +1,6 @@
-
 build-docs:
-	@$(MAKE) -C docs dirhtml
+	@sphinx-build docs build/_html -b dirhtml -a
 
 
 clean-docs:
-	@rm -fr docs/_build
-
-
-serve-docs:
-	@python -m http.server --directory docs/_build/dirhtml 5500
+	@rm -fr build/_html

@@ -3,4 +3,7 @@ Guide
 
 .. toctree::
     quickstart
-    registry
+    jwk
+    jwt
+    jws
+    jwe

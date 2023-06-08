@@ -11,7 +11,7 @@ from cryptography.hazmat.primitives.serialization import (
     NoEncryption,
 )
 from ..rfc7517.models import CurveKey
-from ..rfc7517.types import KeyDict, KeyAny, KeyOptions
+from ..rfc7517.types import KeyDict, KeyOptions
 from ..rfc7517.pem import CryptographyBinding
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 from ..registry import KeyParameter, is_str

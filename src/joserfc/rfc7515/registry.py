@@ -13,7 +13,7 @@ from ..registry import (
 class JWSRegistry(object):
     """A registry for JSON Web Signature to keep all the supported algorithms.
     An instance of ``JWSRegistry`` is usually used together with methods in
-    :module:`joserfc.jws`.
+    ``joserfc.jws``.
 
     :param headers: extra header parameter definitions
     :param algorithms: allowed algorithms to be used

@@ -5,4 +5,4 @@ Contributing
 .. toctree::
     structure
     commit
-    sponsor
+    sponsors

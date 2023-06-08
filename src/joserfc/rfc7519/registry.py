@@ -8,7 +8,7 @@ from ..rfc7515.registry import JWSRegistry
 class JWTRegistry(JWSRegistry):
     """A registry for JSON Web Token to keep all the supported algorithms.
     An instance of ``JWTRegistry`` is usually used together with methods in
-    :module:`joserfc.jwt`.
+    ``joserfc.jwt``.
 
     :param headers: extra header parameter definitions
     :param algorithms: allowed algorithms to be used

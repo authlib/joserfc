@@ -1,2 +1,2 @@
-Registry
+Sponsors
 ========
