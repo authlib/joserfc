@@ -1,8 +1,9 @@
 import random
-from typing import Callable, Union, Any, Protocol
+from typing import Callable, Union, Any, AnyStr, Protocol
 from .rfc7517 import (
     SymmetricKey,
     AsymmetricKey,
+    CurveKey,
     Key,
     KeySet,
     JWK_REGISTRY,
@@ -21,13 +22,14 @@ from .registry import Header
 
 
 KeyCallable = Callable[[Any, bool], Key]
-KeyFlexible = Union[Key, KeySet, KeyCallable]
+KeyFlexible = Union[AnyStr, Key, KeySet, KeyCallable]
 
 __all__ = [
     "types",
     "JWK_REGISTRY",
     "SymmetricKey",
     "AsymmetricKey",
+    "CurveKey",
     "Key",
     "KeyCallable",
     "KeyFlexible",
@@ -65,7 +67,10 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
     :param key: a very flexible key
     :param obj: a protocol that has ``headers`` and ``set_kid`` methods
     """
-    if isinstance(key, (SymmetricKey, AsymmetricKey)):
+    if isinstance(key, (str, bytes)):
+        return OctKey.import_key(key)
+
+    elif isinstance(key, (SymmetricKey, AsymmetricKey)):
         return key
 
     elif isinstance(key, KeySet):
