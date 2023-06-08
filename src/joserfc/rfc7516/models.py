@@ -76,13 +76,3 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     @abstractmethod
     def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key) -> bytes:
         pass
-
-
-class JWEWrappingAlgModel(JWEAlgModel, metaclass=ABCMeta):
-    @abstractmethod
-    def wrap_cek(self, cek: bytes, key) -> bytes:
-        pass
-
-    @abstractmethod
-    def unwrap_cek(self, encrypted_key: bytes, key) -> bytes:
-        pass

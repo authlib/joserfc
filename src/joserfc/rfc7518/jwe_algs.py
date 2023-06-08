@@ -82,21 +82,16 @@ class AESAlgModel(JWEAlgModel):
         if len(key) * 8 != self.key_size:
             raise ValueError("A key of size {} bits is required.".format(self.key_size))
 
-    def wrap_cek(self, cek: bytes, key: OctKey) -> bytes:
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         op_key = key.get_op_key("wrapKey")
         self._check_key(op_key)
+        cek = recipient.parent.cek
         return aes_key_wrap(op_key, cek, default_backend())
 
-    def unwrap_cek(self, encrypted_key: bytes, key: OctKey) -> bytes:
+    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         op_key = key.get_op_key("unwrapKey")
         self._check_key(op_key)
-        return aes_key_unwrap(op_key, encrypted_key, default_backend())
-
-    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
-        return self.wrap_cek(recipient.parent.cek, key)
-
-    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
-        cek = self.unwrap_cek(recipient.encrypted_key, key)
+        cek = aes_key_unwrap(op_key, recipient.encrypted_key, default_backend())
         if len(cek) * 8 != enc.cek_size:
             raise ValueError('Invalid "cek" length')
         return cek
