@@ -22,6 +22,11 @@ __all__ = [
 
 
 class Token:
+    """The extracted token object, which contains ``header`` and ``claims``.
+
+    :param header: the header part of the JWT
+    :param claims: the payload part of the JWT
+    """
     def __init__(self, header: Header, claims: Claims):
         self.header = header
         self.claims = claims
@@ -48,6 +53,17 @@ def encode(
     return result.decode("utf-8")
 
 
+def extract(value: AnyStr) -> Token:
+    """Extract the JSON Web Token string, without validating with the key,
+    without validating the header and claims."""
+    obj = extract_compact(to_bytes(value))
+    try:
+        token = Token(obj.headers(), obj.claims)
+    except ValueError:
+        raise InvalidPayloadError("Payload should be a JSON dict")
+    return token
+
+
 def decode(value: AnyStr, key: KeyFlexible, registry: Optional[JWTRegistry] = None) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests. This method is a combination of the
@@ -63,6 +79,7 @@ def decode(value: AnyStr, key: KeyFlexible, registry: Optional[JWTRegistry] = No
         token = Token(obj.headers(), obj.claims)
     except ValueError:
         raise InvalidPayloadError("Payload should be a JSON dict")
+
     if registry is None:
         registry = default_registry
 

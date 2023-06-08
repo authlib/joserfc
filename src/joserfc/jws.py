@@ -113,8 +113,9 @@ def validate_compact(obj: SignatureData, key: KeyFlexible, registry: Optional[JW
 
 
 def deserialize_compact(
-        value: AnyStr, key: KeyFlexible, registry: Optional[JWSRegistry] = None
-) -> SignatureData:
+        value: AnyStr,
+        key: KeyFlexible,
+        registry: Optional[JWSRegistry] = None) -> SignatureData:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a string (or bytes) of the JWS

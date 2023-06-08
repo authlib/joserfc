@@ -11,6 +11,14 @@ from ..registry import (
 
 
 class JWSRegistry(object):
+    """A registry for JSON Web Signature to keep all the supported algorithms.
+    An instance of ``JWSRegistry`` is usually used together with methods in
+    :module:`joserfc.jws`.
+
+    :param headers: extra header parameter definitions
+    :param algorithms: allowed algorithms to be used
+    :param strict_check_header: only allow header key in the registry to be used
+    """
     algorithms: Dict[str, JWSAlgModel] = {}
     recommended: List[str] = []
 
@@ -28,11 +36,16 @@ class JWSRegistry(object):
 
     @classmethod
     def register(cls, alg: JWSAlgModel):
+        """Register a given JWS algorithm instance to the registry."""
         cls.algorithms[alg.name] = alg
         if alg.recommended:
             cls.recommended.append(alg.name)
 
     def get_alg(self, name: str):
+        """Get the algorithm instance of the given name.
+
+        :param name: value of the ``alg``, e.g. ``HS256``, ``RS256``
+        """
         if name not in self.algorithms:
             raise ValueError(f'Algorithm of "{name}" is not supported')
         if self.allowed:
@@ -45,6 +58,7 @@ class JWSRegistry(object):
         return self.algorithms[name]
 
     def check_header(self, header: Header):
+        """Check and validate the fields in header part of a JWS object."""
         check_crit_header(header)
         check_registry_header(self.header_registry, header)
         if self.strict_check_header:
