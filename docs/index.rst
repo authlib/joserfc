@@ -28,7 +28,13 @@ Explore the following sections to discover more about our theme and its features
    :hidden:
 
    install
+   guide/quickstart
+
+.. toctree::
+   :caption: Essentials
+
    guide/index
+   guide/algorithms
    migrations/index
 
 .. toctree::
@@ -44,5 +50,7 @@ Explore the following sections to discover more about our theme and its features
    :hidden:
 
    api
+   security
+   stability
    contributing/index
    changelog

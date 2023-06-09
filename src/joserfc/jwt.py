@@ -31,6 +31,9 @@ class Token:
         self.header = header
         self.claims = claims
 
+    def __repr__(self):
+        return str(self.claims)
+
 
 def encode(
         header: Header,
