@@ -53,7 +53,7 @@ JWK_REGISTRY[ECKey.key_type] = ECKey
 JWK_REGISTRY[OKPKey.key_type] = OKPKey
 
 
-class GuestProtocol(Protocol):
+class GuestProtocol(Protocol):  # pragma: no cover
     def headers(self) -> Header:
         ...
 

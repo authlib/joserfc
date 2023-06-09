@@ -1,5 +1,5 @@
 from unittest import TestCase
-from joserfc.jwk import KeySet, RSAKey, ECKey
+from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
 from ..util import read_key
 
 
@@ -34,3 +34,18 @@ class TestKeySet(TestCase):
             self.assertNotIn('d', d1)
 
         self.assertRaises(ValueError, jwks.as_dict, private=True)
+
+    def test_key_set_methods(self):
+        key_set = KeySet.generate_key_set("oct", 8)
+        jwks = key_set.as_dict(custom="hi")
+        self.assertIn("keys", jwks)
+        key = jwks["keys"][0]
+        self.assertEqual(key["custom"], "hi")
+
+        k1 = key_set.get_by_kid(key["kid"])
+        self.assertEqual(k1.kid, key["kid"])
+        self.assertRaises(ValueError, key_set.get_by_kid, "invalid")
+
+        key_set = KeySet.generate_key_set("oct", 8, count=1)
+        k2 = key_set.get_by_kid()
+        self.assertIsInstance(k2, OctKey)

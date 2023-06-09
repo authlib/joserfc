@@ -4,3 +4,7 @@ build-docs:
 
 clean-docs:
 	@rm -fr build/_html
+
+
+coverage:
+	@pytest --cov --cov-report=html

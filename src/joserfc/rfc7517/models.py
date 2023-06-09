@@ -152,7 +152,7 @@ class BaseKey(object):
 
         data = self.dict_value.copy()
         if private is not False:
-            # keep original
+            data.update(params)
             return data
 
         # clear private fields

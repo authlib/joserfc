@@ -76,9 +76,6 @@ class CompactSignature:
         self.payload = payload
         self.segments: SegmentsDict = {}
 
-    def __repr__(self):
-        return self.payload
-
     def headers(self) -> Header:
         return self.header
 
@@ -97,9 +94,6 @@ class JSONSignature:
         self.signatures: t.List[JSONSignatureDict] = []
         self.flatten: bool = False
         self.segments: SegmentsDict = {}
-
-    def __repr__(self):
-        return self.payload
 
     def headers(self) -> Header:
         if self.flatten and len(self.members) == 1:

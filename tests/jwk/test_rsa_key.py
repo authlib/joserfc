@@ -38,10 +38,22 @@ class TestRSAKey(TestCase):
         key = RSAKey.import_key(private_pem)
         self.assertEqual(key.is_private, True)
 
-    def test_as_dict(self):
+    def test_output_as_methods(self):
         private_pem = read_key("openssl-rsa-private.pem")
-        key = RSAKey.import_key(private_pem)
+        key: RSAKey = RSAKey.import_key(private_pem)
+
+        # as_dict
         data = key.as_dict()
         self.assertIn('d', data)
         data = key.as_dict(private=False)
         self.assertNotIn('d', data)
+
+        # as_pem
+        data = key.as_pem()
+        self.assertIn(b"PRIVATE", data)
+        data = key.as_pem(private=False)
+        self.assertIn(b"PUBLIC", data)
+
+        # as_der
+        data = key.as_der()
+        self.assertIsInstance(data, bytes)
