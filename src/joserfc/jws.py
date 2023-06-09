@@ -19,7 +19,8 @@ from .rfc7515.types import (
     Header,
     HeaderMember,
     HeaderDict,
-    SignatureData,
+    CompactSignature,
+    JSONSignature,
     JSONSerialization,
 )
 from .rfc7518.jws_algs import JWS_ALGORITHMS
@@ -33,7 +34,7 @@ __all__ = [
     "types",
     "JWSAlgModel",
     "JWSRegistry",
-    "SignatureData",
+    "JSONSignature",
     "serialize_compact",
     "deserialize_compact",
     "extract_compact",
@@ -86,15 +87,13 @@ def serialize_compact(
         registry = default_registry
 
     registry.check_header(header)
-    member = HeaderMember(header)
-    obj = SignatureData([member], payload)
-    obj.compact = True
+    obj = CompactSignature(header, payload)
     alg: JWSAlgModel = registry.get_alg(header["alg"])
-    key: Key = guess_key(key, member)
+    key: Key = guess_key(key, obj)
     return sign_compact(obj, alg, key)
 
 
-def validate_compact(obj: SignatureData, key: KeyFlexible, registry: Optional[JWSRegistry] = None):
+def validate_compact(obj: CompactSignature, key: KeyFlexible, registry: Optional[JWSRegistry] = None):
     """Validate the JWS Compact Serialization with the given key.
     This method is usually used together with ``extract_compact``.
 
@@ -105,9 +104,9 @@ def validate_compact(obj: SignatureData, key: KeyFlexible, registry: Optional[JW
     """
     if registry is None:
         registry = default_registry
-    member = obj.members[0]
-    alg: JWSAlgModel = registry.get_alg(member.protected["alg"])
-    key: Key = guess_key(key, member)
+
+    alg: JWSAlgModel = registry.get_alg(obj.header["alg"])
+    key: Key = guess_key(key, obj)
     if not verify_compact(obj, alg, key):
         raise BadSignatureError()
 
@@ -115,7 +114,7 @@ def validate_compact(obj: SignatureData, key: KeyFlexible, registry: Optional[JW
 def deserialize_compact(
         value: AnyStr,
         key: KeyFlexible,
-        registry: Optional[JWSRegistry] = None) -> SignatureData:
+        registry: Optional[JWSRegistry] = None) -> CompactSignature:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a string (or bytes) of the JWS
@@ -146,7 +145,7 @@ def serialize_json(
             registry.check_header(member["protected"])
 
     members = [HeaderMember(**member) for member in members]
-    obj = SignatureData(members, payload)
+    obj = JSONSignature(members, payload)
     obj.segments["payload"] = urlsafe_b64encode(payload)
     obj.flatten = flatten
 
@@ -154,7 +153,7 @@ def serialize_json(
     return sign_json(obj, registry.get_alg, find_key)
 
 
-def validate_json(obj: SignatureData, key: KeyFlexible, registry: Optional[JWSRegistry] = None):
+def validate_json(obj: JSONSignature, key: KeyFlexible, registry: Optional[JWSRegistry] = None):
     """Validate the JWS JSON Serialization with the given key.
     This method is usually used together with ``extract_json``.
 
@@ -173,7 +172,7 @@ def validate_json(obj: SignatureData, key: KeyFlexible, registry: Optional[JWSRe
 def deserialize_json(
         value: JSONSerialization,
         key: KeyFlexible,
-        registry: Optional[JWSRegistry] = None) -> SignatureData:
+        registry: Optional[JWSRegistry] = None) -> JSONSignature:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a dict of the JSON signature

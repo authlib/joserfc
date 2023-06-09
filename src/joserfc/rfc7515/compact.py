@@ -1,6 +1,6 @@
 import binascii
 from .model import JWSAlgModel
-from .types import HeaderMember, SignatureData
+from .types import CompactSignature
 from ..errors import DecodeError, MissingAlgorithmError
 from ..util import (
     json_b64encode,
@@ -10,11 +10,10 @@ from ..util import (
 )
 
 
-def sign_compact(obj: SignatureData, alg: JWSAlgModel, key) -> bytes:
+def sign_compact(obj: CompactSignature, alg: JWSAlgModel, key) -> bytes:
     key.check_use("sig")
-    member = obj.members[0]
     if "header" not in obj.segments:
-        obj.segments["header"] = json_b64encode(member.protected)
+        obj.segments["header"] = json_b64encode(obj.header)
     if "payload" not in obj.segments:
         obj.segments["payload"] = urlsafe_b64encode(obj.payload)
     signing_input = obj.segments["header"] + b"." + obj.segments["payload"]
@@ -23,7 +22,7 @@ def sign_compact(obj: SignatureData, alg: JWSAlgModel, key) -> bytes:
     return signing_input + b"." + signature
 
 
-def extract_compact(value: bytes) -> SignatureData:
+def extract_compact(value: bytes) -> CompactSignature:
     """Extract the JWS Compact Serialization from bytes to object.
 
     :param value: JWS in bytes
@@ -46,8 +45,7 @@ def extract_compact(value: bytes) -> SignatureData:
     except (TypeError, ValueError, binascii.Error):
         raise DecodeError("Invalid payload")
 
-    obj = SignatureData([HeaderMember(protected)], payload)
-    obj.compact = True
+    obj = CompactSignature(protected, payload)
     obj.segments.update({
         "header": header_segment,
         "payload": payload_segment,
@@ -56,7 +54,7 @@ def extract_compact(value: bytes) -> SignatureData:
     return obj
 
 
-def verify_compact(obj: SignatureData, alg: JWSAlgModel, key) -> bool:
+def verify_compact(obj: CompactSignature, alg: JWSAlgModel, key) -> bool:
     key.check_use("sig")
     signing_input = obj.segments["header"] + b"." + obj.segments["payload"]
     sig = urlsafe_b64decode(obj.segments["signature"])

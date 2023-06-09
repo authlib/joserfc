@@ -3,7 +3,7 @@ import binascii
 from .model import JWSAlgModel
 from .types import (
     HeaderMember,
-    SignatureData,
+    JSONSignature,
     JSONSignatureDict,
     JSONSerialization,
     CompleteJSONSerialization,
@@ -20,7 +20,7 @@ from ..errors import DecodeError
 FindAlgorithm = t.Callable[[str], JWSAlgModel]
 
 
-def sign_json(obj: SignatureData, find_alg: FindAlgorithm, find_key) -> JSONSerialization:
+def sign_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> JSONSerialization:
     signatures: t.List[JSONSignatureDict] = []
 
     payload_segment = obj.segments["payload"]
@@ -54,7 +54,7 @@ def _sign_member(payload_segment, member: HeaderMember, alg: JWSAlgModel, key) -
     return rv
 
 
-def extract_json(value: JSONSerialization) -> SignatureData:
+def extract_json(value: JSONSerialization) -> JSONSignature:
     """Extract the JWS JSON Serialization from dict to object.
 
     :param value: JWS in dict
@@ -90,14 +90,14 @@ def extract_json(value: JSONSerialization) -> SignatureData:
             member.header = sig["header"]
         members.append(member)
 
-    obj = SignatureData(members, payload)
+    obj = JSONSignature(members, payload)
     obj.segments.update({"payload": payload_segment})
     obj.flatten = flatten
     obj.signatures = signatures
     return obj
 
 
-def verify_json(obj: SignatureData, find_alg: FindAlgorithm, find_key) -> bool:
+def verify_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> bool:
     """Verify the signature of this JSON serialization with the given
     algorithm and key.
 

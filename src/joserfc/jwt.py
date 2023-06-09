@@ -79,7 +79,7 @@ def decode(value: AnyStr, key: KeyFlexible, registry: Optional[JWTRegistry] = No
     """
     obj = extract_compact(to_bytes(value))
     try:
-        token = Token(obj.headers(), obj.claims)
+        token = Token(obj.header, obj.claims)
     except ValueError:
         raise InvalidPayloadError("Payload should be a JSON dict")
 
