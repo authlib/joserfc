@@ -12,22 +12,22 @@ class JWTRegistry(JWSRegistry):
 
     :param headers: extra header parameter definitions
     :param algorithms: allowed algorithms to be used
-    :param claims: an instance of claims validator
+    :param claims_requests: an instance of ``JWTClaimsRequests``
     :param strict_check_header: only allow header key in the registry to be used
     """
     def __init__(
             self,
             headers: Optional[HeaderRegistryDict] = None,
             algorithms: Optional[List[str]] = None,
-            claims: Optional[JWTClaimsRequests] = None,
+            claims_requests: Optional[JWTClaimsRequests] = None,
             strict_check_header: bool = True):
         super().__init__(headers, algorithms, strict_check_header)
-        self.claims = claims
+        self.claims_requests = claims_requests
 
     def check_claims(self, claims: Claims):
         """Check and validate the fields in payload claims part of a JWT object."""
-        if self.claims:
-            self.claims.validate(claims)
+        if self.claims_requests:
+            self.claims_requests.validate(claims)
 
 
 default_registry = JWTRegistry()

@@ -21,31 +21,31 @@ class ClaimsRequests:
 
     def __init__(self, **kwargs: ClaimsOption):
         self.options = kwargs
+        self.essential_keys = {key for key in kwargs if kwargs[key].get("essential")}
 
     def check_value(self, claim_name: str, value: Any):
         option: ClaimsOption = self.options.get(claim_name)
-        option_value = option.get("value")
-        if option_value and value != option_value:
-            raise InvalidClaimError(claim_name)
+        if option:
+            option_value = option.get("value")
+            if option_value and value != option_value:
+                raise InvalidClaimError(claim_name)
 
-        option_values = option.get("values")
-        if option_values and value not in option_values:
-            raise InvalidClaimError(claim_name)
+            option_values = option.get("values")
+            if option_values and value not in option_values:
+                raise InvalidClaimError(claim_name)
 
     def validate(self, claims: Dict[str, Any]):
-        for key in self.options:
-            option: ClaimsOption = self.options[key]
-            if key not in claims:
-                # validate essential claims
-                if option.get("essential"):
-                    raise MissingClaimError(key)
-            else:
-                value = claims[key]
-                func = getattr(self, "validate_" + key, None)
-                if func:
-                    func(value)
-                else:
-                    self.check_value(key, value)
+        missed_key = self.essential_keys - set(claims.keys())
+        if missed_key:
+            raise MissingClaimError(",".join(missed_key))
+
+        for key in claims:
+            value = claims[key]
+            func = getattr(self, "validate_" + key, None)
+            if func:
+                func(value)
+            elif key in self.options:
+                self.check_value(key, value)
 
 
 class JWTClaimsRequests(ClaimsRequests):
@@ -69,7 +69,10 @@ class JWTClaimsRequests(ClaimsRequests):
         interpretation of audience values is generally application specific.
         Use of this claim is OPTIONAL.
         """
-        option: ClaimsOption = self.options["aud"]
+        option: ClaimsOption = self.options.get("aud")
+        if not option:
+            return
+
         option_values = option.get("values")
 
         if not option_values:

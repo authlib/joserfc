@@ -1,6 +1,6 @@
 from typing import Optional, AnyStr
 from .rfc7515.compact import extract_compact
-from .rfc7519.claims import Claims, convert_claims
+from .rfc7519.claims import Claims, convert_claims, check_sensitive_data
 from .rfc7519.validators import ClaimsOption, JWTClaimsRequests
 from .rfc7519.registry import JWTRegistry, default_registry
 from .jws import serialize_compact, validate_compact
@@ -18,6 +18,7 @@ __all__ = [
     "JWTClaimsRequests",
     "encode",
     "decode",
+    "check_sensitive_data",
 ]
 
 
