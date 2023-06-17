@@ -1,7 +1,7 @@
 from typing import Optional, Union, Dict
 from functools import cached_property
-from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric.rsa import (
+    generate_private_key,
     RSAPublicKey,
     RSAPrivateKeyWithSerialization,
     RSAPrivateNumbers,
@@ -129,7 +129,7 @@ class RSAKey(AsymmetricKey):
             raise ValueError("key_size must not be less than 512")
         if key_size % 8 != 0:
             raise ValueError("Invalid key_size for RSAKey")
-        raw_key = rsa.generate_private_key(
+        raw_key = generate_private_key(
             public_exponent=65537,
             key_size=key_size,
             backend=default_backend(),

@@ -1,7 +1,8 @@
 from typing import Optional, Union, Dict
 from functools import cached_property
-from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric.ec import (
+    generate_private_key,
+    ECDH,
     EllipticCurvePublicKey,
     EllipticCurvePrivateKeyWithSerialization,
     EllipticCurvePrivateNumbers,
@@ -90,7 +91,7 @@ class ECKey(CurveKey):
     def exchange_shared_key(self, pubkey: EllipticCurvePublicKey) -> bytes:
         # used in ECDHESAlgorithm
         if self.private_key:
-            return self.private_key.exchange(ec.ECDH(), pubkey)
+            return self.private_key.exchange(ECDH(), pubkey)
         raise ValueError("Invalid key for exchanging shared key")
 
     @property
@@ -129,7 +130,7 @@ class ECKey(CurveKey):
             private: bool = True) -> "ECKey":
         if crv not in DSS_CURVES:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
-        raw_key = ec.generate_private_key(
+        raw_key = generate_private_key(
             curve=DSS_CURVES[crv](),
             backend=default_backend(),
         )

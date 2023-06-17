@@ -4,7 +4,7 @@ from tests.fixtures import TestFixture
 from tests.util import read_key
 
 
-class Test_JWT_RSA(TestFixture):
+class TestJWTFixtures(TestFixture):
     def run_test(self, case, private_key, public_key):
         alg = case['alg']
 
@@ -28,6 +28,8 @@ class Test_JWT_RSA(TestFixture):
 def add_rsa_tests():
     private_key = RSAKey.import_key(read_key("openssl-rsa-private.pem"))
     public_key = RSAKey.import_key(read_key("openssl-rsa-public.pem"))
-    Test_JWT_RSA.load_fixture('jwt_rsa.json', private_key, public_key)
+    TestJWTFixtures.load_fixture('jwt_rsa.json', private_key, public_key)
 
 add_rsa_tests()
+
+TestJWTFixtures.load_fixture('jwt_oct.json', b'secret', b'secret')

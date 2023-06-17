@@ -20,22 +20,53 @@ class TestRSAKey(TestCase):
             "alg": "RS256",
             "kid": "2011-04-29",
         }
-        key = RSAKey.import_key(data)
+        key: RSAKey = RSAKey.import_key(data)
         self.assertEqual(key.as_dict(), data)
         self.assertEqual(key.is_private, False)
+        self.assertIsNone(key.private_key)
+
+    def test_import_only_from_d(self):
+        data = {
+            "kty": "RSA",
+            "n": (
+                "oahUIoWw0K0usKNuOR6H4wkf4oBUXHTxRvgb48E-BVvxkeDNjbC4he8rUWcJoZmd"
+                "s2h7M70imEVhRU5djINXtqllXI4DFqcI1DgjT9LewND8MW2Krf3Spsk_ZkoFnila"
+                "kGygTwpZ3uesH-PFABNIUYpOiN15dsQRkgr0vEhxN92i2asbOenSZeyaxziK72Uw"
+                "xrrKoExv6kc5twXTq4h-QChLOln0_mtUZwfsRaMStPs6mS6XrgxnxbWhojf663tu"
+                "EQueGC-FCMfra36C9knDFGzKsNa7LZK2djYgyD3JR_MB_4NUJW_TqOQtwHYbxevo"
+                "JArm-L5StowjzGy-_bq6Gw"
+            ),
+            "e": "AQAB",
+            "d": (
+                "kLdtIj6GbDks_ApCSTYQtelcNttlKiOyPzMrXHeI-yk1F7-kpDxY4-WY5NWV5Knt"
+                "aEeXS1j82E375xxhWMHXyvjYecPT9fpwR_M9gV8n9Hrh2anTpTD93Dt62ypW3yDs"
+                "JzBnTnrYu1iwWRgBKrEYY46qAZIrA2xAwnm2X7uGR1hghkqDp0Vqj3kbSCz1XyfC"
+                "s6_LehBwtxHIyh8Ripy40p24moOAbgxVw3rxT_vlt3UVe4WO3JkJOzlpUf-KTVI2"
+                "Ptgm-dARxTEtE-id-4OJr0h-K-VFs3VSndVTIznSxfyrj8ILL6MG_Uv8YAu7VILS"
+                "B3lOW085-4qE3DzgrTjgyQ"
+            ),
+        }
+        key: RSAKey = RSAKey.import_key(data)
+        self.assertEqual(key.is_private, True)
+        data["p"] = (
+            "9gY2w6I6S6L0juEKsbeDAwpd9WMfgqFoeA9vEyEUuk4kLwBKcoe1x4HG68ik918hdDSE"
+            "9vDQSccA3xXHOAFOPJ8R9EeIAbTi1VwBYnbTp87X-xcPWlEPkrdoUKW60tgs1aNd_Nnc"
+            "9LEVVPMS390zbFxt8TN_biaBgelNgbC95sM"
+        )
+        self.assertRaises(ValueError, RSAKey.import_key, data)
 
     def test_import_key_from_ssh(self):
         ssh_public_pem = read_key("ssh-rsa-public.pem")
-        key = RSAKey.import_key(ssh_public_pem)
+        key: RSAKey = RSAKey.import_key(ssh_public_pem)
         self.assertEqual(key.is_private, False)
 
     def test_import_key_from_openssl(self):
         public_pem = read_key("openssl-rsa-public.pem")
-        key = RSAKey.import_key(public_pem)
+        key: RSAKey = RSAKey.import_key(public_pem)
         self.assertEqual(key.is_private, False)
 
         private_pem = read_key("openssl-rsa-private.pem")
-        key = RSAKey.import_key(private_pem)
+        key: RSAKey = RSAKey.import_key(private_pem)
         self.assertEqual(key.is_private, True)
 
     def test_output_as_methods(self):
@@ -57,3 +88,10 @@ class TestRSAKey(TestCase):
         # as_der
         data = key.as_der()
         self.assertIsInstance(data, bytes)
+
+    def test_generate_key(self):
+        self.assertRaises(ValueError, RSAKey.generate_key, 8)
+        self.assertRaises(ValueError, RSAKey.generate_key, 601)
+
+        key: RSAKey = RSAKey.generate_key(private=False)
+        self.assertFalse(key.is_private)

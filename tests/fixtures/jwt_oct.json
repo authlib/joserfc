@@ -1,0 +1,18 @@
+{
+  "id": "oct",
+  "payload": {"sub": "1"},
+  "cases": [
+    {
+      "alg": "HS256",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.8qZF8vbN3UpcanXFc-mPXJkOPN01-bRch8XX3rToP1U"
+    },
+    {
+      "alg": "HS384",
+      "value": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.ZhZLNhPNfpxpGefbOkQJLgMGlcyI-4472ULyy7RjVat3XORn4-fYHvpCLBAIO6KD"
+    },
+    {
+      "alg": "HS512",
+      "value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.Svkyf-6A8eDSfrnsHWjVo-SwKA_YqfSvDN-4bxHlOyCboSCa1PLVUgS51u3ZDBVQ7t8fMOOtHVnjwp4H3dyYcQ"
+    }
+  ]
+}
