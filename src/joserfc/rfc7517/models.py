@@ -10,11 +10,6 @@ from ..registry import (
 from ..util import to_bytes
 from ..rfc7638 import thumbprint
 
-if hasattr(t, "Self"):
-    SelfKey = t.Self
-else:
-    SelfKey = t.TypeVar("SelfKey", bound="BaseKey")
-
 
 class NativeKeyBinding(object, metaclass=ABCMeta):
     use_key_ops_registry = {
@@ -197,7 +192,7 @@ class BaseKey(object):
         cls.binding.validate_dict_key_use_operations(data)
 
     @classmethod
-    def import_key(cls, value: KeyAny, options: KeyOptions = None) -> SelfKey:
+    def import_key(cls, value: KeyAny, options: KeyOptions = None) -> "BaseKey":
         if isinstance(value, dict):
             cls.validate_dict_key(value)
             raw_key = cls.binding.import_from_dict(value)
@@ -207,7 +202,7 @@ class BaseKey(object):
         return cls(raw_key, value, options)
 
     @classmethod
-    def generate_key(cls, size_or_crv, options: KeyOptions = None, private: bool = True) -> SelfKey:
+    def generate_key(cls, size_or_crv, options: KeyOptions = None, private: bool = True) -> "BaseKey":
         raise NotImplementedError()
 
 

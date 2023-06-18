@@ -34,6 +34,7 @@ __all__ = [
     "types",
     "JWSAlgModel",
     "JWSRegistry",
+    "CompactSignature",
     "JSONSignature",
     "serialize_compact",
     "deserialize_compact",
@@ -115,7 +116,7 @@ def deserialize_compact(
         value: AnyStr,
         key: KeyFlexible,
         registry: Optional[JWSRegistry] = None) -> CompactSignature:
-    """Extract and validate the JWS (in string) with the given key.
+    """Extract and validate the JWS (in string, or bytes) with the given key.
 
     :param value: a string (or bytes) of the JWS
     :param key: a flexible public key to verify the signature

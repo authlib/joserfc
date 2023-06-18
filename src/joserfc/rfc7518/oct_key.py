@@ -43,7 +43,7 @@ class OctKey(SymmetricKey):
     value_registry = {"k": KeyParameter("Key Value", True, True, is_str)}
 
     @classmethod
-    def generate_key(cls, key_size=256, options: KeyOptions = None, private: bool = True):
+    def generate_key(cls, key_size=256, options: KeyOptions = None, private: bool = True) -> "OctKey":
         """Generate a ``OctKey`` with the given bit size."""
         if not private:
             raise ValueError("oct key can not be generated as public")
