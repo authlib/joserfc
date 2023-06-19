@@ -1,9 +1,7 @@
 import typing as t
 import binascii
-from .model import JWSAlgModel
+from .model import JWSAlgModel, HeaderMember, JSONSignature
 from .types import (
-    HeaderMember,
-    JSONSignature,
     JSONSignatureDict,
     JSONSerialization,
     CompleteJSONSerialization,

@@ -1,6 +1,6 @@
 from typing import Optional, AnyStr, List, Union
 from .rfc7515 import types
-from .rfc7515.model import JWSAlgModel
+from .rfc7515.model import JWSAlgModel, HeaderMember, CompactSignature, JSONSignature
 from .rfc7515.registry import (
     JWSRegistry,
     default_registry,
@@ -17,10 +17,7 @@ from .rfc7515.json import (
 )
 from .rfc7515.types import (
     Header,
-    HeaderMember,
     HeaderDict,
-    CompactSignature,
-    JSONSignature,
     JSONSerialization,
 )
 from .rfc7518.jws_algs import JWS_ALGORITHMS
@@ -34,8 +31,6 @@ __all__ = [
     "types",
     "JWSAlgModel",
     "JWSRegistry",
-    "CompactSignature",
-    "JSONSignature",
     "serialize_compact",
     "deserialize_compact",
     "extract_compact",

@@ -1,12 +1,11 @@
 import typing as t
-from ..rfc7516.models import JWEAlgModel, JWEEncModel
-from ..rfc7516.types import EncryptionData, Recipient, Header
+from ..rfc7516.models import Recipient, JWEAlgModel, JWEEncModel
 from ..rfc7517.models import CurveKey
 from ..rfc7518.jwe_algs import (
     compute_concat_kdf_info,
     compute_derived_key_for_concat_kdf,
 )
-from ..registry import HeaderParameter, is_jwk, is_str
+from ..registry import Header, HeaderParameter, is_jwk, is_str
 from ..util import u32be_len_input
 
 

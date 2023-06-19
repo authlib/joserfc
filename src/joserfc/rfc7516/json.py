@@ -1,4 +1,4 @@
-from .types import EncryptionData, Recipient
+from .models import EncryptionData, Recipient
 from .types import JSONSerialization
 from ..util import (
     to_bytes,

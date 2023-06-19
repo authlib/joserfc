@@ -1,4 +1,61 @@
+import json
+import typing as t
 from abc import ABCMeta, abstractmethod
+from functools import cached_property
+from .types import SegmentsDict, JSONSignatureDict
+from ..registry import Header
+
+
+class HeaderMember:
+    def __init__(self, protected: Header, header: t.Optional[Header] = None):
+        self.protected = protected
+        self.header = header
+
+    def headers(self) -> Header:
+        rv = {}
+        rv.update(self.protected)
+        if self.header:
+            rv.update(self.header)
+        return rv
+
+    def set_kid(self, kid: str):
+        if self.header is None:
+            self.header = {}
+        self.header["kid"] = kid
+
+
+class CompactSignature:
+    """JSON Web Signature object for compact mode. This object is used to
+    represent the JWS instance.
+    """
+    def __init__(self, header: Header, payload: bytes):
+        self.header = header
+        self.payload = payload
+        self.segments: SegmentsDict = {}
+
+    def headers(self) -> Header:
+        return self.header
+
+    def set_kid(self, kid: str):
+        self.header["kid"] = kid
+
+    @cached_property
+    def claims(self) -> t.Dict[str, t.Any]:
+        return json.loads(self.payload)
+
+
+class JSONSignature:
+    def __init__(self, members: t.List[HeaderMember], payload: bytes):
+        self.members = members
+        self.payload = payload
+        self.signatures: t.List[JSONSignatureDict] = []
+        self.flatten: bool = False
+        self.segments: SegmentsDict = {}
+
+    def headers(self) -> Header:
+        if self.flatten and len(self.members) == 1:
+            return self.members[0].headers()
+        raise ValueError("Only compact or flatten data has .headers() method.")
 
 
 class JWSAlgModel(object, metaclass=ABCMeta):

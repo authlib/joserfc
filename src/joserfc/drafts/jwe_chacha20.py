@@ -1,6 +1,5 @@
 from Cryptodome.Cipher import ChaCha20_Poly1305
-from ..rfc7516.models import JWEEncModel
-from ..rfc7516.types import EncryptionData
+from ..rfc7516.models import JWEEncModel, EncryptionData
 
 
 class ChaCha20EncModel(JWEEncModel):

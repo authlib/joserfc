@@ -3,7 +3,7 @@ from joserfc.jwe import decrypt_compact, decrypt_json
 from joserfc.jwk import RSAKey, OctKey, KeySet
 from joserfc.util import json_b64encode, urlsafe_b64encode, to_bytes
 from joserfc.rfc7516.registry import JWERegistry, default_registry as registry
-from joserfc.rfc7516.types import EncryptionData
+from joserfc.rfc7516.models import EncryptionData
 from joserfc.rfc7516.message import perform_encrypt
 from joserfc.rfc7516.compact import represent_compact
 from joserfc.rfc7516.json import represent_json

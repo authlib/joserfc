@@ -1,5 +1,5 @@
 import binascii
-from .types import EncryptionData, Recipient
+from .models import EncryptionData, Recipient
 from ..errors import (
     MissingAlgorithmError,
     MissingEncryptionError,

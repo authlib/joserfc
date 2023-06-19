@@ -12,11 +12,10 @@ from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from .rsa_key import RSAKey
 from .oct_key import OctKey
-from ..rfc7516.models import JWEAlgModel, JWEEncModel
-from ..rfc7516.types import EncryptionData, Recipient, Header
+from ..rfc7516.models import JWEAlgModel, JWEEncModel, EncryptionData, Recipient
 from ..rfc7517.models import CurveKey
 from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode, u32be_len_input
-from ..registry import HeaderParameter, is_str, is_int, is_jwk
+from ..registry import Header, HeaderParameter, is_str, is_int, is_jwk
 
 
 class DirectAlgModel(JWEAlgModel):

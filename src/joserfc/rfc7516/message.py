@@ -1,4 +1,4 @@
-from .types import EncryptionData
+from .models import EncryptionData
 from .registry import JWERegistry
 from ..errors import DecodeError
 from ..util import (

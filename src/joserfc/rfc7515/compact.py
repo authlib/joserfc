@@ -1,6 +1,5 @@
 import binascii
-from .model import JWSAlgModel
-from .types import CompactSignature
+from .model import JWSAlgModel, CompactSignature
 from ..errors import DecodeError, MissingAlgorithmError
 from ..util import (
     json_b64encode,

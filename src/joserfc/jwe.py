@@ -1,6 +1,7 @@
 from typing import Optional, AnyStr
 from .rfc7516 import types
-from .rfc7516.types import Header, EncryptionData, Recipient, JSONSerialization
+from .rfc7516.types import JSONSerialization
+from .rfc7516.models import Recipient, EncryptionData
 from .rfc7516.registry import (
     JWERegistry,
     default_registry,
@@ -13,10 +14,12 @@ from .rfc7518.jwe_encs import JWE_ENC_MODELS
 from .rfc7518.jwe_zips import JWE_ZIP_MODELS
 from .jwk import KeyFlexible, guess_key
 from .util import to_bytes
+from .registry import Header
 
 __all__ = [
     "types",
     "JWERegistry",
+    "Recipient",
     "EncryptionData",
     "encrypt_compact",
     "decrypt_compact",
