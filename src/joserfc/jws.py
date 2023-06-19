@@ -1,6 +1,11 @@
 from typing import Optional, AnyStr, List, Union
 from .rfc7515 import types
-from .rfc7515.model import JWSAlgModel, HeaderMember, CompactSignature, JSONSignature
+from .rfc7515.model import (
+    JWSAlgModel,
+    HeaderMember,
+    CompactSignature,
+    JSONSignature,
+)
 from .rfc7515.registry import (
     JWSRegistry,
     default_registry,
@@ -16,7 +21,6 @@ from .rfc7515.json import (
     extract_json,
 )
 from .rfc7515.types import (
-    Header,
     HeaderDict,
     JSONSerialization,
 )
@@ -26,6 +30,7 @@ from .rfc8812 import ES256K
 from .errors import BadSignatureError
 from .jwk import Key, KeyFlexible, guess_key
 from .util import to_bytes, urlsafe_b64encode
+from .registry import Header
 
 __all__ = [
     "types",
@@ -39,6 +44,7 @@ __all__ = [
     "deserialize_json",
     "extract_json",
     "validate_json",
+    "default_registry",
 ]
 
 

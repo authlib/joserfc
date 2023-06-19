@@ -43,12 +43,18 @@ class EncryptionData:
         self.unprotected = unprotected
         self.recipients: t.List[Recipient] = []
         self.cek: t.Optional[bytes] = None  # content encryption key
-        self.plaintext = payload
         self.aad: t.Optional[bytes] = None  # aad for JSON serialization
         self.encoded = {}  # store the encoded segments
         self.decoded = {}  # store the decoded segments
+        self.segments = {}  # store temporary segments
         self.compact = False
         self.flatten = False
+
+    @property
+    def plaintext(self) -> bytes:
+        if 'plaintext' in self.segments:
+            return self.segments["plaintext"]
+        return self.payload
 
     def add_recipient(self, key, header: t.Optional[Header] = None):
         recipient = Recipient(self, header)

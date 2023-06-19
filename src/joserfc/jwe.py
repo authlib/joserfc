@@ -1,7 +1,13 @@
 from typing import Optional, AnyStr
 from .rfc7516 import types
 from .rfc7516.types import JSONSerialization
-from .rfc7516.models import Recipient, EncryptionData
+from .rfc7516.models import (
+    Recipient,
+    EncryptionData,
+    JWEAlgModel,
+    JWEEncModel,
+    JWEZipModel,
+)
 from .rfc7516.registry import (
     JWERegistry,
     default_registry,
@@ -19,6 +25,9 @@ from .registry import Header
 __all__ = [
     "types",
     "JWERegistry",
+    "JWEAlgModel",
+    "JWEEncModel",
+    "JWEZipModel",
     "Recipient",
     "EncryptionData",
     "encrypt_compact",
@@ -26,6 +35,7 @@ __all__ = [
     "extract_compact",
     "encrypt_json",
     "decrypt_json",
+    "default_registry",
 ]
 
 

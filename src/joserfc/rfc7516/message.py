@@ -48,7 +48,7 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     # sequence representing the plaintext.
     if "zip" in obj.protected:
         zip_ = registry.get_zip(obj.protected["zip"])
-        obj.plaintext = zip_.compress(obj.payload)
+        obj.segments["plaintext"] = zip_.compress(obj.payload)
 
     # Step 13, Compute the Encoded Protected Header value BASE64URL(UTF8(JWE Protected Header)).
     aad = json_b64encode(obj.protected, "ascii")
