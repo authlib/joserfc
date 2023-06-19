@@ -1,9 +1,7 @@
-import json
+from unittest import TestCase
 from joserfc.jwe import encrypt_compact, decrypt_compact, JWERegistry
 from joserfc.jwk import RSAKey, ECKey
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
-from joserfc.util import json_b64encode
-from unittest import TestCase
 from tests.util import read_key
 
 

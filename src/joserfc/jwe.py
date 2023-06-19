@@ -17,6 +17,7 @@ from .util import to_bytes
 __all__ = [
     "types",
     "JWERegistry",
+    "EncryptionData",
     "encrypt_compact",
     "decrypt_compact",
     "extract_compact",
