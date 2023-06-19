@@ -13,7 +13,7 @@ Encode token
 
     header = {"alg": "HS256"}
     claims = {"sub": "https://authlib.org"}
-    key = OctKey"__secret_key__"
+    key = OctKey.import_key("__secret_key__")
     jwt.encode(header, claims, key)
 
 Decode token

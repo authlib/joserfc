@@ -6,6 +6,14 @@ JSON Web Signature
 
 .. module:: joserfc.jws
 
+.. autoclass:: JWSRegistry
+
+.. autoclass:: JWSAlgModel
+
+.. autoclass:: CompactSignature
+
+.. autoclass:: JSONSignature
+
 .. autofunction:: serialize_compact
 
 .. autofunction:: extract_compact
@@ -22,20 +30,11 @@ JSON Web Signature
 
 .. autofunction:: deserialize_json
 
-.. autoclass:: JWSRegistry
-
-.. autoclass:: JWSAlgModel
 
 JSON Web Key
 ------------
 
 .. module:: joserfc.jwk
-
-.. autoclass:: SymmetricKey
-
-.. autoclass:: AsymmetricKey
-
-.. autoclass:: CurveKey
 
 .. autoclass:: OctKey
 
@@ -52,3 +51,9 @@ JSON Web Key
 .. autofunction:: import_key
 
 .. autofunction:: guess_key
+
+.. autoclass:: SymmetricKey
+
+.. autoclass:: AsymmetricKey
+
+.. autoclass:: CurveKey

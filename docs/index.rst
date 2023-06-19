@@ -35,6 +35,7 @@ Explore the following sections to discover more about our theme and its features
 
    guide/index
    guide/algorithms
+   guide/registry
    migrations/index
 
 .. toctree::
