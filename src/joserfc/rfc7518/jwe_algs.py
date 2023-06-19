@@ -228,8 +228,7 @@ class PBES2HSAlgModel(JWEAlgModel):
         self.key_wrapping = key_wrapping
         self.hash_alg = getattr(hashes, f"SHA{hash_size}")()
 
-    def compute_derived_key(self, key: bytes, header: Header, p2c: int) -> bytes:
-        p2s = urlsafe_b64decode(to_bytes(header["p2s"]))
+    def compute_derived_key(self, key: bytes, p2s: bytes, p2c: int) -> bytes:
         # The salt value used is (UTF8(Alg) || 0x00 || Salt Input)
         salt = to_bytes(self.name) + b"\x00" + p2s
         kdf = PBKDF2HMAC(
@@ -244,7 +243,9 @@ class PBES2HSAlgModel(JWEAlgModel):
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         headers = recipient.headers()
 
-        if "p2s" not in headers:
+        if "p2s" in headers:
+            p2s = urlsafe_b64decode(to_bytes(headers["p2s"]))
+        else:
             p2s = os.urandom(16)
             recipient.add_header("p2s", urlsafe_b64encode(p2s).decode("ascii"))
 
@@ -255,15 +256,16 @@ class PBES2HSAlgModel(JWEAlgModel):
             p2c = self.DEFAULT_P2C
             recipient.add_header("p2c", p2c)
 
-        kek = self.compute_derived_key(key.get_op_key("deriveKey"), headers, p2c)
+        kek = self.compute_derived_key(key.get_op_key("deriveKey"), p2s, p2c)
         return self.key_wrapping.encrypt_recipient(enc, recipient, OctKey.import_key(kek))
 
     def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         headers = recipient.headers()
         assert "p2s" in headers
         assert "p2c" in headers
+        p2s = urlsafe_b64decode(to_bytes(headers["p2s"]))
         p2c = headers["p2c"]
-        kek = self.compute_derived_key(key.get_op_key("deriveKey"), headers, p2c)
+        kek = self.compute_derived_key(key.get_op_key("deriveKey"), p2s, p2c)
         return self.key_wrapping.decrypt_recipient(enc, recipient, OctKey.import_key(kek))
 
 
