@@ -2,8 +2,8 @@ from joserfc.jws import JWSRegistry, serialize_compact, deserialize_compact
 from joserfc.jwk import OctKey, RSAKey, ECKey, KeySet
 from joserfc.errors import BadSignatureError, DecodeError, MissingAlgorithmError
 from joserfc.util import to_bytes
-from tests.fixtures import TestFixture
-from tests.util import read_key, read_fixture
+from tests.fixtures import TestFixture, read_fixture
+from tests.keys import load_key
 
 
 class TestCompact(TestFixture):
@@ -82,8 +82,8 @@ def add_oct_tests():
 
 
 def add_rsa_tests():
-    private_key = RSAKey.import_key(read_key("openssl-rsa-private.pem"))
-    public_key = RSAKey.import_key(read_key("openssl-rsa-public.pem"))
+    private_key: RSAKey = load_key("rsa-openssl-private.pem")
+    public_key: RSAKey = load_key("rsa-openssl-public.pem")
     TestCompact.load_fixture('jws_compact_rsa.json', private_key, public_key)
 
 
@@ -95,8 +95,8 @@ def add_ec_tests():
         key = case['key']
         case['payload'] = payload
         case['id'] = f'EC_{key}_{index}'
-        private_key = ECKey.import_key(read_key(f'ec-{key}-private.pem'))
-        public_key = ECKey.import_key(read_key(f'ec-{key}-public.pem'))
+        private_key: ECKey = load_key(f'ec-{key}-private.pem')
+        public_key: ECKey = load_key(f'ec-{key}-public.pem')
         TestCompact.attach_case(case, private_key, public_key)
 
 

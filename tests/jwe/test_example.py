@@ -1,4 +1,4 @@
-import json
+from unittest import TestCase
 from joserfc.jwe import decrypt_compact, decrypt_json
 from joserfc.jwk import RSAKey, OctKey, KeySet
 from joserfc.util import json_b64encode, urlsafe_b64encode, to_bytes
@@ -7,8 +7,7 @@ from joserfc.rfc7516.models import EncryptionData
 from joserfc.rfc7516.message import perform_encrypt
 from joserfc.rfc7516.compact import represent_compact
 from joserfc.rfc7516.json import represent_json
-from unittest import TestCase
-from tests.util import read_key
+from tests.keys import load_key
 
 
 class TestCompactExamples(TestCase):
@@ -35,7 +34,7 @@ class TestCompactExamples(TestCase):
         obj.cek = CEK
 
         # A.1.3.  Key Encryption
-        key = RSAKey.import_key(json.loads(read_key('RFC7516-A.1.3.json')))
+        key: RSAKey = load_key('RFC7516-A.1.3.json')
         obj.add_recipient(key)
 
         enc = registry.get_enc(protected['enc'])
@@ -143,7 +142,7 @@ class TestCompactExamples(TestCase):
         obj.cek = CEK
 
         # A.2.3.  Key Encryption
-        key = RSAKey.import_key(json.loads(read_key('RFC7516-A.2.3.json')))
+        key: RSAKey = load_key('RFC7516-A.2.3.json')
         obj.add_recipient(key)
 
         recipient = obj.recipients[0]
@@ -258,8 +257,8 @@ class TestCompactExamples(TestCase):
 
         # The algorithm and key used for the first recipient are the same as
         # that used in Appendix A.2.
-        key1 = RSAKey.import_key(
-            json.loads(read_key('RFC7516-A.2.3.json')),
+        key1: RSAKey = load_key(
+            'RFC7516-A.2.3.json',
             {"kid": "2011-04-29"}
         )
 
@@ -340,8 +339,8 @@ class TestCompactExamples(TestCase):
         recipient2 = {"alg": "A128KW", "kid": "7"}
         protected = {"enc": "A128CBC-HS256"}
         shared_header = {"jku": "https://server.example.com/keys.jwks"}
-        key1 = RSAKey.import_key(
-            json.loads(read_key('RFC7516-A.2.3.json')),
+        key1: RSAKey = load_key(
+            'RFC7516-A.2.3.json',
             {"kid": "2011-04-29"}
         )
         key2 = OctKey.import_key({

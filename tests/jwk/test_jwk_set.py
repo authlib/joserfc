@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
-from ..util import read_key
+from tests.keys import read_key
 
 
 class TestKeySet(TestCase):
@@ -24,7 +24,7 @@ class TestKeySet(TestCase):
 
     def test_initialize_key_set(self):
         keys = []
-        pem1 = read_key("openssl-rsa-public.pem")
+        pem1 = read_key("rsa-openssl-public.pem")
         keys.append(RSAKey.import_key(pem1))
         pem2 = read_key(f"ec-p256-private.pem")
         keys.append(ECKey.import_key(pem2))

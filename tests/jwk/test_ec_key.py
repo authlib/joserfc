@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import ECKey
-from ..util import read_key
+from tests.keys import read_key
 
 
 class TestECKey(TestCase):

@@ -14,7 +14,7 @@ def import_key(key_type: str, value: KeyAny, options: KeyOptions = None) -> Key:
         value = to_bytes(value)
 
     key_cls = JWK_REGISTRY[key_type]
-    return key_cls.import_key(value, options)
+    return key_cls.import_key(value, options)  # type: ignore
 
 
 def generate_key(

@@ -1,5 +1,13 @@
+import json
 from unittest import TestCase
-from ..util import read_fixture
+from pathlib import Path
+
+BASE_PATH = Path(__file__).parent
+
+
+def read_fixture(filename: str):
+    with open((BASE_PATH / filename).resolve()) as f:
+        return json.load(f)
 
 
 class TestFixture(TestCase):

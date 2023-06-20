@@ -53,3 +53,5 @@ __pypackages__/
 # IDE
 .idea/
 .vscode/
+
+demo.py

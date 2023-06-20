@@ -1,7 +1,6 @@
-import json
 from unittest import TestCase
 from joserfc.jwk import OKPKey
-from ..util import read_key
+from tests.keys import read_key
 
 
 class TestOKPKey(TestCase):
@@ -47,16 +46,14 @@ class TestOKPKey(TestCase):
         self.assertIsNone(public_key.private_key)
 
     def test_import_from_json(self):
-        private_json = json.loads(read_key("okp-ed25519-private.json"))
-        public_json = json.loads(read_key("okp-ed25519-public.json"))
-        private_key: OKPKey = OKPKey.import_key(private_json)
-        public_key: OKPKey = OKPKey.import_key(public_json)
+        private_key = OKPKey.import_key(read_key("okp-ed25519-private.json"))
+        public_key = OKPKey.import_key(read_key("okp-ed25519-public.json"))
         self.assertTrue(private_key.is_private)
         self.assertFalse(public_key.is_private)
 
     def test_all_as_methods(self):
-        private_json = json.loads(read_key("okp-ed25519-private.json"))
-        public_json = json.loads(read_key("okp-ed25519-public.json"))
+        private_json = read_key("okp-ed25519-private.json")
+        public_json = read_key("okp-ed25519-public.json")
         key: OKPKey = OKPKey.import_key(private_json)
 
         # as_dict

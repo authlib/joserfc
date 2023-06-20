@@ -2,7 +2,7 @@ from unittest import TestCase
 from joserfc.jwe import encrypt_compact, decrypt_compact, JWERegistry
 from joserfc.jwk import RSAKey, ECKey, OctKey
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
-from tests.util import read_key
+from tests.keys import load_key
 
 
 class TestJWECompact(TestCase):
@@ -29,16 +29,16 @@ class TestJWECompact(TestCase):
                 self.run_case(alg, enc.name, private_key, public_key)
 
     def test_RSA_alg(self):
-        private_key = RSAKey.import_key(read_key('openssl-rsa-private.pem'))
-        public_key = RSAKey.import_key(read_key('openssl-rsa-public.pem'))
+        private_key: RSAKey = load_key('rsa-openssl-private.pem')
+        public_key: RSAKey = load_key('rsa-openssl-public.pem')
         algs = ['RSA1_5', 'RSA-OAEP', 'RSA-OAEP-256']
         self.run_cases(algs, private_key, public_key)
 
     def test_ECDH_ES_alg(self):
         algs = ['ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW']
         for size in [256, 384, 512]:
-            private_key = ECKey.import_key(read_key(f'ec-p{size}-private.pem'))
-            public_key = ECKey.import_key(read_key(f'ec-p{size}-public.pem'))
+            private_key: ECKey = load_key(f'ec-p{size}-private.pem')
+            public_key: ECKey = load_key(f'ec-p{size}-public.pem')
             self.run_cases(algs, private_key, public_key)
 
     def test_dir_alg(self):

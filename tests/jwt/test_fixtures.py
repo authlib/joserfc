@@ -1,7 +1,7 @@
 from joserfc import jwt
 from joserfc.jwk import RSAKey
 from tests.fixtures import TestFixture
-from tests.util import read_key
+from tests.keys import load_key
 
 
 class TestJWTFixtures(TestFixture):
@@ -26,8 +26,8 @@ class TestJWTFixtures(TestFixture):
 
 
 def add_rsa_tests():
-    private_key = RSAKey.import_key(read_key("openssl-rsa-private.pem"))
-    public_key = RSAKey.import_key(read_key("openssl-rsa-public.pem"))
+    private_key: RSAKey = load_key("rsa-openssl-private.pem")
+    public_key: RSAKey = load_key("rsa-openssl-public.pem")
     TestJWTFixtures.load_fixture('jwt_rsa.json', private_key, public_key)
 
 add_rsa_tests()

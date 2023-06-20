@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import RSAKey
-from ..util import read_key
+from tests.keys import read_key
 
 
 class TestRSAKey(TestCase):
@@ -61,16 +61,16 @@ class TestRSAKey(TestCase):
         self.assertEqual(key.is_private, False)
 
     def test_import_key_from_openssl(self):
-        public_pem = read_key("openssl-rsa-public.pem")
+        public_pem = read_key("rsa-openssl-public.pem")
         key: RSAKey = RSAKey.import_key(public_pem)
         self.assertEqual(key.is_private, False)
 
-        private_pem = read_key("openssl-rsa-private.pem")
+        private_pem = read_key("rsa-openssl-private.pem")
         key: RSAKey = RSAKey.import_key(private_pem)
         self.assertEqual(key.is_private, True)
 
     def test_output_as_methods(self):
-        private_pem = read_key("openssl-rsa-private.pem")
+        private_pem = read_key("rsa-openssl-private.pem")
         key: RSAKey = RSAKey.import_key(private_pem)
 
         # as_dict

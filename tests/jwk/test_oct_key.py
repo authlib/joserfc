@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import OctKey
-from ..util import read_key
+from tests.keys import read_key
 
 
 class TestOctKey(TestCase):
