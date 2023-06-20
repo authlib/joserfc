@@ -18,7 +18,7 @@ from .rfc7516.json import represent_json, extract_json
 from .rfc7518.jwe_algs import JWE_ALG_MODELS
 from .rfc7518.jwe_encs import JWE_ENC_MODELS
 from .rfc7518.jwe_zips import JWE_ZIP_MODELS
-from .jwk import KeyFlexible, guess_key
+from .jwk import CurveKey, KeyFlexible, guess_key
 from .util import to_bytes
 from .registry import Header
 
@@ -57,7 +57,9 @@ def encrypt_compact(
         protected: Header,
         payload: bytes,
         public_key: KeyFlexible,
-        registry: Optional[JWERegistry] = None) -> bytes:
+        registry: Optional[JWERegistry] = None,
+        sender_key: Optional[CurveKey] = None) -> bytes:
+
     if registry is None:
         registry = default_registry
 
@@ -67,14 +69,16 @@ def encrypt_compact(
     recipient.recipient_key = key
     obj.recipients.append(recipient)
     obj.compact = True
-    perform_encrypt(obj, registry)
+    perform_encrypt(obj, registry, sender_key)
     return represent_compact(obj)
 
 
 def decrypt_compact(
         value: AnyStr,
         private_key: KeyFlexible,
-        registry: Optional[JWERegistry] = None) -> EncryptionData:
+        registry: Optional[JWERegistry] = None,
+        sender_key: Optional[CurveKey] = None) -> EncryptionData:
+
     value = to_bytes(value)
     obj = extract_compact(value)
     if registry is None:
@@ -83,13 +87,14 @@ def decrypt_compact(
     recipient = obj.recipients[0]
     key = guess_key(private_key, recipient)
     recipient.recipient_key = key
-    return perform_decrypt(obj, registry)
+    return perform_decrypt(obj, registry, sender_key)
 
 
 def encrypt_json(
         obj: EncryptionData,
         public_key: KeyFlexible,
-        registry: Optional[JWERegistry] = None) -> JSONSerialization:
+        registry: Optional[JWERegistry] = None,
+        sender_key: Optional[CurveKey] = None) -> JSONSerialization:
     if registry is None:
         registry = default_registry
 
@@ -97,14 +102,15 @@ def encrypt_json(
         if not recipient.recipient_key:
             recipient.recipient_key = guess_key(public_key, recipient)
 
-    perform_encrypt(obj, registry)
+    perform_encrypt(obj, registry, sender_key)
     return represent_json(obj)
 
 
 def decrypt_json(
         data: JSONSerialization,
         private_key: KeyFlexible,
-        registry: Optional[JWERegistry] = None) -> EncryptionData:
+        registry: Optional[JWERegistry] = None,
+        sender_key: Optional[CurveKey] = None) -> EncryptionData:
     obj = extract_json(data)
     if registry is None:
         registry = default_registry
@@ -112,4 +118,4 @@ def decrypt_json(
     for recipient in obj.recipients:
         recipient.recipient_key = guess_key(private_key, recipient)
 
-    return perform_decrypt(obj, registry)
+    return perform_decrypt(obj, registry, sender_key)

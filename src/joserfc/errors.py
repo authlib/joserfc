@@ -45,6 +45,14 @@ class BadSignatureError(JoseError):
     error: str = "bad_signature"
 
 
+class InvalidEncryptionAlgorithmError(JoseError):
+    """This error is designed for JWE. It is raised when "enc" value
+    does not work together with "alg" value.
+    """
+    error: str = 'invalid_encryption_algorithm'
+    description: str = ""
+
+
 class InvalidClaimError(JoseError):
     error: str = "invalid_claim"
 
