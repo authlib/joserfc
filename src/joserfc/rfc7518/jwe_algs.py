@@ -22,7 +22,6 @@ class DirectAlgModel(JWEAlgModel):
     name = "dir"
     description = "Direct use of a shared symmetric key"
     recommended = True
-    key_encryption = True
 
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         obj: EncryptionData = recipient.parent
@@ -45,7 +44,6 @@ class RSAAlgModel(JWEAlgModel):
     #: A key of size 2048 bits or larger MUST be used with these algorithms
     #: RSA1_5, RSA-OAEP, RSA-OAEP-256
     key_size = 2048
-    key_encryption = True
 
     def __init__(
             self,
@@ -152,7 +150,6 @@ class ECDHESAlgModel(JWEAlgModel):
         "apu": HeaderParameter("Agreement PartyUInfo", False, is_str),
         "apv": HeaderParameter("Agreement PartyVInfo", False, is_str),
     }
-    key_agreement = True
 
     # https://tools.ietf.org/html/rfc7518#section-4.6
     def __init__(self, key_wrapping: t.Optional[JWEAlgModel] = None):
@@ -176,7 +173,7 @@ class ECDHESAlgModel(JWEAlgModel):
         return bit_size
 
     def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int):
-        fixed_info = compute_concat_kdf_info(self.key_size, header, bit_size)
+        fixed_info = compute_concat_kdf_info(self.direct_mode, header, bit_size)
         return compute_derived_key_for_concat_kdf(shared_key, bit_size, fixed_info)
 
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: CurveKey) -> bytes:
@@ -269,9 +266,9 @@ class PBES2HSAlgModel(JWEAlgModel):
         return self.key_wrapping.decrypt_recipient(enc, recipient, OctKey.import_key(kek))
 
 
-def compute_concat_kdf_info(key_size: t.Optional[int], header: Header, bit_size: int):
+def compute_concat_kdf_info(direct_mode: bool, header: Header, bit_size: int):
     # AlgorithmID
-    if key_size is None:
+    if direct_mode:
         alg_id = u32be_len_input(header["enc"])
     else:
         alg_id = u32be_len_input(header["alg"])

@@ -118,10 +118,6 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     algorithm_location = "alg"
     more_header_registry: HeaderRegistryDict = {}
 
-    # key management mode
-    key_encryption: bool = False
-    key_agreement: bool = False
-
     @property
     def direct_mode(self) -> bool:
         return self.key_size is None

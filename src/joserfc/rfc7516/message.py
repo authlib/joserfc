@@ -1,4 +1,4 @@
-from .models import EncryptionData
+from .models import EncryptionData, JWEEncModel
 from .registry import JWERegistry
 from ..errors import DecodeError
 from ..util import (
@@ -9,22 +9,8 @@ from ..util import (
 
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None) -> EncryptionData:
     enc = registry.get_enc(obj.protected["enc"])
-
-    # Step 8 for each recipient
-    for recipient in obj.recipients:
-        headers = recipient.headers()
-        registry.check_header(headers)
-
-        # Step 1, determine the algorithms
-        # https://www.rfc-editor.org/rfc/rfc7516#section-5.1
-        alg = registry.get_alg(headers["alg"])
-
-        # Step 2, When Key Wrapping, Key Encryption,
-        # or Key Agreement with Key Wrapping are employed,
-        # generate a random CEK value.
-        if not alg.direct_mode and not obj.cek:
-            obj.cek = enc.generate_cek()
-
+    items = _prepare_recipients(obj, enc, registry)
+    for recipient, alg in items:
         # from step 3 to step 7
         if sender_key:
             ek = alg.encrypt_recipient(enc, recipient, sender_key)
@@ -107,3 +93,31 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     else:
         obj.payload = msg
     return obj
+
+
+def _prepare_recipients(obj: EncryptionData, enc: JWEEncModel, registry: JWERegistry):
+    modes = set()
+    items = []
+    for recipient in obj.recipients:
+        headers = recipient.headers()
+        registry.check_header(headers)
+
+        # Step 1, determine the algorithms
+        # https://www.rfc-editor.org/rfc/rfc7516#section-5.1
+        alg = registry.get_alg(headers["alg"])
+        modes.add(alg.direct_mode)
+        items.append((recipient, alg))
+
+    if len(modes) > 1:
+        # TODO
+        raise
+
+    alg = items[0][1]
+
+    # Step 2, When Key Wrapping, Key Encryption,
+    # or Key Agreement with Key Wrapping are employed,
+    # generate a random CEK value.
+    if not alg.direct_mode and not obj.cek:
+        obj.cek = enc.generate_cek()
+
+    return items

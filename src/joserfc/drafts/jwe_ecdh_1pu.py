@@ -20,14 +20,13 @@ class ECDH1PUAlgModel(JWEAlgModel):
 
     https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04
     """
-
     more_header_registry = {
         "epk": HeaderParameter("Ephemeral Public Key", True, is_jwk),
         "apu": HeaderParameter("Agreement PartyUInfo", False, is_str),
         "apv": HeaderParameter("Agreement PartyVInfo", False, is_str),
         "skid": HeaderParameter("Sender Key ID", False, is_str),
     }
-    key_agreement: bool = True
+    recommended: bool = False
 
     def __init__(self, key_wrapping: t.Optional[JWEAlgModel]=None):
         if key_wrapping is None:
@@ -56,7 +55,7 @@ class ECDH1PUAlgModel(JWEAlgModel):
         return bit_size
 
     def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int, tag: t.Optional[bytes]=None):
-        fixed_info = compute_concat_kdf_info(self.key_size, header, bit_size)
+        fixed_info = compute_concat_kdf_info(self.direct_mode, header, bit_size)
         if tag:
             cctag = u32be_len_input(tag)
             fixed_info += cctag
@@ -64,22 +63,24 @@ class ECDH1PUAlgModel(JWEAlgModel):
 
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey) -> bytes:
         self._check_enc(enc)
+        recipient_key: CurveKey = recipient.recipient_key
 
         if recipient.ephemeral_key is None:
-            recipient.ephemeral_key = sender_key.generate_key(sender_key.curve_name, private=True)
+            recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
+        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
 
-        recipient_key: CurveKey = recipient.recipient_key
         recipient_pubkey = recipient_key.get_op_key("deriveKey")
         sender_shared_key = sender_key.exchange_shared_key(recipient_pubkey)
         ephemeral_shared_key = recipient.ephemeral_key.exchange_shared_key(recipient_pubkey)
         shared_key = ephemeral_shared_key + sender_shared_key
 
         bit_size = self.get_bit_size(enc)
-        dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size)
-        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
+        tag = None  # TODO
+        dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size, tag)
 
         if self.key_wrapping:
-            return self.key_wrapping.encrypt_recipient(enc, recipient, OctKey.import_key(dk))
+            kek = OctKey.import_key(dk)
+            return self.key_wrapping.encrypt_recipient(enc, recipient, kek)
 
         obj = recipient.parent
         assert obj.cek is None
@@ -96,12 +97,14 @@ class ECDH1PUAlgModel(JWEAlgModel):
         ephemeral_key = recipient_key.import_key(headers["epk"])
         ephemeral_pubkey = ephemeral_key.get_op_key("deriveKey")
         sender_pubkey = sender_key.get_op_key("deriveKey")
+
         sender_shared_key = recipient_key.exchange_shared_key(sender_pubkey)
         ephemeral_shared_key = recipient_key.exchange_shared_key(ephemeral_pubkey)
         shared_key = ephemeral_shared_key + sender_shared_key
 
         bit_size = self.get_bit_size(enc)
-        dk = self.compute_derived_key(shared_key, headers, bit_size)
+        tag = recipient.parent.decoded.get("tag")
+        dk = self.compute_derived_key(shared_key, headers, bit_size, tag)
 
         if self.key_wrapping:
             return self.key_wrapping.decrypt_recipient(enc, recipient, OctKey.import_key(dk))
