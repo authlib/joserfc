@@ -27,6 +27,7 @@ class ECDH1PUAlgModel(JWEAlgModel):
         "skid": HeaderParameter("Sender Key ID", False, is_str),
     }
     recommended: bool = False
+    use_sender_key: bool = True
 
     def __init__(self, key_wrapping: t.Optional[JWEAlgModel]=None):
         if key_wrapping is None:
@@ -38,6 +39,10 @@ class ECDH1PUAlgModel(JWEAlgModel):
             self.description = f"ECDH-1PU using one-pass KDF and CEK wrapped with {key_wrapping.name}"
             self.key_size = key_wrapping.key_size
         self.key_wrapping = key_wrapping
+
+    @property
+    def wrapped_key_mode(self) -> bool:
+        return self.key_wrapping is not None
 
     def _check_enc(self, enc: JWEEncModel):
         if self.key_wrapping and not isinstance(enc, CBCHS2EncModel):
@@ -54,14 +59,18 @@ class ECDH1PUAlgModel(JWEAlgModel):
             bit_size = self.key_size
         return bit_size
 
+    def get_recipient_tag(self, recipient: Recipient) -> t.Optional[bytes]:
+        if self.wrapped_key_mode:
+            return recipient.parent.decoded.get("tag")
+
     def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int, tag: t.Optional[bytes]=None):
-        fixed_info = compute_concat_kdf_info(self.direct_mode, header, bit_size)
+        fixed_info = compute_concat_kdf_info(self.direct_key_mode, header, bit_size)
         if tag:
             cctag = u32be_len_input(tag)
             fixed_info += cctag
         return compute_derived_key_for_concat_kdf(shared_key, bit_size, fixed_info)
 
-    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey) -> bytes:
+    def prepare_recipient_header(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey):
         self._check_enc(enc)
         recipient_key: CurveKey = recipient.recipient_key
 
@@ -69,13 +78,17 @@ class ECDH1PUAlgModel(JWEAlgModel):
             recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
         recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
 
-        recipient_pubkey = recipient_key.get_op_key("deriveKey")
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey) -> bytes:
+        if not self.wrapped_key_mode:
+            self.prepare_recipient_header(enc, recipient, sender_key)
+
+        recipient_pubkey = recipient.recipient_key.get_op_key("deriveKey")
         sender_shared_key = sender_key.exchange_shared_key(recipient_pubkey)
         ephemeral_shared_key = recipient.ephemeral_key.exchange_shared_key(recipient_pubkey)
         shared_key = ephemeral_shared_key + sender_shared_key
 
         bit_size = self.get_bit_size(enc)
-        tag = None  # TODO
+        tag = self.get_recipient_tag(recipient)
         dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size, tag)
 
         if self.key_wrapping:
@@ -103,7 +116,7 @@ class ECDH1PUAlgModel(JWEAlgModel):
         shared_key = ephemeral_shared_key + sender_shared_key
 
         bit_size = self.get_bit_size(enc)
-        tag = recipient.parent.decoded.get("tag")
+        tag = self.get_recipient_tag(recipient)
         dk = self.compute_derived_key(shared_key, headers, bit_size, tag)
 
         if self.key_wrapping:

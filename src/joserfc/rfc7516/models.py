@@ -117,10 +117,18 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     algorithm_type = "JWE"
     algorithm_location = "alg"
     more_header_registry: HeaderRegistryDict = {}
+    use_sender_key: bool = False
 
     @property
-    def direct_mode(self) -> bool:
+    def direct_key_mode(self) -> bool:
         return self.key_size is None
+
+    @property
+    def wrapped_key_mode(self) -> bool:
+        return False
+
+    def prepare_recipient_header(self, enc: JWEEncModel, recipient: Recipient, key):
+        pass
 
     @abstractmethod
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key) -> bytes:

@@ -9,14 +9,7 @@ from ..util import (
 
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None) -> EncryptionData:
     enc = registry.get_enc(obj.protected["enc"])
-    items = _prepare_recipients(obj, enc, registry)
-    for recipient, alg in items:
-        # from step 3 to step 7
-        if sender_key:
-            ek = alg.encrypt_recipient(enc, recipient, sender_key)
-        else:
-            ek = alg.encrypt_recipient(enc, recipient, recipient.recipient_key)
-        recipient.encrypted_key = ek
+    items = _prepare_encrypt_recipients(obj, enc, registry, sender_key)
 
     # Step 9, Generate a random JWE Initialization Vector of the correct size
     # for the content encryption algorithm (if required for the algorithm);
@@ -53,6 +46,17 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     obj.decoded["ciphertext"] = ciphertext
     obj.encoded["ciphertext"] = urlsafe_b64encode(ciphertext)
     obj.encoded["tag"] = urlsafe_b64encode(obj.decoded["tag"])
+
+    # post encrypt recipients
+    if items:
+        for recipient, alg in items:
+            if alg.use_sender_key:
+                key = sender_key
+            else:
+                key = recipient.recipient_key
+            if alg.wrapped_key_mode:
+                ek = alg.encrypt_recipient(enc, recipient, key)
+                recipient.encrypted_key = ek
     return obj
 
 
@@ -95,7 +99,7 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     return obj
 
 
-def _prepare_recipients(obj: EncryptionData, enc: JWEEncModel, registry: JWERegistry):
+def _prepare_encrypt_recipients(obj: EncryptionData, enc: JWEEncModel, registry: JWERegistry, sender_key):
     modes = set()
     items = []
     for recipient in obj.recipients:
@@ -105,7 +109,7 @@ def _prepare_recipients(obj: EncryptionData, enc: JWEEncModel, registry: JWERegi
         # Step 1, determine the algorithms
         # https://www.rfc-editor.org/rfc/rfc7516#section-5.1
         alg = registry.get_alg(headers["alg"])
-        modes.add(alg.direct_mode)
+        modes.add(alg.direct_key_mode)
         items.append((recipient, alg))
 
     if len(modes) > 1:
@@ -117,7 +121,23 @@ def _prepare_recipients(obj: EncryptionData, enc: JWEEncModel, registry: JWERegi
     # Step 2, When Key Wrapping, Key Encryption,
     # or Key Agreement with Key Wrapping are employed,
     # generate a random CEK value.
-    if not alg.direct_mode and not obj.cek:
+    if not alg.direct_key_mode and not obj.cek:
         obj.cek = enc.generate_cek()
 
-    return items
+    _post_encrypt = False
+    for recipient, alg in items:
+        # from step 3 to step 7
+        if alg.use_sender_key:
+            key = sender_key
+        else:
+            key = recipient.recipient_key
+
+        if alg.wrapped_key_mode:
+            alg.prepare_recipient_header(enc, recipient, key)
+            _post_encrypt = True
+        else:
+            ek = alg.encrypt_recipient(enc, recipient, key)
+            recipient.encrypted_key = ek
+
+    if _post_encrypt:
+        return items

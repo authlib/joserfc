@@ -165,6 +165,10 @@ class ECDHESAlgModel(JWEAlgModel):
             self.recommended = key_wrapping.recommended
         self.key_wrapping = key_wrapping
 
+    @property
+    def wrapped_key_mode(self) -> bool:
+        return self.key_wrapping is not None
+
     def get_bit_size(self, enc: JWEEncModel) -> int:
         if self.key_size is None:
             bit_size = enc.cek_size
@@ -173,18 +177,22 @@ class ECDHESAlgModel(JWEAlgModel):
         return bit_size
 
     def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int):
-        fixed_info = compute_concat_kdf_info(self.direct_mode, header, bit_size)
+        fixed_info = compute_concat_kdf_info(self.direct_key_mode, header, bit_size)
         return compute_derived_key_for_concat_kdf(shared_key, bit_size, fixed_info)
 
-    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: CurveKey) -> bytes:
+    def prepare_recipient_header(self, enc: JWEEncModel, recipient: Recipient, key: CurveKey):
         if recipient.ephemeral_key is None:
             recipient.ephemeral_key = key.generate_key(key.curve_name, private=True)
+        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
+
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: CurveKey) -> bytes:
+        if not self.wrapped_key_mode:
+            self.prepare_recipient_header(enc, recipient, key)
 
         bit_size = self.get_bit_size(enc)
         pubkey = key.get_op_key("deriveKey")
         shared_key = recipient.ephemeral_key.exchange_shared_key(pubkey)
         dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size)
-        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
         if self.key_wrapping:
             return self.key_wrapping.encrypt_recipient(enc, recipient, OctKey.import_key(dk))
 
@@ -225,6 +233,10 @@ class PBES2HSAlgModel(JWEAlgModel):
         self.key_wrapping = key_wrapping
         self.hash_alg = getattr(hashes, f"SHA{hash_size}")()
 
+    @property
+    def wrapped_key_mode(self) -> bool:
+        return True
+
     def compute_derived_key(self, key: bytes, p2s: bytes, p2c: int) -> bytes:
         # The salt value used is (UTF8(Alg) || 0x00 || Salt Input)
         salt = to_bytes(self.name) + b"\x00" + p2s
@@ -237,22 +249,22 @@ class PBES2HSAlgModel(JWEAlgModel):
         )
         return kdf.derive(key)
 
-    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+    def prepare_recipient_header(self, enc: JWEEncModel, recipient: Recipient, key: OctKey):
         headers = recipient.headers()
 
-        if "p2s" in headers:
-            p2s = urlsafe_b64decode(to_bytes(headers["p2s"]))
-        else:
+        if "p2s" not in headers:
             p2s = os.urandom(16)
             recipient.add_header("p2s", urlsafe_b64encode(p2s).decode("ascii"))
 
-        if "p2c" in headers:
-            p2c = headers["p2c"]
-        else:
+        if "p2c" not in headers:
             # A minimum iteration count of 1000 is RECOMMENDED.
             p2c = self.DEFAULT_P2C
             recipient.add_header("p2c", p2c)
 
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        headers = recipient.headers()
+        p2s = urlsafe_b64decode(to_bytes(headers["p2s"]))
+        p2c = headers["p2c"]
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), p2s, p2c)
         return self.key_wrapping.encrypt_recipient(enc, recipient, OctKey.import_key(kek))
 
@@ -266,9 +278,9 @@ class PBES2HSAlgModel(JWEAlgModel):
         return self.key_wrapping.decrypt_recipient(enc, recipient, OctKey.import_key(kek))
 
 
-def compute_concat_kdf_info(direct_mode: bool, header: Header, bit_size: int):
+def compute_concat_kdf_info(direct_key_mode: bool, header: Header, bit_size: int):
     # AlgorithmID
-    if direct_mode:
+    if direct_key_mode:
         alg_id = u32be_len_input(header["enc"])
     else:
         alg_id = u32be_len_input(header["alg"])
