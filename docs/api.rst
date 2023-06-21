@@ -31,6 +31,20 @@ JSON Web Signature
 .. autofunction:: deserialize_json
 
 
+JSON Web Encryption
+-------------------
+
+.. module:: joserfc.jwe
+
+.. autofunction:: encrypt_compact
+
+.. autofunction:: decrypt_compact
+
+.. autofunction:: encrypt_json
+
+.. autofunction:: decrypt_json
+
+
 JSON Web Key
 ------------
 
