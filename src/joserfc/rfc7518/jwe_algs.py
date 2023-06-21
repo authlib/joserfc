@@ -4,7 +4,11 @@ import typing as t
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.keywrap import aes_key_wrap, aes_key_unwrap
+from cryptography.hazmat.primitives.keywrap import (
+    aes_key_wrap,
+    aes_key_unwrap,
+    InvalidUnwrap,
+)
 from cryptography.hazmat.primitives.ciphers import Cipher
 from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.ciphers.modes import GCM
@@ -16,6 +20,11 @@ from ..rfc7516.models import JWEAlgModel, JWEEncModel, EncryptionData, Recipient
 from ..rfc7517.models import CurveKey
 from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode, u32be_len_input
 from ..registry import Header, HeaderParameter, is_str, is_int, is_jwk
+from ..errors import (
+    InvalidKeyLengthError,
+    InvalidCEKLengthError,
+    UnwrapError,
+)
 
 
 class DirectAlgModel(JWEAlgModel):
@@ -29,7 +38,7 @@ class DirectAlgModel(JWEAlgModel):
 
         cek = key.get_op_key("encrypt")
         if len(cek) * 8 != enc.cek_size:
-            raise ValueError('Invalid "cek" length')
+            raise InvalidKeyLengthError(f"A key of size {enc.cek_size} bits MUST be used")
 
         # attach CEK to parent
         obj.cek = cek
@@ -59,7 +68,7 @@ class RSAAlgModel(JWEAlgModel):
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: RSAKey) -> bytes:
         op_key = key.get_op_key("encrypt")
         if op_key.key_size < self.key_size:
-            raise ValueError("A key of size 2048 bits or larger MUST be used")
+            raise InvalidKeyLengthError(f"A key of size {self.key_size} bits or larger MUST be used")
         return op_key.encrypt(recipient.parent.cek, self.padding)
 
     def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: RSAKey) -> bytes:
@@ -77,7 +86,7 @@ class AESAlgModel(JWEAlgModel):
 
     def _check_key(self, key):
         if len(key) * 8 != self.key_size:
-            raise ValueError("A key of size {} bits is required.".format(self.key_size))
+            raise InvalidKeyLengthError(f"A key of size {self.key_size} bits MUST be used")
 
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         op_key = key.get_op_key("wrapKey")
@@ -88,9 +97,12 @@ class AESAlgModel(JWEAlgModel):
     def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         op_key = key.get_op_key("unwrapKey")
         self._check_key(op_key)
-        cek = aes_key_unwrap(op_key, recipient.encrypted_key, default_backend())
+        try:
+            cek = aes_key_unwrap(op_key, recipient.encrypted_key, default_backend())
+        except InvalidUnwrap:
+            raise UnwrapError()
         if len(cek) * 8 != enc.cek_size:
-            raise ValueError('Invalid "cek" length')
+            raise InvalidCEKLengthError()
         return cek
 
 
@@ -107,7 +119,7 @@ class AESGCMAlgModel(JWEAlgModel):
 
     def _check_key(self, key):
         if len(key) * 8 != self.key_size:
-            raise ValueError("A key of size {} bits is required.".format(self.key_size))
+            raise InvalidKeyLengthError(f"A key of size {self.key_size} bits MUST be used")
 
     def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         op_key = key.get_op_key("wrapKey")

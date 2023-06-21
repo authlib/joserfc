@@ -14,7 +14,6 @@ from cryptography.hazmat.primitives.ciphers import Cipher
 from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.ciphers.modes import GCM, CBC
 from cryptography.hazmat.primitives.padding import PKCS7
-from cryptography.exceptions import InvalidTag
 from ..rfc7516.models import JWEEncModel, EncryptionData
 from .util import encode_int
 
@@ -79,7 +78,7 @@ class CBCHS2EncModel(JWEEncModel):
         ctag = self._hmac(ciphertext, aad, iv, hkey)
         otag = obj.decoded["tag"]
         if not hmac.compare_digest(ctag, otag):
-            raise InvalidTag()
+            raise ValueError("tag does not match")
 
         cipher = Cipher(AES(dkey), CBC(iv), backend=default_backend())
         d = cipher.decryptor()

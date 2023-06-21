@@ -2,6 +2,7 @@ from unittest import TestCase
 from joserfc.jwe import encrypt_compact, decrypt_compact, JWERegistry
 from joserfc.jwk import RSAKey, ECKey, OctKey
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
+from joserfc.errors import InvalidKeyLengthError
 from tests.keys import load_key
 
 
@@ -42,7 +43,7 @@ class TestJWECompact(TestCase):
             self.run_cases(algs, private_key, public_key)
 
     def test_dir_alg(self):
-        self.assertRaises(ValueError, encrypt_compact, {"alg": "dir", "enc": "A128GCM"}, b"j", "secret")
+        self.assertRaises(InvalidKeyLengthError, encrypt_compact, {"alg": "dir", "enc": "A128GCM"}, b"j", "secret")
         for enc in JWE_ENC_MODELS:
             key = OctKey.generate_key(enc.cek_size)
             self.run_case('dir', enc.name, key, key)

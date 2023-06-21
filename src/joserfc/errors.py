@@ -26,6 +26,10 @@ class DecodeError(JoseError):
     error: str = "decode_error"
 
 
+class InvalidKeyLengthError(JoseError):
+    error: str = "invalid_key_length"
+
+
 class MissingAlgorithmError(JoseError):
     error: str = "missing_algorithm"
     description: str = 'Missing "alg" value in header'
@@ -36,12 +40,10 @@ class MissingEncryptionError(JoseError):
     description: str = 'Missing "enc" value in header'
 
 
-class InvalidKeyManagementModeError(JoseError):
-    error: str = "invalid_key_management_mode"
-    description: str = ""
-
-
 class BadSignatureError(JoseError):
+    """This error is designed for JWS/JWT. It is raised when signature
+    does not match.
+    """
     error: str = "bad_signature"
 
 
@@ -50,7 +52,16 @@ class InvalidEncryptionAlgorithmError(JoseError):
     does not work together with "alg" value.
     """
     error: str = 'invalid_encryption_algorithm'
-    description: str = ""
+
+
+class UnwrapError(JoseError):
+    error: str = "unwrap_error"
+    description: str = "Unwrap AES key failed"
+
+
+class InvalidCEKLengthError(JoseError):
+    error: str = "invalid_cek_length"
+    description: str = 'Invalid "cek" length'
 
 
 class InvalidClaimError(JoseError):
