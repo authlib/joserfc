@@ -5,7 +5,7 @@ from ..util import (
     urlsafe_b64decode,
     urlsafe_b64encode,
 )
-from ..registry import KeyParameter, is_str
+from ..registry import KeyParameter
 from ..rfc7517.models import SymmetricKey, NativeKeyBinding
 from ..rfc7517.types import KeyOptions, KeyDict
 
@@ -40,7 +40,7 @@ class OctKey(SymmetricKey):
     key_type: str = "oct"
     binding = OctBinding
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.4
-    value_registry = {"k": KeyParameter("Key Value", True, True, is_str)}
+    value_registry = {"k": KeyParameter("Key Value", "str", True, True)}
 
     @classmethod
     def generate_key(cls, key_size=256, options: KeyOptions = None, private: bool = True) -> "OctKey":

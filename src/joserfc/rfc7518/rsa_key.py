@@ -12,7 +12,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
     rsa_crt_iqmp,
 )
 from cryptography.hazmat.backends import default_backend
-from ..registry import KeyParameter, is_str, not_support
+from ..registry import KeyParameter
 from ..rfc7517.models import AsymmetricKey
 from ..rfc7517.pem import CryptographyBinding
 from ..rfc7517.types import KeyDict, KeyOptions
@@ -87,15 +87,15 @@ class RSAKey(AsymmetricKey):
     #: Registry definition for RSA Key
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.3
     value_registry = {
-        "n": KeyParameter("Modulus", True, False, is_str),
-        "e": KeyParameter("Exponent", True, False, is_str),
-        "d": KeyParameter("Private Exponent", False, True, is_str),
-        "p": KeyParameter("First Prime Factor", False, True, is_str),
-        "q": KeyParameter("Second Prime Factor", False, True, is_str),
-        "dp": KeyParameter("First Factor CRT Exponent", False, True, is_str),
-        "dq": KeyParameter("Second Factor CRT Exponent", False, True, is_str),
-        "qi": KeyParameter("First CRT Coefficient", False, True, is_str),
-        "oth": KeyParameter("Other Primes Info", False, True, not_support),
+        "n": KeyParameter("Modulus", "str", private=False, required=True),
+        "e": KeyParameter("Exponent", "str", private=False, required=True),
+        "d": KeyParameter("Private Exponent", "str", private=True, required=False),
+        "p": KeyParameter("First Prime Factor", "str", private=True, required=False),
+        "q": KeyParameter("Second Prime Factor", "str", private=True, required=False),
+        "dp": KeyParameter("First Factor CRT Exponent", "str", private=True, required=False),
+        "dq": KeyParameter("Second Factor CRT Exponent", "str", private=True, required=False),
+        "qi": KeyParameter("First CRT Coefficient", "str", private=True, required=False),
+        "oth": KeyParameter("Other Primes Info", "none", private=True, required=False),
     }
     binding = RSABinding
 

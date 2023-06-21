@@ -16,7 +16,7 @@ from ..rfc7517.models import CurveKey
 from ..rfc7517.pem import CryptographyBinding
 from ..rfc7517.types import KeyDict, KeyOptions
 from ..util import base64_to_int, int_to_base64
-from ..registry import KeyParameter, is_str
+from ..registry import KeyParameter
 
 
 NativeECKey = Union[EllipticCurvePublicKey, EllipticCurvePrivateKeyWithSerialization]
@@ -81,10 +81,10 @@ class ECKey(CurveKey):
     #: Registry definition for EC Key
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.2
     value_registry = {
-        "crv": KeyParameter("Curve", True, False, is_str),
-        "x": KeyParameter("X Coordinate", True, False, is_str),
-        "y": KeyParameter("Y Coordinate", True, False, is_str),
-        "d": KeyParameter("EC Private Key", False, True, is_str),
+        "crv": KeyParameter("Curve", "str", private=False, required=True),
+        "x": KeyParameter("X Coordinate", "str", private=False, required=True),
+        "y": KeyParameter("Y Coordinate", "str", private=False, required=True),
+        "d": KeyParameter("EC Private Key", "str", private=True, required=False),
     }
     binding = ECBinding
 

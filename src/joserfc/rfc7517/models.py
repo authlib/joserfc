@@ -44,7 +44,7 @@ class NativeKeyBinding(object, metaclass=ABCMeta):
 
             if k in dict_key:
                 try:
-                    registry[k].check_value(dict_key[k])
+                    registry[k].validate(dict_key[k])
                 except ValueError as error:
                     raise ValueError(f'"{k}" {error}')
 

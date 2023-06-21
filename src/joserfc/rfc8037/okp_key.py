@@ -14,7 +14,7 @@ from ..rfc7517.models import CurveKey
 from ..rfc7517.types import KeyDict, KeyOptions
 from ..rfc7517.pem import CryptographyBinding
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
-from ..registry import KeyParameter, is_str
+from ..registry import KeyParameter
 
 PUBLIC_KEYS_MAP = {
     "Ed25519": Ed25519PublicKey,
@@ -84,9 +84,9 @@ class OKPKey(CurveKey):
     #: Registry definition for OKP Key
     #: https://www.rfc-editor.org/rfc/rfc8037#section-2
     value_registry = {
-        "crv": KeyParameter("Curve", True, False, is_str),
-        "x": KeyParameter("X Coordinate", True, False, is_str),
-        "d": KeyParameter("OKP Private Key", False, True, is_str),
+        "crv": KeyParameter("Curve", "str", private=False, required=True),
+        "x": KeyParameter("X Coordinate", "str", private=False, required=True),
+        "d": KeyParameter("OKP Private Key", "str", private=True, required=False),
     }
     binding = OKPBinding
     required_fields = frozenset(["crv", "x"])

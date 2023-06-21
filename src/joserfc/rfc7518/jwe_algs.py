@@ -19,7 +19,7 @@ from .oct_key import OctKey
 from ..rfc7516.models import JWEAlgModel, JWEEncModel, EncryptionData, Recipient
 from ..rfc7517.models import CurveKey
 from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode, u32be_len_input
-from ..registry import Header, HeaderParameter, is_str, is_int, is_jwk
+from ..registry import Header, HeaderParameter
 from ..errors import (
     InvalidKeyLengthError,
     InvalidCEKLengthError,
@@ -108,8 +108,8 @@ class AESAlgModel(JWEAlgModel):
 
 class AESGCMAlgModel(JWEAlgModel):
     more_header_registry = {
-        "iv": HeaderParameter("Initialization vector", True, is_str),
-        "tag": HeaderParameter("Authentication tag", True, is_str),
+        "iv": HeaderParameter("Initialization vector", "str", True),
+        "tag": HeaderParameter("Authentication tag", "str", True),
     }
 
     def __init__(self, key_size: int):
@@ -158,9 +158,9 @@ class AESGCMAlgModel(JWEAlgModel):
 
 class ECDHESAlgModel(JWEAlgModel):
     more_header_registry = {
-        "epk": HeaderParameter("Ephemeral Public Key", True, is_jwk),
-        "apu": HeaderParameter("Agreement PartyUInfo", False, is_str),
-        "apv": HeaderParameter("Agreement PartyVInfo", False, is_str),
+        "epk": HeaderParameter("Ephemeral Public Key", "jwk", True),
+        "apu": HeaderParameter("Agreement PartyUInfo", "str"),
+        "apv": HeaderParameter("Agreement PartyVInfo", "str"),
     }
 
     # https://tools.ietf.org/html/rfc7518#section-4.6
@@ -231,8 +231,8 @@ class ECDHESAlgModel(JWEAlgModel):
 class PBES2HSAlgModel(JWEAlgModel):
     # https://www.rfc-editor.org/rfc/rfc7518#section-4.8
     more_header_registry = {
-        "p2s": HeaderParameter("PBES2 Salt Input", True, is_str),
-        "p2c": HeaderParameter("PBES2 Count", True, is_int),
+        "p2s": HeaderParameter("PBES2 Salt Input", "str", True),
+        "p2c": HeaderParameter("PBES2 Count", "int", True),
     }
 
     # A minimum iteration count of 1000 is RECOMMENDED.

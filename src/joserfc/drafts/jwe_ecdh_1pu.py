@@ -10,7 +10,7 @@ from ..rfc7518.jwe_algs import (
     A256KW,
 )
 from ..rfc7518.jwe_encs import CBCHS2EncModel
-from ..registry import Header, HeaderParameter, is_jwk, is_str
+from ..registry import Header, HeaderParameter
 from ..errors import InvalidEncryptionAlgorithmError
 from ..util import u32be_len_input
 
@@ -21,10 +21,10 @@ class ECDH1PUAlgModel(JWEAlgModel):
     https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04
     """
     more_header_registry = {
-        "epk": HeaderParameter("Ephemeral Public Key", True, is_jwk),
-        "apu": HeaderParameter("Agreement PartyUInfo", False, is_str),
-        "apv": HeaderParameter("Agreement PartyVInfo", False, is_str),
-        "skid": HeaderParameter("Sender Key ID", False, is_str),
+        "epk": HeaderParameter("Ephemeral Public Key", "jwk", True),
+        "apu": HeaderParameter("Agreement PartyUInfo", "str"),
+        "apv": HeaderParameter("Agreement PartyVInfo", "str"),
+        "skid": HeaderParameter("Sender Key ID", "str"),
     }
     recommended: bool = False
     use_sender_key: bool = True
