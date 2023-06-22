@@ -1,6 +1,11 @@
-from .models import EncryptionData, JWEEncModel
+from .models import (
+    JWEDirectEncryption,
+    EncryptionData,
+    Recipient,
+    JWEEncModel,
+)
 from .registry import JWERegistry
-from ..errors import DecodeError
+from ..errors import DecodeError, InvalidCEKLengthError
 from ..util import (
     json_b64encode,
     urlsafe_b64encode,
@@ -9,8 +14,12 @@ from ..util import (
 
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None) -> EncryptionData:
     enc = registry.get_enc(obj.protected["enc"])
-    items = _prepare_encrypt_recipients(obj, enc, registry, sender_key)
 
+    cek = b""
+    for recipient in obj.recipients:
+        cek = encrypt_recipient(enc, recipient, registry, cek)
+
+    obj.cek = cek
     # Step 9, Generate a random JWE Initialization Vector of the correct size
     # for the content encryption algorithm (if required for the algorithm);
     # otherwise, let the JWE Initialization Vector be the empty octet sequence.
@@ -46,17 +55,6 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     obj.decoded["ciphertext"] = ciphertext
     obj.encoded["ciphertext"] = urlsafe_b64encode(ciphertext)
     obj.encoded["tag"] = urlsafe_b64encode(obj.decoded["tag"])
-
-    # post encrypt recipients
-    if items:
-        for recipient, alg in items:
-            if alg.use_sender_key:
-                key = sender_key
-            else:
-                key = recipient.recipient_key
-            if alg.wrapped_key_mode:
-                ek = alg.encrypt_recipient(enc, recipient, key)
-                recipient.encrypted_key = ek
     return obj
 
 
@@ -70,16 +68,7 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
 
     cek_set = set()
     for recipient in obj.recipients:
-        headers = recipient.headers()
-        registry.check_header(headers, True)
-
-        # Step 6, Determine the Key Management Mode employed by the algorithm
-        # specified by the "alg" (algorithm) Header Parameter.
-        alg = registry.get_alg(headers["alg"])
-        if sender_key:
-            cek = alg.decrypt_recipient(enc, recipient, sender_key)
-        else:
-            cek = alg.decrypt_recipient(enc, recipient, recipient.recipient_key)
+        cek = decrypt_recipient(enc, recipient, registry)
         cek_set.add(cek)
 
     if len(cek_set) > 1:
@@ -99,45 +88,109 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     return obj
 
 
-def _prepare_encrypt_recipients(obj: EncryptionData, enc: JWEEncModel, registry: JWERegistry, sender_key):
-    modes = set()
-    items = []
-    for recipient in obj.recipients:
-        headers = recipient.headers()
-        registry.check_header(headers)
+def encrypt_recipient(enc: JWEEncModel, recipient: Recipient, registry: JWERegistry, cek: bytes):
+    # https://www.rfc-editor.org/rfc/rfc7516#section-5
+    headers = recipient.headers()
+    registry.check_header(headers)
 
-        # Step 1, determine the algorithms
-        # https://www.rfc-editor.org/rfc/rfc7516#section-5.1
-        alg = registry.get_alg(headers["alg"])
-        modes.add(alg.direct_key_mode)
-        items.append((recipient, alg))
+    # 1. Determine the Key Management Mode employed by the algorithm used
+    # to determine the Content Encryption Key value.  (This is the
+    # algorithm recorded in the "alg" (algorithm) Header Parameter of
+    # the resulting JWE.)
+    alg = registry.get_alg(headers["alg"])
 
-    if len(modes) > 1:
-        # TODO
-        raise
+    # 2. When Key Wrapping, Key Encryption, or Key Agreement with Key
+    # Wrapping are employed, generate a random CEK value.  See RFC
+    # 4086 [RFC4086] for considerations on generating random values.
+    # The CEK MUST have a length equal to that required for the
+    # content encryption algorithm.
+    if not alg.direct_mode and not cek:
+        cek = enc.generate_cek()
 
-    alg = items[0][1]
-
-    # Step 2, When Key Wrapping, Key Encryption,
-    # or Key Agreement with Key Wrapping are employed,
-    # generate a random CEK value.
-    if not alg.direct_key_mode and not obj.cek:
-        obj.cek = enc.generate_cek()
-
-    _post_encrypt = False
-    for recipient, alg in items:
-        # from step 3 to step 7
-        if alg.use_sender_key:
-            key = sender_key
+    # 3. When Direct Key Agreement or Key Agreement with Key Wrapping are
+    # employed, use the key agreement algorithm to compute the value
+    # of the agreed upon key.  When Direct Key Agreement is employed,
+    # let the CEK be the agreed upon key.  When Key Agreement with Key
+    # Wrapping is employed, the agreed upon key will be used to wrap
+    # the CEK.
+    if alg.key_agreement:
+        if alg.direct_mode:
+            recipient.encrypted_key = b""
+            cek: bytes = alg.encrypt_agreed_upon_key(enc, recipient)
+            if len(cek) * 8 != enc.cek_size:
+                raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
         else:
-            key = recipient.recipient_key
+            agreed_upon_key = alg.encrypt_agreed_upon_key(enc, recipient)
+            recipient.encrypted_key = alg.wrap_cek_with_auk(cek, agreed_upon_key)
 
-        if alg.wrapped_key_mode:
-            alg.prepare_recipient_header(enc, recipient, key)
-            _post_encrypt = True
+    # 4. When Key Wrapping, Key Encryption, or Key Agreement with Key
+    # Wrapping are employed, encrypt the CEK to the recipient and let
+    # the result be the JWE Encrypted Key.
+    elif not alg.direct_mode:
+        recipient.encrypted_key = alg.encrypt_cek(cek, recipient)
+    # 5. When Direct Key Agreement or Direct Encryption are employed, let
+    # the JWE Encrypted Key be the empty octet sequence.
+    else:
+        recipient.encrypted_key = b""
+
+    # 6. When Direct Encryption is employed, let the CEK be the shared
+    # symmetric key.
+    if isinstance(alg, JWEDirectEncryption):
+        if cek:
+            # TODO: direct mode only accept one recipient
+            raise
+        cek: bytes = alg.derive_cek(enc.cek_size, recipient)
+    return cek
+
+
+def decrypt_recipient(enc: JWEEncModel, recipient: Recipient, registry: JWERegistry):
+    headers = recipient.headers()
+    registry.check_header(headers, True)
+
+    # Step 6, Determine the Key Management Mode employed by the algorithm
+    # specified by the "alg" (algorithm) Header Parameter.
+    alg = registry.get_alg(headers["alg"])
+
+    # 7. Verify that the JWE uses a key known to the recipient.
+
+    # 8. When Direct Key Agreement or Key Agreement with Key Wrapping are
+    # employed, use the key agreement algorithm to compute the value
+    # of the agreed upon key.  When Direct Key Agreement is employed,
+    # let the CEK be the agreed upon key.  When Key Agreement with Key
+    # Wrapping is employed, the agreed upon key will be used to
+    # decrypt the JWE Encrypted Key.
+    if alg.key_agreement:
+        agreed_upon_key = alg.decrypt_agreed_upon_key(enc, recipient)
+        if alg.direct_mode:
+            cek = agreed_upon_key
+            # step 10
+            if recipient.encrypted_key:
+                raise
         else:
-            ek = alg.encrypt_recipient(enc, recipient, key)
-            recipient.encrypted_key = ek
+            cek = alg.unwrap_cek_with_auk(recipient.encrypted_key, agreed_upon_key)
+        return cek
 
-    if _post_encrypt:
-        return items
+    # 9. When Key Wrapping, Key Encryption, or Key Agreement with Key
+    # Wrapping are employed, decrypt the JWE Encrypted Key to produce
+    # the CEK.  The CEK MUST have a length equal to that required for
+    # the content encryption algorithm.  Note that when there are
+    # multiple recipients, each recipient will only be able to decrypt
+    # JWE Encrypted Key values that were encrypted to a key in that
+    # recipient's possession.  It is therefore normal to only be able
+    # to decrypt one of the per-recipient JWE Encrypted Key values to
+    # obtain the CEK value.
+    elif not alg.direct_mode:
+        cek = alg.decrypt_cek(recipient)
+        if len(cek) * 8 != enc.cek_size:
+            raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
+
+    # 10.  When Direct Key Agreement or Direct Encryption are employed,
+    # verify that the JWE Encrypted Key value is an empty octet
+    # sequence.
+    # 11. When Direct Encryption is employed, let the CEK be the shared
+    # symmetric key.
+    else:
+        if recipient.encrypted_key:
+            raise
+        cek = alg.derive_cek(enc.cek_size, recipient)
+    return cek

@@ -109,7 +109,7 @@ class JWEZipModel(object, metaclass=ABCMeta):
         pass
 
 
-class JWEAlgModel(object, metaclass=ABCMeta):
+class KeyManagement:
     name: str
     description: str
     recommended: bool = False
@@ -117,23 +117,65 @@ class JWEAlgModel(object, metaclass=ABCMeta):
     algorithm_type = "JWE"
     algorithm_location = "alg"
     more_header_registry: HeaderRegistryDict = {}
-    use_sender_key: bool = False
+    key_agreement: bool = False
 
     @property
-    def direct_key_mode(self) -> bool:
+    def direct_mode(self) -> bool:
         return self.key_size is None
 
-    @property
-    def wrapped_key_mode(self) -> bool:
-        return False
 
-    def prepare_recipient_header(self, enc: JWEEncModel, recipient: Recipient, key):
+class JWEDirectEncryption(KeyManagement, metaclass=ABCMeta):
+    @abstractmethod
+    def derive_cek(self, size: int, recipient: Recipient) -> bytes:
+        pass
+
+
+class JWEKeyEncryption(KeyManagement, metaclass=ABCMeta):
+    @abstractmethod
+    def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
         pass
 
     @abstractmethod
-    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key) -> bytes:
+    def decrypt_cek(self, recipient: Recipient) -> bytes:
+        pass
+
+
+class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
+    @abstractmethod
+    def wrap_cek(self, cek: bytes, key: bytes) -> bytes:
         pass
 
     @abstractmethod
-    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key) -> bytes:
+    def unwrap_cek(self, ek: bytes, key: bytes) -> bytes:
         pass
+
+    @abstractmethod
+    def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
+        pass
+
+    @abstractmethod
+    def decrypt_cek(self, recipient: Recipient) -> bytes:
+        pass
+
+
+class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
+    key_agreement = True
+
+    @abstractmethod
+    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
+        pass
+
+    @abstractmethod
+    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
+        pass
+
+    @abstractmethod
+    def wrap_cek_with_auk(self, cek: bytes, key: bytes) -> bytes:
+        pass
+
+    @abstractmethod
+    def unwrap_cek_with_auk(self, ek: bytes, key: bytes) -> bytes:
+        pass
+
+
+JWEAlgModel = t.Union[JWEKeyEncryption, JWEKeyWrapping, JWEKeyAgreement, JWEDirectEncryption]

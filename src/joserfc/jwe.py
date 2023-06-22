@@ -4,7 +4,6 @@ from .rfc7516.types import JSONSerialization
 from .rfc7516.models import (
     Recipient,
     EncryptionData,
-    JWEAlgModel,
     JWEEncModel,
     JWEZipModel,
 )
@@ -25,7 +24,6 @@ from .registry import Header
 __all__ = [
     "types",
     "JWERegistry",
-    "JWEAlgModel",
     "JWEEncModel",
     "JWEZipModel",
     "Recipient",

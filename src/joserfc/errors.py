@@ -30,6 +30,10 @@ class InvalidKeyLengthError(JoseError):
     error: str = "invalid_key_length"
 
 
+class InvalidKeyTypeError(JoseError):
+    error: str = "invalid_key_type"
+
+
 class MissingAlgorithmError(JoseError):
     error: str = "missing_algorithm"
     description: str = 'Missing "alg" value in header'
