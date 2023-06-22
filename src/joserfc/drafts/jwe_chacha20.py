@@ -1,4 +1,4 @@
-from Cryptodome.Cipher import ChaCha20_Poly1305
+from Crypto.Cipher import ChaCha20_Poly1305
 from ..rfc7516.models import JWEEncModel, EncryptionData
 
 
