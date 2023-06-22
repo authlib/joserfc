@@ -14,7 +14,7 @@ class TestCompactExamples(TestCase):
     def test_A1(self):
         # https://www.rfc-editor.org/rfc/rfc7516#appendix-A.1
         # Example JWE using RSAES-OAEP and AES GCM
-        payload = b'The true sign of intelligence is not knowledge but imagination.'
+        plaintext = b'The true sign of intelligence is not knowledge but imagination.'
 
         # A.1.1.  JOSE Header
         protected = {"alg": "RSA-OAEP", "enc": "A256GCM"}
@@ -23,15 +23,14 @@ class TestCompactExamples(TestCase):
             b"eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ"
         )
 
-        obj = EncryptionData(protected, payload)
+        obj = EncryptionData(protected, plaintext)
 
         # A.1.2.  Content Encryption Key (CEK)
-        CEK = bytes([
+        cek = bytes([
             177, 161, 244, 128, 84, 143, 225, 115, 63, 180, 3, 255, 107, 154,
             212, 246, 138, 7, 110, 91, 112, 46, 34, 105, 47, 130, 203, 46, 122,
             234, 64, 252
         ])
-        obj.cek = CEK
 
         # A.1.3.  Key Encryption
         key: RSAKey = load_key('RFC7516-A.1.3.json')
@@ -64,7 +63,6 @@ class TestCompactExamples(TestCase):
 
         # A.1.4.  Initialization Vector
         iv = bytes([227, 197, 117, 252, 2, 219, 233, 68, 180, 225, 77, 219])
-        obj.decoded['iv'] = iv
         obj.encoded['iv'] = urlsafe_b64encode(iv)
 
         # A.1.5.  Additional Authenticated Data
@@ -84,16 +82,16 @@ class TestCompactExamples(TestCase):
             123, 143, 168, 226, 73, 216, 176, 144, 138, 247, 106, 60, 16, 205,
             160, 109, 64, 63, 192
         ])
-        self.assertEqual(enc.encrypt(obj), ciphertext)
-        obj.decoded['ciphertext'] = ciphertext
+        r_ciphertext, r_tag = enc.encrypt(plaintext, cek, iv, aad)
+        self.assertEqual(r_ciphertext, ciphertext)
         obj.encoded['ciphertext'] = urlsafe_b64encode(ciphertext)
 
         tag = bytes([
             92, 80, 104, 49, 133, 25, 161, 215, 173, 101, 219, 211, 136, 91,
             210, 145
         ])
-        self.assertEqual(obj.decoded['tag'], tag)
-        obj.encoded['tag'] = urlsafe_b64encode(obj.decoded['tag'])
+        self.assertEqual(r_tag, tag)
+        obj.encoded['tag'] = urlsafe_b64encode(r_tag)
 
         # A.1.7.  Complete Representation
         expected = (
@@ -112,13 +110,13 @@ class TestCompactExamples(TestCase):
         self.assertEqual(represent_compact(obj), to_bytes(expected))
 
         jwe_data = decrypt_compact(expected, key)
-        self.assertEqual(jwe_data.payload, payload)
+        self.assertEqual(jwe_data.plaintext, plaintext)
 
     def test_A2(self):
         # https://www.rfc-editor.org/rfc/rfc7516#appendix-A.2
-        payload = b"Live long and prosper."
+        plaintext = b"Live long and prosper."
         self.assertEqual(
-            payload,
+            plaintext,
             bytes([
                 76, 105, 118, 101, 32, 108, 111, 110, 103, 32, 97, 110, 100, 32,
                 112, 114, 111, 115, 112, 101, 114, 46
@@ -131,15 +129,14 @@ class TestCompactExamples(TestCase):
             json_b64encode(protected),
             b"eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0"
         )
-        obj = EncryptionData(protected, payload)
+        obj = EncryptionData(protected, plaintext)
 
         # A.2.2.  Content Encryption Key (CEK)
-        CEK = bytes([
+        cek = bytes([
             4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106,
             206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156,
             44, 207
         ])
-        obj.cek = CEK
 
         # A.2.3.  Key Encryption
         key: RSAKey = load_key('RFC7516-A.2.3.json')
@@ -169,7 +166,6 @@ class TestCompactExamples(TestCase):
 
         # A.2.4.  Initialization Vector
         iv = bytes([3, 22, 60, 12, 43, 67, 104, 105, 108, 108, 105, 99, 111, 116, 104, 101])
-        obj.decoded['iv'] = iv
         obj.encoded['iv'] = urlsafe_b64encode(iv)
         self.assertEqual(obj.encoded['iv'], b'AxY8DCtDaGlsbGljb3RoZQ')
 
@@ -190,15 +186,15 @@ class TestCompactExamples(TestCase):
             112, 56, 102
         ])
         enc = registry.get_enc(protected['enc'])
-        self.assertEqual(enc.encrypt(obj), ciphertext)
-        obj.decoded['ciphertext'] = ciphertext
+        r_ciphertext, r_tag = enc.encrypt(plaintext, cek, iv, aad)
+        self.assertEqual(r_ciphertext, ciphertext)
         obj.encoded['ciphertext'] = urlsafe_b64encode(ciphertext)
 
         self.assertEqual(
-            obj.decoded['tag'],
+            r_tag,
             bytes([246, 17, 244, 190, 4, 95, 98, 3, 231, 0, 115, 157, 242, 203, 100, 191])
         )
-        obj.encoded['tag'] = urlsafe_b64encode(obj.decoded['tag'])
+        obj.encoded['tag'] = urlsafe_b64encode(r_tag)
 
         expected = (
             "eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0."
@@ -218,13 +214,13 @@ class TestCompactExamples(TestCase):
         self.assertRaises(ValueError, decrypt_compact, expected, key)
         _registry = JWERegistry(algorithms={'alg': ['RSA1_5'], 'enc': ['A128CBC-HS256']})
         jwe_data = decrypt_compact(expected, key, registry=_registry)
-        self.assertEqual(jwe_data.payload, payload)
+        self.assertEqual(jwe_data.plaintext, plaintext)
 
     def test_A3(self):
         # https://www.rfc-editor.org/rfc/rfc7516#appendix-A.3
-        payload = b"Live long and prosper."
+        plaintext = b"Live long and prosper."
         protected = {"alg": "A128KW", "enc": "A128CBC-HS256"}
-        CEK = bytes([
+        cek = bytes([
             4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106,
             206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156,
             44, 207
@@ -244,10 +240,8 @@ class TestCompactExamples(TestCase):
         )
 
         extract_data = decrypt_compact(expected, key)
-        self.assertEqual(extract_data.cek, CEK)
         self.assertEqual(extract_data.protected, protected)
-        self.assertEqual(extract_data.payload, payload)
-        self.assertEqual(extract_data.decoded['iv'], iv)
+        self.assertEqual(extract_data.plaintext, plaintext)
 
     def test_A4(self):
         # https://www.rfc-editor.org/rfc/rfc7516#appendix-A.4
@@ -281,14 +275,14 @@ class TestCompactExamples(TestCase):
         shared_header = {"jku": "https://server.example.com/keys.jwks"}
 
         # same as A3
-        CEK = bytes([
+        cek = bytes([
             4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106,
             206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156,
             44, 207
         ])
 
         # A.4.6.  Content Encryption
-        payload = b"Live long and prosper."
+        plaintext = b"Live long and prosper."
 
         ciphertext = bytes([
             40, 57, 83, 181, 119, 33, 133, 148, 198, 185, 243, 24, 152, 230, 6,
@@ -326,11 +320,10 @@ class TestCompactExamples(TestCase):
             'enc': ['A128CBC-HS256']
         })
         jwe_data = decrypt_json(expected, keys, registry=_registry)
-        self.assertEqual(jwe_data.payload, payload)
+        self.assertEqual(jwe_data.plaintext, plaintext)
         self.assertEqual(jwe_data.protected, protected)
         self.assertEqual(jwe_data.unprotected, shared_header)
         self.assertEqual(jwe_data.decoded['ciphertext'], ciphertext)
-        self.assertEqual(jwe_data.cek, CEK)
         self.assertEqual(jwe_data.recipients[0].header, recipient1)
         self.assertEqual(jwe_data.recipients[1].header, recipient2)
 
@@ -360,4 +353,4 @@ class TestCompactExamples(TestCase):
 
         keys = KeySet([key1, key2])
         jwe_data = decrypt_json(expected, keys, registry=_registry)
-        self.assertEqual(jwe_data.payload, payload)
+        self.assertEqual(jwe_data.plaintext, payload)

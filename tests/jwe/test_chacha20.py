@@ -27,7 +27,7 @@ class TestChaCha20(TestCase):
         encrypted_text = encrypt_compact(protected, b'hello', key, self.registry)
         self.assertEqual(encrypted_text.count(b"."), 4)
         obj = decrypt_compact(encrypted_text, key, self.registry)
-        self.assertEqual(obj.payload, b'hello')
+        self.assertEqual(obj.plaintext, b'hello')
 
         key2 = OctKey.generate_key(256)
         self.assertRaises(ValueError, decrypt_compact, encrypted_text, key2, self.registry)
@@ -40,21 +40,18 @@ class TestChaCha20(TestCase):
 
     def test_xc20p_content_encryption_decryption(self):
         # https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha-03#appendix-A.3.1
-        payload = bytes.fromhex(
+        plaintext = bytes.fromhex(
             '4c616469657320616e642047656e746c656d656e206f662074686520636c6173' +
             '73206f66202739393a204966204920636f756c64206f6666657220796f75206f' +
             '6e6c79206f6e652074697020666f7220746865206675747572652c2073756e73' +
             '637265656e20776f756c642062652069742e'
         )
 
-        obj = EncryptionData({}, payload)
-        obj.cek = bytes.fromhex('808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f')
-        aad = bytes.fromhex('50515253c0c1c2c3c4c5c6c7')
-        obj.encoded["aad"] = aad
+        cek = bytes.fromhex('808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f')
         iv = bytes.fromhex('404142434445464748494a4b4c4d4e4f5051525354555657')
-        obj.decoded["iv"] = iv
+        aad = bytes.fromhex('50515253c0c1c2c3c4c5c6c7')
 
-        ciphertext = XC20P.encrypt(obj)
+        ciphertext, tag = XC20P.encrypt(plaintext, cek, iv, aad)
         self.assertEqual(
             ciphertext,
             bytes.fromhex(
@@ -65,9 +62,7 @@ class TestChaCha20(TestCase):
             )
         )
 
-        tag = obj.decoded["tag"]
         self.assertEqual(tag, bytes.fromhex('c0875924c1c7987947deafd8780acf49'))
 
-        obj.decoded["ciphertext"] = ciphertext
-        plaintext = XC20P.decrypt(obj)
-        self.assertEqual(plaintext, payload)
+        result = XC20P.decrypt(ciphertext, tag, cek, iv, aad)
+        self.assertEqual(plaintext, result)

@@ -36,25 +36,18 @@ class EncryptionData:
     def __init__(
             self,
             protected: Header,
-            payload: t.Optional[bytes] = None,
+            plaintext: t.Optional[bytes] = None,
             unprotected: t.Optional[Header] = None):
         self.protected = protected
-        self.payload = payload
+        self.plaintext = plaintext
         self.unprotected = unprotected
         self.recipients: t.List[Recipient] = []
-        self.cek: t.Optional[bytes] = None  # content encryption key
         self.aad: t.Optional[bytes] = None  # aad for JSON serialization
         self.encoded = {}  # store the encoded segments
         self.decoded = {}  # store the decoded segments
         self.segments = {}  # store temporary segments
         self.compact = False
         self.flatten = False
-
-    @property
-    def plaintext(self) -> bytes:
-        if 'plaintext' in self.segments:
-            return self.segments["plaintext"]
-        return self.payload
 
     def add_recipient(self, key, header: t.Optional[Header] = None):
         recipient = Recipient(self, header)
@@ -78,18 +71,17 @@ class JWEEncModel(object, metaclass=ABCMeta):
     def generate_iv(self) -> bytes:
         return os.urandom(self.IV_SIZE // 8)
 
-    def check_iv(self, obj: EncryptionData) -> bytes:
-        iv: bytes = obj.decoded["iv"]
+    def check_iv(self, iv: bytes) -> bytes:
         if len(iv) * 8 != self.IV_SIZE:
             raise ValueError('Invalid "iv" size')
         return iv
 
     @abstractmethod
-    def encrypt(self, obj: EncryptionData) -> bytes:
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
         pass
 
     @abstractmethod
-    def decrypt(self, obj: EncryptionData) -> bytes:
+    def decrypt(self, ciphertext: bytes, tag: bytes, cek: bytes, iv: bytes, aad: bytes) -> bytes:
         pass
 
 

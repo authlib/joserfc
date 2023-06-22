@@ -11,31 +11,17 @@ class ChaCha20EncModel(JWEEncModel):
         self.description = description
         self.IV_SIZE = iv_size
 
-    def encrypt(self, obj: EncryptionData) -> bytes:
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
         """Key Encryption with AEAD_CHACHA20_POLY1305
-
-        :param obj: encryption data instance
         """
-        iv = self.check_iv(obj)
-        aad = obj.encoded["aad"]
-
-        chacha = ChaCha20_Poly1305.new(key=obj.cek, nonce=iv)
+        chacha = ChaCha20_Poly1305.new(key=cek, nonce=iv)
         chacha.update(aad)
-        ciphertext, tag = chacha.encrypt_and_digest(obj.plaintext)
-        obj.decoded["tag"] = tag
-        return ciphertext
+        ciphertext, tag = chacha.encrypt_and_digest(plaintext)
+        return ciphertext, tag
 
-    def decrypt(self, obj: EncryptionData) -> bytes:
-        """Key Decryption with AEAD_CHACHA20_POLY1305
-
-        :param obj: encryption data instance
-        :return: payload in bytes
-        """
-        iv = self.check_iv(obj)
-        aad = obj.encoded["aad"]
-        tag = obj.decoded["tag"]
-        ciphertext = obj.decoded["ciphertext"]
-        chacha = ChaCha20_Poly1305.new(key=obj.cek, nonce=iv)
+    def decrypt(self, ciphertext: bytes, tag: bytes, cek: bytes, iv: bytes, aad: bytes) -> bytes:
+        """Key Decryption with AEAD_CHACHA20_POLY1305."""
+        chacha = ChaCha20_Poly1305.new(key=cek, nonce=iv)
         chacha.update(aad)
         return chacha.decrypt_and_verify(ciphertext, tag)
 

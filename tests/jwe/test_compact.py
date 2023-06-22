@@ -22,7 +22,7 @@ class TestJWECompact(TestCase):
             result, private_key,
             registry=registry,
         )
-        self.assertEqual(obj.payload, payload)
+        self.assertEqual(obj.plaintext, payload)
 
     def run_cases(self, algs, private_key, public_key):
         for alg in algs:

@@ -1,5 +1,10 @@
 import typing as t
-from ..rfc7516.models import Recipient, JWEAlgModel, JWEEncModel
+from ..rfc7516.models import (
+    Recipient,
+    JWEKeyAgreement,
+    JWEKeyWrapping,
+    JWEEncModel
+)
 from ..rfc7517.models import CurveKey
 from ..rfc7518.oct_key import OctKey
 from ..rfc7518.jwe_algs import (
@@ -15,7 +20,7 @@ from ..errors import InvalidEncryptionAlgorithmError
 from ..util import u32be_len_input
 
 
-class ECDH1PUAlgModel(JWEAlgModel):
+class ECDH1PUAlgModel(JWEKeyAgreement):
     """ Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model (ECDH-1PU)
 
     https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04
@@ -29,7 +34,7 @@ class ECDH1PUAlgModel(JWEAlgModel):
     recommended: bool = False
     use_sender_key: bool = True
 
-    def __init__(self, key_wrapping: t.Optional[JWEAlgModel]=None):
+    def __init__(self, key_wrapping: t.Optional[JWEKeyWrapping]=None):
         if key_wrapping is None:
             self.name = "ECDH-1PU"
             self.description = "ECDH-1PU using one-pass KDF and CEK in the Direct Key Agreement mode"
@@ -39,10 +44,6 @@ class ECDH1PUAlgModel(JWEAlgModel):
             self.description = f"ECDH-1PU using one-pass KDF and CEK wrapped with {key_wrapping.name}"
             self.key_size = key_wrapping.key_size
         self.key_wrapping = key_wrapping
-
-    @property
-    def wrapped_key_mode(self) -> bool:
-        return self.key_wrapping is not None
 
     def _check_enc(self, enc: JWEEncModel):
         if self.key_wrapping and not isinstance(enc, CBCHS2EncModel):
@@ -58,6 +59,21 @@ class ECDH1PUAlgModel(JWEAlgModel):
         else:
             bit_size = self.key_size
         return bit_size
+
+    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey) -> bytes:
+        recipient_key: CurveKey = recipient.recipient_key
+        if recipient.ephemeral_key is None:
+            recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
+        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
+
+        recipient_pubkey = recipient.recipient_key.get_op_key("deriveKey")
+        sender_shared_key = sender_key.exchange_shared_key(recipient_pubkey)
+        ephemeral_shared_key = recipient.ephemeral_key.exchange_shared_key(recipient_pubkey)
+        shared_key = ephemeral_shared_key + sender_shared_key
+
+        bit_size = self.get_bit_size(enc)
+        tag = self.get_recipient_tag(recipient)
+        dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size, tag)
 
     def get_recipient_tag(self, recipient: Recipient) -> t.Optional[bytes]:
         if self.wrapped_key_mode:

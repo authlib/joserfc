@@ -36,7 +36,7 @@ class TestECDH1PUCompact(TestFixture):
         )
         self.assertEqual(obj.protected["alg"], case["alg"])
         self.assertEqual(obj.protected["enc"], case["enc"])
-        self.assertEqual(obj.payload, payload)
+        self.assertEqual(obj.plaintext, payload)
 
     def run_compact_case(self, alg: str, enc: str, recipient_key, sender_key):
         protected = {"alg": alg, "enc": enc}
@@ -53,7 +53,7 @@ class TestECDH1PUCompact(TestFixture):
             registry=ecdh_registry,
             sender_key=sender_key,
         )
-        self.assertEqual(obj.payload, b'hello')
+        self.assertEqual(obj.plaintext, b'hello')
 
     def test_ecdh_1pu_compact_direct_mode(self):
         alice_key = load_key("ec-p256-alice.json")

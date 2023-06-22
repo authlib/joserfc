@@ -53,7 +53,7 @@ __register()
 
 def encrypt_compact(
         protected: Header,
-        payload: bytes,
+        plaintext: bytes,
         public_key: KeyFlexible,
         registry: Optional[JWERegistry] = None,
         sender_key: Optional[CurveKey] = None) -> bytes:
@@ -61,7 +61,7 @@ def encrypt_compact(
     if registry is None:
         registry = default_registry
 
-    obj = EncryptionData(protected, payload)
+    obj = EncryptionData(protected, plaintext)
     recipient = Recipient(obj)
     key = guess_key(public_key, recipient)
     recipient.recipient_key = key

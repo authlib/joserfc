@@ -43,41 +43,27 @@ class CBCHS2EncModel(JWEEncModel):
         d = hmac.new(key, msg, self.hash_alg).digest()
         return d[: self.key_len]
 
-    def encrypt(self, obj: EncryptionData) -> bytes:
-        """Key Encryption with AES_CBC_HMAC_SHA2.
-
-        :param obj: encryption data instance
-        """
-        iv = self.check_iv(obj)
-        hkey = obj.cek[: self.key_len]
-        ekey = obj.cek[self.key_len :]
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
+        """Key Encryption with AES_CBC_HMAC_SHA2."""
+        hkey = cek[: self.key_len]
+        ekey = cek[self.key_len :]
 
         pad = PKCS7(AES.block_size).padder()
-        padded_data = pad.update(obj.plaintext) + pad.finalize()
+        padded_data = pad.update(plaintext) + pad.finalize()
 
         cipher = Cipher(AES(ekey), CBC(iv), backend=default_backend())
         enc = cipher.encryptor()
         ciphertext = enc.update(padded_data) + enc.finalize()
-        aad = obj.encoded["aad"]
         tag = self._hmac(ciphertext, aad, iv, hkey)
-        obj.decoded["tag"] = tag
-        return ciphertext
+        return ciphertext, tag
 
-    def decrypt(self, obj: EncryptionData) -> bytes:
-        """Key Decryption with AES AES_CBC_HMAC_SHA2.
+    def decrypt(self, ciphertext: bytes, tag: bytes, cek: bytes, iv: bytes, aad: bytes) -> bytes:
+        """Key Decryption with AES AES_CBC_HMAC_SHA2."""
+        hkey = cek[: self.key_len]
+        dkey = cek[self.key_len :]
 
-        :param obj: encryption data instance
-        :return: payload in bytes
-        """
-        iv = self.check_iv(obj)
-        hkey = obj.cek[: self.key_len]
-        dkey = obj.cek[self.key_len :]
-
-        ciphertext = obj.decoded["ciphertext"]
-        aad = obj.encoded["aad"]
         ctag = self._hmac(ciphertext, aad, iv, hkey)
-        otag = obj.decoded["tag"]
-        if not hmac.compare_digest(ctag, otag):
+        if not hmac.compare_digest(ctag, tag):
             raise ValueError("tag does not match")
 
         cipher = Cipher(AES(dkey), CBC(iv), backend=default_backend())
@@ -98,33 +84,19 @@ class GCMEncModel(JWEEncModel):
         self.key_size = key_size
         self.cek_size = key_size
 
-    def encrypt(self, obj: EncryptionData) -> bytes:
-        """Key Encryption with AES GCM
-
-        :param obj: encryption data instance
-        """
-        iv = self.check_iv(obj)
-        cipher = Cipher(AES(obj.cek), GCM(iv), backend=default_backend())
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
+        """Key Encryption with AES GCM"""
+        cipher = Cipher(AES(cek), GCM(iv), backend=default_backend())
         enc = cipher.encryptor()
-        aad = obj.encoded["aad"]
         enc.authenticate_additional_data(aad)
-        ciphertext = enc.update(obj.plaintext) + enc.finalize()
-        obj.decoded["tag"] = enc.tag
-        return ciphertext
+        ciphertext = enc.update(plaintext) + enc.finalize()
+        return ciphertext, enc.tag
 
-    def decrypt(self, obj: EncryptionData) -> bytes:
-        """Key Decryption with AES GCM
-
-        :param obj: encryption data instance
-        :return: payload in bytes
-        """
-        iv = self.check_iv(obj)
-        tag = obj.decoded["tag"]
-        cipher = Cipher(AES(obj.cek), GCM(iv, tag), backend=default_backend())
+    def decrypt(self, ciphertext: bytes, tag: bytes, cek: bytes, iv: bytes, aad: bytes) -> bytes:
+        """Key Decryption with AES GCM"""
+        cipher = Cipher(AES(cek), GCM(iv, tag), backend=default_backend())
         d = cipher.decryptor()
-        aad = obj.encoded["aad"]
         d.authenticate_additional_data(aad)
-        ciphertext = obj.decoded["ciphertext"]
         return d.update(ciphertext) + d.finalize()
 
 

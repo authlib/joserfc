@@ -19,12 +19,10 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     for recipient in obj.recipients:
         cek = encrypt_recipient(enc, recipient, registry, cek)
 
-    obj.cek = cek
     # Step 9, Generate a random JWE Initialization Vector of the correct size
     # for the content encryption algorithm (if required for the algorithm);
     # otherwise, let the JWE Initialization Vector be the empty octet sequence.
     iv = enc.generate_iv()
-    obj.decoded["iv"] = iv
 
     # Step 10, Compute the encoded Initialization Vector value
     # BASE64URL(JWE Initialization Vector).
@@ -36,7 +34,9 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     # sequence representing the plaintext.
     if "zip" in obj.protected:
         zip_ = registry.get_zip(obj.protected["zip"])
-        obj.segments["plaintext"] = zip_.compress(obj.payload)
+        plaintext = zip_.compress(obj.plaintext)
+    else:
+        plaintext = obj.plaintext
 
     # Step 13, Compute the Encoded Protected Header value BASE64URL(UTF8(JWE Protected Header)).
     aad = json_b64encode(obj.protected, "ascii")
@@ -51,10 +51,9 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     obj.encoded["aad"] = aad
 
     # perform encryption
-    ciphertext = enc.encrypt(obj)
-    obj.decoded["ciphertext"] = ciphertext
+    ciphertext, tag = enc.encrypt(plaintext, cek, iv, aad)
     obj.encoded["ciphertext"] = urlsafe_b64encode(ciphertext)
-    obj.encoded["tag"] = urlsafe_b64encode(obj.decoded["tag"])
+    obj.encoded["tag"] = urlsafe_b64encode(tag)
     return obj
 
 
@@ -64,7 +63,6 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     aad = json_b64encode(obj.protected, "ascii")
     if not obj.compact and obj.aad:
         aad = aad + b"." + urlsafe_b64encode(obj.aad)
-    obj.encoded["aad"] = aad
 
     cek_set = set()
     for recipient in obj.recipients:
@@ -78,13 +76,16 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     if len(cek) * 8 != enc.cek_size:
         raise ValueError('Invalid "cek" length')
 
-    obj.cek = cek
-    msg = enc.decrypt(obj)
+    ciphertext = obj.decoded["ciphertext"]
+    tag = obj.decoded["tag"]
+    iv = obj.decoded["iv"]
+    enc.check_iv(iv)
+    msg = enc.decrypt(ciphertext, tag, cek, iv, aad)
     if "zip" in obj.protected:
         zip_ = registry.get_zip(obj.protected["zip"])
-        obj.payload = zip_.decompress(msg)
+        obj.plaintext = zip_.decompress(msg)
     else:
-        obj.payload = msg
+        obj.plaintext = msg
     return obj
 
 
