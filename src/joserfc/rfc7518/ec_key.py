@@ -1,10 +1,10 @@
-from typing import Optional, Union, Dict
+from typing import Optional, Dict
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.ec import (
     generate_private_key,
     ECDH,
     EllipticCurvePublicKey,
-    EllipticCurvePrivateKeyWithSerialization,
+    EllipticCurvePrivateKey,
     EllipticCurvePrivateNumbers,
     EllipticCurvePublicNumbers,
     SECP256R1,
@@ -19,7 +19,6 @@ from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
 
-NativeECKey = Union[EllipticCurvePublicKey, EllipticCurvePrivateKeyWithSerialization]
 DSS_CURVES = {
     "P-256": SECP256R1,
     "P-384": SECP384R1,
@@ -36,7 +35,7 @@ class ECBinding(CryptographyBinding):
     ssh_type = b"ecdsa-sha2-"
 
     @staticmethod
-    def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKeyWithSerialization:
+    def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKey:
         curve = DSS_CURVES[obj["crv"]]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),
@@ -47,7 +46,7 @@ class ECBinding(CryptographyBinding):
         return private_numbers.private_key(default_backend())
 
     @staticmethod
-    def export_private_key(key: EllipticCurvePrivateKeyWithSerialization) -> Dict[str, str]:
+    def export_private_key(key: EllipticCurvePrivateKey) -> Dict[str, str]:
         numbers = key.private_numbers()
         return {
             "crv": CURVES_DSS[key.curve.name],
@@ -76,7 +75,7 @@ class ECBinding(CryptographyBinding):
         }
 
 
-class ECKey(CurveKey):
+class ECKey(CurveKey[EllipticCurvePublicKey, EllipticCurvePrivateKey]):
     key_type: str = "EC"
     #: Registry definition for EC Key
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.2
@@ -95,21 +94,17 @@ class ECKey(CurveKey):
         raise ValueError("Invalid key for exchanging shared key")
 
     @property
-    def raw_value(self) -> NativeECKey:
-        return self._raw_value
-
-    @property
     def is_private(self) -> bool:
-        return isinstance(self.raw_value, EllipticCurvePrivateKeyWithSerialization)
+        return isinstance(self.raw_value, EllipticCurvePrivateKey)
 
     @cached_property
     def public_key(self) -> EllipticCurvePublicKey:
-        if isinstance(self.raw_value, EllipticCurvePrivateKeyWithSerialization):
+        if isinstance(self.raw_value, EllipticCurvePrivateKey):
             return self.raw_value.public_key()
         return self.raw_value
 
     @property
-    def private_key(self) -> Optional[EllipticCurvePrivateKeyWithSerialization]:
+    def private_key(self) -> Optional[EllipticCurvePrivateKey]:
         if self.is_private:
             return self.raw_value
         return None

@@ -28,22 +28,9 @@ PRIVATE_KEYS_MAP = {
     "X25519": X25519PrivateKey,
     "X448": X448PrivateKey,
 }
-
-PRIVATE_KEY_TYPES = tuple(PRIVATE_KEYS_MAP.values())
-
+PrivateKeyTypes = tuple(PRIVATE_KEYS_MAP.values())
 PublicOKPKey = Union[Ed25519PublicKey, Ed448PublicKey, X25519PublicKey, X448PublicKey]
-
-PrivateOKPKey = Union[
-    Ed25519PrivateKey,
-    Ed448PrivateKey,
-    X25519PrivateKey,
-    X448PrivateKey,
-]
-
-NativeOKPKey = Union[PublicOKPKey, PrivateOKPKey]
-
-ExchangePublicKeys = (X25519PublicKey, X448PublicKey)
-ExchangePrivateKeys = (X25519PrivateKey, X448PrivateKey)
+PrivateOKPKey = Union[Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448PrivateKey]
 
 
 class OKPBinding(CryptographyBinding):
@@ -77,7 +64,7 @@ class OKPBinding(CryptographyBinding):
         }
 
 
-class OKPKey(CurveKey):
+class OKPKey(CurveKey[PublicOKPKey, PrivateOKPKey]):
     """Key class of the ``OKP`` key type."""
 
     key_type: str = "OKP"
@@ -94,17 +81,13 @@ class OKPKey(CurveKey):
 
     def exchange_shared_key(self, pubkey: Union[X25519PublicKey, X448PublicKey]) -> bytes:
         # used in ECDHESAlgorithm
-        if self.private_key and isinstance(self.private_key, ExchangePrivateKeys):
+        if self.private_key and isinstance(self.private_key, (X25519PrivateKey, X448PrivateKey)):
             return self.private_key.exchange(pubkey)
         raise ValueError("Invalid key for exchanging shared key")
 
     @property
-    def raw_value(self) -> NativeOKPKey:
-        return self._raw_value
-
-    @property
     def is_private(self) -> bool:
-        return isinstance(self.raw_value, PRIVATE_KEY_TYPES)
+        return isinstance(self.raw_value, PrivateKeyTypes)
 
     @cached_property
     def public_key(self) -> PublicOKPKey:
@@ -138,7 +121,7 @@ class OKPKey(CurveKey):
         return cls(raw_key, raw_key, options=options)
 
 
-def get_key_curve(key: NativeOKPKey):
+def get_key_curve(key: Union[PublicOKPKey, PrivateOKPKey]):
     if isinstance(key, (Ed25519PublicKey, Ed25519PrivateKey)):
         return "Ed25519"
     elif isinstance(key, (Ed448PublicKey, Ed448PrivateKey)):

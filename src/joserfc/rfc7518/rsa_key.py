@@ -1,9 +1,9 @@
-from typing import Optional, Union, Dict
+from typing import Optional, Dict
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.rsa import (
     generate_private_key,
     RSAPublicKey,
-    RSAPrivateKeyWithSerialization,
+    RSAPrivateKey,
     RSAPrivateNumbers,
     RSAPublicNumbers,
     rsa_recover_prime_factors,
@@ -18,14 +18,12 @@ from ..rfc7517.pem import CryptographyBinding
 from ..rfc7517.types import KeyDict, KeyOptions
 from ..util import int_to_base64, base64_to_int
 
-NativeRSAKey = Union[RSAPublicKey, RSAPrivateKeyWithSerialization]
-
 
 class RSABinding(CryptographyBinding):
     ssh_type = b"ssh-rsa"
 
     @staticmethod
-    def import_private_key(obj: KeyDict) -> RSAPrivateKeyWithSerialization:
+    def import_private_key(obj: KeyDict) -> RSAPrivateKey:
         if "oth" in obj:  # pragma: no cover
             # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
             raise ValueError('"oth" is not supported yet')
@@ -58,7 +56,7 @@ class RSABinding(CryptographyBinding):
         return numbers.private_key(default_backend())
 
     @staticmethod
-    def export_private_key(key: RSAPrivateKeyWithSerialization) -> Dict[str, str]:
+    def export_private_key(key: RSAPrivateKey) -> Dict[str, str]:
         numbers = key.private_numbers()
         return {
             "n": int_to_base64(numbers.public_numbers.n),
@@ -82,7 +80,7 @@ class RSABinding(CryptographyBinding):
         return {"n": int_to_base64(numbers.n), "e": int_to_base64(numbers.e)}
 
 
-class RSAKey(AsymmetricKey):
+class RSAKey(AsymmetricKey[RSAPublicKey, RSAPrivateKey]):
     key_type: str = "RSA"
     #: Registry definition for RSA Key
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.3
@@ -100,21 +98,17 @@ class RSAKey(AsymmetricKey):
     binding = RSABinding
 
     @property
-    def raw_value(self) -> NativeRSAKey:
-        return self._raw_value
-
-    @property
     def is_private(self) -> bool:
-        return isinstance(self.raw_value, RSAPrivateKeyWithSerialization)
+        return isinstance(self.raw_value, RSAPrivateKey)
 
     @cached_property
     def public_key(self) -> RSAPublicKey:
-        if isinstance(self.raw_value, RSAPrivateKeyWithSerialization):
+        if isinstance(self.raw_value, RSAPrivateKey):
             return self.raw_value.public_key()
         return self.raw_value
 
     @property
-    def private_key(self) -> Optional[RSAPrivateKeyWithSerialization]:
+    def private_key(self) -> Optional[RSAPrivateKey]:
         if self.is_private:
             return self.raw_value
         return None

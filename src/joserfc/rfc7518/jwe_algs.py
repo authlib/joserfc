@@ -32,20 +32,23 @@ class DirectAlgModel(JWEAlgModel):
     description = "Direct use of a shared symmetric key"
     recommended = True
 
-    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
-        obj: EncryptionData = recipient.parent
-        assert obj.cek is None
-
-        cek = key.get_op_key("encrypt")
+    @staticmethod
+    def _check_cek(enc: JWEEncModel, cek: bytes):
         if len(cek) * 8 != enc.cek_size:
             raise InvalidKeyLengthError(f"A key of size {enc.cek_size} bits MUST be used")
 
+    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
+        obj: EncryptionData = recipient.parent
+        assert obj.cek is None
+        cek = key.get_op_key("encrypt")
+        self._check_cek(enc, cek)
         # attach CEK to parent
         obj.cek = cek
         return b""
 
     def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, key: OctKey) -> bytes:
         cek = key.get_op_key("decrypt")
+        self._check_cek(enc, cek)
         return cek
 
 

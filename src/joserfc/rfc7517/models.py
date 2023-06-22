@@ -11,6 +11,10 @@ from ..util import to_bytes
 from ..rfc7638 import thumbprint
 
 
+NativePublicKey = t.TypeVar("NativePublicKey")
+NativePrivateKey = t.TypeVar("NativePrivateKey")
+
+
 class NativeKeyBinding(object, metaclass=ABCMeta):
     use_key_ops_registry = {
         "sig": ["sign", "verify"],
@@ -57,7 +61,7 @@ class NativeKeyBinding(object, metaclass=ABCMeta):
                     raise ValueError(f'"use" and "key_ops" does not match')
 
 
-class BaseKey(object):
+class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
     key_type: str
     value_registry: KeyParameterRegistryDict
     param_registry: KeyParameterRegistryDict = JWK_PARAMETER_REGISTRY
@@ -119,11 +123,11 @@ class BaseKey(object):
         return data
 
     @property
-    def public_key(self):
+    def public_key(self) -> NativePublicKey:
         raise NotImplementedError()
 
     @property
-    def private_key(self):
+    def private_key(self) -> t.Optional[NativePrivateKey]:
         raise NotImplementedError()
 
     def thumbprint(self) -> str:
@@ -178,7 +182,7 @@ class BaseKey(object):
         if reg.private and not self.is_private:
             raise ValueError(f'Invalid key_op "{operation}" for public key')
 
-    def get_op_key(self, operation: str):
+    def get_op_key(self, operation: str) -> t.Union[NativePublicKey, NativePrivateKey]:
         self.check_key_op(operation)
         reg = self.operation_registry[operation]
         if reg.private:
@@ -206,7 +210,7 @@ class BaseKey(object):
         raise NotImplementedError()
 
 
-class SymmetricKey(BaseKey, metaclass=ABCMeta):
+class SymmetricKey(BaseKey[NativePublicKey, NativePrivateKey], metaclass=ABCMeta):
     @property
     def raw_value(self) -> bytes:
         return self._raw_value
@@ -224,7 +228,11 @@ class SymmetricKey(BaseKey, metaclass=ABCMeta):
         return self.raw_value
 
 
-class AsymmetricKey(BaseKey, metaclass=ABCMeta):
+class AsymmetricKey(BaseKey[NativePublicKey, NativePrivateKey], metaclass=ABCMeta):
+    @property
+    def raw_value(self) -> t.Union[NativePublicKey, NativePrivateKey]:
+        return self._raw_value
+
     def as_bytes(
             self,
             encoding: t.Optional[str] = None,
@@ -239,7 +247,7 @@ class AsymmetricKey(BaseKey, metaclass=ABCMeta):
         return self.as_bytes(encoding="DER", private=private, password=password)
 
 
-class CurveKey(AsymmetricKey):
+class CurveKey(AsymmetricKey[NativePublicKey, NativePrivateKey]):
     @property
     @abstractmethod
     def curve_name(self) -> str:

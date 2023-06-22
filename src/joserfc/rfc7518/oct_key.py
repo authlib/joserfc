@@ -36,7 +36,7 @@ class OctBinding(NativeKeyBinding):
         return value
 
 
-class OctKey(SymmetricKey):
+class OctKey(SymmetricKey[bytes, bytes]):
     key_type: str = "oct"
     binding = OctBinding
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.4
