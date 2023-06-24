@@ -60,6 +60,23 @@ def encrypt_compact(
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[CurveKey] = None) -> bytes:
+    """Generate a JWE Compact Serialization. The JWE Compact Serialization represents
+    encrypted content as a compact, URL-safe string.  This string is::
+
+        BASE64URL(UTF8(JWE Protected Header)) || '.' ||
+        BASE64URL(JWE Encrypted Key) || '.' ||
+        BASE64URL(JWE Initialization Vector) || '.' ||
+        BASE64URL(JWE Ciphertext) || '.' ||
+        BASE64URL(JWE Authentication Tag)
+
+    :param protected: protected header part of the JWE, in dict
+    :param plaintext: the content (message) to be encrypted
+    :param public_key: a public key used to encrypt the CEK
+    :param algorithms: a list of allowed algorithms
+    :param registry: a JWERegistry to use
+    :param sender_key: only required when using ECDH-1PU
+    :return: JWE Compact Serialization in bytes
+    """
 
     if algorithms:
         registry = JWERegistry(algorithms=algorithms)
@@ -82,7 +99,26 @@ def decrypt_compact(
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[CurveKey] = None) -> CompactEncryption:
+    """Extract and validate the JWE Compact Serialization (in string, or bytes)
+    with the given key. An JWE Compact Serialization looks like:
 
+    .. code-block:: text
+        :caption: line breaks for display purposes only
+
+        OKOawDo13gRp2ojaHV7LFpZcgV7T6DVZKTyKOMTYUmKoTCVJRgckCL9kiMT03JGe
+        ipsEdY3mx_etLbbWSrFr05kLzcSr4qKAq7YN7e9jwQRb23nfa6c9d-StnImGyFDb
+        Sv04uVuxIp5Zms1gNxKKK2Da14B8S4rzVRltdYwam_lDp5XnZAYpQdb76FdIKLaV
+        mqgfwX7XWRxv2322i-vDxRfqNzo_tETKzpVLzfiwQyeyPGLBIO56YJ7eObdv0je8
+        1860ppamavo35UgoRdbYaBcoh9QcfylQr66oc6vFWXRcZ_ZT2LawVCWTIy3brGPi
+        6UklfCpIMfIjf7iGdXKHzg
+
+    :param value: a string (or bytes) of the JWE Compact Serialization
+    :param private_key: a flexible private key to decrypt the serialization
+    :param algorithms: a list of allowed algorithms
+    :param registry: a JWERegistry to use
+    :param sender_key: only required when using ECDH-1PU
+    :return: object of the ``CompactEncryption``
+    """
     value = to_bytes(value)
     obj = extract_compact(value)
 
@@ -103,6 +139,31 @@ def encrypt_json(
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> JSONSerialization:
+    """Generate a JWE JSON Serialization (in dict). The JWE JSON Serialization
+    represents encrypted content as a JSON object. This representation is neither
+    optimized for compactness nor URL safe.
+
+    When calling this method, developers MUST construct an instance of a ``JSONEncryption``
+    object. Here is an example::
+
+        from joserfc.jwe import JSONEncryption
+
+        protected = {"enc": "A128CBC-HS256"}
+        plaintext = b"hello world"
+        header = {"jku": "https://server.example.com/keys.jwks"}  # optional shared header
+        obj = JSONEncryption(protected, plaintext, header)
+        # add the recipients
+        obj.add_recipient(None, {"kid": "alice", "alg": "RSA1_5"})  # not configured a key
+        bob_key = OctKey.import_key("bob secret")
+        obj.add_recipient(bob_key, {"kid": "bob", "alg": "A128KW"})
+
+    :param obj: an instance of ``JSONEncryption``
+    :param public_key: a public key used to encrypt the CEK
+    :param algorithms: a list of allowed algorithms
+    :param registry: a JWERegistry to use
+    :param sender_key: only required when using ECDH-1PU
+    :return: JWE JSON Serialization in dict
+    """
 
     if algorithms:
         registry = JWERegistry(algorithms=algorithms)
@@ -125,7 +186,15 @@ def decrypt_json(
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> JSONEncryption:
+    """Decrypt the JWE JSON Serialization (in dict) to a ``JSONEncryption`` object.
 
+    :param data: JWE JSON Serialization in dict
+    :param private_key: a flexible private key to decrypt the CEK
+    :param algorithms: a list of allowed algorithms
+    :param registry: a JWERegistry to use
+    :param sender_key: only required when using ECDH-1PU
+    :return: an instance of ``JSONEncryption``
+    """
     obj = extract_json(data)
 
     if algorithms:

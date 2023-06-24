@@ -148,3 +148,4 @@ class TestECDH1PUJSON(TestCase):
             registry=ecdh_registry,
             sender_key=alice_key,
         )
+        self.assertEqual(obj.protected, protected)

@@ -17,7 +17,6 @@ html_show_sourcelink = False
 
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.intersphinx",
     "sphinx_copybutton",
     "sphinx_design",
 ]

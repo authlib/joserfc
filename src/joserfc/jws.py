@@ -129,13 +129,24 @@ def deserialize_compact(
         key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
         registry: Optional[JWSRegistry] = None) -> CompactSignature:
-    """Extract and validate the JWS (in string, or bytes) with the given key.
+    """Extract and validate the JWS Compact Serialization (in string, or bytes)
+    with the given key. An JWE Compact Serialization looks like:
 
-    :param value: a string (or bytes) of the JWS
+    .. code-block:: text
+        :caption: line breaks for display purposes only
+
+        eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9
+        .
+        eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFt
+        cGxlLmNvbS9pc19yb290Ijp0cnVlfQ
+        .
+        dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+
+    :param value: a string (or bytes) of the JWS Compact Serialization
     :param key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
-    :return: object of the JWS Compact Serialization
+    :return: object of the ``CompactSignature``
     """
     obj = extract_compact(to_bytes(value))
     validate_compact(obj, key, algorithms, registry)
@@ -148,6 +159,32 @@ def serialize_json(
         key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
         registry: Optional[JWSRegistry] = None) -> JSONSerialization:
+    """Generate a JWS JSON Serialization (in dict). The JWS JSON Serialization
+    represents digitally signed or MACed content as a JSON object. This representation
+    is neither optimized for compactness nor URL-safe.
+
+    A general JWS JSON Serialization contains:
+
+    payload
+        The "payload" member MUST be present and contain the value
+        BASE64URL(JWS Payload).
+
+    signatures
+        The "signatures" member value MUST be an array of JSON objects.
+        Each object represents a signature or MAC over the JWS Payload and
+        the JWS Protected Header.
+
+    A flatten JWS JSON Serialization looks like:
+
+    .. code-block:: text
+
+        {
+            "payload":"<payload contents>",
+            "protected":"<integrity-protected header contents>",
+            "header":<non-integrity-protected header contents>,
+            "signature":"<signature contents>"
+        }
+    """
     if algorithms:
         registry = JWSRegistry(algorithms=algorithms)
     elif registry is None:

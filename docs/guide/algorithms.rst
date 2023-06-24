@@ -70,6 +70,7 @@ Use custom ``registry``
 +++++++++++++++++++++++
 
 .. automodule:: joserfc.jwe
+    :noindex:
 
 Use a custom ``registry`` in :meth:`encrypt_compact`, :meth:`decrypt_compact`,
 :meth:`encrypt_json`, and :meth:`decrypt_json`.
@@ -80,10 +81,8 @@ Use a custom ``registry`` in :meth:`encrypt_compact`, :meth:`decrypt_compact`,
     from joserfc.jwk import OctKey
 
     registry = JWERegistry(
-        algorithms={
-            "alg": ["A128KW"],  # add more "alg" if you want
-            "enc": ["C20P", "XC20P"],
-        }
+        # add more "alg" and "enc" if you want
+        algorithms=["A128KW", "C20P"]
     )
 
     key = OctKey.generate_key(128)  # A128KW requires 128 bits key

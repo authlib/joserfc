@@ -32,23 +32,38 @@ class Recipient:
     def add_header(self, k: str, v: t.Any):
         if isinstance(self.__parent, CompactEncryption):
             self.__parent.protected.update({k: v})
-        else:
+        elif self.header:
             self.header.update({k: v})
+        else:
+            self.header = {k: v}
 
     def set_kid(self, kid: str):
         self.add_header("kid", kid)
 
 
 class CompactEncryption:
+    """An object to represent the JWE Compact Serialization. It is usually returned by
+    ``decrypt_compact`` method.
+    """
     def __init__(self, protected: Header, plaintext: t.Optional[bytes] = None):
+        #: protected header in dict
         self.protected = protected
+        #: the plaintext in bytes
         self.plaintext = plaintext
         self.recipient: t.Optional[Recipient] = None
         self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
     def add_recipient(self, key: Key, header: t.Optional[Header] = None):
-        recipient = Recipient(self, header, key)
+        """Add a recipient to the JWE Compact Serialization. Please add a key that
+        comply with the given "alg" value.
+
+        :param key: an instance of a key, e.g. (OctKey, RSAKey, ECKey, and etc)
+        :param header: extra header in dict
+        """
+        recipient = Recipient(self, None, key)
+        if header:
+            self.protected.update(header)
         self.recipient = recipient
 
     @property
@@ -57,6 +72,9 @@ class CompactEncryption:
 
 
 class JSONEncryption:
+    """An object to represent the JWE JSON Serialization. It is usually returned by
+    ``decrypt_json`` method.
+    """
     def __init__(
             self,
             protected: Header,
@@ -64,16 +82,29 @@ class JSONEncryption:
             unprotected: t.Optional[Header] = None,
             aad: t.Optional[bytes] = None,
             flatten: bool=False):
+        #: protected header in dict
         self.protected = protected
+        #: the plaintext in bytes
         self.plaintext = plaintext
+        #: unprotected header in dict
         self.unprotected = unprotected
+        #: an optional additional authenticated data
         self.aad: t.Optional[bytes] = aad
-        self.flatten = flatten
+        #: represents if the object is in flatten syntax
+        self.flatten: bool = flatten
+        #: a list of recipients
         self.recipients: t.List[Recipient] = []
+
         self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
     def add_recipient(self, key: Key, header: t.Optional[Header] = None):
+        """Add a recipient to the JWE JSON Serialization. Please add a key that
+        comply with the "alg" to this recipient.
+
+        :param key: an instance of a key, e.g. (OctKey, RSAKey, ECKey, and etc)
+        :param header: recipient's own (unprotected) header
+        """
         recipient = Recipient(self, header, key)
         self.recipients.append(recipient)
 
