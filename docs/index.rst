@@ -23,7 +23,7 @@ And draft RFCs implementation of:
 Features
 --------
 
--
+- Type hints
 
 Usage
 -----
@@ -54,10 +54,11 @@ Explore the following sections to discover more about our theme and its features
    :hidden:
 
    install
-   guide/quickstart
+   guide/introduction
 
 .. toctree::
    :caption: Essentials
+   :hidden:
 
    guide/index
    guide/algorithms

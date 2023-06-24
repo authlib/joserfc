@@ -22,6 +22,9 @@ Decode token
 Extract token
 -------------
 
+Validate claims
+---------------
+
 Use registry
 ------------
 
