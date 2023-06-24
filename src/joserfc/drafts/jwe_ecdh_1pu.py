@@ -77,7 +77,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
 
     def get_recipient_tag(self, recipient: Recipient) -> t.Optional[bytes]:
         if self.wrapped_key_mode:
-            return recipient.parent.decoded.get("tag")
+            return recipient.parent.bytes_segments.get("tag")
 
     def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int, tag: t.Optional[bytes]=None):
         fixed_info = compute_concat_kdf_info(self.direct_key_mode, header, bit_size)

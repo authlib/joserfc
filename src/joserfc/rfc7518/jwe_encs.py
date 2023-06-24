@@ -14,7 +14,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher
 from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.ciphers.modes import GCM, CBC
 from cryptography.hazmat.primitives.padding import PKCS7
-from ..rfc7516.models import JWEEncModel, EncryptionData
+from ..rfc7516.models import JWEEncModel
 from .util import encode_int
 
 

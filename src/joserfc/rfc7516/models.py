@@ -1,57 +1,78 @@
 import os
 import typing as t
 from abc import ABCMeta, abstractmethod
+from ..rfc7517.models import Key
 from ..registry import Header, HeaderRegistryDict
 
 
 class Recipient:
-    def __init__(self, parent: "EncryptionData", header: t.Optional[Header] = None):
-        self.parent = parent
+    def __init__(
+            self,
+            parent: t.Union["CompactEncryption", "JSONEncryption"],
+            header: t.Optional[Header] = None,
+            key: t.Optional[Key]=None):
+        self.__parent = parent
         self.header = header
-        self.recipient_key = None
+        self.recipient_key = key
         self.encrypted_key: t.Optional[bytes] = None
         self.ephemeral_key = None
         self.segments = {}  # store temporary segments
 
     def headers(self) -> Header:
         rv = {}
-        rv.update(self.parent.protected)
-        if not self.parent.compact and self.parent.unprotected:
-            rv.update(self.parent.unprotected)
+        rv.update(self.__parent.protected)
+        if isinstance(self.__parent, JSONEncryption) and self.__parent.unprotected:
+            rv.update(self.__parent.unprotected)
         if self.header:
             rv.update(self.header)
         return rv
 
-    def add_header(self, key: str, value):
-        if self.parent.compact:
-            self.parent.protected.update({key: value})
+    def add_header(self, k: str, v: t.Any):
+        if isinstance(self.__parent, CompactEncryption):
+            self.__parent.protected.update({k: v})
         else:
-            self.header.update({key: value})
+            self.header.update({k: v})
 
     def set_kid(self, kid: str):
         self.add_header("kid", kid)
 
 
-class EncryptionData:
+class CompactEncryption:
+    def __init__(self, protected: Header, plaintext: t.Optional[bytes] = None):
+        self.protected = protected
+        self.plaintext = plaintext
+        self.recipient: t.Optional[Recipient] = None
+        self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
+        self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
+
+    def add_recipient(self, key: Key, header: t.Optional[Header] = None):
+        recipient = Recipient(self, header, key)
+        self.recipient = recipient
+
+    @property
+    def recipients(self) -> t.List[Recipient]:
+        return [self.recipient]
+
+
+class JSONEncryption:
     def __init__(
             self,
             protected: Header,
             plaintext: t.Optional[bytes] = None,
-            unprotected: t.Optional[Header] = None):
+            unprotected: t.Optional[Header] = None,
+            aad: t.Optional[bytes] = None,
+            flatten: bool=False):
         self.protected = protected
         self.plaintext = plaintext
         self.unprotected = unprotected
+        self.aad: t.Optional[bytes] = aad
+        self.flatten = flatten
         self.recipients: t.List[Recipient] = []
-        self.aad: t.Optional[bytes] = None  # aad for JSON serialization
-        self.encoded = {}  # store the encoded segments
-        self.decoded = {}  # store the decoded segments
-        self.segments = {}  # store temporary segments
-        self.compact = False
-        self.flatten = False
+        self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
+        self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
-    def add_recipient(self, key, header: t.Optional[Header] = None):
-        recipient = Recipient(self, header)
-        recipient.recipient_key = key
+    def add_recipient(self, key: Key, header: t.Optional[Header] = None):
+        recipient = Recipient(self, header, key)
         self.recipients.append(recipient)
 
 

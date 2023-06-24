@@ -1,5 +1,5 @@
 import binascii
-from .models import EncryptionData, Recipient
+from .models import CompactEncryption, Recipient
 from ..errors import (
     MissingAlgorithmError,
     MissingEncryptionError,
@@ -12,18 +12,17 @@ from ..util import (
 )
 
 
-def represent_compact(obj: EncryptionData) -> bytes:
-    recipient = obj.recipients[0]
+def represent_compact(obj: CompactEncryption) -> bytes:
     return b".".join([
-        obj.encoded["aad"],
-        urlsafe_b64encode(recipient.encrypted_key),
-        obj.encoded["iv"],
-        obj.encoded["ciphertext"],
-        obj.encoded["tag"],
+        obj.base64_segments["aad"],
+        urlsafe_b64encode(obj.recipient.encrypted_key),
+        obj.base64_segments["iv"],
+        obj.base64_segments["ciphertext"],
+        obj.base64_segments["tag"],
     ])
 
 
-def extract_compact(value: bytes) -> EncryptionData:
+def extract_compact(value: bytes) -> CompactEncryption:
     parts = value.split(b".")
     if len(parts) != 5:
         raise ValueError("Invalid JSON Web Encryption")
@@ -38,20 +37,19 @@ def extract_compact(value: bytes) -> EncryptionData:
     except (TypeError, ValueError, binascii.Error):
         raise DecodeError("Invalid header")
 
-    obj = EncryptionData(protected)
-    obj.compact = True
-    obj.encoded.update({
+    obj = CompactEncryption(protected)
+    obj.base64_segments.update({
         "aad": header_segment,
         "iv": iv_segment,
         "ciphertext": ciphertext_segment,
         "tag": tag_segment,
     })
-    obj.decoded.update({
+    obj.bytes_segments.update({
         "iv": urlsafe_b64decode(iv_segment),
         "ciphertext": urlsafe_b64decode(ciphertext_segment),
         "tag": urlsafe_b64decode(tag_segment),
     })
     recipient = Recipient(obj)
     recipient.encrypted_key = urlsafe_b64decode(ek_segment)
-    obj.recipients.append(recipient)
+    obj.recipient = recipient
     return obj

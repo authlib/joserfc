@@ -3,7 +3,8 @@ from .rfc7516 import types
 from .rfc7516.types import JSONSerialization
 from .rfc7516.models import (
     Recipient,
-    EncryptionData,
+    CompactEncryption,
+    JSONEncryption,
     JWEEncModel,
     JWEZipModel,
 )
@@ -27,7 +28,8 @@ __all__ = [
     "JWEEncModel",
     "JWEZipModel",
     "Recipient",
-    "EncryptionData",
+    "CompactEncryption",
+    "JSONEncryption",
     "encrypt_compact",
     "decrypt_compact",
     "extract_compact",
@@ -61,12 +63,11 @@ def encrypt_compact(
     if registry is None:
         registry = default_registry
 
-    obj = EncryptionData(protected, plaintext)
+    obj = CompactEncryption(protected, plaintext)
     recipient = Recipient(obj)
     key = guess_key(public_key, recipient)
     recipient.recipient_key = key
-    obj.recipients.append(recipient)
-    obj.compact = True
+    obj.recipient = recipient
     perform_encrypt(obj, registry, sender_key)
     return represent_compact(obj)
 
@@ -75,21 +76,20 @@ def decrypt_compact(
         value: AnyStr,
         private_key: KeyFlexible,
         registry: Optional[JWERegistry] = None,
-        sender_key: Optional[CurveKey] = None) -> EncryptionData:
+        sender_key: Optional[CurveKey] = None) -> CompactEncryption:
 
     value = to_bytes(value)
     obj = extract_compact(value)
     if registry is None:
         registry = default_registry
 
-    recipient = obj.recipients[0]
-    key = guess_key(private_key, recipient)
-    recipient.recipient_key = key
+    recipient_key = guess_key(private_key, obj.recipient)
+    obj.recipient.recipient_key = recipient_key
     return perform_decrypt(obj, registry, sender_key)
 
 
 def encrypt_json(
-        obj: EncryptionData,
+        obj: JSONEncryption,
         public_key: KeyFlexible,
         registry: Optional[JWERegistry] = None,
         sender_key: Optional[CurveKey] = None) -> JSONSerialization:
@@ -108,7 +108,7 @@ def decrypt_json(
         data: JSONSerialization,
         private_key: KeyFlexible,
         registry: Optional[JWERegistry] = None,
-        sender_key: Optional[CurveKey] = None) -> EncryptionData:
+        sender_key: Optional[CurveKey] = None) -> JSONEncryption:
     obj = extract_json(data)
     if registry is None:
         registry = default_registry

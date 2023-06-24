@@ -22,7 +22,6 @@ from ..rfc7516.models import (
     JWEKeyWrapping,
     JWEKeyAgreement,
     JWEEncModel,
-    EncryptionData,
     Recipient,
 )
 from ..rfc7517.models import CurveKey

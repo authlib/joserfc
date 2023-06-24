@@ -3,7 +3,6 @@ from joserfc.jwe import (
     encrypt_compact,
     decrypt_compact,
     JWERegistry,
-    EncryptionData,
 )
 from joserfc.jwk import OctKey
 from joserfc.drafts.jwe_chacha20 import JWE_ENC_MODELS, XC20P

@@ -1,4 +1,4 @@
-from .models import EncryptionData, Recipient
+from .models import JSONEncryption, Recipient
 from .types import JSONSerialization
 from ..util import (
     to_bytes,
@@ -10,12 +10,12 @@ from ..util import (
 )
 
 
-def represent_json(obj: EncryptionData) -> JSONSerialization:
-    data = {
+def represent_json(obj: JSONEncryption) -> JSONSerialization:
+    data: JSONSerialization = {
         "protected": to_unicode(json_b64encode(obj.protected)),
-        "iv": to_unicode(obj.encoded["iv"]),
-        "ciphertext": to_unicode(obj.encoded["ciphertext"]),
-        "tag": to_unicode(obj.encoded["tag"]),
+        "iv": to_unicode(obj.base64_segments["iv"]),
+        "ciphertext": to_unicode(obj.base64_segments["ciphertext"]),
+        "tag": to_unicode(obj.base64_segments["tag"]),
     }
     if obj.aad:
         data["aad"] = to_unicode(urlsafe_b64encode(obj.aad))
@@ -37,21 +37,21 @@ def represent_json(obj: EncryptionData) -> JSONSerialization:
         data.update(recipients[0])
     else:
         data["recipients"] = recipients
-    return data  # type: ignore
+    return data
 
 
-def extract_json(data: JSONSerialization) -> EncryptionData:
+def extract_json(data: JSONSerialization) -> JSONEncryption:
     protected = json_b64decode(data["protected"])
     unprotected = data.get("unprotected")
-    obj = EncryptionData(protected, None, unprotected)
-    obj.encoded["iv"] = to_bytes(data["iv"])
-    obj.encoded["ciphertext"] = to_bytes(data["ciphertext"])
-    obj.encoded["tag"] = to_bytes(data["tag"])
+    obj = JSONEncryption(protected, None, unprotected)
+    obj.base64_segments["iv"] = to_bytes(data["iv"])
+    obj.base64_segments["ciphertext"] = to_bytes(data["ciphertext"])
+    obj.base64_segments["tag"] = to_bytes(data["tag"])
 
-    # save in decoded segments
-    obj.decoded["iv"] = urlsafe_b64decode(obj.encoded["iv"])
-    obj.decoded["ciphertext"] = urlsafe_b64decode(obj.encoded["ciphertext"])
-    obj.decoded["tag"] = urlsafe_b64decode(obj.encoded["tag"])
+    # save decoded segments
+    obj.bytes_segments["iv"] = urlsafe_b64decode(obj.base64_segments["iv"])
+    obj.bytes_segments["ciphertext"] = urlsafe_b64decode(obj.base64_segments["ciphertext"])
+    obj.bytes_segments["tag"] = urlsafe_b64decode(obj.base64_segments["tag"])
 
     if "aad" in data:
         obj.aad = urlsafe_b64decode(to_bytes(data["aad"]))

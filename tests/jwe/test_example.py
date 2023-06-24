@@ -3,7 +3,7 @@ from joserfc.jwe import decrypt_compact, decrypt_json
 from joserfc.jwk import RSAKey, OctKey, KeySet
 from joserfc.util import json_b64encode, urlsafe_b64encode, to_bytes
 from joserfc.rfc7516.registry import JWERegistry, default_registry as registry
-from joserfc.rfc7516.models import EncryptionData
+from joserfc.rfc7516.models import CompactEncryption, JSONEncryption
 from joserfc.rfc7516.message import perform_encrypt
 from joserfc.rfc7516.compact import represent_compact
 from joserfc.rfc7516.json import represent_json
@@ -23,7 +23,7 @@ class TestCompactExamples(TestCase):
             b"eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ"
         )
 
-        obj = EncryptionData(protected, plaintext)
+        obj = CompactEncryption(protected, plaintext)
 
         # A.1.2.  Content Encryption Key (CEK)
         cek = bytes([
@@ -39,8 +39,7 @@ class TestCompactExamples(TestCase):
         enc = registry.get_enc(protected['enc'])
 
         # resulting encrypted key
-        recipient = obj.recipients[0]
-        recipient.encrypted_key = bytes([
+        obj.recipient.encrypted_key = bytes([
             56, 163, 154, 192, 58, 53, 222, 4, 105, 218, 136, 218, 29, 94, 203,
             22, 150, 92, 129, 94, 211, 232, 53, 89, 41, 60, 138, 56, 196, 216,
             82, 98, 168, 76, 37, 73, 70, 7, 36, 8, 191, 100, 136, 196, 244, 220,
@@ -63,7 +62,7 @@ class TestCompactExamples(TestCase):
 
         # A.1.4.  Initialization Vector
         iv = bytes([227, 197, 117, 252, 2, 219, 233, 68, 180, 225, 77, 219])
-        obj.encoded['iv'] = urlsafe_b64encode(iv)
+        obj.base64_segments['iv'] = urlsafe_b64encode(iv)
 
         # A.1.5.  Additional Authenticated Data
         aad = bytes([
@@ -72,7 +71,7 @@ class TestCompactExamples(TestCase):
             54, 73, 107, 69, 121, 78, 84, 90, 72, 81, 48, 48, 105, 102, 81
         ])
         self.assertEqual(json_b64encode(protected), aad)
-        obj.encoded['aad'] = aad
+        obj.base64_segments['aad'] = aad
 
         # A.1.6.  Content Encryption
         ciphertext = bytes([
@@ -84,14 +83,14 @@ class TestCompactExamples(TestCase):
         ])
         r_ciphertext, r_tag = enc.encrypt(plaintext, cek, iv, aad)
         self.assertEqual(r_ciphertext, ciphertext)
-        obj.encoded['ciphertext'] = urlsafe_b64encode(ciphertext)
+        obj.base64_segments['ciphertext'] = urlsafe_b64encode(ciphertext)
 
         tag = bytes([
             92, 80, 104, 49, 133, 25, 161, 215, 173, 101, 219, 211, 136, 91,
             210, 145
         ])
         self.assertEqual(r_tag, tag)
-        obj.encoded['tag'] = urlsafe_b64encode(r_tag)
+        obj.base64_segments['tag'] = urlsafe_b64encode(r_tag)
 
         # A.1.7.  Complete Representation
         expected = (
@@ -129,7 +128,7 @@ class TestCompactExamples(TestCase):
             json_b64encode(protected),
             b"eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0"
         )
-        obj = EncryptionData(protected, plaintext)
+        obj = CompactEncryption(protected, plaintext)
 
         # A.2.2.  Content Encryption Key (CEK)
         cek = bytes([
@@ -142,8 +141,7 @@ class TestCompactExamples(TestCase):
         key: RSAKey = load_key('RFC7516-A.2.3.json')
         obj.add_recipient(key)
 
-        recipient = obj.recipients[0]
-        recipient.encrypted_key = bytes([
+        obj.recipient.encrypted_key = bytes([
             80, 104, 72, 58, 11, 130, 236, 139, 132, 189, 255, 205, 61, 86, 151,
             176, 99, 40, 44, 233, 176, 189, 205, 70, 202, 169, 72, 40, 226, 181,
             156, 223, 120, 156, 115, 232, 150, 209, 145, 133, 104, 112, 237, 156,
@@ -166,8 +164,8 @@ class TestCompactExamples(TestCase):
 
         # A.2.4.  Initialization Vector
         iv = bytes([3, 22, 60, 12, 43, 67, 104, 105, 108, 108, 105, 99, 111, 116, 104, 101])
-        obj.encoded['iv'] = urlsafe_b64encode(iv)
-        self.assertEqual(obj.encoded['iv'], b'AxY8DCtDaGlsbGljb3RoZQ')
+        obj.base64_segments['iv'] = urlsafe_b64encode(iv)
+        self.assertEqual(obj.base64_segments['iv'], b'AxY8DCtDaGlsbGljb3RoZQ')
 
         # A.2.5.  Additional Authenticated Data
         aad = bytes([
@@ -177,7 +175,7 @@ class TestCompactExamples(TestCase):
             50, 73, 110, 48
         ])
         self.assertEqual(json_b64encode(protected), aad)
-        obj.encoded['aad'] = aad
+        obj.base64_segments['aad'] = aad
 
         # A.2.6.  Content Encryption
         ciphertext = bytes([
@@ -188,13 +186,13 @@ class TestCompactExamples(TestCase):
         enc = registry.get_enc(protected['enc'])
         r_ciphertext, r_tag = enc.encrypt(plaintext, cek, iv, aad)
         self.assertEqual(r_ciphertext, ciphertext)
-        obj.encoded['ciphertext'] = urlsafe_b64encode(ciphertext)
+        obj.base64_segments['ciphertext'] = urlsafe_b64encode(ciphertext)
 
         self.assertEqual(
             r_tag,
             bytes([246, 17, 244, 190, 4, 95, 98, 3, 231, 0, 115, 157, 242, 203, 100, 191])
         )
-        obj.encoded['tag'] = urlsafe_b64encode(r_tag)
+        obj.base64_segments['tag'] = urlsafe_b64encode(r_tag)
 
         expected = (
             "eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0."
@@ -323,7 +321,7 @@ class TestCompactExamples(TestCase):
         self.assertEqual(jwe_data.plaintext, plaintext)
         self.assertEqual(jwe_data.protected, protected)
         self.assertEqual(jwe_data.unprotected, shared_header)
-        self.assertEqual(jwe_data.decoded['ciphertext'], ciphertext)
+        self.assertEqual(jwe_data.bytes_segments['ciphertext'], ciphertext)
         self.assertEqual(jwe_data.recipients[0].header, recipient1)
         self.assertEqual(jwe_data.recipients[1].header, recipient2)
 
@@ -341,7 +339,7 @@ class TestCompactExamples(TestCase):
             "k": "GawgguFyGrWKav7AX4VKUg"
         }, {"kid": "7"})
         payload = b"Live long and prosper."
-        obj = EncryptionData(protected, payload, shared_header)
+        obj = JSONEncryption(protected, payload, shared_header)
         obj.add_recipient(key1, recipient1)
         obj.add_recipient(key2, recipient2)
         _registry = JWERegistry(algorithms={

@@ -1,6 +1,8 @@
+import typing as t
 from .models import (
     JWEDirectEncryption,
-    EncryptionData,
+    CompactEncryption,
+    JSONEncryption,
     Recipient,
     JWEEncModel,
 )
@@ -10,6 +12,8 @@ from ..util import (
     json_b64encode,
     urlsafe_b64encode,
 )
+
+EncryptionData = t.Union[CompactEncryption, JSONEncryption]
 
 
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None) -> EncryptionData:
@@ -26,7 +30,7 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
 
     # Step 10, Compute the encoded Initialization Vector value
     # BASE64URL(JWE Initialization Vector).
-    obj.encoded["iv"] = urlsafe_b64encode(iv)
+    obj.base64_segments["iv"] = urlsafe_b64encode(iv)
 
     # Step 11, If a "zip" parameter was included, compress the plaintext using
     # the specified compression algorithm and let M be the octet sequence
@@ -46,14 +50,14 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     # present (which can only be the case when using the JWE JSON Serialization),
     # instead let the Additional Authenticated Data encryption parameter be
     # ASCII(Encoded Protected Header || '.' || BASE64URL(JWE AAD)).
-    if not obj.compact and obj.aad:
+    if isinstance(obj, JSONEncryption) and obj.aad:
         aad = aad + b"." + urlsafe_b64encode(obj.aad)
-    obj.encoded["aad"] = aad
+    obj.base64_segments["aad"] = aad
 
     # perform encryption
     ciphertext, tag = enc.encrypt(plaintext, cek, iv, aad)
-    obj.encoded["ciphertext"] = urlsafe_b64encode(ciphertext)
-    obj.encoded["tag"] = urlsafe_b64encode(tag)
+    obj.base64_segments["ciphertext"] = urlsafe_b64encode(ciphertext)
+    obj.base64_segments["tag"] = urlsafe_b64encode(tag)
     return obj
 
 
@@ -61,7 +65,7 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     enc = registry.get_enc(obj.protected["enc"])
 
     aad = json_b64encode(obj.protected, "ascii")
-    if not obj.compact and obj.aad:
+    if isinstance(obj, JSONEncryption) and obj.aad:
         aad = aad + b"." + urlsafe_b64encode(obj.aad)
 
     cek_set = set()
@@ -76,9 +80,9 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry, sender_key=None)
     if len(cek) * 8 != enc.cek_size:
         raise ValueError('Invalid "cek" length')
 
-    ciphertext = obj.decoded["ciphertext"]
-    tag = obj.decoded["tag"]
-    iv = obj.decoded["iv"]
+    ciphertext = obj.bytes_segments["ciphertext"]
+    tag = obj.bytes_segments["tag"]
+    iv = obj.bytes_segments["iv"]
     enc.check_iv(iv)
     msg = enc.decrypt(ciphertext, tag, cek, iv, aad)
     if "zip" in obj.protected:
