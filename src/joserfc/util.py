@@ -58,16 +58,6 @@ def json_b64decode(text, charset="utf-8") -> dict:
     return json.loads(urlsafe_b64decode(to_bytes(text, charset)))
 
 
-def u32be_len_input(s, use_base64=False):
-    if not s:
-        return b"\x00\x00\x00\x00"
-    if use_base64:
-        s = urlsafe_b64decode(to_bytes(s))
-    else:
-        s = to_bytes(s)
-    return struct.pack(">I", len(s)) + s
-
-
 def generate_token(length=30):
     rand = random.SystemRandom()
     chars = string.ascii_letters + string.digits

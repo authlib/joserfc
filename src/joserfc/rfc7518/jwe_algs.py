@@ -1,5 +1,4 @@
 import os
-import struct
 import typing as t
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
@@ -12,10 +11,10 @@ from cryptography.hazmat.primitives.keywrap import (
 from cryptography.hazmat.primitives.ciphers import Cipher
 from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.ciphers.modes import GCM
-from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from .rsa_key import RSAKey
 from .oct_key import OctKey
+from .derive_key import derive_key_for_concat_kdf
 from ..rfc7517.models import CurveKey
 from ..rfc7516.models import (
     JWEDirectEncryption,
@@ -25,8 +24,8 @@ from ..rfc7516.models import (
     JWEEncModel,
     Recipient,
 )
-from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode, u32be_len_input
-from ..registry import Header, HeaderParameter
+from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode
+from ..registry import HeaderParameter
 from ..errors import (
     InvalidKeyLengthError,
     InvalidKeyTypeError,
@@ -96,22 +95,12 @@ class AESAlgModel(JWEKeyWrapping):
         self.key_size = key_size
         self.recommended = recommended
 
-    @staticmethod
-    def check_recipient_key(key) -> OctKey:
-        if isinstance(key, OctKey):
-            return key
-        raise InvalidKeyTypeError()
-
-    def _check_key(self, key):
-        if len(key) * 8 != self.key_size:
-            raise InvalidKeyLengthError(f"A key of size {self.key_size} bits MUST be used")
-
     def wrap_cek(self, cek: bytes, key: bytes) -> bytes:
-        self._check_key(key)
+        self.check_op_key(key)
         return aes_key_wrap(key, cek, default_backend())
 
     def unwrap_cek(self, ek: bytes, key: bytes):
-        self._check_key(key)
+        self.check_op_key(key)
         try:
             cek = aes_key_unwrap(key, ek, default_backend())
         except InvalidUnwrap:
@@ -129,7 +118,7 @@ class AESAlgModel(JWEKeyWrapping):
         return self.unwrap_cek(recipient.encrypted_key, op_key)
 
 
-class AESGCMAlgModel(JWEKeyEncryption):
+class AESGCMAlgModel(JWEKeyWrapping):
     more_header_registry = {
         "iv": HeaderParameter("Initialization vector", "str", True),
         "tag": HeaderParameter("Authentication tag", "str", True),
@@ -140,20 +129,16 @@ class AESGCMAlgModel(JWEKeyEncryption):
         self.description = f"Key wrapping with AES GCM using {key_size}-bit key"
         self.key_size = key_size
 
-    @staticmethod
-    def check_recipient_key(key) -> OctKey:
-        if isinstance(key, OctKey):
-            return key
-        raise InvalidKeyTypeError()
+    def wrap_cek(self, cek: bytes, key: bytes) -> bytes:
+        raise RuntimeError(f"{self.name} can not be used together with Key Agreement")
 
-    def _check_key(self, key):
-        if len(key) * 8 != self.key_size:
-            raise InvalidKeyLengthError(f"A key of size {self.key_size} bits MUST be used")
+    def unwrap_cek(self, ek: bytes, key: bytes):
+        raise RuntimeError(f"{self.name} can not be used together with Key Agreement")
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
         key = self.check_recipient_key(recipient.recipient_key)
         op_key = key.get_op_key("wrapKey")
-        self._check_key(op_key)
+        self.check_op_key(op_key)
 
         #: https://tools.ietf.org/html/rfc7518#section-4.7.1.1
         #: The "iv" (initialization vector) Header Parameter value is the
@@ -172,7 +157,7 @@ class AESGCMAlgModel(JWEKeyEncryption):
     def decrypt_cek(self, recipient: Recipient) -> bytes:
         key = self.check_recipient_key(recipient.recipient_key)
         op_key = key.get_op_key("unwrapKey")
-        self._check_key(op_key)
+        self.check_op_key(op_key)
 
         headers = recipient.headers()
         assert "iv" in headers
@@ -207,34 +192,23 @@ class ECDHESAlgModel(JWEKeyAgreement):
             self.recommended = key_wrapping.recommended
         self.key_wrapping = key_wrapping
 
-    def get_bit_size(self, enc: JWEEncModel) -> int:
-        if self.key_size is None:
-            bit_size = enc.cek_size
-        else:
-            bit_size = self.key_size
-        return bit_size
-
     def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient):
-        bit_size = self.get_bit_size(enc)
         recipient_key: CurveKey = recipient.recipient_key
         ephemeral_key: CurveKey = recipient.ephemeral_key
         pubkey = recipient_key.get_op_key("deriveKey")
         shared_key = ephemeral_key.exchange_shared_key(pubkey)
-        fixed_info = compute_concat_kdf_info(self.direct_mode, recipient.headers(), bit_size)
-        return compute_derived_key_for_concat_kdf(shared_key, bit_size, fixed_info)
+        header = recipient.headers()
+        return derive_key_for_concat_kdf(shared_key, header, enc.cek_size, self.key_size)
 
     def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
-        headers = recipient.headers()
-        assert "epk" in headers
+        header = recipient.headers()
+        assert "epk" in header
 
         recipient_key: CurveKey = self.check_recipient_key(recipient.recipient_key)
-        epk = recipient_key.import_key(headers["epk"])
-
-        bit_size = self.get_bit_size(enc)
+        epk = recipient_key.import_key(header["epk"])
         pubkey = epk.get_op_key("deriveKey")
         shared_key = recipient_key.exchange_shared_key(pubkey)
-        fixed_info = compute_concat_kdf_info(self.direct_mode, headers, bit_size)
-        return compute_derived_key_for_concat_kdf(shared_key, bit_size, fixed_info)
+        return derive_key_for_concat_kdf(shared_key, header, enc.cek_size, self.key_size)
 
 
 class PBES2HSAlgModel(JWEKeyEncryption):
@@ -300,32 +274,6 @@ class PBES2HSAlgModel(JWEKeyEncryption):
         key = self.check_recipient_key(recipient.recipient_key)
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), p2s, p2c)
         return self.key_wrapping.unwrap_cek(recipient.encrypted_key, kek)
-
-
-def compute_concat_kdf_info(direct_mode: bool, header: Header, bit_size: int):
-    # AlgorithmID
-    if direct_mode:
-        alg_id = u32be_len_input(header["enc"])
-    else:
-        alg_id = u32be_len_input(header["alg"])
-
-    # PartyUInfo
-    apu_info = u32be_len_input(header.get("apu"), True)
-    # PartyVInfo
-    apv_info = u32be_len_input(header.get("apv"), True)
-    # SuppPubInfo
-    pub_info = struct.pack(">I", bit_size)
-    return alg_id + apu_info + apv_info + pub_info
-
-
-def compute_derived_key_for_concat_kdf(shared_key: bytes, bit_size: int, otherinfo: bytes):
-    ckdf = ConcatKDFHash(
-        algorithm=hashes.SHA256(),
-        length=bit_size // 8,
-        otherinfo=otherinfo,
-        backend=default_backend(),
-    )
-    return ckdf.derive(shared_key)
 
 
 A128KW = AESAlgModel(128, True)  # A128KW, Recommended

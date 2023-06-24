@@ -1,5 +1,7 @@
 :description: All available algorithms for JWS, JWE, JWK, JWT.
 
+.. _jwa:
+
 Algorithms
 ==========
 
@@ -38,6 +40,9 @@ Default "alg" values
 
 Default "enc" values
 ~~~~~~~~~~~~~~~~~~~~
+
+
+.. _chacha20:
 
 C20P and XC20P
 ~~~~~~~~~~~~~~
@@ -93,6 +98,8 @@ Use a custom ``registry`` in :meth:`encrypt_compact`, :meth:`decrypt_compact`,
         public_key=key,
         registry=registry,
     )
+
+.. _ecdh1pu:
 
 ECDH-1PU algorithms
 ~~~~~~~~~~~~~~~~~~~

@@ -2,8 +2,9 @@ import os
 import typing as t
 from abc import ABCMeta, abstractmethod
 from ..rfc7517.models import Key, CurveKey
+from ..rfc7518.oct_key import OctKey
 from ..registry import Header, HeaderRegistryDict
-from ..errors import InvalidKeyTypeError
+from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
 
 
 class Recipient:
@@ -184,6 +185,10 @@ class JWEDirectEncryption(KeyManagement, metaclass=ABCMeta):
 
 
 class JWEKeyEncryption(KeyManagement, metaclass=ABCMeta):
+    @property
+    def direct_mode(self) -> bool:
+        return False
+
     @abstractmethod
     def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
         pass
@@ -194,6 +199,20 @@ class JWEKeyEncryption(KeyManagement, metaclass=ABCMeta):
 
 
 class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
+    @property
+    def direct_mode(self) -> bool:
+        return False
+
+    @staticmethod
+    def check_recipient_key(key) -> OctKey:
+        if isinstance(key, OctKey):
+            return key
+        raise InvalidKeyTypeError()
+
+    def check_op_key(self, op_key: bytes):
+        if len(op_key) * 8 != self.key_size:
+            raise InvalidKeyLengthError(f"A key of size {self.key_size} bits MUST be used")
+
     @abstractmethod
     def wrap_cek(self, cek: bytes, key: bytes) -> bytes:
         pass

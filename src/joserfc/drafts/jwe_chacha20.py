@@ -3,6 +3,7 @@ from ..rfc7516.models import JWEEncModel
 
 
 class ChaCha20EncModel(JWEEncModel):
+    # https://datatracker.ietf.org/doc/html/draft-amringer-jose-chacha-02#section-4
     cek_size = 256
     recommended: bool = False
 
@@ -24,6 +25,7 @@ class ChaCha20EncModel(JWEEncModel):
         chacha = ChaCha20_Poly1305.new(key=cek, nonce=iv)
         chacha.update(aad)
         return chacha.decrypt_and_verify(ciphertext, tag)
+
 
 C20P = ChaCha20EncModel("C20P", "ChaCha20-Poly1305", 96)
 XC20P = ChaCha20EncModel("XC20P", "XChaCha20-Poly1305", 192)
