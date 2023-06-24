@@ -10,8 +10,7 @@ class TestJWECompact(TestCase):
     def run_case(self, alg, enc, private_key, public_key):
         protected = {"alg": alg, "enc": enc}
         payload = b'hello'
-        algorithms = {"alg": [alg], "enc": [enc]}
-        registry = JWERegistry(algorithms=algorithms)
+        registry = JWERegistry(algorithms=[alg, enc])
         result = encrypt_compact(
             protected, payload, public_key,
             registry=registry,

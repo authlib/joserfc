@@ -10,12 +10,7 @@ from joserfc.drafts.jwe_chacha20 import JWE_ENC_MODELS, XC20P
 
 class TestChaCha20(TestCase):
     def setUp(self):
-        registry = JWERegistry(
-            algorithms={
-                "alg": ["dir"],
-                "enc": ["C20P", "XC20P"],
-            }
-        )
+        registry = JWERegistry(algorithms=["dir", "C20P", "XC20P"])
         for model in JWE_ENC_MODELS:
             registry.algorithms["enc"][model.name] = model
         self.registry = registry

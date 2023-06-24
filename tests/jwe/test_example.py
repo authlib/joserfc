@@ -210,7 +210,7 @@ class TestCompactExamples(TestCase):
 
         # RSA1_5 is not allowed by default
         self.assertRaises(ValueError, decrypt_compact, expected, key)
-        _registry = JWERegistry(algorithms={'alg': ['RSA1_5'], 'enc': ['A128CBC-HS256']})
+        _registry = JWERegistry(algorithms=['RSA1_5','A128CBC-HS256'])
         jwe_data = decrypt_compact(expected, key, registry=_registry)
         self.assertEqual(jwe_data.plaintext, plaintext)
 
@@ -313,10 +313,7 @@ class TestCompactExamples(TestCase):
             "tag": "Mz-VPPyU4RlcuYv1IwIvzw"
         }
 
-        _registry = JWERegistry(algorithms={
-            'alg': ['RSA1_5', 'A128KW'],
-            'enc': ['A128CBC-HS256']
-        })
+        _registry = JWERegistry(algorithms=['RSA1_5', 'A128KW', 'A128CBC-HS256'])
         jwe_data = decrypt_json(expected, keys, registry=_registry)
         self.assertEqual(jwe_data.plaintext, plaintext)
         self.assertEqual(jwe_data.protected, protected)
@@ -342,10 +339,7 @@ class TestCompactExamples(TestCase):
         obj = JSONEncryption(protected, payload, shared_header)
         obj.add_recipient(key1, recipient1)
         obj.add_recipient(key2, recipient2)
-        _registry = JWERegistry(algorithms={
-            'alg': ['RSA1_5', 'A128KW'],
-            'enc': ['A128CBC-HS256']
-        })
+        _registry = JWERegistry(algorithms=['RSA1_5', 'A128KW', 'A128CBC-HS256'])
         perform_encrypt(obj, _registry)
         expected = represent_json(obj)
 

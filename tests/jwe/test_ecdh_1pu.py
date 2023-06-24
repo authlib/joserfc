@@ -17,10 +17,7 @@ for model in JWE_ALG_MODELS:
     JWERegistry.register(model)
 
 ecdh_registry = JWERegistry(
-    algorithms={
-        "alg": [m.name for m in JWE_ALG_MODELS],
-        "enc": [enc.name for enc in JWE_ENC_MODELS],
-    }
+    algorithms=[m.name for m in JWE_ALG_MODELS] + [enc.name for enc in JWE_ENC_MODELS]
 )
 
 
