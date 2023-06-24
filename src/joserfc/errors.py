@@ -5,9 +5,9 @@ class JoseError(Exception):
     """Base Exception for all errors in joserfc."""
 
     #: short-string error code
-    error: str = ""
+    error = ""
     #: long-string to describe this error
-    description: str = ""
+    description = ""
 
     def __init__(self, description: Optional[str] = None, error: Optional[str] = None):
         if error is not None:
@@ -23,53 +23,58 @@ class JoseError(Exception):
 
 
 class DecodeError(JoseError):
-    error: str = "decode_error"
+    error = "decode_error"
 
 
 class InvalidKeyLengthError(JoseError):
-    error: str = "invalid_key_length"
+    error = "invalid_key_length"
 
 
 class InvalidKeyTypeError(JoseError):
-    error: str = "invalid_key_type"
+    error = "invalid_key_type"
+
+
+class InvalidEncryptedKeyError(JoseError):
+    error = "invalid_encrypted_key"
+    description = "JWE Encrypted Key value SHOULD be an empty octet sequence"
 
 
 class MissingAlgorithmError(JoseError):
-    error: str = "missing_algorithm"
-    description: str = 'Missing "alg" value in header'
+    error = "missing_algorithm"
+    description = 'Missing "alg" value in header'
 
 
 class MissingEncryptionError(JoseError):
-    error: str = "missing_encryption"
-    description: str = 'Missing "enc" value in header'
+    error = "missing_encryption"
+    description = 'Missing "enc" value in header'
 
 
 class BadSignatureError(JoseError):
     """This error is designed for JWS/JWT. It is raised when signature
     does not match.
     """
-    error: str = "bad_signature"
+    error = "bad_signature"
 
 
 class InvalidEncryptionAlgorithmError(JoseError):
     """This error is designed for JWE. It is raised when "enc" value
     does not work together with "alg" value.
     """
-    error: str = 'invalid_encryption_algorithm'
+    error = 'invalid_encryption_algorithm'
 
 
 class UnwrapError(JoseError):
-    error: str = "unwrap_error"
-    description: str = "Unwrap AES key failed"
+    error = "unwrap_error"
+    description = "Unwrap AES key failed"
 
 
 class InvalidCEKLengthError(JoseError):
-    error: str = "invalid_cek_length"
-    description: str = 'Invalid "cek" length'
+    error = "invalid_cek_length"
+    description = 'Invalid "cek" length'
 
 
 class InvalidClaimError(JoseError):
-    error: str = "invalid_claim"
+    error = "invalid_claim"
 
     def __init__(self, claim):
         description = f'Invalid claim: "{claim}"'
@@ -77,7 +82,7 @@ class InvalidClaimError(JoseError):
 
 
 class MissingClaimError(JoseError):
-    error: str = "missing_claim"
+    error = "missing_claim"
 
     def __init__(self, claim):
         description = f'Missing claim: "{claim}"'
@@ -85,7 +90,7 @@ class MissingClaimError(JoseError):
 
 
 class InsecureClaimError(JoseError):
-    error: str = "insecure_claim"
+    error = "insecure_claim"
 
     def __init__(self, claim):
         description = f'Insecure claim "{claim}"'
@@ -93,19 +98,19 @@ class InsecureClaimError(JoseError):
 
 
 class ExpiredTokenError(JoseError):
-    error: str = "expired_token"
-    description: str = "The token is expired"
+    error = "expired_token"
+    description = "The token is expired"
 
 
 class InvalidTokenError(JoseError):
-    error: str = "invalid_token"
-    description: str = "The token is not valid yet"
+    error = "invalid_token"
+    description = "The token is not valid yet"
 
 
 class InvalidTypeError(JoseError):
-    error: str = "invalid_type"
-    description: str = 'The "typ" value in header is invalid'
+    error = "invalid_type"
+    description = 'The "typ" value in header is invalid'
 
 
 class InvalidPayloadError(JoseError):
-    error: str = "invalid_payload"
+    error = "invalid_payload"

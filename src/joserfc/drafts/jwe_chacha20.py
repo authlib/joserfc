@@ -9,7 +9,7 @@ class ChaCha20EncModel(JWEEncModel):
     def __init__(self, name: str, description: str, iv_size: int):
         self.name = name
         self.description = description
-        self.IV_SIZE = iv_size
+        self.iv_size = iv_size
 
     def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
         """Key Encryption with AEAD_CHACHA20_POLY1305

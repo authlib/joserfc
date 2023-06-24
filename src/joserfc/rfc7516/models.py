@@ -1,8 +1,9 @@
 import os
 import typing as t
 from abc import ABCMeta, abstractmethod
-from ..rfc7517.models import Key
+from ..rfc7517.models import Key, CurveKey
 from ..registry import Header, HeaderRegistryDict
+from ..errors import InvalidKeyTypeError
 
 
 class Recipient:
@@ -10,12 +11,13 @@ class Recipient:
             self,
             parent: t.Union["CompactEncryption", "JSONEncryption"],
             header: t.Optional[Header] = None,
-            key: t.Optional[Key]=None):
+            recipient_key: t.Optional[Key]=None):
         self.__parent = parent
         self.header = header
-        self.recipient_key = key
+        self.recipient_key = recipient_key
+        self.sender_key: t.Optional[Key] = None
         self.encrypted_key: t.Optional[bytes] = None
-        self.ephemeral_key = None
+        self.ephemeral_key: t.Optional[CurveKey] = None
         self.segments = {}  # store temporary segments
 
     def headers(self) -> Header:
@@ -83,17 +85,17 @@ class JWEEncModel(object, metaclass=ABCMeta):
     algorithm_type = "JWE"
     algorithm_location = "enc"
 
-    IV_SIZE: int
+    iv_size: int
     cek_size: int
 
     def generate_cek(self) -> bytes:
         return os.urandom(self.cek_size // 8)
 
     def generate_iv(self) -> bytes:
-        return os.urandom(self.IV_SIZE // 8)
+        return os.urandom(self.iv_size // 8)
 
     def check_iv(self, iv: bytes) -> bytes:
-        if len(iv) * 8 != self.IV_SIZE:
+        if len(iv) * 8 != self.iv_size:
             raise ValueError('Invalid "iv" size')
         return iv
 
@@ -136,10 +138,17 @@ class KeyManagement:
     def direct_mode(self) -> bool:
         return self.key_size is None
 
+    @staticmethod
+    def check_recipient_key(key) -> Key:
+        raise NotImplementedError()
+
+    def prepare_recipient_header(self, recipient: Recipient):
+        raise NotImplementedError()
+
 
 class JWEDirectEncryption(KeyManagement, metaclass=ABCMeta):
     @abstractmethod
-    def derive_cek(self, size: int, recipient: Recipient) -> bytes:
+    def compute_cek(self, size: int, recipient: Recipient) -> bytes:
         pass
 
 
@@ -172,7 +181,21 @@ class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
 
 
 class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
+    tag_aware = False
     key_agreement = True
+    key_wrapping: JWEKeyWrapping
+
+    @staticmethod
+    def check_recipient_key(key) -> CurveKey:
+        if isinstance(key, CurveKey):
+            return key
+        raise InvalidKeyTypeError()
+
+    def prepare_ephemeral_key(self, recipient: Recipient):
+        recipient_key = self.check_recipient_key(recipient.recipient_key)
+        if recipient.ephemeral_key is None:
+            recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
+        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
 
     @abstractmethod
     def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
@@ -182,13 +205,17 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
     def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
         pass
 
-    @abstractmethod
     def wrap_cek_with_auk(self, cek: bytes, key: bytes) -> bytes:
-        pass
+        return self.key_wrapping.wrap_cek(cek, key)
 
-    @abstractmethod
     def unwrap_cek_with_auk(self, ek: bytes, key: bytes) -> bytes:
-        pass
+        return self.key_wrapping.unwrap_cek(ek, key)
+
+    def encrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient, tag: bytes) -> bytes:
+        raise NotImplementedError()
+
+    def decrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient, tag: bytes) -> bytes:
+        raise NotImplementedError()
 
 
 JWEAlgModel = t.Union[JWEKeyEncryption, JWEKeyWrapping, JWEKeyAgreement, JWEDirectEncryption]

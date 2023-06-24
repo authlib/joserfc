@@ -21,7 +21,7 @@ from .util import encode_int
 class CBCHS2EncModel(JWEEncModel):
     # The IV used is a 128-bit value generated randomly or
     # pseudo-randomly for use in the cipher.
-    IV_SIZE = 128
+    iv_size = 128
 
     def __init__(self, key_size: int, hash_type: int):
         self.name = f"A{key_size}CBC-HS{hash_type}"
@@ -76,7 +76,7 @@ class CBCHS2EncModel(JWEEncModel):
 class GCMEncModel(JWEEncModel):
     # Use of an IV of size 96 bits is REQUIRED with this algorithm.
     # https://tools.ietf.org/html/rfc7518#section-5.3
-    IV_SIZE = 96
+    iv_size = 96
 
     def __init__(self, key_size: int):
         self.name = f"A{key_size}GCM"

@@ -6,7 +6,6 @@ from ..rfc7516.models import (
     JWEEncModel
 )
 from ..rfc7517.models import CurveKey
-from ..rfc7518.oct_key import OctKey
 from ..rfc7518.jwe_algs import (
     compute_concat_kdf_info,
     compute_derived_key_for_concat_kdf,
@@ -31,8 +30,8 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         "apv": HeaderParameter("Agreement PartyVInfo", "str"),
         "skid": HeaderParameter("Sender Key ID", "str"),
     }
+    tag_aware = True
     recommended: bool = False
-    use_sender_key: bool = True
 
     def __init__(self, key_wrapping: t.Optional[JWEKeyWrapping]=None):
         if key_wrapping is None:
@@ -60,69 +59,45 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
             bit_size = self.key_size
         return bit_size
 
-    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey) -> bytes:
-        recipient_key: CurveKey = recipient.recipient_key
-        if recipient.ephemeral_key is None:
-            recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
-        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
-
-        recipient_pubkey = recipient.recipient_key.get_op_key("deriveKey")
-        sender_shared_key = sender_key.exchange_shared_key(recipient_pubkey)
-        ephemeral_shared_key = recipient.ephemeral_key.exchange_shared_key(recipient_pubkey)
-        shared_key = ephemeral_shared_key + sender_shared_key
-
-        bit_size = self.get_bit_size(enc)
-        tag = self.get_recipient_tag(recipient)
-        dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size, tag)
-
-    def get_recipient_tag(self, recipient: Recipient) -> t.Optional[bytes]:
-        if self.wrapped_key_mode:
-            return recipient.parent.bytes_segments.get("tag")
-
     def compute_derived_key(self, shared_key: bytes, header: Header, bit_size: int, tag: t.Optional[bytes]=None):
-        fixed_info = compute_concat_kdf_info(self.direct_key_mode, header, bit_size)
+        fixed_info = compute_concat_kdf_info(self.direct_mode, header, bit_size)
         if tag:
             cctag = u32be_len_input(tag)
             fixed_info += cctag
         return compute_derived_key_for_concat_kdf(shared_key, bit_size, fixed_info)
 
-    def prepare_recipient_header(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey):
+    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
         self._check_enc(enc)
-        recipient_key: CurveKey = recipient.recipient_key
+        return self.__encrypt_agreed_upon_key(enc, recipient, None)
 
-        if recipient.ephemeral_key is None:
-            recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
-        recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
+    def encrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient, tag: bytes) -> bytes:
+        self._check_enc(enc)
+        return self.__encrypt_agreed_upon_key(enc, recipient, tag)
 
-    def encrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey) -> bytes:
-        if not self.wrapped_key_mode:
-            self.prepare_recipient_header(enc, recipient, sender_key)
+    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
+        return self.__decrypt_agreed_upon_key(enc, recipient, None)
 
+    def decrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient, tag: bytes) -> bytes:
+        return self.__decrypt_agreed_upon_key(enc, recipient, tag)
+
+    def __encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient, tag: t.Optional[bytes]) -> bytes:
+        sender_key: CurveKey = recipient.sender_key
         recipient_pubkey = recipient.recipient_key.get_op_key("deriveKey")
         sender_shared_key = sender_key.exchange_shared_key(recipient_pubkey)
         ephemeral_shared_key = recipient.ephemeral_key.exchange_shared_key(recipient_pubkey)
         shared_key = ephemeral_shared_key + sender_shared_key
-
         bit_size = self.get_bit_size(enc)
-        tag = self.get_recipient_tag(recipient)
-        dk = self.compute_derived_key(shared_key, recipient.headers(), bit_size, tag)
+        return self.compute_derived_key(shared_key, recipient.headers(), bit_size, tag)
 
-        if self.key_wrapping:
-            kek = OctKey.import_key(dk)
-            return self.key_wrapping.encrypt_recipient(enc, recipient, kek)
-
-        obj = recipient.parent
-        assert obj.cek is None
-        obj.cek = dk
-        return b""
-
-    def decrypt_recipient(self, enc: JWEEncModel, recipient: Recipient, sender_key: CurveKey) -> bytes:
+    def __decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient, tag: t.Optional[bytes]) -> bytes:
         self._check_enc(enc)
 
         headers = recipient.headers()
         assert "epk" in headers
 
         recipient_key: CurveKey = recipient.recipient_key
+        sender_key: CurveKey = recipient.sender_key
+
         ephemeral_key = recipient_key.import_key(headers["epk"])
         ephemeral_pubkey = ephemeral_key.get_op_key("deriveKey")
         sender_pubkey = sender_key.get_op_key("deriveKey")
@@ -132,12 +107,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         shared_key = ephemeral_shared_key + sender_shared_key
 
         bit_size = self.get_bit_size(enc)
-        tag = self.get_recipient_tag(recipient)
-        dk = self.compute_derived_key(shared_key, headers, bit_size, tag)
-
-        if self.key_wrapping:
-            return self.key_wrapping.decrypt_recipient(enc, recipient, OctKey.import_key(dk))
-        return dk
+        return self.compute_derived_key(shared_key, headers, bit_size, tag)
 
 
 JWE_ALG_MODELS = [
