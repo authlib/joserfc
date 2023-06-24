@@ -18,13 +18,13 @@ class TestChaCha20(TestCase):
     def run_test_dir(self, enc: str):
         key = OctKey.generate_key(256)
         protected = {"alg": "dir", "enc": enc}
-        encrypted_text = encrypt_compact(protected, b'hello', key, self.registry)
+        encrypted_text = encrypt_compact(protected, b'hello', key, registry=self.registry)
         self.assertEqual(encrypted_text.count(b"."), 4)
-        obj = decrypt_compact(encrypted_text, key, self.registry)
+        obj = decrypt_compact(encrypted_text, key, registry=self.registry)
         self.assertEqual(obj.plaintext, b'hello')
 
         key2 = OctKey.generate_key(256)
-        self.assertRaises(ValueError, decrypt_compact, encrypted_text, key2, self.registry)
+        self.assertRaises(ValueError, decrypt_compact, encrypted_text, key2, registry=self.registry)
 
     def test_dir_c20p(self):
         self.run_test_dir("C20P")

@@ -57,10 +57,13 @@ def encrypt_compact(
         protected: Header,
         plaintext: bytes,
         public_key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[CurveKey] = None) -> bytes:
 
-    if registry is None:
+    if algorithms:
+        registry = JWERegistry(algorithms=algorithms)
+    elif registry is None:
         registry = default_registry
 
     obj = CompactEncryption(protected, plaintext)
@@ -76,12 +79,16 @@ def encrypt_compact(
 def decrypt_compact(
         value: t.AnyStr,
         private_key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[CurveKey] = None) -> CompactEncryption:
 
     value = to_bytes(value)
     obj = extract_compact(value)
-    if registry is None:
+
+    if algorithms:
+        registry = JWERegistry(algorithms=algorithms)
+    elif registry is None:
         registry = default_registry
 
     recipient = obj.recipient
@@ -93,9 +100,13 @@ def decrypt_compact(
 def encrypt_json(
         obj: JSONEncryption,
         public_key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> JSONSerialization:
-    if registry is None:
+
+    if algorithms:
+        registry = JWERegistry(algorithms=algorithms)
+    elif registry is None:
         registry = default_registry
 
     for recipient in obj.recipients:
@@ -111,10 +122,15 @@ def encrypt_json(
 def decrypt_json(
         data: JSONSerialization,
         private_key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> JSONEncryption:
+
     obj = extract_json(data)
-    if registry is None:
+
+    if algorithms:
+        registry = JWERegistry(algorithms=algorithms)
+    elif registry is None:
         registry = default_registry
 
     for recipient in obj.recipients:

@@ -26,8 +26,8 @@ class TestJWT(TestCase):
         claims_requests = jwt.JWTClaimsRequests(iss={"essential": True})
         registry = jwt.JWTRegistry(claims_requests=claims_requests)
         data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, "secret")
-        self.assertRaises(MissingClaimError, jwt.decode, data, "secret", registry)
+        self.assertRaises(MissingClaimError, jwt.decode, data, "secret", registry=registry)
 
         data = jwt.encode({"alg": "HS256"}, {"iss": "a"}, "secret")
-        obj = jwt.decode(data, "secret", registry)
+        obj = jwt.decode(data, "secret", registry=registry)
         self.assertEqual(obj.claims["iss"], "a")

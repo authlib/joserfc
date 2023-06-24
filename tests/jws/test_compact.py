@@ -18,12 +18,12 @@ class TestCompact(TestFixture):
         header = {'alg': alg}
         payload = to_bytes(case['payload'])
         registry = JWSRegistry(algorithms=[alg])
-        value = serialize_compact(header, payload, private_key, registry)
+        value = serialize_compact(header, payload, private_key, registry=registry)
 
         if expect:
             self.assertEqual(value, expect)
 
-        obj = deserialize_compact(value, public_key, registry)
+        obj = deserialize_compact(value, public_key, registry=registry)
         self.assertEqual(obj.payload, payload)
 
     def test_registry_is_none(self):
@@ -73,7 +73,7 @@ class TestCompact(TestFixture):
         self.assertRaises(ValueError, serialize_compact, header, b"hi", "secret")
 
         registry = JWSRegistry(strict_check_header=False)
-        serialize_compact(header, b"hi", "secret", registry)
+        serialize_compact(header, b"hi", "secret", registry=registry)
 
 
 def add_oct_tests():

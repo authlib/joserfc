@@ -1,4 +1,4 @@
-from typing import Optional, AnyStr
+from typing import Optional, List, AnyStr
 from .rfc7515.compact import extract_compact
 from .rfc7519.claims import Claims, convert_claims, check_sensitive_data
 from .rfc7519.validators import ClaimsOption, JWTClaimsRequests
@@ -40,12 +40,14 @@ def encode(
         header: Header,
         claims: Claims,
         key: KeyFlexible,
+        algorithms: Optional[List[str]] = None,
         registry: Optional[JWTRegistry] = None) -> str:
     """Encode a JSON Web Token with the given header, and claims.
 
     :param header: A dict of the JWT header
     :param claims: A dict of the JWT claims to be encoded
     :param key: key used to sign the signature
+    :param algorithms: a list of allowed algorithms
     :param registry: a JWTRegistry to use
     """
     # add ``typ`` in header
@@ -53,7 +55,7 @@ def encode(
     payload = convert_claims(claims)
     if registry is None:
         registry = default_registry
-    result = serialize_compact(header, payload, key, registry)
+    result = serialize_compact(header, payload, key, algorithms, registry)
     return result.decode("utf-8")
 
 
@@ -68,13 +70,18 @@ def extract(value: AnyStr) -> Token:
     return token
 
 
-def decode(value: AnyStr, key: KeyFlexible, registry: Optional[JWTRegistry] = None) -> Token:
+def decode(
+        value: AnyStr,
+        key: KeyFlexible,
+        algorithms: Optional[List[str]] = None,
+        registry: Optional[JWTRegistry] = None) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests. This method is a combination of the
     :function:`extract` and :function:`validate`.
 
     :param value: text of the JWT
     :param key: key used to verify the signature
+    :param algorithms: a list of allowed algorithms
     :param registry: a JWTRegistry to use
     :raise: BadSignatureError
     """
@@ -92,5 +99,5 @@ def decode(value: AnyStr, key: KeyFlexible, registry: Optional[JWTRegistry] = No
         raise InvalidTypeError()
 
     registry.check_claims(token.claims)
-    validate_compact(obj, key, registry)
+    validate_compact(obj, key, algorithms=algorithms, registry=registry)
     return token

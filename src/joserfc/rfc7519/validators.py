@@ -13,7 +13,7 @@ ClaimsOption = TypedDict("ClaimsOption", {
     "essential": bool,
     "value": Union[str, int],
     "values": List[Union[str, int]],
-})
+}, total=False)
 
 
 class ClaimsRequests:
