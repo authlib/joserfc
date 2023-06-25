@@ -6,7 +6,6 @@ version = "v1"
 language = "en"
 
 html_title = "JOSE"
-html_baseurl = "https://jose.authlib.org/"
 
 templates_path = ["_templates"]
 html_static_path = ["_static"]
