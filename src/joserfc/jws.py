@@ -67,7 +67,7 @@ __register()
 def serialize_compact(
         header: Header,
         payload: bytes,
-        key: KeyFlexible,
+        private_key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
         registry: Optional[JWSRegistry] = None) -> bytes:
     """Generate a JWS Compact Serialization. The JWS Compact Serialization
@@ -82,7 +82,7 @@ def serialize_compact(
 
     :param header: protected header part of the JWS, in dict
     :param payload: payload data of the JWS, in bytes
-    :param key: a flexible private key to sign the signature
+    :param private_key: a flexible private key to sign the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
     :return: JWS in bytes
@@ -97,20 +97,20 @@ def serialize_compact(
     registry.check_header(header)
     obj = CompactSignature(header, payload)
     alg: JWSAlgModel = registry.get_alg(header["alg"])
-    key: Key = guess_key(key, obj)
+    key: Key = guess_key(private_key, obj)
     return sign_compact(obj, alg, key)
 
 
 def validate_compact(
         obj: CompactSignature,
-        key: KeyFlexible,
+        public_key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
         registry: Optional[JWSRegistry] = None):
     """Validate the JWS Compact Serialization with the given key.
     This method is usually used together with ``extract_compact``.
 
     :param obj: object of the JWS Compact Serialization
-    :param key: a flexible public key to verify the signature
+    :param public_key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
     :raise: ValueError or BadSignatureError
@@ -122,14 +122,14 @@ def validate_compact(
 
     headers = obj.headers()
     alg: JWSAlgModel = registry.get_alg(headers["alg"])
-    key: Key = guess_key(key, obj)
+    key: Key = guess_key(public_key, obj)
     if not verify_compact(obj, alg, key):
         raise BadSignatureError()
 
 
 def deserialize_compact(
         value: AnyStr,
-        key: KeyFlexible,
+        public_key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
         registry: Optional[JWSRegistry] = None) -> CompactSignature:
     """Extract and validate the JWS Compact Serialization (in string, or bytes)
@@ -146,20 +146,20 @@ def deserialize_compact(
         dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
 
     :param value: a string (or bytes) of the JWS Compact Serialization
-    :param key: a flexible public key to verify the signature
+    :param public_key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
     :return: object of the ``CompactSignature``
     """
     obj = extract_compact(to_bytes(value))
-    validate_compact(obj, key, algorithms, registry)
+    validate_compact(obj, public_key, algorithms, registry)
     return obj
 
 
 def serialize_json(
         members: Union[HeaderDict, List[HeaderDict]],
         payload: bytes,
-        key: KeyFlexible,
+        private_key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
         registry: Optional[JWSRegistry] = None) -> JSONSerialization:
     """Generate a JWS JSON Serialization (in dict). The JWS JSON Serialization
@@ -207,20 +207,20 @@ def serialize_json(
     obj.segments["payload"] = urlsafe_b64encode(payload)
     obj.flatten = flatten
 
-    find_key = lambda d: guess_key(key, d)
+    find_key = lambda d: guess_key(private_key, d)
     return sign_json(obj, registry.get_alg, find_key)
 
 
 def validate_json(
         obj: JSONSignature,
-        key: KeyFlexible,
+        public_key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
         registry: Optional[JWSRegistry] = None):
     """Validate the JWS JSON Serialization with the given key.
     This method is usually used together with ``extract_json``.
 
     :param obj: object of the JWS JSON Serialization
-    :param key: a flexible public key to verify the signature
+    :param public_key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
     :raise: ValueError or BadSignatureError
@@ -229,24 +229,24 @@ def validate_json(
         registry = JWSRegistry(algorithms=algorithms)
     elif registry is None:
         registry = default_registry
-    find_key = lambda d: guess_key(key, d)
+    find_key = lambda d: guess_key(public_key, d)
     if not verify_json(obj, registry.get_alg, find_key):
         raise BadSignatureError()
 
 
 def deserialize_json(
         value: JSONSerialization,
-        key: KeyFlexible,
+        public_key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
         registry: Optional[JWSRegistry] = None) -> JSONSignature:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a dict of the JSON signature
-    :param key: a flexible public key to verify the signature
+    :param public_key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
     :return: object of the SignatureData
     """
     obj = extract_json(value)
-    validate_json(obj, key, algorithms, registry)
+    validate_json(obj, public_key, algorithms, registry)
     return obj
