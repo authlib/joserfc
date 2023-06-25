@@ -16,12 +16,32 @@ pip install
 ``joserfc`` is conveniently available as a Python package on PyPI and can be easily
 installed using pip.
 
-.. code-block:: shell
+.. tab-set::
 
-    pip install joserfc
+    .. tab-item:: General
+
+        .. code-block:: shell
+
+            pip install joserfc
+
+    .. tab-item:: C20P and XC20P
+
+        .. code-block:: shell
+
+            pip install joserfc pycryptodome
+
+.. important::
+
+    To use :ref:`chacha20` algorithms, developers have to install the ``PyCryptodome`` module.
+
+Dependency management
+---------------------
+
+There are several ways to manage the dependencies of your project, here are some examples
+to track ``joserfc`` in your project.
 
 pyproject.toml
---------------
+~~~~~~~~~~~~~~
 
 If you're using ``pyproject.toml`` for your Python project, you can add ``joserfc``
 to ``project.dependencies``.
@@ -35,7 +55,7 @@ to ``project.dependencies``.
     ]
 
 Pipfile
--------
+~~~~~~~
 
 If you prefer **pipenv**, you would like to track dependencies in ``Pipfile``, then
 add ``joserfc`` to ``[packages]`` section.
@@ -47,7 +67,7 @@ add ``joserfc`` to ``[packages]`` section.
     joserfc = "*"
 
 requirements.txt
-----------------
+~~~~~~~~~~~~~~~~
 
 If you're tracking dependencies in ``requirements.txt``, you can add ``joserfc`` to
 the requirements file.

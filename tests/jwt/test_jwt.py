@@ -8,7 +8,7 @@ from joserfc.errors import (
 
 
 class TestJWT(TestCase):
-    def test_invalid_payboad(self):
+    def test_invalid_payload(self):
         data = jws.serialize_compact({"alg": "HS256"}, b"hello", "secret")
         self.assertRaises(InvalidPayloadError, jwt.extract, data)
         self.assertRaises(InvalidPayloadError, jwt.decode, data, "secret")

@@ -5,14 +5,12 @@
 Algorithms
 ==========
 
-JWS and JWT
------------
+This documentation describes the algorithms to be used with
+JSON Web Signature (JWS), JSON Web Encryption (JWE), and
+JSON Web Key (JWK).
 
-JSON Web Token (JWT) is a kind of JSON Web Signature (JWS),
-they share the same algorithms. Here lists all the available
-algorithms for JWS and JWT.
-
-- HS256
+JSON Web Signature
+------------------
 
 Recommended algorithms
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -48,7 +46,7 @@ C20P and XC20P
 ~~~~~~~~~~~~~~
 
 ``C20P`` and ``XC20P`` algorithms are still in drafts, they are not registered by default.
-To use ``C20P`` and ``XC20P``, developers have to install the ``PyCryptodome`` module.XC20P
+To use ``C20P`` and ``XC20P``, developers have to install the ``PyCryptodome`` module.
 
 .. code-block:: shell
 

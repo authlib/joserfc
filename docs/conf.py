@@ -10,6 +10,9 @@ html_baseurl = "https://jose.authlib.org/"
 
 templates_path = ["_templates"]
 html_static_path = ["_static"]
+html_css_files = [
+  'custom.css',
+]
 html_theme = "shibuya"
 
 html_copy_source = False
@@ -26,12 +29,21 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }
 
+html_favicon = "_static/icon.svg"
+
 html_theme_options = {
+    "light_logo": "_static/light-logo.svg",
+    "dark_logo": "_static/dark-logo.svg",
+    "light_css_variables": {
+        "--sy-rc-theme": "62,127,203",
+    },
+    "dark_css_variables": {
+        "--sy-rc-theme": "102,173,255",
+    },
     "twitter_site": "authlib",
     "twitter_creator": "lepture",
     "twitter_url": "https://twitter.com/authlib",
     "github_url": "https://github.com/authlib/joserfc",
-
     "nav_links": [
         {
             "title": "Projects",
@@ -42,12 +54,17 @@ html_theme_options = {
                     "summary": "OAuth, JOSE, OpenID, etc."
                 },
                 {
+                    "title": "JOSE RFC",
+                    "url": "https://jose.authlib.org/",
+                    "summary": "JWS, JWE, JWK, and JWT."
+                },
+                {
                     "title": "OTP Auth",
                     "url": "https://otp.authlib.org/",
                     "summary": "One time password, HOTP/TOTP.",
                 },
             ]
         },
-        {"title": "Sponsor me", "url": "https://github.com/sponsors/lepture"}
+        {"title": "Sponsor me", "url": "https://github.com/sponsors/lepture"},
     ]
 }
