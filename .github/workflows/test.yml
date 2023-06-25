@@ -37,14 +37,13 @@ jobs:
     - name: Install dependencies
       run: pip install -r tests/requirements.txt
 
-    - name: Run test
-      run: coverage run -m pytest tests
-      env:
-        COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}
-        CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}
+    - name: Report coverage
+      run: pytest --cov=joserfc --cov-report=xml
 
-    - name: Store coverage files
-      uses: actions/upload-artifact@v3
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
       with:
-        name: coverage
-        path: coverage
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        flags: unittests
+        name: GitHub
