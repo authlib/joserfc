@@ -9,6 +9,11 @@ from ..registry import (
 )
 from ..util import to_bytes
 from ..rfc7638 import thumbprint
+from ..errors import (
+    UnsupportedKeyUseError,
+    UnsupportedKeyAlgorithmError,
+    UnsupportedKeyOperationError,
+)
 
 
 NativePublicKey = t.TypeVar("NativePublicKey")
@@ -165,7 +170,12 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
     def check_use(self, use: str):
         designed_use = self.get("use")
         if designed_use and designed_use != use:
-            raise ValueError(f'This key is designed to by used for "{designed_use}"')
+            raise UnsupportedKeyUseError(f'This key is designed to be used for "{designed_use}"')
+
+    def check_alg(self, alg: str):
+        designed_alg = self.get("alg")
+        if designed_alg and designed_alg != alg:
+            raise UnsupportedKeyAlgorithmError(f'This key is designed for algorithm "{designed_alg}"')
 
     def check_key_op(self, operation: str):
         """Check if the given key_op is supported by this key.
@@ -175,12 +185,12 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
         """
         key_ops = self.get("key_ops")
         if key_ops is not None and operation not in key_ops:
-            raise ValueError(f'Unsupported key_op "{operation}"')
+            raise UnsupportedKeyOperationError(f'Unsupported key_op "{operation}"')
 
         assert operation in self.operation_registry
         reg = self.operation_registry[operation]
         if reg.private and not self.is_private:
-            raise ValueError(f'Invalid key_op "{operation}" for public key')
+            raise UnsupportedKeyOperationError(f'Invalid key_op "{operation}" for public key')
 
     def get_op_key(self, operation: str) -> t.Union[NativePublicKey, NativePrivateKey]:
         self.check_key_op(operation)

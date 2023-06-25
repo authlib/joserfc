@@ -26,6 +26,18 @@ class DecodeError(JoseError):
     error = "decode_error"
 
 
+class UnsupportedKeyUseError(JoseError):
+    error = "unsupported_key_use"
+
+
+class UnsupportedKeyAlgorithmError(JoseError):
+    error = "unsupported_key_alg"
+
+
+class UnsupportedKeyOperationError(JoseError):
+    error = "unsupported_key_operation"
+
+
 class InvalidKeyLengthError(JoseError):
     error = "invalid_key_length"
 

@@ -20,6 +20,11 @@ def is_int(value: int):
         raise ValueError("must be an int")
 
 
+def is_bool(value: bool):
+    if not isinstance(value, bool):
+        raise ValueError("must be an bool")
+
+
 def is_list_str(values):
     if not isinstance(values, list):
         raise ValueError("must be a list[str]")
@@ -56,6 +61,7 @@ _value_validators = {
     "str": is_str,
     "list[str]": is_list_str,
     "int": is_int,
+    "bool": is_bool,
     "url": is_url,
     "jwk": is_jwk,
     "none": not_support,

@@ -3,6 +3,12 @@
 JSON Web Token
 ==============
 
+JSON Web Token (JWT) is a kind of :ref:`jws`, it defines
+
+.. hint::
+
+    Do you know JWT is not a part of JOSE. It is created by the OAuth working group.
+
 Encode token
 ------------
 

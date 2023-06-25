@@ -74,7 +74,7 @@ The default :ref:`registry` doesn't contain draft ciphers, developers MUST regis
 Use custom ``registry``
 +++++++++++++++++++++++
 
-.. automodule:: joserfc.jwe
+.. module:: joserfc.jwe
     :noindex:
 
 Use a custom ``registry`` in :meth:`encrypt_compact`, :meth:`decrypt_compact`,

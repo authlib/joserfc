@@ -13,7 +13,7 @@ Decryption
 ~~~~~~~~~~
 
 JSON Encryption
---------------
+---------------
 
 Encryption
 ~~~~~~~~~~

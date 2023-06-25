@@ -2,6 +2,15 @@ JOSE RFC
 ========
 
 ``joserfc`` is a Python implementation of **JSON Object Signing and Encryption** (JOSE).
+
+**This package is a part of the Authlib project.**
+
+Features
+--------
+
+RFCs
+----
+
 It follows RFCs with extensible API. The module has implementations of:
 
 - RFC7515: :ref:`JSON Web Signature <jws>`
@@ -9,6 +18,7 @@ It follows RFCs with extensible API. The module has implementations of:
 - RFC7517: :ref:`JSON Web Key <jwk>`
 - RFC7518: :ref:`JSON Web Algorithms <jwa>`
 - RFC7519: :ref:`JSON Web Token <jwt>`
+- RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
 - RFC7638: ``thumbprint`` for JWK
 - RFC8037: ``OKP`` Key and ``EdDSA`` algorithm
 - RFC8812: ``ES256K`` algorithm
@@ -18,12 +28,7 @@ And draft RFCs implementation of:
 - :ref:`chacha20`
 - :ref:`ecdh1pu`
 
-**This package is a part of the Authlib project.**
-
-Features
---------
-
-- Type hints
+.. hint:: RFC7520 is implemented as test cases.
 
 Usage
 -----
