@@ -19,7 +19,6 @@ html_show_sourcelink = False
 
 extensions = [
     "sphinx.ext.autodoc",
-    # "sphinx.ext.autosummary",
     "sphinx_copybutton",
     "sphinx_design",
 ]
@@ -43,6 +42,7 @@ html_theme_options = {
     "twitter_creator": "lepture",
     "twitter_url": "https://twitter.com/authlib",
     "github_url": "https://github.com/authlib/joserfc",
+    "discord_url": "https://discord.gg/RNetSNNq",
     "nav_links": [
         {
             "title": "Projects",
