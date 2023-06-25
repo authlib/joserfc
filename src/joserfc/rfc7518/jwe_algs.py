@@ -283,7 +283,10 @@ A256KW = AESAlgModel(256, True)  # A256KW, Recommended
 
 #: https://www.rfc-editor.org/rfc/rfc7518#section-4.1
 JWE_ALG_MODELS = [
-    RSAAlgModel("RSA1_5", "RSAES-PKCS1-v1_5", padding.PKCS1v15()),  # Recommended-
+    # Avoid all RSA-PKCS1 v1.5 encryption algorithms ([RFC8017], Section 7.2),
+    # preferring RSAES-OAEP ([RFC8017], Section 7.1).
+    # https://www.rfc-editor.org/rfc/rfc8725#section-3.2
+    RSAAlgModel("RSA1_5", "RSAES-PKCS1-v1_5", padding.PKCS1v15()),
     RSAAlgModel(
         "RSA-OAEP",
         "RSAES OAEP using default parameters",

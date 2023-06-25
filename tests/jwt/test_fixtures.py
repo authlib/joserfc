@@ -15,13 +15,12 @@ class TestJWTFixtures(TestFixture):
 
         header = {'alg': alg}
         claims = case['payload']
-        registry = jwt.JWTRegistry(algorithms=[alg])
-        value = jwt.encode(header, claims, private_key, registry=registry)
+        value = jwt.encode(header, claims, private_key, algorithms=[alg])
 
         if expect:
             self.assertEqual(value, expect)
 
-        obj = jwt.decode(value, public_key, registry=registry)
+        obj = jwt.decode(value, public_key, algorithms=[alg])
         self.assertEqual(obj.claims, claims)
 
 

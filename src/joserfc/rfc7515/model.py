@@ -28,16 +28,16 @@ class CompactSignature:
     """JSON Web Signature object for compact mode. This object is used to
     represent the JWS instance.
     """
-    def __init__(self, header: Header, payload: bytes):
-        self.header = header
+    def __init__(self, protect: Header, payload: bytes):
+        self.protect = protect
         self.payload = payload
         self.segments: SegmentsDict = {}
 
     def headers(self) -> Header:
-        return self.header
+        return self.protect
 
     def set_kid(self, kid: str):
-        self.header["kid"] = kid
+        self.protect["kid"] = kid
 
     @cached_property
     def claims(self) -> t.Dict[str, t.Any]:

@@ -36,6 +36,8 @@ __all__ = [
     "types",
     "JWSAlgModel",
     "JWSRegistry",
+    "CompactSignature",
+    "JSONSignature",
     "serialize_compact",
     "deserialize_compact",
     "extract_compact",
@@ -118,7 +120,8 @@ def validate_compact(
     elif registry is None:
         registry = default_registry
 
-    alg: JWSAlgModel = registry.get_alg(obj.header["alg"])
+    headers = obj.headers()
+    alg: JWSAlgModel = registry.get_alg(headers["alg"])
     key: Key = guess_key(key, obj)
     if not verify_compact(obj, alg, key):
         raise BadSignatureError()

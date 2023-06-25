@@ -33,6 +33,7 @@ __all__ = [
     "encrypt_compact",
     "decrypt_compact",
     "extract_compact",
+    "validate_compact",
     "encrypt_json",
     "decrypt_json",
     "default_registry",
@@ -119,9 +120,26 @@ def decrypt_compact(
     :param sender_key: only required when using ECDH-1PU
     :return: object of the ``CompactEncryption``
     """
-    value = to_bytes(value)
-    obj = extract_compact(value)
+    obj = extract_compact(to_bytes(value))
+    return validate_compact(obj, private_key, algorithms, registry, sender_key)
 
+
+def validate_compact(
+        obj: CompactEncryption,
+        private_key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWERegistry] = None,
+        sender_key: t.Optional[CurveKey] = None) -> CompactEncryption:
+    """Validate the JWE Compact Serialization with the given key.
+    This method is usually used together with ``extract_compact``.
+
+    :param obj: object of the JWE Compact Serialization
+    :param private_key: a flexible private key to decrypt the serialization
+    :param algorithms: a list of allowed algorithms
+    :param registry: a JWERegistry to use
+    :param sender_key: only required when using ECDH-1PU
+    :return: object of the ``CompactEncryption``
+    """
     if algorithms:
         registry = JWERegistry(algorithms=algorithms)
     elif registry is None:

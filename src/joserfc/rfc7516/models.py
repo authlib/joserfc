@@ -55,6 +55,9 @@ class CompactEncryption:
         self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
+    def headers(self):
+        return self.protected
+
     def add_recipient(self, key: Key, header: t.Optional[Header] = None):
         """Add a recipient to the JWE Compact Serialization. Please add a key that
         comply with the given "alg" value.

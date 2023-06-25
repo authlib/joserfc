@@ -11,13 +11,10 @@ from ..util import (
 
 def sign_compact(obj: CompactSignature, alg: JWSAlgModel, key) -> bytes:
     key.check_use("sig")
-    if "header" not in obj.segments:
-        obj.segments["header"] = json_b64encode(obj.header)
-    if "payload" not in obj.segments:
-        obj.segments["payload"] = urlsafe_b64encode(obj.payload)
-    signing_input = obj.segments["header"] + b"." + obj.segments["payload"]
+    header_segment = json_b64encode(obj.headers())
+    payload_segment = urlsafe_b64encode(obj.payload)
+    signing_input = header_segment + b"." + payload_segment
     signature = urlsafe_b64encode(alg.sign(signing_input, key))
-    obj.segments["signature"] = signature
     return signing_input + b"." + signature
 
 
