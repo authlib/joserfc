@@ -1,7 +1,7 @@
 from tests.keys import load_key
 from tests.fixtures import TestFixture, read_fixture
 from joserfc import jws
-from joserfc.util import to_bytes, urlsafe_b64encode
+from joserfc.util import urlsafe_b64encode
 
 
 # https://datatracker.ietf.org/doc/html/rfc7520#section-4
@@ -47,7 +47,7 @@ class TestJWS(TestFixture):
 
         # signature won't change with these algorithms
         if data["id"].startswith(("HS", "RS")):
-            self.assertEqual(value4, to_bytes(data["compact"]))
+            self.assertEqual(value4, data["compact"])
             self.assertEqual(value5, data["general_json"])
             self.assertEqual(value6, data["flattened_json"])
 

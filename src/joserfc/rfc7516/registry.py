@@ -53,10 +53,12 @@ class JWERegistry:
     def check_header(self, header: Header, check_more=False):
         check_crit_header(header)
         check_registry_header(self.header_registry, header)
-        if check_more:
-            alg = self.get_alg(header["alg"])
-            if alg.more_header_registry:
+
+        alg = self.get_alg(header["alg"])
+        if alg.more_header_registry:
+            if check_more:
                 check_registry_header(alg.more_header_registry, header)
+
             if self.strict_check_header:
                 allowed_registry = self.header_registry.copy()
                 allowed_registry.update(alg.more_header_registry)

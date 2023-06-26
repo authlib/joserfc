@@ -1,4 +1,4 @@
-from typing import Optional, AnyStr, List, Union
+import typing as t
 from .rfc7515 import types
 from .rfc7515.model import (
     JWSAlgModel,
@@ -66,10 +66,10 @@ __register()
 
 def serialize_compact(
         protected: Header,
-        payload: bytes,
+        payload: t.AnyStr,
         private_key: KeyFlexible,
-        algorithms: Optional[List[str]] = None,
-        registry: Optional[JWSRegistry] = None) -> bytes:
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None) -> str:
     """Generate a JWS Compact Serialization. The JWS Compact Serialization
     represents digitally signed or MACed content as a compact, URL-safe
     string, per Section 7.1.
@@ -85,9 +85,7 @@ def serialize_compact(
     :param private_key: a flexible private key to sign the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
-    :return: JWS in bytes
-
-    .. note:: The returned value is in bytes
+    :return: JWS in str
     """
     if algorithms:
         registry = JWSRegistry(algorithms=algorithms)
@@ -95,17 +93,18 @@ def serialize_compact(
         registry = default_registry
 
     registry.check_header(protected)
-    obj = CompactSignature(protected, payload)
+    obj = CompactSignature(protected, to_bytes(payload))
     alg: JWSAlgModel = registry.get_alg(protected["alg"])
     key: Key = guess_key(private_key, obj)
-    return sign_compact(obj, alg, key)
+    out = sign_compact(obj, alg, key)
+    return out.decode("utf-8")
 
 
 def validate_compact(
         obj: CompactSignature,
         public_key: KeyFlexible,
-        algorithms: Optional[List[str]] = None,
-        registry: Optional[JWSRegistry] = None):
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None):
     """Validate the JWS Compact Serialization with the given key.
     This method is usually used together with ``extract_compact``.
 
@@ -128,10 +127,10 @@ def validate_compact(
 
 
 def deserialize_compact(
-        value: AnyStr,
+        value: t.AnyStr,
         public_key: KeyFlexible,
-        algorithms: Optional[List[str]] = None,
-        registry: Optional[JWSRegistry] = None) -> CompactSignature:
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None) -> CompactSignature:
     """Extract and validate the JWS Compact Serialization (in string, or bytes)
     with the given key. An JWE Compact Serialization looks like:
 
@@ -157,11 +156,11 @@ def deserialize_compact(
 
 
 def serialize_json(
-        members: Union[HeaderDict, List[HeaderDict]],
+        members: t.Union[HeaderDict, t.List[HeaderDict]],
         payload: bytes,
         private_key: KeyFlexible,
-        algorithms: Optional[List[str]] = None,
-        registry: Optional[JWSRegistry] = None) -> JSONSerialization:
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None) -> JSONSerialization:
     """Generate a JWS JSON Serialization (in dict). The JWS JSON Serialization
     represents digitally signed or MACed content as a JSON object. This representation
     is neither optimized for compactness nor URL-safe.
@@ -214,8 +213,8 @@ def serialize_json(
 def validate_json(
         obj: JSONSignature,
         public_key: KeyFlexible,
-        algorithms: Optional[List[str]] = None,
-        registry: Optional[JWSRegistry] = None):
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None):
     """Validate the JWS JSON Serialization with the given key.
     This method is usually used together with ``extract_json``.
 
@@ -237,8 +236,8 @@ def validate_json(
 def deserialize_json(
         value: JSONSerialization,
         public_key: KeyFlexible,
-        algorithms: Optional[List[str]] = None,
-        registry: Optional[JWSRegistry] = None) -> JSONSignature:
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None) -> JSONSignature:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a dict of the JSON signature

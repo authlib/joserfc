@@ -5,8 +5,24 @@ JOSE RFC
 
 **This package is a part of the Authlib project.**
 
-Features
---------
+Usage
+-----
+
+A quick and simple JWT encoding and decoding would look something like this:
+
+.. code-block:: python
+
+    >>> from joserfc import jwt
+    >>> encoded = jwt.encode({"alg": "HS256"}, {"k": "value"}, "secret")
+    >>> encoded
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrIjoidmFsdWUifQ.ni-MJXnZHpFB_8L9P9yllj3RNDfzmD4yBKAyefSctMY'
+    >>> token = jwt.decode(encoded, "secret")
+    >>> token.header
+    {'alg': 'HS256', 'typ': 'JWT'}
+    >>> token.claims
+    {'k': 'value'}
+
+You would find more details and advanced usage in :ref:`jwt` section.
 
 RFCs
 ----
@@ -29,25 +45,6 @@ And draft RFCs implementation of:
 - :ref:`ecdh1pu`
 
 .. hint:: RFC7520 is implemented as test cases.
-
-Usage
------
-
-A quick and simple JWT encoding and decoding would look something like this:
-
-.. code-block:: python
-
-    >>> from joserfc import jwt
-    >>> encoded = jwt.encode({"alg": "HS256"}, {"k": "value"}, "secret")
-    >>> encoded
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrIjoidmFsdWUifQ.ni-MJXnZHpFB_8L9P9yllj3RNDfzmD4yBKAyefSctMY'
-    >>> token = jwt.decode(encoded, "secret")
-    >>> token.header
-    {'alg': 'HS256', 'typ': 'JWT'}
-    >>> token.claims
-    {'k': 'value'}
-
-You would find more details and advanced usage in :ref:`jwt` section.
 
 Next
 ----

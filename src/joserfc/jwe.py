@@ -56,11 +56,11 @@ __register()
 
 def encrypt_compact(
         protected: Header,
-        plaintext: bytes,
+        plaintext: t.AnyStr,
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[CurveKey] = None) -> bytes:
+        sender_key: t.Optional[CurveKey] = None) -> str:
     """Generate a JWE Compact Serialization. The JWE Compact Serialization represents
     encrypted content as a compact, URL-safe string.  This string is::
 
@@ -84,14 +84,15 @@ def encrypt_compact(
     elif registry is None:
         registry = default_registry
 
-    obj = CompactEncryption(protected, plaintext)
+    obj = CompactEncryption(protected, to_bytes(plaintext))
     recipient = Recipient(obj)
     key = guess_key(public_key, recipient)
     recipient.recipient_key = key
     recipient.sender_key = sender_key
     obj.recipient = recipient
     perform_encrypt(obj, registry)
-    return represent_compact(obj)
+    out = represent_compact(obj)
+    return out.decode("utf-8")
 
 
 def decrypt_compact(

@@ -43,7 +43,7 @@ class TestECDH1PUCompact(TestFixture):
             registry=ecdh_registry,
             sender_key=sender_key,
         )
-        self.assertEqual(value.count(b"."), 4)
+        self.assertEqual(value.count("."), 4)
         obj = decrypt_compact(
             value,
             private_key=recipient_key,
@@ -149,3 +149,10 @@ class TestECDH1PUJSON(TestCase):
             sender_key=alice_key,
         )
         self.assertEqual(obj.protected, protected)
+        value1 = encrypt_json(
+            obj,
+            KeySet([bob_key, charlie_key]),
+            registry=ecdh_registry,
+            sender_key=alice_key
+        )
+        self.assertEqual(value1["protected"], result["protected"])

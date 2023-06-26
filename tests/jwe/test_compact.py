@@ -7,7 +7,7 @@ from tests.keys import load_key
 
 
 class TestJWECompact(TestCase):
-    def run_case(self, alg, enc, private_key, public_key):
+    def run_case(self, alg: str, enc: str, private_key, public_key):
         protected = {"alg": alg, "enc": enc}
         payload = b'hello'
         registry = JWERegistry(algorithms=[alg, enc])
@@ -15,7 +15,7 @@ class TestJWECompact(TestCase):
             protected, payload, public_key,
             registry=registry,
         )
-        self.assertEqual(result.count(b'.'), 4)
+        self.assertEqual(result.count('.'), 4)
 
         obj = decrypt_compact(
             result, private_key,
@@ -23,8 +23,8 @@ class TestJWECompact(TestCase):
         )
         self.assertEqual(obj.plaintext, payload)
 
-    def run_cases(self, algs, private_key, public_key):
-        for alg in algs:
+    def run_cases(self, names, private_key, public_key):
+        for alg in names:
             for enc in JWE_ENC_MODELS:
                 self.run_case(alg, enc.name, private_key, public_key)
 

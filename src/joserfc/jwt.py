@@ -69,7 +69,7 @@ def encode(
         result = encrypt_compact(header, payload, key, algorithms, registry)
     else:
         result = serialize_compact(header, payload, key, algorithms, registry)
-    return result.decode("utf-8")
+    return result
 
 
 def extract(value: t.AnyStr) -> Token:

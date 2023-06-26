@@ -7,16 +7,16 @@ from tests.keys import load_key
 
 
 class TestCompact(TestFixture):
-    def run_test(self, case, private_key, public_key):
-        alg = case['alg']
+    def run_test(self, data, private_key, public_key):
+        alg = data['alg']
 
-        if 'value' in case:
-            expect = to_bytes(case['value'])
+        if 'value' in data:
+            expect = data['value']
         else:
             expect = None
 
         header = {'alg': alg}
-        payload = to_bytes(case['payload'])
+        payload = to_bytes(data['payload'])
         registry = JWSRegistry(algorithms=[alg])
         value = serialize_compact(header, payload, private_key, registry=registry)
 
@@ -28,7 +28,7 @@ class TestCompact(TestFixture):
 
     def test_registry_is_none(self):
         value = serialize_compact({"alg": "HS256"}, b"foo", "secret")
-        expected = b'eyJhbGciOiJIUzI1NiJ9.Zm9v.0pehoi-RMZM1jl-4TP_C4Y6BJ-bcmsuzfDyQpkpJkh0'
+        expected = 'eyJhbGciOiJIUzI1NiJ9.Zm9v.0pehoi-RMZM1jl-4TP_C4Y6BJ-bcmsuzfDyQpkpJkh0'
         self.assertEqual(value, expected)
 
         obj = deserialize_compact(value, "secret")

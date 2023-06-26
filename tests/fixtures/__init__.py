@@ -27,15 +27,15 @@ class TestFixture(TestCase):
             cls.attach_case(case, private_key, public_key)
 
     @classmethod
-    def attach_case(cls, case, private_key, public_key):
+    def attach_case(cls, data, private_key, public_key):
 
         def method(self):
-            self.run_test(case, private_key, public_key)
+            self.run_test(data, private_key, public_key)
 
-        case_id = case['id']
+        case_id = data['id']
         name = f'test_{case_id}'
         method.__name__ = name
-        method.__doc__ = f'Run fixture {case}'
+        method.__doc__ = f'Run fixture {data}'
         setattr(cls, name, method)
 
     def run_test(self, case, private_key, public_key):

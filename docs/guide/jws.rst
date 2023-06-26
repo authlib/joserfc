@@ -41,7 +41,7 @@ Serialization
 
     header = {"alg": "HS256"}
     jws.serialize_compact(header, b"hello", "secret")
-    # => b'eyJhbGciOiJIUzI1NiJ9.aGVsbG8.UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A'
+    # => 'eyJhbGciOiJIUzI1NiJ9.aGVsbG8.UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A'
 
 Deserialization
 ~~~~~~~~~~~~~~~
@@ -156,7 +156,7 @@ either by the ``algorithms`` parameter, or ``registry`` parameter.
 
     >>> from joserfc import jws
     >>> jws.serialize_compact({"alg": "HS384"}, b"payload", "secret", algorithms=["HS384"])
-    b'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
+    'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
 
 Developers can also apply the ``registry`` parameter to resolve this issue. Here is an example
 of using :ref:`registry`.
@@ -166,4 +166,4 @@ of using :ref:`registry`.
     >>> from joserfc import jws
     >>> registry = jws.JWSRegistry(algorithms=["HS384"])
     >>> jws.serialize_compact({"alg": "HS384"}, b"payload", "secret", registry=registry)
-    b'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
+    'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'

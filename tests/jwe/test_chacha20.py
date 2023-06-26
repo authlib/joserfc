@@ -21,7 +21,7 @@ class TestChaCha20(TestCase):
         key = OctKey.generate_key(256)
         protected = {"alg": "dir", "enc": enc}
         encrypted_text = encrypt_compact(protected, b'hello', key, registry=chacha_registry)
-        self.assertEqual(encrypted_text.count(b"."), 4)
+        self.assertEqual(encrypted_text.count("."), 4)
         obj = decrypt_compact(encrypted_text, key, registry=chacha_registry)
         self.assertEqual(obj.plaintext, b'hello')
 
