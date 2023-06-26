@@ -55,3 +55,10 @@ def verify_compact(obj: CompactSignature, alg: JWSAlgModel, key) -> bool:
     signing_input = obj.segments["header"] + b"." + obj.segments["payload"]
     sig = urlsafe_b64decode(obj.segments["signature"])
     return alg.verify(signing_input, sig, key)
+
+
+def detach_compact_content(value: str) -> str:
+    # https://www.rfc-editor.org/rfc/rfc7515#appendix-F
+    parts = value.split(".")
+    parts[1] = ""
+    return ".".join(parts)

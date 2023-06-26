@@ -14,11 +14,13 @@ from .rfc7515.compact import (
     sign_compact,
     extract_compact,
     verify_compact,
+    detach_compact_content,
 )
 from .rfc7515.json import (
     sign_json,
     verify_json,
     extract_json,
+    detach_json_content,
 )
 from .rfc7515.types import (
     HeaderDict,
@@ -46,6 +48,7 @@ __all__ = [
     "deserialize_json",
     "extract_json",
     "validate_json",
+    "detach_content",
     "default_registry",
 ]
 
@@ -249,6 +252,33 @@ def deserialize_json(
     obj = extract_json(value)
     validate_json(obj, public_key, algorithms, registry)
     return obj
+
+
+def detach_content(value: t.Union[str, JSONSerialization]):
+    """In some contexts, it is useful to integrity-protect content that is
+    not itself contained in a JWS. This method is an implementation of
+    https://www.rfc-editor.org/rfc/rfc7515#appendix-F
+
+    It is used to detach the content of the compact and JSON serialization.
+
+    .. code-block:: python
+
+        >>> from joserfc import jws
+        >>> encoded_text = jws.serialize_compact({"alg": "HS256"}, b"hello", "secret")
+        >>> jws.detach_content(encoded_text)
+        'eyJhbGciOiJIUzI1NiJ9..UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A'
+
+    You can also detach the JSON serialization:
+
+    .. code-block:: python
+
+        >>> obj = jws.serialize_json({"protected": {"alg": "HS256"}}, b"hello", "secret")
+        >>> jws.detach_content(obj)
+        {'payload': '', 'signature': 'UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A', 'protected': 'eyJhbGciOiJIUzI1NiJ9'}
+    """
+    if isinstance(value, str):
+        return detach_compact_content(value)
+    return detach_json_content(value)
 
 
 def __check_member(registry: JWSRegistry, member: HeaderDict):

@@ -123,3 +123,11 @@ def _verify_signature(signature: JSONSignatureDict, payload_segment, alg: JWSAlg
     sig = urlsafe_b64decode(signature["signature"].encode("utf-8"))
     signing_input = b".".join([protected_segment, payload_segment])
     return alg.verify(signing_input, sig, key)
+
+
+def detach_json_content(value: JSONSerialization) -> JSONSerialization:
+    # https://www.rfc-editor.org/rfc/rfc7515#appendix-F
+    rv = value.copy()  # don't alter original value
+    if "payload" in rv:
+        del rv["payload"]
+    return rv

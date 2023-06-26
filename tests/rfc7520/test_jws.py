@@ -51,6 +51,47 @@ class TestJWS(TestFixture):
             self.assertEqual(value5, data["general_json"])
             self.assertEqual(value6, data["flattened_json"])
 
+    def test_signature_with_detached_content(self):
+        # https://datatracker.ietf.org/doc/html/rfc7520#section-4.5
+        protected = {
+            "alg": "HS256",
+            "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
+        }
+        key = load_key("RFC7520-oct-sig.json")
+        value1 = jws.serialize_compact(protected, payload, key)
+        compact_result = (
+            "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LW"
+            "VlZjMxNGJjNzAzNyJ9"
+            ".."
+            "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+        )
+        self.assertEqual(jws.detach_content(value1), compact_result)
+
+        member = {"protected": protected}
+        value2 = jws.serialize_json([member], payload, key)
+        general_json = {
+            "signatures": [
+                {
+                    "protected": (
+                        "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcx"
+                        "Yi1iZmQ2LWVlZjMxNGJjNzAzNyJ9"
+                    ),
+                    "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+                }
+            ]
+        }
+        self.assertEqual(jws.detach_content(value2), general_json)
+
+        flattened_json = {
+            "protected": (
+                "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcx"
+                "Yi1iZmQ2LWVlZjMxNGJjNzAzNyJ9"
+            ),
+            "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+        }
+        value3 = jws.serialize_json(member, payload, key)
+        self.assertEqual(jws.detach_content(value3), flattened_json)
+
     def test_protecting_specific_header_fields(self):
         # https://datatracker.ietf.org/doc/html/rfc7520#section-4.6
         protected = {"alg": "HS256"}

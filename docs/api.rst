@@ -30,6 +30,8 @@ JSON Web Signature
 
 .. autofunction:: deserialize_json
 
+.. autofunction:: detach_content
+
 
 JSON Web Encryption
 -------------------
