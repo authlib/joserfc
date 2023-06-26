@@ -197,18 +197,18 @@ class ECDHESAlgModel(JWEKeyAgreement):
         ephemeral_key: CurveKey = recipient.ephemeral_key
         pubkey = recipient_key.get_op_key("deriveKey")
         shared_key = ephemeral_key.exchange_shared_key(pubkey)
-        header = recipient.headers()
-        return derive_key_for_concat_kdf(shared_key, header, enc.cek_size, self.key_size)
+        headers = recipient.headers()
+        return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size)
 
     def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
-        header = recipient.headers()
-        assert "epk" in header
+        headers = recipient.headers()
+        assert "epk" in headers
 
         recipient_key: CurveKey = self.check_recipient_key(recipient.recipient_key)
-        epk = recipient_key.import_key(header["epk"])
+        epk = recipient_key.import_key(headers["epk"])
         pubkey = epk.get_op_key("deriveKey")
         shared_key = recipient_key.exchange_shared_key(pubkey)
-        return derive_key_for_concat_kdf(shared_key, header, enc.cek_size, self.key_size)
+        return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size)
 
 
 class PBES2HSAlgModel(JWEKeyEncryption):

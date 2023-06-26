@@ -230,8 +230,8 @@ def decrypt_json(
 
 def _guess_sender_key(recipient, key: t.Union[CurveKey, KeySet]):
     if isinstance(key, KeySet):
-        header = recipient.headers()
-        skid = header.get('skid')
+        headers = recipient.headers()
+        skid = headers.get('skid')
         if skid:
             return key.get_by_kid(skid)
         return None
