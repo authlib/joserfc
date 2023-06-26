@@ -10,6 +10,7 @@ payload = (
     b"You step onto the road, and if you don't keep your feet, "
     b"there\xe2\x80\x99s no knowing where you might be swept off to."
 )
+b64_payload = urlsafe_b64encode(payload).decode("utf-8")
 
 
 class TestJWS(TestFixture):
@@ -22,11 +23,11 @@ class TestJWS(TestFixture):
 
         obj2 = jws.deserialize_json(data["general_json"], public_key, algorithms=algorithms)
         self.assertEqual(obj2.payload, payload)
-        self.assertEqual(obj2.flatten, False)
+        self.assertEqual(obj2.flattened, False)
 
         obj3 = jws.deserialize_json(data["flattened_json"], public_key, algorithms=algorithms)
         self.assertEqual(obj3.payload, payload)
-        self.assertEqual(obj3.flatten, True)
+        self.assertEqual(obj3.flattened, True)
 
         # try serialize and deserialize pair
         value4 = jws.serialize_compact(protected, payload, private_key, algorithms=algorithms)
@@ -37,12 +38,12 @@ class TestJWS(TestFixture):
         value5 = jws.serialize_json([member], payload, private_key, algorithms=algorithms)
         obj5 = jws.deserialize_json(value5, public_key, algorithms=algorithms)
         self.assertEqual(obj5.payload, payload)
-        self.assertEqual(obj5.flatten, False)
+        self.assertEqual(obj5.flattened, False)
 
         value6 = jws.serialize_json(member, payload, private_key, algorithms=algorithms)
         obj6 = jws.deserialize_json(value6, public_key, algorithms=algorithms)
         self.assertEqual(obj6.payload, payload)
-        self.assertEqual(obj6.flatten, True)
+        self.assertEqual(obj6.flattened, True)
 
         # signature won't change with these algorithms
         if data["id"].startswith(("HS", "RS")):
@@ -56,7 +57,6 @@ class TestJWS(TestFixture):
         unprotected = {"kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"}
         member = {"protected": protected, "header": unprotected}
         key = load_key("RFC7520-oct-sig.json")
-        b64_payload = urlsafe_b64encode(payload).decode("utf-8")
 
         value1 = jws.serialize_json([member], payload, key)
         general_json = {
@@ -69,7 +69,7 @@ class TestJWS(TestFixture):
                 }
             ]
         }
-        self.assertDictEqual(value1, general_json)
+        self.assertEqual(value1, general_json)
 
         value2 = jws.serialize_json(member, payload, key)
         flattened_json = {
@@ -78,7 +78,7 @@ class TestJWS(TestFixture):
             "header": {"kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"},
             "signature": "bWUSVaxorn7bEF1djytBd0kHv70Ly5pvbomzMWSOr20"
         }
-        self.assertDictEqual(value2, flattened_json)
+        self.assertEqual(value2, flattened_json)
 
     def test_protecting_content_only(self):
         # https://datatracker.ietf.org/doc/html/rfc7520#section-4.7
@@ -89,6 +89,30 @@ class TestJWS(TestFixture):
         key = load_key("RFC7520-oct-sig.json")
         member = {"header": unprotected}
         value1 = jws.serialize_json([member], payload, key)
+        general_json = {
+            "payload": b64_payload,
+            "signatures": [
+                {
+                    "header": {
+                        "alg": "HS256",
+                        "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
+                    },
+                    "signature": "xuLifqLGiblpv9zBpuZczWhNj1gARaLV3UxvxhJxZuk"
+                }
+            ]
+        }
+        self.assertEqual(value1, general_json)
+
+        value2 = jws.serialize_json(member, payload, key)
+        flattened_json = {
+            "payload": b64_payload,
+            "header": {
+                "alg": "HS256",
+                "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
+            },
+            "signature": "xuLifqLGiblpv9zBpuZczWhNj1gARaLV3UxvxhJxZuk"
+        }
+        self.assertEqual(value2, flattened_json)
 
 
 def add_jws_tests():

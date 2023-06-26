@@ -7,13 +7,14 @@ from ..registry import Header
 
 
 class HeaderMember:
-    def __init__(self, protected: Header, header: t.Optional[Header] = None):
+    def __init__(self, protected: t.Optional[Header] = None, header: t.Optional[Header] = None):
         self.protected = protected
         self.header = header
 
     def headers(self) -> Header:
-        rv = {}
-        rv.update(self.protected)
+        rv: Header = {}
+        if self.protected:
+            rv.update(self.protected)
         if self.header:
             rv.update(self.header)
         return rv
@@ -28,16 +29,16 @@ class CompactSignature:
     """JSON Web Signature object for compact mode. This object is used to
     represent the JWS instance.
     """
-    def __init__(self, protect: Header, payload: bytes):
-        self.protect = protect
+    def __init__(self, protected: Header, payload: bytes):
+        self.protected = protected
         self.payload = payload
         self.segments: SegmentsDict = {}
 
     def headers(self) -> Header:
-        return self.protect
+        return self.protected
 
     def set_kid(self, kid: str):
-        self.protect["kid"] = kid
+        self.protected["kid"] = kid
 
     @cached_property
     def claims(self) -> t.Dict[str, t.Any]:
@@ -49,13 +50,13 @@ class JSONSignature:
         self.members = members
         self.payload = payload
         self.signatures: t.List[JSONSignatureDict] = []
-        self.flatten: bool = False
+        self.flattened: bool = False
         self.segments: SegmentsDict = {}
 
     def headers(self) -> Header:
-        if self.flatten and len(self.members) == 1:
+        if self.flattened and len(self.members) == 1:
             return self.members[0].headers()
-        raise ValueError("Only compact or flatten data has .headers() method.")
+        raise ValueError("Only flattened JSON Serialization has .headers() method.")
 
 
 class JWSAlgModel(object, metaclass=ABCMeta):

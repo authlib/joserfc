@@ -4,8 +4,8 @@ from .model import JWSAlgModel, HeaderMember, JSONSignature
 from .types import (
     JSONSignatureDict,
     JSONSerialization,
-    CompleteJSONSerialization,
-    FlattenJSONSerialization,
+    GeneralJSONSerialization,
+    FlattenedJSONSerialization,
 )
 from ..util import (
     json_b64encode,
@@ -23,14 +23,15 @@ def sign_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> JSONSeri
 
     payload_segment = obj.segments["payload"]
     for member in obj.members:
-        alg = find_alg(member.protected["alg"])
+        headers = member.headers()
+        alg = find_alg(headers["alg"])
         key = find_key(member)
         key.check_use("sig")
         signature = _sign_member(payload_segment, member, alg, key)
         signatures.append(signature)
 
     rv = {"payload": payload_segment.decode("utf-8")}
-    if obj.flatten and len(signatures) == 1:
+    if obj.flattened and len(signatures) == 1:
         rv.update(dict(signatures[0]))
     else:
         rv["signatures"] = signatures
@@ -40,13 +41,15 @@ def sign_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> JSONSeri
 
 
 def _sign_member(payload_segment, member: HeaderMember, alg: JWSAlgModel, key) -> JSONSignatureDict:
-    protected_segment = json_b64encode(member.protected)
+    if member.protected:
+        protected_segment = json_b64encode(member.protected)
+    else:
+        protected_segment = b""
     signing_input = b".".join([protected_segment, payload_segment])
     signature = urlsafe_b64encode(alg.sign(signing_input, key))
-    rv = {
-        "protected": protected_segment.decode("utf-8"),
-        "signature": signature.decode("utf-8"),
-    }
+    rv: JSONSignatureDict = {"signature": signature.decode("utf-8")}
+    if member.protected:
+        rv["protected"] = protected_segment.decode("utf-8")
     if member.header:
         rv["header"] = member.header
     return rv
@@ -66,11 +69,11 @@ def extract_json(value: JSONSerialization) -> JSONSignature:
 
     if "signatures" in value:
         flatten = False
-        value: CompleteJSONSerialization
+        value: GeneralJSONSerialization
         signatures: t.List[JSONSignatureDict] = value["signatures"]
     else:
         flatten = True
-        value: FlattenJSONSerialization
+        value: FlattenedJSONSerialization
         _sig: JSONSignatureDict = {
             "protected": value["protected"],
             "signature": value["signature"],
@@ -90,7 +93,7 @@ def extract_json(value: JSONSerialization) -> JSONSignature:
 
     obj = JSONSignature(members, payload)
     obj.segments.update({"payload": payload_segment})
-    obj.flatten = flatten
+    obj.flattened = flatten
     obj.signatures = signatures
     return obj
 
@@ -106,7 +109,8 @@ def verify_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> bool:
     payload_segment = obj.segments["payload"]
     for index, signature in enumerate(obj.signatures):
         member = obj.members[index]
-        alg = find_alg(member.protected["alg"])
+        headers = member.headers()
+        alg = find_alg(headers["alg"])
         key = find_key(member)
         key.check_use("sig")
         if not _verify_signature(signature, payload_segment, alg, key):

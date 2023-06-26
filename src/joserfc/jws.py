@@ -65,7 +65,7 @@ __register()
 
 
 def serialize_compact(
-        header: Header,
+        protected: Header,
         payload: bytes,
         private_key: KeyFlexible,
         algorithms: Optional[List[str]] = None,
@@ -80,7 +80,7 @@ def serialize_compact(
         BASE64URL(JWS Payload) || '.' ||
         BASE64URL(JWS Signature)
 
-    :param header: protected header part of the JWS, in dict
+    :param protected: protected header part of the JWS, in dict
     :param payload: payload data of the JWS, in bytes
     :param private_key: a flexible private key to sign the signature
     :param algorithms: a list of allowed algorithms
@@ -94,9 +94,9 @@ def serialize_compact(
     elif registry is None:
         registry = default_registry
 
-    registry.check_header(header)
-    obj = CompactSignature(header, payload)
-    alg: JWSAlgModel = registry.get_alg(header["alg"])
+    registry.check_header(protected)
+    obj = CompactSignature(protected, payload)
+    alg: JWSAlgModel = registry.get_alg(protected["alg"])
     key: Key = guess_key(private_key, obj)
     return sign_compact(obj, alg, key)
 
@@ -195,17 +195,17 @@ def serialize_json(
 
     if isinstance(members, dict):
         flatten = True
-        registry.check_header(members["protected"])
+        __check_member(registry, members)
         members = [members]
     else:
         flatten = False
         for member in members:
-            registry.check_header(member["protected"])
+            __check_member(registry, member)
 
     members = [HeaderMember(**member) for member in members]
     obj = JSONSignature(members, payload)
     obj.segments["payload"] = urlsafe_b64encode(payload)
-    obj.flatten = flatten
+    obj.flattened = flatten
 
     find_key = lambda d: guess_key(private_key, d)
     return sign_json(obj, registry.get_alg, find_key)
@@ -250,3 +250,12 @@ def deserialize_json(
     obj = extract_json(value)
     validate_json(obj, public_key, algorithms, registry)
     return obj
+
+
+def __check_member(registry: JWSRegistry, member: HeaderDict):
+    header = {}
+    if "protected" in member:
+        header.update(member["protected"])
+    if "header" in member:
+        header.update(member["header"])
+    registry.check_header(header)

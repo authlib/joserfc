@@ -5,8 +5,8 @@ __all__ = [
     "SegmentsDict",
     "HeaderDict",
     "JSONSignatureDict",
-    "CompleteJSONSerialization",
-    "FlattenJSONSerialization",
+    "GeneralJSONSerialization",
+    "FlattenedJSONSerialization",
     "JSONSerialization",
 ]
 
@@ -29,16 +29,16 @@ JSONSignatureDict = t.TypedDict("JSONSignatureDict", {
 }, total=False)
 
 
-CompleteJSONSerialization = t.TypedDict("CompleteJSONSerialization", {
+GeneralJSONSerialization = t.TypedDict("GeneralJSONSerialization", {
     "payload": str,
     "signatures": t.List[JSONSignatureDict],
 })
 
-FlattenJSONSerialization = t.TypedDict("FlattenJSONSerialization", {
+FlattenedJSONSerialization = t.TypedDict("FlattenedJSONSerialization", {
     "payload": str,
     "protected": str,
     "header": Header,
     "signature": str,
 }, total=False)
 
-JSONSerialization = t.Union[CompleteJSONSerialization, FlattenJSONSerialization]
+JSONSerialization = t.Union[GeneralJSONSerialization, FlattenedJSONSerialization]
