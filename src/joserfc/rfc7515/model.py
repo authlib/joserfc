@@ -46,6 +46,9 @@ class CompactSignature:
 
 
 class JSONSignature:
+    """JSON Web Signature object for JSON mode. This object is used to
+    represent the JWS instance.
+    """
     def __init__(self, members: t.List[HeaderMember], payload: bytes):
         self.members = members
         self.payload = payload

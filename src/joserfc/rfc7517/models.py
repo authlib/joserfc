@@ -168,11 +168,21 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
         return data
 
     def check_use(self, use: str):
+        """Check if this key supports the given "use".
+
+        :param use: this key is used for, e.g. "sig", "enc"
+        :raise: UnsupportedKeyUseError
+        """
         designed_use = self.get("use")
         if designed_use and designed_use != use:
             raise UnsupportedKeyUseError(f'This key is designed to be used for "{designed_use}"')
 
     def check_alg(self, alg: str):
+        """Check if this key supports the given "alg".
+
+        :param alg: the algorithm this key is intended to be used, e.g. "HS256", "ECDH-EC"
+        :raise: UnsupportedKeyAlgorithmError
+        """
         designed_alg = self.get("alg")
         if designed_alg and designed_alg != alg:
             raise UnsupportedKeyAlgorithmError(f'This key is designed for algorithm "{designed_alg}"')
@@ -181,7 +191,7 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
         """Check if the given key_op is supported by this key.
 
         :param operation: key operation value, such as "sign", "encrypt".
-        :raise: ValueError
+        :raise: UnsupportedKeyOperationError
         """
         key_ops = self.get("key_ops")
         if key_ops is not None and operation not in key_ops:
@@ -223,18 +233,22 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
 class SymmetricKey(BaseKey[NativePublicKey, NativePrivateKey], metaclass=ABCMeta):
     @property
     def raw_value(self) -> bytes:
+        """The raw key in bytes."""
         return self._raw_value
 
     @property
     def is_private(self) -> bool:
+        """A symmetric key will always be private."""
         return True
 
     @property
     def public_key(self) -> bytes:
+        """Returns the ``raw_value`` as the public key."""
         return self.raw_value
 
     @property
     def private_key(self) -> bytes:
+        """Returns the ``raw_value`` as the private key."""
         return self.raw_value
 
 

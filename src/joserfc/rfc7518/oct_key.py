@@ -37,14 +37,22 @@ class OctBinding(NativeKeyBinding):
 
 
 class OctKey(SymmetricKey[bytes, bytes]):
+    """OctKey is a symmetric key, defined by RFC7518 Section 6.4.
+    """
     key_type: str = "oct"
     binding = OctBinding
+
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.4
     value_registry = {"k": KeyParameter("Key Value", "str", True, True)}
 
     @classmethod
     def generate_key(cls, key_size=256, options: KeyOptions = None, private: bool = True) -> "OctKey":
-        """Generate a ``OctKey`` with the given bit size."""
+        """Generate a ``OctKey`` with the given bit size (not bytes).
+
+        :param key_size: size in bit
+        :param options: extra parameter in JWK
+        :param private: must be True
+        """
         if not private:
             raise ValueError("oct key can not be generated as public")
 
