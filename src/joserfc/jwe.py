@@ -32,8 +32,6 @@ __all__ = [
     "JSONEncryption",
     "encrypt_compact",
     "decrypt_compact",
-    "extract_compact",
-    "validate_compact",
     "encrypt_json",
     "decrypt_json",
     "default_registry",

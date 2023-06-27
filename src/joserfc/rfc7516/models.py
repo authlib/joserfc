@@ -116,7 +116,7 @@ class JSONEncryption:
 class JWEEncModel(object, metaclass=ABCMeta):
     name: str
     description: str
-    recommended: bool = True
+    recommended: bool = False
     algorithm_type = "JWE"
     algorithm_location = "enc"
 

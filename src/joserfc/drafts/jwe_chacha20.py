@@ -5,7 +5,7 @@ from ..rfc7516.models import JWEEncModel
 class ChaCha20EncModel(JWEEncModel):
     # https://datatracker.ietf.org/doc/html/draft-amringer-jose-chacha-02#section-4
     cek_size = 256
-    recommended: bool = False
+    recommended = False
 
     def __init__(self, name: str, description: str, iv_size: int):
         self.name = name

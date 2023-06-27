@@ -1,7 +1,5 @@
-import json
 import typing as t
 from abc import ABCMeta, abstractmethod
-from functools import cached_property
 from .types import SegmentsDict, JSONSignatureDict
 from ..registry import Header
 
@@ -39,10 +37,6 @@ class CompactSignature:
 
     def set_kid(self, kid: str):
         self.protected["kid"] = kid
-
-    @cached_property
-    def claims(self) -> t.Dict[str, t.Any]:
-        return json.loads(self.payload)
 
 
 class JSONSignature:
