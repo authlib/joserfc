@@ -29,7 +29,7 @@ It encodes the payload with the given ``alg`` in header:
     key = OctKey.import_key("secret")
     text = jwt.encode(header, claims, key)
 
-The returned value of ``text `` in above example is:
+The returned value of ``text`` in above example is:
 
 .. code-block:: none
 
@@ -221,3 +221,25 @@ It is also possible to assign a callable function as the ``key``:
 
 Algorithms & Registry
 ---------------------
+
+The :meth:`encode` and :meth:`decode` accept an ``algorithms`` parameter for
+specifying the allowed algorithms. By default, it only allows your to use
+recommended algorithms.
+
+You can find out the recommended algorithms at:
+
+- :ref:`JSON Web Signature Algorithms <jws_algorithms>`
+
+For instance, ``HS386`` is not a recommended algorithm, and you want to use
+this algorithm:
+
+.. code-block:: python
+
+    >>> from joserfc import jwt, jwk
+    >>> header = {"alg": "HS384"}
+    >>> claims = {"iss": "https://authlib.org"}
+    >>> key = jwk.OctKey.import_key("secret")
+    >>> jwt.encode(header, claims, key, algorithms=["HS384"])
+
+If not specifying the ``algorithms`` parameter, the ``encode`` method will
+raise an error.
