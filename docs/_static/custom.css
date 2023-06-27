@@ -4,3 +4,7 @@
   --syntax-dark-pre-bg: #1a2b3e;
   --syntax-dark-cap-bg: #223e5e;
 }
+
+#ethical-ad-placement {
+  display: none;
+}
