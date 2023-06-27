@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://jose.authlib.org/en/latest/_static/light-logo.svg" width="240" />
+<img src="docs/_static/light-logo.svg" width="240" alt="Authlib JOSE RFC" />
 
 ``joserfc`` is a Python implementation of **JSON Object Signing and Encryption** (JOSE).
 

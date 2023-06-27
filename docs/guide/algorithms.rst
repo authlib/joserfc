@@ -9,35 +9,46 @@ This documentation describes the algorithms to be used with
 JSON Web Signature (JWS), JSON Web Encryption (JWE), and
 JSON Web Key (JWK).
 
-JSON Web Signature
-------------------
-
-Recommended algorithms
-~~~~~~~~~~~~~~~~~~~~~~
-
 JSON Web Key
 ------------
 
-"oct" algorithm
-~~~~~~~~~~~~~~~
+The JSON Web Key (JWK) algorithms contains:
 
-"RSA" algorithm
-~~~~~~~~~~~~~~~
+- :ref:`OctKey`
+- :ref:`RSAKey`
+- :ref:`ECKey`
+- :ref:`OKPKey`
 
-"EC" algorithm
-~~~~~~~~~~~~~~
+.. _jws_algorithms:
 
-"OKP" algorithm
-~~~~~~~~~~~~~~~
+JSON Web Signature
+------------------
+
+``joserfc.jws`` module supports algorithms from RFC7518, RFC8037,
+and RFC8812. You MUST specify the correct key type for each algorithm.
+
+============== ========== ==================
+Algorithm name Key Type      Recommended
+============== ========== ==================
+none           OctKey      :bdg-danger:`No`
+HS256          OctKey      :bdg-success:`YES`
+HS384          OctKey      :bdg-danger:`No`
+HS512          OctKey      :bdg-danger:`No`
+RS256          RSAKey      :bdg-success:`YES`
+RS384          RSAKey      :bdg-danger:`No`
+RS512          RSAKey      :bdg-danger:`No`
+ES256          ECKey       :bdg-success:`YES`
+ES384          ECKey       :bdg-danger:`No`
+ES512          ECKey       :bdg-danger:`No`
+PS256          RSAKey      :bdg-danger:`No`
+PS384          RSAKey      :bdg-danger:`No`
+PS512          RSAKey      :bdg-danger:`No`
+EdDSA          OKPKey      :bdg-danger:`No`
+ES256K         ECKey       :bdg-danger:`No`
+============== ========== ==================
 
 JSON Web Encryption
 -------------------
-
-Default "alg" values
-~~~~~~~~~~~~~~~~~~~~
-
-Default "enc" values
-~~~~~~~~~~~~~~~~~~~~
 
 
 .. _chacha20:

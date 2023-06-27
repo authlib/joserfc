@@ -117,6 +117,8 @@ You can import an ``RSAKey`` from string, bytes and a JWK (in dict).
         "qi": "3PiFU4..."
     })
 
+.. _ECKey:
+
 ECKey
 -----
 
@@ -167,6 +169,8 @@ You can import an ``ECKey`` from string, bytes and a JWK (in dict).
         "y": "y77t-RvAHRKTsSGdIYUfweuOvwrvDD-Q3Hv5J0fSKbE",
         "d": "Hndv7ZZjs_ke8o9zXYo3iq-Yr8SewI5vrqd0pAvEPqg"
     })
+
+.. _OKPKey:
 
 OKPKey
 ------

@@ -162,21 +162,62 @@ Keys
 In the above example, we're using :ref:`OctKey` only simplicity. There are other
 types of keys in :ref:`jwk`.
 
-Correct keys
-~~~~~~~~~~~~
+Key types
+~~~~~~~~~
 
-Each algorithm (``alg`` in header) requires a certain type of key. For example,
-``HS256`` requires ``OctKey``, while ``RS256`` requires :ref:`RSAKey`.
+Each algorithm (``alg`` in header) requires a certain type of key. For example:
 
+- ``HS256`` requires ``OctKey``
+- ``RS256`` requires ``RSAKey``
+
+You can find the correct key type for each algorithm at:
+
+- :ref:`JSON Web Signature Algorithms <jws_algorithms>`
 
 Use key set
 ~~~~~~~~~~~
 
+You can also pass a JWK Set to the ``key`` parameter of :meth:`encode` and
+:meth:`decode` methods.
+
+.. code-block:: python
+
+    import json
+    from joserfc.jwk import KeySet
+    from joserfc import jwt
+
+    with open("your-jwks.json") as f:
+        data = json.load(f)
+        key_set = KeySet.import_key_set(data)
+
+    header = {"alg": "RS256", "kid": "1"}
+    claims = {"iss": "https://authlib.org"}
+    jwt.encode(header, claims, key_set)
+
+The methods will find the correct key according to the ``kid`` you specified.
+If there is no ``kid`` in header, it will pick on randomly and add the ``kid``
+of the key into header.
+
 Callable key
 ~~~~~~~~~~~~
 
+It is also possible to assign a callable function as the ``key``:
+
+.. code-block:: python
+
+    import json
+    from joserfc import jwk
+
+    def load_key(obj):
+        headers = obj.headers()
+        alg = headers["alg"]
+        key_path = f"my-{alg}-key.json"
+        with open(key_path) as f:
+            data = json.load(f)
+            key = jwk.import_key(data["kty"], data)
+        return key
+
+    # jwt.encode(header, claims, load_key)
+
 Algorithms & Registry
 ---------------------
-
-Extract token
--------------
