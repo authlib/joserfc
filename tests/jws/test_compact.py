@@ -91,15 +91,30 @@ def add_ec_tests():
     fixture = read_fixture('jws_compact_ec.json')
     payload = fixture['payload']
 
-    for index, case in enumerate(fixture['cases']):
-        key = case['key']
-        case['payload'] = payload
-        case['id'] = f'EC_{key}_{index}'
+    for index, data in enumerate(fixture['cases']):
+        key = data['key']
+        data['payload'] = payload
+        data['id'] = f'EC_{key}_{index}'
         private_key: ECKey = load_key(f'ec-{key}-private.pem')
         public_key: ECKey = load_key(f'ec-{key}-public.pem')
-        TestCompact.attach_case(case, private_key, public_key)
+        TestCompact.attach_case(data, private_key, public_key)
 
+
+def add_okp_tests():
+    private_key1 = load_key("okp-ed448-private.pem")
+    public_key1 = load_key("okp-ed448-public.pem")
+    private_key2 = load_key("okp-ed25519-private.json")
+    public_key2 = load_key("okp-ed25519-public.json")
+    TestCompact.attach_case(
+        {"payload": "hello", "alg": "EdDSA", "id": "OKP_ed448"},
+        private_key1, public_key1
+    )
+    TestCompact.attach_case(
+        {"payload": "hello", "alg": "EdDSA", "id": "OKP_ed25519"},
+        private_key2, public_key2
+    )
 
 add_oct_tests()
 add_rsa_tests()
 add_ec_tests()
+add_okp_tests()
