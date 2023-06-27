@@ -1,8 +1,6 @@
 import base64
-import string
 import struct
 import json
-import random
 
 
 def to_bytes(x, charset="utf-8", errors="strict"):
@@ -56,9 +54,3 @@ def json_b64encode(text, charset="utf-8") -> bytes:
 
 def json_b64decode(text, charset="utf-8") -> dict:
     return json.loads(urlsafe_b64decode(to_bytes(text, charset)))
-
-
-def generate_token(length=30):
-    rand = random.SystemRandom()
-    chars = string.ascii_letters + string.digits
-    return "".join(rand.choice(chars) for _ in range(length))
