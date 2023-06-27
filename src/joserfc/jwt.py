@@ -1,19 +1,16 @@
+import json
 import typing as t
 from .rfc7519.claims import Claims, convert_claims, check_sensitive_data
 from .rfc7519.registry import ClaimsOption, JWTClaimsRegistry
 from .jws import (
     JWSRegistry,
-    CompactSignature,
     serialize_compact,
-    validate_compact as validate_jws,
-    extract_compact as extract_jws,
+    deserialize_compact,
 )
 from .jwe import (
     JWERegistry,
-    CompactEncryption,
     encrypt_compact,
-    validate_compact as validate_jwe,
-    extract_compact as extract_jwe,
+    decrypt_compact,
 )
 from .jwk import KeyFlexible
 from .errors import InvalidTypeError, InvalidPayloadError
@@ -21,7 +18,6 @@ from .util import to_bytes
 from .registry import Header
 
 __all__ = [
-    "Header",
     "Claims",
     "Token",
     "ClaimsOption",
@@ -41,11 +37,10 @@ class Token:
     :param claims: the payload part of the JWT
     """
     def __init__(self, header: Header, claims: Claims):
+        #: header in dict
         self.header = header
+        #: payload claims in dict
         self.claims = claims
-
-    def __repr__(self):
-        return str(self.claims)
 
 
 def encode(
@@ -72,13 +67,6 @@ def encode(
     return result
 
 
-def extract(value: t.AnyStr) -> Token:
-    """Extract the JSON Web Token string, without validating with the key,
-    without validating the header and claims."""
-    obj = _extract_segment(value)
-    return Token(obj.headers(), obj.claims)
-
-
 def decode(
         value: t.AnyStr,
         key: KeyFlexible,
@@ -94,31 +82,23 @@ def decode(
     :param registry: a ``JWSRegistry`` or ``JWERegistry`` to use
     :raise: BadSignatureError
     """
-    obj = _extract_segment(value)
+    value = to_bytes(value)
+    if value.count(b".") == 4:
+        obj = decrypt_compact(value, key, algorithms, registry)
+        payload = obj.plaintext
+    else:
+        obj = deserialize_compact(value, key, algorithms, registry)
+        payload = obj.payload
 
-    token = Token(obj.headers(), obj.claims)
+    try:
+        claims: Claims = json.loads(payload)
+    except (TypeError, ValueError):
+        raise InvalidPayloadError()
+
+    token = Token(obj.headers(), claims)
     typ = token.header.get("typ")
     # https://www.rfc-editor.org/rfc/rfc7519#section-5.1
     # If present, it is RECOMMENDED that its value be "JWT".
     if typ and typ != "JWT":
         raise InvalidTypeError()
-
-    if isinstance(obj, CompactSignature):
-        validate_jws(obj, key, algorithms=algorithms, registry=registry)
-    else:
-        validate_jwe(obj, key, algorithms=algorithms, registry=registry)
     return token
-
-
-def _extract_segment(value: t.AnyStr) -> t.Union[CompactSignature, CompactEncryption]:
-    segment = to_bytes(value)
-    if segment.count(b".") == 4:
-        obj = extract_jwe(segment)
-    else:
-        obj = extract_jws(segment)
-
-    try:
-        assert isinstance(obj.claims, dict)
-    except (ValueError, TypeError):
-        raise InvalidPayloadError("Payload should be a JSON dict")
-    return obj
