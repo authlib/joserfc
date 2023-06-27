@@ -79,7 +79,7 @@ Explore the following sections to discover more about our theme and its features
    :caption: Development
    :hidden:
 
-   api
+   api/index
    security
    stability
    contributing/index
