@@ -3,6 +3,9 @@
 Quick Start
 ===========
 
+This section provides a quick overview of how to get started with ``joserfc`` and perform
+encoding and decoding a JWT.
+
 Encode and decode JWT
 ---------------------
 

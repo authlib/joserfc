@@ -7,7 +7,7 @@ JSON Web Key
     :noindex:
 
 A JSON Web Key (JWK) is a JavaScript Object Notation (JSON) data structure that
-represents a cryptographic key. (via RFC7517_)
+represents a cryptographic key (via RFC7517_).
 
 .. _RFC7517: https://www.rfc-editor.org/rfc/rfc7517
 

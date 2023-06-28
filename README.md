@@ -2,7 +2,7 @@
 
 <img src="docs/_static/light-logo.svg" width="240" alt="Authlib JOSE RFC" />
 
-``joserfc`` is a Python implementation of **JSON Object Signing and Encryption** (JOSE).
+`joserfc` is a Python library that provides a comprehensive implementation of several essential JSON Object Signing and Encryption (JOSE) standards.
 
 [![GitHub Sponsor](https://badgen.net/badge/support/joserfc/blue?icon=github)](https://github.com/sponsors/lepture)
 [![Build Status](https://github.com/authlib/joserfc/actions/workflows/test.yml/badge.svg)](https://github.com/authlib/joserfc/actions)

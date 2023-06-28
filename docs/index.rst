@@ -1,9 +1,14 @@
 JOSE RFC
 ========
 
-``joserfc`` is a Python implementation of **JSON Object Signing and Encryption** (JOSE).
+``joserfc`` is a Python library that provides a comprehensive implementation of
+several essential JSON Object Signing and Encryption (JOSE) standards, including
+JWS (JSON Web Signature), JWE (JSON Web Encryption), JWK (JSON Web Key),
+JWA (JSON Web Algorithms), and JWT (JSON Web Tokens).
 
-**This package is a part of the Authlib project.**
+It is derived from Authlib_, but features a redesigned API specific to JOSE functionality.
+
+.. _Authlib: https://authlib.org/
 
 Usage
 -----
@@ -55,8 +60,8 @@ Explore the following sections to discover more about our theme and its features
    :caption: Getting started
    :hidden:
 
-   install
    guide/introduction
+   install
 
 .. toctree::
    :caption: Essentials

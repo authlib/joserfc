@@ -31,13 +31,13 @@ and RFC8812. You MUST specify the correct key type for each algorithm.
 Algorithm name Key Type      Recommended
 ============== ========== ==================
 none           OctKey      :bdg-danger:`No`
-HS256          OctKey      :bdg-success:`YES`
+HS256          OctKey      :bdg-success:`Yes`
 HS384          OctKey      :bdg-danger:`No`
 HS512          OctKey      :bdg-danger:`No`
-RS256          RSAKey      :bdg-success:`YES`
+RS256          RSAKey      :bdg-success:`Yes`
 RS384          RSAKey      :bdg-danger:`No`
 RS512          RSAKey      :bdg-danger:`No`
-ES256          ECKey       :bdg-success:`YES`
+ES256          ECKey       :bdg-success:`Yes`
 ES384          ECKey       :bdg-danger:`No`
 ES512          ECKey       :bdg-danger:`No`
 PS256          RSAKey      :bdg-danger:`No`
@@ -47,9 +47,66 @@ EdDSA          OKPKey      :bdg-danger:`No`
 ES256K         ECKey       :bdg-danger:`No`
 ============== ========== ==================
 
+.. _jwe_algorithms:
+
 JSON Web Encryption
 -------------------
 
+``joserfc.jwe`` module supports algorithms from RFC7518, and drafts of
+``ECDH-1PU``. You MUST specify the correct key type for each algorithm.
+
+=================  ==========  ==================
+Algorithm name     Key Type    Recommended
+=================  ==========  ==================
+dir                OctKey      :bdg-success:`Yes`
+A128KW             OctKey      :bdg-success:`Yes`
+A192KW             OctKey      :bdg-danger:`No`
+A256KW             OctKey      :bdg-success:`Yes`
+RSA1_5             RSAKey      :bdg-danger:`No`
+RSA-OAEP           RSAKey      :bdg-success:`Yes`
+RSA-OAEP-256       RSAKey      :bdg-danger:`No`
+ECDH-ES            ECKey       :bdg-success:`Yes`
+ECDH-ES+A128KW     ECKey       :bdg-success:`Yes`
+ECDH-ES+A192KW     ECKey       :bdg-danger:`No`
+ECDH-ES+A256KW     ECKey       :bdg-success:`Yes`
+A128GCMKW          OctKey      :bdg-danger:`No`
+A192GCMKW          OctKey      :bdg-danger:`No`
+A256GCMKW          OctKey      :bdg-danger:`No`
+PBES2-HS256+A128KW RSAKey      :bdg-danger:`No`
+PBES2-HS384+A192KW RSAKey      :bdg-danger:`No`
+PBES2-HS512+A256KW RSAKey      :bdg-danger:`No`
+=================  ==========  ==================
+
+All algorithms defined in RFC7518 for "enc" value are recommended, which
+including:
+
+- A128CBC-HS256
+- A192CBC-HS384
+- A256CBC-HS512
+- A128GCM
+- A192GCM
+- A256GCM
+
+A ``DEF`` algorithm for the "zip" (compression) header parameter is also defined in
+RFC7518, which is recommended.
+
+There are also additional algorithms for "alg" and "enc" in draft versions.
+Please refer to the following sections for more information.
+
+
+OKPKey
+~~~~~~
+
+You can use ``OKPKey`` with the "crv" (curve) parameter set to ``X25519`` or ``X448``
+for the following algorithms:
+
+- "ECDH-ES"
+- "ECDH-ES+A128KW"
+- "ECDH-ES+A192KW"
+- "ECDH-ES+A256KW"
+
+This allows you to utilize these elliptic curve algorithms with ``OKPKey`` for your
+cryptographic operations.
 
 .. _chacha20:
 
