@@ -73,8 +73,7 @@ def decode(
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWTRegistry] = None) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
-    it with the claims requests. This method is a combination of the
-    :function:`extract` and :function:`validate`.
+    it with the claims requests.
 
     :param value: text of the JWT
     :param key: key used to verify the signature

@@ -55,27 +55,27 @@ JSON Web Encryption
 ``joserfc.jwe`` module supports algorithms from RFC7518, and drafts of
 ``ECDH-1PU``. You MUST specify the correct key type for each algorithm.
 
-=================  ==========  ==================
-Algorithm name     Key Type    Recommended
-=================  ==========  ==================
-dir                OctKey      :bdg-success:`Yes`
-A128KW             OctKey      :bdg-success:`Yes`
-A192KW             OctKey      :bdg-danger:`No`
-A256KW             OctKey      :bdg-success:`Yes`
-RSA1_5             RSAKey      :bdg-danger:`No`
-RSA-OAEP           RSAKey      :bdg-success:`Yes`
-RSA-OAEP-256       RSAKey      :bdg-danger:`No`
-ECDH-ES            ECKey       :bdg-success:`Yes`
-ECDH-ES+A128KW     ECKey       :bdg-success:`Yes`
-ECDH-ES+A192KW     ECKey       :bdg-danger:`No`
-ECDH-ES+A256KW     ECKey       :bdg-success:`Yes`
-A128GCMKW          OctKey      :bdg-danger:`No`
-A192GCMKW          OctKey      :bdg-danger:`No`
-A256GCMKW          OctKey      :bdg-danger:`No`
-PBES2-HS256+A128KW RSAKey      :bdg-danger:`No`
-PBES2-HS384+A192KW RSAKey      :bdg-danger:`No`
-PBES2-HS512+A256KW RSAKey      :bdg-danger:`No`
-=================  ==========  ==================
+===================  ==========  ==================
+Algorithm name       Key Type    Recommended
+===================  ==========  ==================
+dir                  OctKey      :bdg-success:`Yes`
+A128KW               OctKey      :bdg-success:`Yes`
+A192KW               OctKey      :bdg-danger:`No`
+A256KW               OctKey      :bdg-success:`Yes`
+RSA1_5               RSAKey      :bdg-danger:`No`
+RSA-OAEP             RSAKey      :bdg-success:`Yes`
+RSA-OAEP-256         RSAKey      :bdg-danger:`No`
+ECDH-ES              ECKey       :bdg-success:`Yes`
+ECDH-ES+A128KW       ECKey       :bdg-success:`Yes`
+ECDH-ES+A192KW       ECKey       :bdg-danger:`No`
+ECDH-ES+A256KW       ECKey       :bdg-success:`Yes`
+A128GCMKW            OctKey      :bdg-danger:`No`
+A192GCMKW            OctKey      :bdg-danger:`No`
+A256GCMKW            OctKey      :bdg-danger:`No`
+PBES2-HS256+A128KW   RSAKey      :bdg-danger:`No`
+PBES2-HS384+A192KW   RSAKey      :bdg-danger:`No`
+PBES2-HS512+A256KW   RSAKey      :bdg-danger:`No`
+===================  ==========  ==================
 
 All algorithms defined in RFC7518 for "enc" value are recommended, which
 including:
