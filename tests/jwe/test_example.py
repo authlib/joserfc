@@ -34,7 +34,7 @@ class TestCompactExamples(TestCase):
 
         # A.1.3.  Key Encryption
         key: RSAKey = load_key('RFC7516-A.1.3.json')
-        obj.add_recipient(key)
+        obj.attach_recipient(key)
 
         enc = registry.get_enc(protected['enc'])
 
@@ -139,7 +139,7 @@ class TestCompactExamples(TestCase):
 
         # A.2.3.  Key Encryption
         key: RSAKey = load_key('RFC7516-A.2.3.json')
-        obj.add_recipient(key)
+        obj.attach_recipient(key)
 
         obj.recipient.encrypted_key = bytes([
             80, 104, 72, 58, 11, 130, 236, 139, 132, 189, 255, 205, 61, 86, 151,
@@ -337,8 +337,8 @@ class TestCompactExamples(TestCase):
         }, {"kid": "7"})
         payload = b"Live long and prosper."
         obj = JSONEncryption(protected, payload, shared_header)
-        obj.add_recipient(key1, recipient1)
-        obj.add_recipient(key2, recipient2)
+        obj.add_recipient(recipient1, key1)
+        obj.add_recipient(recipient2, key2)
         _registry = JWERegistry(algorithms=['RSA1_5', 'A128KW', 'A128CBC-HS256'])
         perform_encrypt(obj, _registry)
         expected = represent_json(obj)

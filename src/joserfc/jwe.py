@@ -120,25 +120,6 @@ def decrypt_compact(
     :return: object of the ``CompactEncryption``
     """
     obj = extract_compact(to_bytes(value))
-    return validate_compact(obj, private_key, algorithms, registry, sender_key)
-
-
-def validate_compact(
-        obj: CompactEncryption,
-        private_key: KeyFlexible,
-        algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[CurveKey] = None) -> CompactEncryption:
-    """Validate the JWE Compact Serialization with the given key.
-    This method is usually used together with ``extract_compact``.
-
-    :param obj: object of the JWE Compact Serialization
-    :param private_key: a flexible private key to decrypt the serialization
-    :param algorithms: a list of allowed algorithms
-    :param registry: a JWERegistry to use
-    :param sender_key: only required when using ECDH-1PU
-    :return: object of the ``CompactEncryption``
-    """
     if algorithms:
         registry = JWERegistry(algorithms=algorithms)
     elif registry is None:
@@ -170,9 +151,9 @@ def encrypt_json(
         header = {"jku": "https://server.example.com/keys.jwks"}  # optional shared header
         obj = JSONEncryption(protected, plaintext, header)
         # add the recipients
-        obj.add_recipient(None, {"kid": "alice", "alg": "RSA1_5"})  # not configured a key
+        obj.add_recipient({"kid": "alice", "alg": "RSA1_5"})  # not configured a key
         bob_key = OctKey.import_key("bob secret")
-        obj.add_recipient(bob_key, {"kid": "bob", "alg": "A128KW"})
+        obj.add_recipient({"kid": "bob", "alg": "A128KW"}, bob_key)
 
     :param obj: an instance of ``JSONEncryption``
     :param public_key: a public key used to encrypt the CEK

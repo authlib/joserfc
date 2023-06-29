@@ -58,7 +58,7 @@ class CompactEncryption:
     def headers(self):
         return self.protected
 
-    def add_recipient(self, key: Key, header: t.Optional[Header] = None):
+    def attach_recipient(self, key: Key, header: t.Optional[Header] = None):
         """Add a recipient to the JWE Compact Serialization. Please add a key that
         comply with the given "alg" value.
 
@@ -76,8 +76,18 @@ class CompactEncryption:
 
 
 class JSONEncryption:
-    """An object to represent the JWE JSON Serialization. It is usually returned by
-    ``decrypt_json`` method.
+    """An object to represent the JWE JSON Serialization. It is used by
+    ``encrypt_json``, and it is usually returned by ``decrypt_json`` method.
+
+    To construct an object of ``JSONEncryption``:
+
+    .. code-block:: python
+
+        protected = {"enc": "A128CBC-HS256"}
+        plaintext = b"hello world"
+        obj = JSONEncryption(protected, plaintext)
+        # then add each recipient
+        obj.add_recipient({"alg": "A128KW"})
     """
     def __init__(
             self,
@@ -87,11 +97,11 @@ class JSONEncryption:
             aad: t.Optional[bytes] = None,
             flatten: bool=False):
         #: protected header in dict
-        self.protected = protected
+        self.protected: Header = protected
         #: the plaintext in bytes
-        self.plaintext = plaintext
+        self.plaintext: bytes = plaintext
         #: unprotected header in dict
-        self.unprotected = unprotected
+        self.unprotected: t.Optional[Header] = unprotected
         #: an optional additional authenticated data
         self.aad: t.Optional[bytes] = aad
         #: represents if the object is in flatten syntax
@@ -102,12 +112,12 @@ class JSONEncryption:
         self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
-    def add_recipient(self, key: Key, header: t.Optional[Header] = None):
+    def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[Key] = None):
         """Add a recipient to the JWE JSON Serialization. Please add a key that
         comply with the "alg" to this recipient.
 
-        :param key: an instance of a key, e.g. (OctKey, RSAKey, ECKey, and etc)
         :param header: recipient's own (unprotected) header
+        :param key: an instance of a key, e.g. (OctKey, RSAKey, ECKey, and etc)
         """
         recipient = Recipient(self, header, key)
         self.recipients.append(recipient)
