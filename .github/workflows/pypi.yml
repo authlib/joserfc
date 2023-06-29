@@ -36,7 +36,9 @@ jobs:
   publish:
     environment:
       name: pypi-release
-
+      url: https://pypi.org/project/joserfc/
+    permissions:
+      id-token: write
     name: release to pypi
     needs: build
     runs-on: ubuntu-latest
@@ -48,7 +50,7 @@ jobs:
         path: dist
 
     - name: Push build artifacts to PyPI
-      uses: pypa/gh-action-pypi-publish@v1.6.4
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         skip_existing: true
         user: __token__
