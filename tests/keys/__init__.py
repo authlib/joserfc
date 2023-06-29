@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from joserfc.jwk import import_key
+from joserfc.jwk import JWKRegistry
 
 BASE_PATH = Path(__file__).parent
 
@@ -11,10 +11,10 @@ def load_key(filename: str, options=None):
 
     if filename.endswith(".json"):
         data = json.loads(content)
-        return import_key(data['kty'], data, options)
+        return JWKRegistry.import_key(data, options=options)
 
     kty = filename.split('-', 1)[0]
-    return import_key(kty.upper(), content, options)
+    return JWKRegistry.import_key(content, kty.upper(), options)
 
 
 def read_key(filename: str):

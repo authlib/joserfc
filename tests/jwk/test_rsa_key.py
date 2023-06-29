@@ -60,6 +60,10 @@ class TestRSAKey(TestCase):
         key: RSAKey = RSAKey.import_key(ssh_public_pem)
         self.assertEqual(key.is_private, False)
 
+        ssh_private_pem = read_key("ssh-rsa-private.pem")
+        key: RSAKey = RSAKey.import_key(ssh_private_pem)
+        self.assertEqual(key.is_private, True)
+
     def test_import_key_from_openssl(self):
         public_pem = read_key("rsa-openssl-public.pem")
         key: RSAKey = RSAKey.import_key(public_pem)

@@ -1,10 +1,11 @@
+import typing as t
 from abc import ABCMeta, abstractmethod
-
 from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
     load_pem_public_key,
     load_ssh_public_key,
+    load_ssh_private_key,
     Encoding,
     PrivateFormat,
     PublicFormat,
@@ -17,7 +18,11 @@ from .types import KeyDict
 from ..util import to_bytes
 
 
-def load_pem_key(raw: bytes, ssh_type=None, key_type=None, password=None):
+def load_pem_key(
+        raw: bytes,
+        ssh_type: t.Optional[bytes]=None,
+        key_type: t.Optional[str]=None,
+        password: t.Optional[bytes]=None):
     if ssh_type and raw.startswith(ssh_type):
         return load_ssh_public_key(raw, backend=default_backend())
 
@@ -25,22 +30,32 @@ def load_pem_key(raw: bytes, ssh_type=None, key_type=None, password=None):
         return load_pem_public_key(raw, backend=default_backend())
 
     if key_type == "private" or password is not None:
-        return load_pem_private_key(raw, password=password, backend=default_backend())
+        return __load_private_key(raw, password=password)
 
     if b"PUBLIC" in raw:
         return load_pem_public_key(raw, backend=default_backend())
 
+    if b"OPENSSH PRIVATE" in raw:
+        return load_ssh_private_key(raw, password=password, backend=default_backend())
+
     if b"PRIVATE" in raw:
-        return load_pem_private_key(raw, password=password, backend=default_backend())
+        return __load_private_key(raw, password=password)
 
     if b"CERTIFICATE" in raw:
         cert = load_pem_x509_certificate(raw, default_backend())
         return cert.public_key()
 
     try:
-        return load_pem_private_key(raw, password=password, backend=default_backend())
+        return __load_private_key(raw, password=password)
     except ValueError:
         return load_pem_public_key(raw, backend=default_backend())
+
+
+def __load_private_key(raw: bytes, password: t.Optional[bytes]=None):
+    try:
+        return load_pem_private_key(raw, password=password, backend=default_backend())
+    except ValueError:
+        return load_ssh_private_key(raw, password=password, backend=default_backend())
 
 
 def dump_pem_key(key, encoding=None, private=False, password=None) -> bytes:

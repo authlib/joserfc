@@ -1,6 +1,5 @@
-from .keyset import KeySet
 from .models import SymmetricKey, AsymmetricKey, CurveKey, Key
-from .keygen import JWK_REGISTRY
+from .registry import JWKRegistry, KeySet
 
 
 __all__ = [
@@ -9,5 +8,5 @@ __all__ = [
     "CurveKey",
     "Key",
     "KeySet",
-    "JWK_REGISTRY",
+    "JWKRegistry",
 ]

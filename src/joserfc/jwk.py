@@ -5,12 +5,8 @@ from .rfc7517 import (
     AsymmetricKey,
     CurveKey,
     Key,
+    JWKRegistry,
     KeySet,
-    JWK_REGISTRY,
-)
-from .rfc7517.keygen import (
-    import_key,
-    generate_key,
 )
 from .rfc7517 import types
 from .rfc7518.oct_key import OctKey
@@ -26,7 +22,7 @@ KeyFlexible = Union[AnyStr, Key, KeySet, KeyCallable]
 
 __all__ = [
     "types",
-    "JWK_REGISTRY",
+    "JWKRegistry",
     "SymmetricKey",
     "AsymmetricKey",
     "CurveKey",
@@ -38,19 +34,19 @@ __all__ = [
     "ECKey",
     "OKPKey",
     "KeySet",
-    "generate_key",
-    "import_key",
     "guess_key",
 ]
 
-# register thumbprint method
-register_secp256k1()
+def __register():
+    JWKRegistry.register(OctKey)
+    JWKRegistry.register(RSAKey)
+    JWKRegistry.register(ECKey)
+    JWKRegistry.register(OKPKey)
+    # add {"crv": "secp256k1"} for ECKey
+    register_secp256k1()
 
 # register all key types
-JWK_REGISTRY[OctKey.key_type] = OctKey
-JWK_REGISTRY[RSAKey.key_type] = RSAKey
-JWK_REGISTRY[ECKey.key_type] = ECKey
-JWK_REGISTRY[OKPKey.key_type] = OKPKey
+__register()
 
 
 class GuestProtocol(Protocol):  # pragma: no cover

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from joserfc.jwk import guess_key, import_key, generate_key
+from joserfc.jwk import JWKRegistry, guess_key
 from joserfc.jwk import OctKey
 
 
@@ -34,11 +34,22 @@ class TestKeyMethods(TestCase):
         self.assertRaises(ValueError, guess_key, {}, Guest())
 
     def test_import_key(self):
-        key = import_key("oct", "secret")
+        # test bytes
+        key = JWKRegistry.import_key(b"secret", "oct")
         self.assertIsInstance(key, OctKey)
-        self.assertRaises(ValueError, import_key, "invalid", "secret")
+
+        # test string
+        key = JWKRegistry.import_key("secret", "oct")
+        self.assertIsInstance(key, OctKey)
+
+        # test dict
+        data = key.as_dict()
+        key = JWKRegistry.import_key(data)
+        self.assertIsInstance(key, OctKey)
+
+        self.assertRaises(ValueError, JWKRegistry.import_key, "secret", "invalid")
 
     def test_generate_key(self):
-        key = generate_key("oct", 8)
+        key = JWKRegistry.generate_key("oct", 8)
         self.assertIsInstance(key, OctKey)
-        self.assertRaises(ValueError, generate_key, "invalid", 8)
+        self.assertRaises(ValueError, JWKRegistry.generate_key, "invalid", 8)
