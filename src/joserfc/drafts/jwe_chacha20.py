@@ -1,5 +1,8 @@
 from Crypto.Cipher import ChaCha20_Poly1305
+from ..rfc7516.registry import JWERegistry
 from ..rfc7516.models import JWEEncModel
+
+__all__ = ["ChaCha20EncModel", "JWE_ENC_MODELS", "register_chaha20_poly1305"]
 
 
 class ChaCha20EncModel(JWEEncModel):
@@ -31,3 +34,8 @@ C20P = ChaCha20EncModel("C20P", "ChaCha20-Poly1305", 96)
 XC20P = ChaCha20EncModel("XC20P", "XChaCha20-Poly1305", 192)
 
 JWE_ENC_MODELS = [C20P, XC20P]
+
+
+def register_chaha20_poly1305():
+    for model in JWE_ENC_MODELS:
+        JWERegistry.register(model)

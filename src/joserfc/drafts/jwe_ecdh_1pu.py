@@ -1,4 +1,5 @@
 import typing as t
+from ..rfc7516.registry import JWERegistry
 from ..rfc7516.models import (
     Recipient,
     JWEKeyAgreement,
@@ -19,8 +20,11 @@ from ..registry import HeaderParameter
 from ..errors import InvalidEncryptionAlgorithmError
 
 
+__all__ = ['ECDH1PUAlgModel', 'register_ecdh_1pu', 'JWE_ALG_MODELS']
+
+
 class ECDH1PUAlgModel(JWEKeyAgreement):
-    """ Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model (ECDH-1PU)
+    """Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model (ECDH-1PU)
 
     https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04
     """
@@ -100,3 +104,8 @@ JWE_ALG_MODELS = [
     ECDH1PUAlgModel(A192KW),  # ECDH-1PU+A192KW
     ECDH1PUAlgModel(A256KW),  # ECDH-1PU+A256KW
 ]
+
+
+def register_ecdh_1pu():
+    for model in JWE_ALG_MODELS:
+        JWERegistry.register(model)

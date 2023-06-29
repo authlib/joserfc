@@ -8,14 +8,11 @@ from joserfc.jwe import (
 )
 from joserfc.jwk import KeySet
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
-from joserfc.drafts.jwe_ecdh_1pu import JWE_ALG_MODELS
+from joserfc.drafts.jwe_ecdh_1pu import JWE_ALG_MODELS, register_ecdh_1pu
 from tests.fixtures import TestFixture
 from tests.keys import load_key
 
-
-for model in JWE_ALG_MODELS:
-    JWERegistry.register(model)
-
+register_ecdh_1pu()
 ecdh_registry = JWERegistry(
     algorithms=[m.name for m in JWE_ALG_MODELS] + [enc.name for enc in JWE_ENC_MODELS]
 )

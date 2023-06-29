@@ -5,14 +5,9 @@ from joserfc.jwe import (
     JWERegistry,
 )
 from joserfc.jwk import OctKey
-from joserfc.drafts.jwe_chacha20 import (
-    JWE_ENC_MODELS,
-    XC20P,
-)
+from joserfc.drafts.jwe_chacha20 import register_chaha20_poly1305
 
-for model in JWE_ENC_MODELS:
-    JWERegistry.register(model)
-
+register_chaha20_poly1305()
 chacha_registry = JWERegistry(algorithms=["dir", "C20P", "XC20P"])
 
 
@@ -47,6 +42,7 @@ class TestChaCha20(TestCase):
         iv = bytes.fromhex('404142434445464748494a4b4c4d4e4f5051525354555657')
         aad = bytes.fromhex('50515253c0c1c2c3c4c5c6c7')
 
+        XC20P = chacha_registry.get_enc("XC20P")
         ciphertext, tag = XC20P.encrypt(plaintext, cek, iv, aad)
         self.assertEqual(
             ciphertext,
