@@ -1,11 +1,14 @@
+from joserfc import __version__
+
 project = "joserfc"
 copyright = "Copyright &copy; 2023, Hsiaoming Yang"
 author = "Hsiaoming Yang"
-version = "v1"
+version = __version__
+release = __version__
 
 language = "en"
 
-html_title = "JOSE"
+html_title = "joserfc"
 
 templates_path = ["_templates"]
 html_static_path = ["_static"]

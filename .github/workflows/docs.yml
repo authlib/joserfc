@@ -6,7 +6,10 @@ permissions:
 on:
   push:
     branches:
-    - main
+      - main
+    paths-ignore:
+      - ".github/*"
+      - "tests/*"
 
 env:
   VERSION_PATH: dev
@@ -27,6 +30,9 @@ jobs:
 
       - name: install dependencies
         run: pip install -r docs/requirements.txt
+
+      - name: install self
+        run: pip install .
 
       - name: sphinx build
         run: python docs/build.py

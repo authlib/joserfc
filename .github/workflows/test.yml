@@ -3,18 +3,20 @@ name: Test
 on:
   push:
     branches-ignore:
-    - 'wip-*'
+      - 'wip-*'
     paths-ignore:
-    - 'docs/**'
-    - '*.md'
-    - '*.rst'
+      - ".github/*"
+      - 'docs/**'
+      - '*.md'
+      - '*.rst'
   pull_request:
     branches-ignore:
-    - 'wip-*'
+      - 'wip-*'
     paths-ignore:
-    - 'docs/**'
-    - '*.md'
-    - '*.rst'
+      - ".github/*"
+      - 'docs/**'
+      - '*.md'
+      - '*.rst'
 
 
 jobs:
