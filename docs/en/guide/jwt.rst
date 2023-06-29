@@ -156,8 +156,8 @@ For :ref:`jwe`, it is the contrary, a public key is used for ``encode``, and a p
 key is used for ``decode``. The ``encode`` method  will use a public key to encrypt,
 and the ``decode`` method will use a private key to decrypt.
 
-Keys
-----
+The key parameter
+-----------------
 
 In the above example, we're using :ref:`OctKey` only simplicity. There are other
 types of keys in :ref:`jwk`.
@@ -169,10 +169,35 @@ Each algorithm (``alg`` in header) requires a certain type of key. For example:
 
 - ``HS256`` requires ``OctKey``
 - ``RS256`` requires ``RSAKey``
+- ``ES256`` requires ``ECKey`` or ``OKPKey``
 
 You can find the correct key type for each algorithm at:
 
 - :ref:`JSON Web Signature Algorithms <jws_algorithms>`
+- :ref:`JSON Web Encryption Algorithms <jwe_algorithms>`
+
+Here is an example of a JWT with "alg" of ``RS256`` in JWS type:
+
+.. code-block:: python
+
+    from joserfc import jwt
+    from joserfc.jwk import RSAKey
+
+    header = {"alg": "RS256"}
+    claims = {"iss": "https://authlib.org"}
+    with open("your-private-rsa-key.pem") as f:
+        key = RSAKey.import_key(f.read())
+
+    # "RS256" is a recommended algorithm, no need to pass a custom ``registry``
+    text = jwt.encode(header, claims, key)
+
+    # ``.encode`` for JWS type use a public key, if using a private key,
+    # it will automatically extract the public key from private key
+    jwt.decode(text, key)
+
+In production, ``jwt.encode`` is usually used by the *client* side, a client
+normally does not have the access to private keys. The server provider would
+usually expose the public keys in JWK Set.
 
 Use key set
 ~~~~~~~~~~~
@@ -186,7 +211,7 @@ You can also pass a JWK Set to the ``key`` parameter of :meth:`encode` and
     from joserfc.jwk import KeySet
     from joserfc import jwt
 
-    with open("your-jwks.json") as f:
+    with open("your-private-jwks.json") as f:
         data = json.load(f)
         key_set = KeySet.import_key_set(data)
 
@@ -197,6 +222,21 @@ You can also pass a JWK Set to the ``key`` parameter of :meth:`encode` and
 The methods will find the correct key according to the ``kid`` you specified.
 If there is no ``kid`` in header, it will pick on randomly and add the ``kid``
 of the key into header.
+
+A client would usually get the public key set from a public URL, normally the
+``decode`` code would be something like:
+
+.. code-block:: python
+
+    import requests
+    from joserfc import jwt
+    from joserfc.jwk import KeySet
+
+    resp = requests.get("https://example.com/.well_known/jwks.json")
+    key_set = KeySet.import_key_set(resp.json())
+
+    def parse_token(token_string: str):
+        jwt.decode(token_string, key_set)
 
 Callable key
 ~~~~~~~~~~~~

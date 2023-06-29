@@ -285,7 +285,8 @@ Call this method will generate the thumbprint with algorithm defined in RFC7638.
 .. code-block:: python
 
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import("foo")
+    >>> key = OctKey.import_key("foo")
+    >>> key.thumbprint()
     '8-e-qGDS2nDpfZzOPtD8Sb7NkifUbw70MeqOKIqyaRw'
 
 ``as_dict``
@@ -326,14 +327,5 @@ Dump an asymmetric key into DER format (in bytes):
     with open("my-key.der", "w") as f:
         f.write(text)
 
-Utilities
----------
-
-``generate_key``
-~~~~~~~~~~~~~~~~
-
-``import_key``
-~~~~~~~~~~~~~~
-
-``guess_key``
-~~~~~~~~~~~~~
+JWKRegistry
+-----------

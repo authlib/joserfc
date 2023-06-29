@@ -30,8 +30,8 @@ Import and generate JWK
 
 .. code-block:: python
 
-    >>> from joserfc import jwk
-    >>> rsa_key = jwk.generate_key('RSA', 512)
+    >>> from joserfc.jwk import RSAKey
+    >>> rsa_key = RSAKey.generate_key(512)
     >>> rsa_key.as_bytes(private=True)
     b'-----BEGIN PRIVATE KEY-----\n....'
     >>> rsa_key.as_bytes(private=False)
@@ -44,19 +44,19 @@ Import and generate JWK
 
 .. code-block:: python
 
-    >>> from joserfc import jwk
+    >>> from joserfc.jwk import RSAKey
     >>> f = open("your-rsa-key.pem")
     >>> pem_data = f.read()
     >>> pem_data
     '-----BEGIN PUBLIC KEY-----\n...'
-    >>> rsa_key = jwk.import_key("RSA", pem_data)
+    >>> rsa_key = RSAKey.import_key(pem_data)
     >>> rsa_key.as_bytes()
     b'-----BEGIN PUBLIC KEY-----\n...'
 
 Learn the details of :ref:`jwk` in the next chapter.
 
-Next
-----
+Dive deep
+---------
 
 Next, learn each module in details.
 

@@ -54,7 +54,7 @@ And draft RFCs implementation of:
 Next
 ----
 
-Explore the following sections to discover more about our theme and its features.
+Explore the following sections to discover more about ``joserfc`` and its features.
 
 .. toctree::
    :caption: Getting started

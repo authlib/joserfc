@@ -14,10 +14,10 @@ JSON Web Key
 
 The JSON Web Key (JWK) algorithms contains:
 
-- :ref:`OctKey`
-- :ref:`RSAKey`
-- :ref:`ECKey`
-- :ref:`OKPKey`
+- :ref:`OctKey` : accepts key size in bits, which means the ``key_size`` MUST be dividable by 8.
+- :ref:`RSAKey` : accepts key size in bits, ``key_size`` MUST ``>=512`` and dividable by 8.
+- :ref:`ECKey` : accepts ``crv`` with ``P-256``, ``P-384``, ``P-521``, and ``secp256k1``.
+- :ref:`OKPKey` : accepts ``crv`` with ``Ed25519``, ``Ed448``, ``X25519``, and ``X448``.
 
 .. _jws_algorithms:
 
@@ -100,10 +100,10 @@ OKPKey
 You can use ``OKPKey`` with the "crv" (curve) parameter set to ``X25519`` or ``X448``
 for the following algorithms:
 
-- "ECDH-ES"
-- "ECDH-ES+A128KW"
-- "ECDH-ES+A192KW"
-- "ECDH-ES+A256KW"
+- ECDH-ES
+- ECDH-ES+A128KW
+- ECDH-ES+A192KW
+- ECDH-ES+A256KW
 
 This allows you to utilize these elliptic curve algorithms with ``OKPKey`` for your
 cryptographic operations.
@@ -120,8 +120,8 @@ To use ``C20P`` and ``XC20P``, developers have to install the ``PyCryptodome`` m
 
     pip install pycryptodome
 
-This is caused by ``cryptography`` package does only support "ChaCha20" cipher, while
-``pycryptodome`` supports both "ChaCha20" and "XChaCha20" ciphers.
+This is caused by ``cryptography`` package does only support "ChaCha20" cipher, not **XChaCha20**,
+while ``pycryptodome`` supports both "ChaCha20" and "XChaCha20" ciphers.
 
 Register ciphers
 ++++++++++++++++
@@ -131,11 +131,9 @@ The default :ref:`registry` doesn't contain draft ciphers, developers MUST regis
 
 .. code-block:: python
 
-    from joserfc.jwe import JWERegistry
-    from joserfc.drafts.jwe_chacha20 import C20P, XC20P
+    from joserfc.drafts.jwe_chacha20 import register_chaha20_poly1305
 
-    JWERegistry.register(C20P)
-    JWERegistry.register(XC20P)
+    register_chaha20_poly1305()
 
 Use custom ``registry``
 +++++++++++++++++++++++
@@ -151,7 +149,7 @@ Use a custom ``registry`` in :meth:`encrypt_compact`, :meth:`decrypt_compact`,
     from joserfc import jwe
     from joserfc.jwk import OctKey
 
-    registry = JWERegistry(
+    registry = jwe.JWERegistry(
         # add more "alg" and "enc" if you want
         algorithms=["A128KW", "C20P"]
     )
@@ -169,3 +167,42 @@ Use a custom ``registry`` in :meth:`encrypt_compact`, :meth:`decrypt_compact`,
 
 ECDH-1PU algorithms
 ~~~~~~~~~~~~~~~~~~~
+
+Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model (ECDH-1PU)
+are still in drafts, they are not registered by default. To use ``ECDH-1PU`` related
+algorithms, developers MUST register them manually:
+
+.. code-block:: python
+
+    from joserfc.drafts.jwe_ecdh_1pu import register_ecdh_1pu
+
+    register_ecdh_1pu()
+
+Then use a custom ``registry`` with the required ``ECDH-1PU`` algorithms. For instance:
+
+.. code-block:: python
+
+    from joserfc import jwe
+    from joserfc.jwk import ECKey
+
+    registry = jwe.JWERegistry(
+        algorithms=["ECDH-1PU+A128KW", "A128CBC-HS256"]
+    )
+    protected = {"alg": "ECDH-1PU+A128KW", "enc": "A128CBC-HS256"}
+    recipient_key = ECKey.import_key("your-ec-public-key.json")
+    sender_key = ECKey.import_key("your-ec-sender-key.json")  # this SHOULD be a private key
+    encrypted_text = jwe.encrypt_compact(
+        protected,
+        b"hello",
+        public_key=recipient_key,
+        registry=registry,
+        sender_key=sender_key,
+    )
+
+.. important::
+
+    The ``ECDH-1PU`` algorithms require a **sender key**, which MUST be a private key when
+    calling :meth:`encrypt_compact` and :meth:`encrypt_json` methods.
+
+The ``sender_key`` can be a :class:`~joserfc.jwk.KeySet`, and JWE will find the correct key
+according to ``skid`` header value.

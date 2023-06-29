@@ -1,7 +1,10 @@
 Using OpenSSL command
 =====================
 
-JOSE RFC provides a method :meth:`joserfc.jwk.generate_key` for
+.. module:: joserfc.jwk
+    :noindex:
+
+JOSE RFC provides a method :meth:`JWKRegistry.generate_key` for
 generating keys to be used for JWS/JWE/JWT. However, you can also
 use other tools to generate the keys, here lists some of the
 commands you might find helpful for ``openssl``.
@@ -14,9 +17,9 @@ EC key with crv P-256
 
 .. code-block:: python
 
-    from joserfc import jwk
+    from joserfc.jwk import JWKRegistry
 
-    key = jwk.generate_key('EC', 'P-256', private=True)
+    key = JWKRegistry.generate_key('EC', 'P-256', private=True)
     private_pem = key.as_bytes(private=True)
     public_pem = key.as_bytes(private=False)
 
@@ -38,9 +41,9 @@ EC key with crv P-384
 
 .. code-block:: python
 
-    from joserfc import jwk
+    from joserfc.jwk import JWKRegistry
 
-    key = jwk.generate_key('EC', 'P-384', private=True)
+    key = JWKRegistry.generate_key('EC', 'P-384', private=True)
     private_pem = key.as_bytes(private=True)
     public_pem = key.as_bytes(private=False)
 
@@ -58,9 +61,9 @@ EC key with crv P-512
 
 .. code-block:: python
 
-    from joserfc import jwk
+    from joserfc.jwk import JWKRegistry
 
-    key = jwk.generate_key('EC', 'P-512', private=True)
+    key = JWKRegistry.generate_key('EC', 'P-512', private=True)
     private_pem = key.as_bytes(private=True)
     public_pem = key.as_bytes(private=False)
 
@@ -80,9 +83,9 @@ EC key with crv secp256k1
 
 .. code-block:: python
 
-    from joserfc import jwk
+    from joserfc.jwk import JWKRegistry
 
-    key = jwk.generate_key('EC', 'secp256k1', private=True)
+    key = JWKRegistry.generate_key('EC', 'secp256k1', private=True)
     private_pem = key.as_bytes(private=True)
     public_pem = key.as_bytes(private=False)
 

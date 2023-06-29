@@ -1,3 +1,5 @@
+:description: How to serialize and deserialize JWS in Compact, General JSON, and Flattened JSON Serialization.
+
 .. _jws:
 
 JSON Web Signature
@@ -24,7 +26,7 @@ content as a compact, URL-safe string. This string is:
     BASE64URL(JWS Payload) || '.' ||
     BASE64URL(JWS Signature)
 
-An example of a compact serialization:
+An example of a compact serialization (line breaks for display purposes only):
 
 .. code-block:: text
 
@@ -32,8 +34,6 @@ An example of a compact serialization:
     eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFt
     cGxlLmNvbS9pc19yb290Ijp0cnVlfQ.
     dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
-
-.. note:: line breaks for display purposes only
 
 Serialization
 ~~~~~~~~~~~~~
@@ -81,8 +81,8 @@ serialization with a public key.
     text = "eyJhbGciOiJIUzI1NiJ9.aGVsbG8.UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A"
     key = OctKey.import_key("secret")
     obj = jws.deserialize_compact(text, key)
-    # => obj.protected == {"alg": "HS256"}
-    # => obj.payload == b"hello"
+    # obj.protected => {"alg": "HS256"}
+    # obj.payload => b"hello"
 
 JSON Signature
 --------------
