@@ -11,7 +11,7 @@ from cryptography.hazmat.primitives.serialization import (
     NoEncryption,
 )
 from ..rfc7517.models import CurveKey
-from ..rfc7517.types import KeyDict, KeyOptions
+from ..rfc7517.types import KeyDict, KeyParameters
 from ..rfc7517.pem import CryptographyBinding
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 from ..registry import KeyParameter
@@ -109,7 +109,7 @@ class OKPKey(CurveKey[PublicOKPKey, PrivateOKPKey]):
     def generate_key(
             cls,
             crv: str = "Ed25519",
-            options: KeyOptions = None,
+            parameters: KeyParameters = None,
             private: bool = True) -> "OKPKey":
         if crv not in PRIVATE_KEYS_MAP:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
@@ -118,7 +118,7 @@ class OKPKey(CurveKey[PublicOKPKey, PrivateOKPKey]):
         raw_key = private_key_cls.generate()
         if not private:
             raw_key = raw_key.public_key()
-        return cls(raw_key, raw_key, options=options)
+        return cls(raw_key, raw_key, parameters)
 
 
 def get_key_curve(key: Union[PublicOKPKey, PrivateOKPKey]):

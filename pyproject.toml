@@ -29,6 +29,7 @@ classifiers = [
 
 [project.urls]
 Documentation = "https://jose.authlib.org/"
+Source = "https://github.com/authlib/joserfc"
 Blog = "https://blog.authlib.org/"
 
 [build-system]

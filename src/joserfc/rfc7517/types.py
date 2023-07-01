@@ -1,6 +1,6 @@
 import typing as t
 
-__all__ = ["KeyDict", "KeyAny", "KeyOptions", "KeySetDict"]
+__all__ = ["KeyDict", "KeyAny", "KeyParameters", "KeySetDict"]
 
 #: JSON Web Key in dict
 KeyDict = t.Dict[str, t.Union[str, t.List[str]]]
@@ -8,8 +8,8 @@ KeyDict = t.Dict[str, t.Union[str, t.List[str]]]
 #: Key in str, bytes and dict
 KeyAny = t.Union[str, bytes, KeyDict]
 
-#: extra options for JWK
-KeyOptions = t.TypedDict("KeyOptions", {
+#: extra key parameters for JWK
+KeyParameters = t.TypedDict("KeyParameters", {
     "use": str,
     "key_ops": t.List[str],
     "alg": str,

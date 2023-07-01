@@ -7,7 +7,7 @@ from ..util import (
 )
 from ..registry import KeyParameter
 from ..rfc7517.models import SymmetricKey, NativeKeyBinding
-from ..rfc7517.types import KeyOptions, KeyDict
+from ..rfc7517.types import KeyParameters, KeyDict
 
 
 POSSIBLE_UNSAFE_KEYS = (
@@ -46,11 +46,11 @@ class OctKey(SymmetricKey[bytes, bytes]):
     value_registry = {"k": KeyParameter("Key Value", "str", True, True)}
 
     @classmethod
-    def generate_key(cls, key_size=256, options: KeyOptions = None, private: bool = True) -> "OctKey":
+    def generate_key(cls, key_size=256, parameters: KeyParameters = None, private: bool = True) -> "OctKey":
         """Generate a ``OctKey`` with the given bit size (not bytes).
 
         :param key_size: size in bit
-        :param options: extra parameter in JWK
+        :param parameters: extra parameter in JWK
         :param private: must be True
         """
         if not private:
@@ -64,4 +64,4 @@ class OctKey(SymmetricKey[bytes, bytes]):
         chars = string.ascii_letters + string.digits
         value = "".join(rand.choice(chars) for _ in range(length))
         raw_key = to_bytes(value)
-        return cls(raw_key, raw_key, options)
+        return cls(raw_key, raw_key, parameters)

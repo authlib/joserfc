@@ -14,7 +14,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
 from cryptography.hazmat.backends import default_backend
 from ..rfc7517.models import CurveKey
 from ..rfc7517.pem import CryptographyBinding
-from ..rfc7517.types import KeyDict, KeyOptions
+from ..rfc7517.types import KeyDict, KeyParameters
 from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
@@ -121,7 +121,7 @@ class ECKey(CurveKey[EllipticCurvePublicKey, EllipticCurvePrivateKey]):
     def generate_key(
             cls,
             crv: str = "P-256",
-            options: KeyOptions = None,
+            parameters: KeyParameters = None,
             private: bool = True) -> "ECKey":
         if crv not in DSS_CURVES:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
@@ -131,4 +131,4 @@ class ECKey(CurveKey[EllipticCurvePublicKey, EllipticCurvePrivateKey]):
         )
         if not private:
             raw_key = raw_key.public_key()
-        return cls(raw_key, raw_key, options)
+        return cls(raw_key, raw_key, parameters)

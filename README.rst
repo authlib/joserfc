@@ -1,4 +1,5 @@
-# JOSE RFC
+JOSE RFC
+========
 
 ``joserfc`` is a Python implementation of **JSON Object Signing and Encryption** (JOSE).
 

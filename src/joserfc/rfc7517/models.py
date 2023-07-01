@@ -1,6 +1,6 @@
 import typing as t
 from abc import ABCMeta, abstractmethod
-from .types import KeyDict, KeyAny, KeyOptions
+from .types import KeyDict, KeyAny, KeyParameters
 from ..registry import (
     KeyParameterRegistryDict,
     JWK_PARAMETER_REGISTRY,
@@ -73,15 +73,15 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
     operation_registry: KeyOperationRegistryDict = JWK_OPERATION_REGISTRY
     binding = NativeKeyBinding
 
-    def __init__(self, raw_value, original_value, options: KeyOptions = None):
+    def __init__(self, raw_value, original_value, parameters: KeyParameters = None):
         self._raw_value = raw_value
         self.original_value = original_value
-        self.options = options
+        self.extra_parameters = parameters
         if isinstance(original_value, dict):
             data = original_value.copy()
             data["kty"] = self.key_type
-            if options:
-                data.update(dict(options))
+            if parameters:
+                data.update(dict(parameters))
 
             self.validate_dict_key(data)
             self._dict_value = data
@@ -120,8 +120,8 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
             return self._dict_value
 
         data = self.binding.convert_raw_key_to_dict(self.raw_value, self.is_private)
-        if self.options:
-            data.update(dict(self.options))
+        if self.extra_parameters:
+            data.update(dict(self.extra_parameters))
         data["kty"] = self.key_type
         self.validate_dict_key(data)
         self._dict_value = data
@@ -216,17 +216,17 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
         cls.binding.validate_dict_key_use_operations(data)
 
     @classmethod
-    def import_key(cls, value: KeyAny, options: KeyOptions = None) -> "BaseKey":
+    def import_key(cls, value: KeyAny, parameters: KeyParameters = None) -> "BaseKey":
         if isinstance(value, dict):
             cls.validate_dict_key(value)
             raw_key = cls.binding.import_from_dict(value)
-            return cls(raw_key, value, options)
+            return cls(raw_key, value, parameters)
 
         raw_key = cls.binding.import_from_bytes(to_bytes(value))
-        return cls(raw_key, value, options)
+        return cls(raw_key, value, parameters)
 
     @classmethod
-    def generate_key(cls, size_or_crv, options: KeyOptions = None, private: bool = True) -> "BaseKey":
+    def generate_key(cls, size_or_crv, parameters: KeyParameters = None, private: bool = True) -> "BaseKey":
         raise NotImplementedError()
 
 

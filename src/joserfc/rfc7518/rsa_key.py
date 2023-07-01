@@ -15,7 +15,7 @@ from cryptography.hazmat.backends import default_backend
 from ..registry import KeyParameter
 from ..rfc7517.models import AsymmetricKey
 from ..rfc7517.pem import CryptographyBinding
-from ..rfc7517.types import KeyDict, KeyOptions
+from ..rfc7517.types import KeyDict, KeyParameters
 from ..util import int_to_base64, base64_to_int
 
 
@@ -117,7 +117,7 @@ class RSAKey(AsymmetricKey[RSAPublicKey, RSAPrivateKey]):
     def generate_key(
             cls,
             key_size: int = 2048,
-            options: KeyOptions = None,
+            parameters: KeyParameters = None,
             private: bool = True) -> "RSAKey":
         if key_size < 512:
             raise ValueError("key_size must not be less than 512")
@@ -130,7 +130,7 @@ class RSAKey(AsymmetricKey[RSAPublicKey, RSAPrivateKey]):
         )
         if not private:
             raw_key = raw_key.public_key()
-        return cls(raw_key, raw_key, options)
+        return cls(raw_key, raw_key, parameters)
 
 
 def has_all_prime_factors(obj) -> bool:

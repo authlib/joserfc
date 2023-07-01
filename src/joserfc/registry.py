@@ -124,7 +124,7 @@ JWE_HEADER_REGISTRY = {
 
 #: Basic JWK parameter registry
 JWK_PARAMETER_REGISTRY = {
-    "kty": KeyParameter("Key ID", is_str, required=True),  # This member MUST be present in a JWK.
+    "kty": KeyParameter("Key Type", is_str, required=True),  # This member MUST be present in a JWK.
     "use": KeyParameter("Public Key Use", in_choices(["sig", "enc"])),
     "key_ops": KeyParameter(
         "Key Operations",
