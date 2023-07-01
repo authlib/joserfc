@@ -12,8 +12,10 @@ The ``registry`` is specifically designed to store supported algorithms,
 allowed algorithms, registered header parameters, and provides methods
 to validate algorithms and headers.
 
-Why registry
-------------
+.. note::
+
+    We'll use ``JWSRegistry`` as our reference, but keep in mind that
+    the behavior of ``JWERegistry`` is identical.
 
 Algorithms
 ----------
@@ -60,6 +62,9 @@ values before allowing their usage.
 Type checking
 ~~~~~~~~~~~~~
 
+The header parameter registry for JWS and JWE performs an initial check on
+the value type.
+
 .. code-block:: python
 
     >>> from joserfc import jws
@@ -80,8 +85,82 @@ registry validates the ``kid`` before processing the serialization.
 Critical headers
 ~~~~~~~~~~~~~~~~
 
+There is a special "crit" header parameter for JWS and JWE, which specifies
+the critical header parameters. These critical parameters are considered mandatory,
+indicating that they must be present. For example:
+
+.. code-block:: python
+
+    >>> from joserfc import jws
+    >>> jws.serialize_compact({"alg": "HS256", "crit": ["kid"]}, "hello", "secret")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "$/joserfc/jws.py", line 98, in serialize_compact
+        registry.check_header(protected)
+      File "$/joserfc/rfc7515/registry.py", line 62, in check_header
+        check_crit_header(header)
+      File "$/joserfc/registry.py", line 195, in check_crit_header
+        raise ValueError(f'"{k}" is a critical header')
+    ValueError: "kid" is a critical header
+
+Since "kid" is listed as a critical (``crit``) header parameter, it is mandatory
+and must be included in the header.
+
 Additional headers
 ~~~~~~~~~~~~~~~~~~
 
+By default, the registry for JWS and JWE only permits registered header parameters.
+Any additional header beyond those supported by the algorithm will result in an error.
+
+.. code-block:: python
+
+    >>> from joserfc import jws
+    >>> jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", "secret")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/home/lepture/authlib/joserfc/src/joserfc/jws.py", line 98, in serialize_compact
+        registry.check_header(protected)
+      File "/home/lepture/authlib/joserfc/src/joserfc/rfc7515/registry.py", line 65, in check_header
+        check_supported_header(self.header_registry, header)
+      File "/home/lepture/authlib/joserfc/src/joserfc/registry.py", line 175, in check_supported_header
+        raise ValueError(f'Unsupported "{unsupported_keys} in header')
+    ValueError: Unsupported {'custom'} in header
+
+To resolve this error, you have two options. First, you can register the
+additional header parameters with the registry. This allows the registry
+to recognize and validate those parameters instead of raising an error.
+
+.. code-block:: python
+
+    from joserfc import jws
+    from joserfc.jws import JWSRegistry
+    from joserfc.registry import HeaderParameter
+
+    additional_header_registry = {
+        "custom": HeaderParameter("Custom message", "str", required=True),
+    }
+    registry = JWSRegistry(additional_header_registry)
+
+    # it will not raise any error
+    jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", "secret", registry=registry)
+
+    # this will raise an error, because we "custom" is defined to be required
+    jws.serialize_compact({"alg": "HS256"}, "hello", "secret", registry=registry)
+
+Alternatively, you can choose to disable the strict header checking altogether.
+By turning off strict header checking, the registry will no longer raise an
+error for unrecognized header parameters. However, please note that this approach
+may compromise the security and integrity of the token, so it should be used with caution.
+
+.. code-block:: python
+
+    registry = JWSRegistry(strict_check_header=False)
+    # will not raise any error
+    jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", "secret", registry=registry)
+
 Registry for JWT
 ----------------
+
+JSON Web Token (JWT) is built on top of :ref:`jws` or :ref:`jwe`. The ``encode`` and ``decode``
+methods accept a ``registry`` parameter. Depending on the algorithm of the JWT, you need to
+decide whether to use ``JWSRegistry`` or ``JWERegistry``.
