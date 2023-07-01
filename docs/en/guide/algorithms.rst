@@ -1,4 +1,4 @@
-:description: All available algorithms for JWS, JWE, JWK, JWT.
+:description: All available algorithms for JWS, JWE, JWK, and JWT.
 
 .. _jwa:
 

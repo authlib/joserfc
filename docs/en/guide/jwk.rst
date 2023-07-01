@@ -1,3 +1,5 @@
+:description: Usage of OctKey, RSAKey, ECKey, and OKPKey.
+
 .. _jwk:
 
 JSON Web Key
@@ -327,5 +329,85 @@ Dump an asymmetric key into DER format (in bytes):
     with open("my-key.der", "w") as f:
         f.write(text)
 
-JWKRegistry
------------
+``JWKRegistry``
+---------------
+
+The :class:`JWKRegistry` class serves as a registry for storing all
+the supported key types in the ``joserfc`` library. While developers
+typically use specific key types such as ``RSAKey`` or ``ECKey``,
+this registry offers a means to dynamically import and generate keys.
+
+Import keys
+~~~~~~~~~~~
+
+The :meth:`JWKRegistry.import_key` can choose the correct key type
+automatically when importing a JWK in dict:
+
+.. code-block:: python
+
+    data = {"kty": "oct", "k": "..."}
+    key = JWKRegistry.import_key(data)  # returns a OctKey
+
+    data = {"kty": "RSA", ...}
+    key = JWKRegistry.import_key(data)  # returns a RSAKey
+
+    data = {"kty": "EC", ...}
+    key = JWKRegistry.import_key(data)  # returns a ECKey
+
+    data = {"kty": "OKP", ...}
+    key = JWKRegistry.import_key(data)  # returns a OKPKey
+
+If the key is in bytes or string, not dict, developers SHOULD specify
+the key type manually:
+
+.. code-block:: python
+
+    data = b"---- BEGIN RSA PRIVATE KEY ----\n..."
+    key = JWKRegistry.import_key(data, "RSA")
+
+Generate keys
+~~~~~~~~~~~~~
+
+The :meth:`JWKRegistry.generate_key` can generate a key with all
+the supported key types. For ``oct`` and ``RSA`` the parameters
+in this method:
+
+.. code-block:: python
+
+    # (key_type: str, size: int, parameters: Optional[dict], private: bool=True)
+    key = JWKRegistry.generate_key("oct", 256)
+    key = JWKRegistry.generate_key("RSA", 2048, {"use": "sig"})
+
+For ``EC`` and ``OKP`` keys, the parameters are:
+
+.. code-block:: python
+
+    # (key_type: str, crv: str, parameters: Optional[dict], private: bool=True)
+    key = JWKRegistry.generate_key("EC", "P-256")
+    key = JWKRegistry.generate_key("OKP", "Ed25519")
+
+Options
+-------
+
+The ``import_key`` and ``generate_key`` methods available in ``OctKey``, ``RSAKey``,
+``ECKey``, ``OKPKey``, and ``JWKRegistry`` classes have an optional ``parameters`` parameter.
+This ``parameters`` allows you to provide a dict that includes additional key parameters
+to be included in the JWK.
+
+Some of the standard (registered) header fields are:
+
+- ``kty``: Key Type, it is automatically added
+- ``use``: Public Key Use, "sig" or "enc"
+- ``key_ops``: Key Operations, allowed operations of this key
+- ``alg``: Algorithm, allowed algorithm of this key
+- ``kid``: Key ID, a string of the key ID
+
+When using ``import_key`` and ``generate_key``, developers can pass the extra key ``parameters``:
+
+.. code-block:: python
+
+    parameters = {"use": "sig", "alg": "RS256", "key_ops": ["verify"]}
+    RSAKey.import_key(data, parameters=parameters)
+
+The above ``RSAKey`` then can only be used for ``JWS`` with ``alg`` of ``RS256``, and it can
+only be used for deserialization (``verify``).

@@ -1,7 +1,7 @@
 :description: Get started with joserfc module to encode and decode JSON Web Token (JWT).
 
-Quick Start
-===========
+Guide
+=====
 
 This section provides a quick overview of how to get started with ``joserfc`` and perform
 encoding and decoding a JWT.

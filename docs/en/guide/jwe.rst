@@ -214,9 +214,9 @@ It is possible to support non-recommended algorithms by passing the
 
 .. code-block:: python
 
-    jwe.encrypt_compact(protected, plaintext, key, algorithms=["A128GCMKW"])
+    jwe.encrypt_compact(protected, plaintext, key, algorithms=["A128GCM", "A128KW"])
 
-    registry = JWERegistry(algorithms=["A128GCMKW"])
+    registry = JWERegistry(algorithms=["A128GCM", "A128KW"])
     jwe.encrypt_compact(protected, plaintext, key, registry=registry)
 
 The registry is a little complex, find out more on the :ref:`registry` section.

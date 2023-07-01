@@ -1,3 +1,5 @@
+:description: How to encode and decode a JSON Web Token (JWT) in python.
+
 .. _jwt:
 
 JSON Web Token
@@ -6,12 +8,14 @@ JSON Web Token
 .. module:: joserfc.jwt
     :noindex:
 
-JSON Web Token (JWT) is built on top of :ref:`jws` or :ref:`jwe` with certain payload claims.
-The claims should be in JSON format, with specified fields.
+JSON Web Token (JWT) is built on top of :ref:`jws` or :ref:`jwe` and includes
+specific payload claims. These claims are required to be in JSON format and
+follow a predefined set of fields.
 
 .. hint::
 
-    Do you know JWT is not a part of JOSE. It is created by the OAuth working group.
+    Do you know that JSON Web Token (JWT) is not a part of JOSE. Instead,
+    it was created by the OAuth working group.
 
 Encode token
 ------------
@@ -134,7 +138,7 @@ is an example of JWE:
     jwt.encode(header, claims, key)
 
 The JWE formatted result contains 5 parts, while JWS only contains 3 parts,
-a JWE example would be something like this:
+a JWE example would be something like this (line breaks for display only):
 
 .. code-block:: none
 
@@ -143,8 +147,6 @@ a JWE example would be something like this:
     57P7XX6C3hJbk-Nl.
     dpgaZFi3uI1RiOqI3bmYY3_opkljIwcByf_j6fM.
     uv1BZZy5F-ci54BS11EYGg
-
-**line breaks for display only**
 
 Another difference is the key used for ``encode`` and ``decode``.
 
