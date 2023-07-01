@@ -68,12 +68,15 @@ _value_validators = {
 }
 
 class HeaderParameter:
+    """Define the header parameter for JWS and JWE."""
     def __init__(self, description: str, validate: t.Union[str, Validate], required: bool=False):
+        #: a short description of the header parameter
         self.description: str = description
         if isinstance(validate, str):
-            self.validate: Validate = _value_validators[validate]
-        else:
-            self.validate: Validate = validate
+            validate: Validate = _value_validators[validate]
+        #: a function for validating the header parameter's value
+        self.validate: Validate = validate
+        #: if this header parameter is required
         self.required = required
 
 #: Define header parameters for JWS and JWE
@@ -81,18 +84,22 @@ HeaderRegistryDict = t.Dict[str, HeaderParameter]
 
 
 class KeyParameter:
+    """Define the key parameter for JWK."""
     def __init__(
             self,
              description: str,
              validate: t.Union[str, Validate],
              private: t.Optional[bool]=None,
              required: bool=False):
+        #: a short description of the key parameter
         self.description: str = description
         if isinstance(validate, str):
-            self.validate: Validate = _value_validators[validate]
-        else:
-            self.validate: Validate = validate
+            validate: Validate = _value_validators[validate]
+        #: a function for validating the key parameter's value
+        self.validate: Validate = validate
+        #: if this key parameter for private key only
         self.private = private
+        #: if this key parameter is required
         self.required = required
 
 #: Define parameters for JWK
