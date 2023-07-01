@@ -24,6 +24,14 @@ AlgorithmNamesDict = t.TypedDict("AlgorithmNamesDict", {
 
 
 class JWERegistry:
+    """A registry for JSON Web Encryption to keep all the supported algorithms.
+    An instance of ``JWERegistry`` is usually used together with methods in
+    ``joserfc.jwe``.
+
+    :param header_registry: extra header parameters registry
+    :param algorithms: allowed algorithms to be used
+    :param strict_check_header: only allow header key in the registry to be used
+    """
     algorithms: AlgorithmsDict = {
         "alg": {},
         "enc": {},
@@ -33,13 +41,13 @@ class JWERegistry:
 
     def __init__(
             self,
-            headers: t.Optional[HeaderRegistryDict] = None,
+            header_registry: t.Optional[HeaderRegistryDict] = None,
             algorithms: t.Optional[t.List[str]] = None,
             strict_check_header: bool = True):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(JWE_HEADER_REGISTRY)
-        if headers is not None:
-            self.header_registry.update(headers)
+        if header_registry is not None:
+            self.header_registry.update(header_registry)
         self.allowed = algorithms
         self.strict_check_header = strict_check_header
 
@@ -51,6 +59,7 @@ class JWERegistry:
             cls.recommended.append(model.name)
 
     def check_header(self, header: Header, check_more=False):
+        """Check and validate the fields in header part of a JWS object."""
         check_crit_header(header)
         check_registry_header(self.header_registry, header)
 
@@ -67,12 +76,24 @@ class JWERegistry:
             check_supported_header(self.header_registry, header)
 
     def get_alg(self, name: str) -> JWEAlgModel:
+        """Get the allowed ("alg") algorithm instance of the given name.
+
+        :param name: value of the ``alg``, e.g. ``ECDH-ES``, ``A128KW``
+        """
         return self._get_algorithm("alg", name)
 
     def get_enc(self, name: str) -> JWEEncModel:
+        """Get the allowed ("enc") algorithm instance of the given name.
+
+        :param name: value of the ``enc``, e.g. ``A128CBC-HS256``, ``A128GCM``
+        """
         return self._get_algorithm("enc", name)
 
     def get_zip(self, name: str) -> JWEZipModel:
+        """Get the allowed ("zip") algorithm instance of the given name.
+
+        :param name: value of the ``zip``, e.g. ``DEF``
+        """
         return self._get_algorithm("zip", name)
 
     def _get_algorithm(self, location: str, name: str):

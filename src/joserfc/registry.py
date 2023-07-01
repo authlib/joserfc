@@ -172,7 +172,7 @@ def check_supported_header(registry: HeaderRegistryDict, header: Header):
     allowed_keys = set(registry.keys())
     unsupported_keys = set(header.keys()) - allowed_keys
     if unsupported_keys:
-        raise ValueError(f'Unsupported "{unsupported_keys} in header')
+        raise ValueError(f'Unsupported {unsupported_keys} in header')
 
 
 def check_registry_header(registry: HeaderRegistryDict, header: Header):

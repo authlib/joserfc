@@ -15,7 +15,7 @@ class JWSRegistry(object):
     An instance of ``JWSRegistry`` is usually used together with methods in
     ``joserfc.jws``.
 
-    :param headers: extra header parameter definitions
+    :param header_registry: extra header parameters registry
     :param algorithms: allowed algorithms to be used
     :param strict_check_header: only allow header key in the registry to be used
     """
@@ -24,13 +24,13 @@ class JWSRegistry(object):
 
     def __init__(
             self,
-            headers: Optional[HeaderRegistryDict] = None,
+            header_registry: Optional[HeaderRegistryDict] = None,
             algorithms: Optional[List[str]] = None,
             strict_check_header: bool = True):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(JWS_HEADER_REGISTRY)
-        if headers is not None:
-            self.header_registry.update(headers)
+        if header_registry is not None:
+            self.header_registry.update(header_registry)
         self.allowed = algorithms
         self.strict_check_header = strict_check_header
 
@@ -42,7 +42,7 @@ class JWSRegistry(object):
             cls.recommended.append(alg.name)
 
     def get_alg(self, name: str):
-        """Get the algorithm instance of the given name.
+        """Get the allowed algorithm instance of the given name.
 
         :param name: value of the ``alg``, e.g. ``HS256``, ``RS256``
         """
