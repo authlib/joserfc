@@ -9,8 +9,7 @@ from joserfc.jwe import (
 from joserfc.jwk import KeySet
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from joserfc.drafts.jwe_ecdh_1pu import JWE_ALG_MODELS, register_ecdh_1pu
-from tests.fixtures import TestFixture
-from tests.keys import load_key
+from tests.base import TestFixture, load_key
 
 register_ecdh_1pu()
 ecdh_registry = JWERegistry(
@@ -19,17 +18,19 @@ ecdh_registry = JWERegistry(
 
 
 class TestECDH1PUCompact(TestFixture):
-    def run_test(self, case, recipient_key, sender_key):
-        value: str = case["value"]
-        payload = case["payload"].encode("utf-8")
+    def run_test(self, data):
+        alice_key = load_key("ec-p256-alice.json")
+        bob_key = load_key("ec-p256-bob.json")
+        value: str = data["value"]
+        payload = data["payload"].encode("utf-8")
         obj = decrypt_compact(
             value.encode("utf-8"),
-            private_key=recipient_key,
+            private_key=bob_key,
             registry=ecdh_registry,
-            sender_key=sender_key,
+            sender_key=alice_key,
         )
-        self.assertEqual(obj.protected["alg"], case["alg"])
-        self.assertEqual(obj.protected["enc"], case["enc"])
+        self.assertEqual(obj.protected["alg"], data["alg"])
+        self.assertEqual(obj.protected["enc"], data["enc"])
         self.assertEqual(obj.plaintext, payload)
 
     def run_compact_case(self, alg: str, enc: str, recipient_key, sender_key):
@@ -86,12 +87,7 @@ class TestECDH1PUCompact(TestFixture):
                 self.run_compact_case(alg, enc, bob_key, alice_key)
 
 
-def add_compact_fixtures():
-    alice_key = load_key("ec-p256-alice.json")
-    bob_key = load_key("ec-p256-bob.json")
-    TestECDH1PUCompact.load_fixture('jwe_compact_ecdh_1pu.json', bob_key, alice_key)
-
-add_compact_fixtures()
+TestECDH1PUCompact.load_fixture('jwe_compact_ecdh_1pu.json')
 
 
 class TestECDH1PUJSON(TestCase):

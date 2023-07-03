@@ -1,31 +1,10 @@
+from unittest import TestCase
 from joserfc.jws import JWSRegistry, serialize_compact, deserialize_compact
-from joserfc.jwk import OctKey, RSAKey, ECKey, KeySet
+from joserfc.jwk import OctKey, KeySet
 from joserfc.errors import BadSignatureError, DecodeError, MissingAlgorithmError
-from joserfc.util import to_bytes
-from tests.fixtures import TestFixture, read_fixture
-from tests.keys import load_key
 
 
-class TestCompact(TestFixture):
-    def run_test(self, data, private_key, public_key):
-        alg = data['alg']
-
-        if 'value' in data:
-            expect = data['value']
-        else:
-            expect = None
-
-        header = {'alg': alg}
-        payload = to_bytes(data['payload'])
-        registry = JWSRegistry(algorithms=[alg])
-        value = serialize_compact(header, payload, private_key, registry=registry)
-
-        if expect:
-            self.assertEqual(value, expect)
-
-        obj = deserialize_compact(value, public_key, registry=registry)
-        self.assertEqual(obj.payload, payload)
-
+class TestCompact(TestCase):
     def test_registry_is_none(self):
         value = serialize_compact({"alg": "HS256"}, b"foo", "secret")
         expected = 'eyJhbGciOiJIUzI1NiJ9.Zm9v.0pehoi-RMZM1jl-4TP_C4Y6BJ-bcmsuzfDyQpkpJkh0'
@@ -74,47 +53,3 @@ class TestCompact(TestFixture):
 
         registry = JWSRegistry(strict_check_header=False)
         serialize_compact(header, b"hi", "secret", registry=registry)
-
-
-def add_oct_tests():
-    oct_key = OctKey.import_key('rfc')
-    TestCompact.load_fixture('jws_compact_oct.json', oct_key, oct_key)
-
-
-def add_rsa_tests():
-    private_key: RSAKey = load_key("rsa-openssl-private.pem")
-    public_key: RSAKey = load_key("rsa-openssl-public.pem")
-    TestCompact.load_fixture('jws_compact_rsa.json', private_key, public_key)
-
-
-def add_ec_tests():
-    fixture = read_fixture('jws_compact_ec.json')
-    payload = fixture['payload']
-
-    for index, data in enumerate(fixture['cases']):
-        key = data['key']
-        data['payload'] = payload
-        data['id'] = f'EC_{key}_{index}'
-        private_key: ECKey = load_key(f'ec-{key}-private.pem')
-        public_key: ECKey = load_key(f'ec-{key}-public.pem')
-        TestCompact.attach_case(data, private_key, public_key)
-
-
-def add_okp_tests():
-    private_key1 = load_key("okp-ed448-private.pem")
-    public_key1 = load_key("okp-ed448-public.pem")
-    private_key2 = load_key("okp-ed25519-private.json")
-    public_key2 = load_key("okp-ed25519-public.json")
-    TestCompact.attach_case(
-        {"payload": "hello", "alg": "EdDSA", "id": "OKP_ed448"},
-        private_key1, public_key1
-    )
-    TestCompact.attach_case(
-        {"payload": "hello", "alg": "EdDSA", "id": "OKP_ed25519"},
-        private_key2, public_key2
-    )
-
-add_oct_tests()
-add_rsa_tests()
-add_ec_tests()
-add_okp_tests()

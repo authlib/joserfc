@@ -1,7 +1,7 @@
 from joserfc.jws import serialize_json, deserialize_json
 from joserfc.jwk import RSAKey
 from unittest import TestCase
-from tests.keys import load_key
+from tests.base import load_key
 
 
 class TestJSON(TestCase):

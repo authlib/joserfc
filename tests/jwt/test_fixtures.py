@@ -1,34 +1,27 @@
 from joserfc import jwt
-from joserfc.jwk import RSAKey
-from tests.fixtures import TestFixture
-from tests.keys import load_key
+from joserfc.jwk import OctKey
+from tests.base import TestFixture, load_key
 
 
 class TestJWTFixtures(TestFixture):
-    def run_test(self, case, private_key, public_key):
-        alg = case['alg']
-
-        if 'value' in case:
-            expect = case['value']
+    def run_test(self, data):
+        header = data["header"]
+        algorithms = [header["alg"]]
+        if "secret" in data:
+            key = OctKey.import_key(data["secret"])
+            private_key = key
+            public_key = key
         else:
-            expect = None
+            private_key = load_key(data["private_key"])
+            public_key = load_key(data["public_key"])
 
-        header = {'alg': alg}
-        claims = case['payload']
-        value = jwt.encode(header, claims, private_key, algorithms=[alg])
+        claims = data["payload"]
+        value = jwt.encode(header, claims, private_key, algorithms=algorithms)
+        if "token" in data:
+            self.assertEqual(value, data["token"])
 
-        if expect:
-            self.assertEqual(value, expect)
-
-        obj = jwt.decode(value, public_key, algorithms=[alg])
+        obj = jwt.decode(value, public_key, algorithms=algorithms)
         self.assertEqual(obj.claims, claims)
 
 
-def add_rsa_tests():
-    private_key: RSAKey = load_key("rsa-openssl-private.pem")
-    public_key: RSAKey = load_key("rsa-openssl-public.pem")
-    TestJWTFixtures.load_fixture('jwt_rsa.json', private_key, public_key)
-
-add_rsa_tests()
-
-TestJWTFixtures.load_fixture('jwt_oct.json', b'secret', b'secret')
+TestJWTFixtures.load_fixture('jwt_use_jws.json')

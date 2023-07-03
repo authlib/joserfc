@@ -3,7 +3,7 @@ from joserfc.jwe import encrypt_compact, decrypt_compact, JWERegistry
 from joserfc.jwk import RSAKey, ECKey, OctKey
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from joserfc.errors import InvalidKeyLengthError
-from tests.keys import load_key
+from tests.base import load_key
 
 
 class TestJWECompact(TestCase):

@@ -1,5 +1,4 @@
-from tests.keys import load_key
-from tests.fixtures import TestFixture, read_fixture
+from tests.base import TestFixture, load_key
 from joserfc import jws
 from joserfc.util import urlsafe_b64encode
 
@@ -13,8 +12,11 @@ payload = (
 b64_payload = urlsafe_b64encode(payload).decode("utf-8")
 
 
-class TestJWS(TestFixture):
-    def run_test(self, data, private_key, public_key):
+class TestJWSRFC7520(TestFixture):
+    def run_test(self, data):
+        private_key = load_key(data["private_key"])
+        public_key = load_key(data["public_key"])
+
         protected = data["protected"]
         algorithms = [protected["alg"]]
 
@@ -46,7 +48,7 @@ class TestJWS(TestFixture):
         self.assertEqual(obj6.flattened, True)
 
         # signature won't change with these algorithms
-        if data["id"].startswith(("HS", "RS")):
+        if protected["alg"].startswith(("HS", "RS")):
             self.assertEqual(value4, data["compact"])
             self.assertEqual(value5, data["general_json"])
             self.assertEqual(value6, data["flattened_json"])
@@ -156,13 +158,4 @@ class TestJWS(TestFixture):
         self.assertEqual(value2, flattened_json)
 
 
-def add_jws_tests():
-    examples = read_fixture('jws_rfc7520.json')
-
-    for data in examples:
-        private_key = load_key(data["private_key"])
-        public_key = load_key(data["public_key"])
-        TestJWS.attach_case(data, private_key, public_key)
-
-
-add_jws_tests()
+TestJWSRFC7520.load_fixture("jws_rfc7520.json")

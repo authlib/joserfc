@@ -7,7 +7,7 @@ from joserfc.rfc7516.models import CompactEncryption, JSONEncryption
 from joserfc.rfc7516.message import perform_encrypt
 from joserfc.rfc7516.compact import represent_compact
 from joserfc.rfc7516.json import represent_json
-from tests.keys import load_key
+from tests.base import load_key
 
 
 class TestCompactExamples(TestCase):

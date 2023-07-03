@@ -1,8 +1,15 @@
 from unittest import TestCase
 from joserfc import jws
-from joserfc.jwk import RSAKey
-from joserfc.errors import BadSignatureError
-from tests.keys import load_key
+from joserfc.jwk import RSAKey, OctKey
+from joserfc.registry import HeaderParameter
+from joserfc.errors import (
+    BadSignatureError,
+    UnsupportedKeyUseError,
+    UnsupportedKeyAlgorithmError,
+    UnsupportedKeyOperationError,
+)
+from joserfc.util import urlsafe_b64encode
+from tests.base import load_key
 
 
 class TestJWSErrors(TestCase):
@@ -75,6 +82,11 @@ class TestJWSErrors(TestCase):
         registry = jws.JWSRegistry(strict_check_header=False)
         jws.serialize_compact(header, "i", "secret", registry=registry)
 
+        # or use a header registry
+        extra_header = {"extra": HeaderParameter("Extra header", "str", False)}
+        registry = jws.JWSRegistry(header_registry=extra_header)
+        jws.serialize_compact(header, "i", "secret", registry=registry)
+
     def test_rsa_invalid_signature(self):
         key1 = RSAKey.generate_key()
         key2 = RSAKey.generate_key()
@@ -116,4 +128,41 @@ class TestJWSErrors(TestCase):
             BadSignatureError,
             jws.deserialize_compact,
             text, key2
+        )
+
+        parts = text.split('.')
+        bad_text = ".".join(parts[:-1]) + "." + urlsafe_b64encode(b"abc").decode("utf-8")
+        self.assertRaises(
+            BadSignatureError,
+            jws.deserialize_compact,
+            bad_text, key1
+        )
+
+
+class TestJWSWithKeyErrors(TestCase):
+    def test_invalid_key_use(self):
+        key = OctKey.generate_key(parameters={"use": "enc"})
+        header = {"alg": "HS256"}
+        self.assertRaises(
+            UnsupportedKeyUseError,
+            jws.serialize_compact,
+            header, "i", key
+        )
+
+    def test_invalid_key_alg(self):
+        key = OctKey.generate_key(parameters={"alg": "HS512"})
+        header = {"alg": "HS256"}
+        self.assertRaises(
+            UnsupportedKeyAlgorithmError,
+            jws.serialize_compact,
+            header, "i", key
+        )
+
+    def test_invalid_key_ops(self):
+        key = OctKey.generate_key(parameters={"key_ops": ["verify"]})
+        header = {"alg": "HS256"}
+        self.assertRaises(
+            UnsupportedKeyOperationError,
+            jws.serialize_compact,
+            header, "i", key
         )
