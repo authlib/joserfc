@@ -42,7 +42,7 @@ class NativeKeyBinding(object, metaclass=ABCMeta):
         pass
 
     @staticmethod
-    def as_bytes(key: "BaseKey", encoding=None, private=None, password=None) -> bytes:
+    def as_bytes(key: "BaseKey", encoding=None, private=None, password=None) -> bytes:  # pragma: no cover
         return key.raw_value
 
     @classmethod

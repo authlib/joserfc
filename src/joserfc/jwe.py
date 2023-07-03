@@ -58,7 +58,7 @@ def encrypt_compact(
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[CurveKey] = None) -> str:
+        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> str:
     """Generate a JWE Compact Serialization. The JWE Compact Serialization represents
     encrypted content as a compact, URL-safe string.  This string is::
 
@@ -87,7 +87,8 @@ def encrypt_compact(
     key = guess_key(public_key, recipient)
     key.check_use("enc")
     recipient.recipient_key = key
-    recipient.sender_key = sender_key
+    if sender_key:
+        recipient.sender_key = _guess_sender_key(recipient, sender_key)
     obj.recipient = recipient
     perform_encrypt(obj, registry)
     out = represent_compact(obj)
@@ -99,7 +100,7 @@ def decrypt_compact(
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[CurveKey] = None) -> CompactEncryption:
+        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> CompactEncryption:
     """Extract and validate the JWE Compact Serialization (in string, or bytes)
     with the given key. An JWE Compact Serialization looks like:
 
@@ -130,7 +131,8 @@ def decrypt_compact(
     key = guess_key(private_key, recipient)
     key.check_use("enc")
     recipient.recipient_key = key
-    recipient.sender_key = sender_key
+    if sender_key:
+        recipient.sender_key = _guess_sender_key(recipient, sender_key)
     return perform_decrypt(obj, registry)
 
 

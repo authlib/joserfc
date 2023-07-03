@@ -129,10 +129,10 @@ class AESGCMAlgModel(JWEKeyWrapping):
         self.description = f"Key wrapping with AES GCM using {key_size}-bit key"
         self.key_size = key_size
 
-    def wrap_cek(self, cek: bytes, key: bytes) -> bytes:
+    def wrap_cek(self, cek: bytes, key: bytes) -> bytes:  # pragma: no cover
         raise RuntimeError(f"{self.name} can not be used together with Key Agreement")
 
-    def unwrap_cek(self, ek: bytes, key: bytes):
+    def unwrap_cek(self, ek: bytes, key: bytes):  # pragma: no cover
         raise RuntimeError(f"{self.name} can not be used together with Key Agreement")
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
