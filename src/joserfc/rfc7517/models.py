@@ -63,7 +63,7 @@ class NativeKeyBinding(object, metaclass=ABCMeta):
             operations = cls.use_key_ops_registry[dict_key["use"]]
             for op in dict_key["key_ops"]:
                 if op not in operations:
-                    raise ValueError(f'"use" and "key_ops" does not match')
+                    raise ValueError('"use" and "key_ops" does not match')
 
 
 class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):

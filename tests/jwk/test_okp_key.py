@@ -11,9 +11,9 @@ class TestOKPKey(TestCase):
     def test_generate_keys(self):
         curves = ["Ed25519", "Ed448", "X25519", "X448"]
         for crv in curves:
-          key = OKPKey.generate_key(crv)
-          self.assertTrue(key.is_private)
-          self.assertEqual(key.curve_name, crv)
+            key = OKPKey.generate_key(crv)
+            self.assertTrue(key.is_private)
+            self.assertEqual(key.curve_name, crv)
 
         public_key = OKPKey.generate_key("Ed25519", private=False)
         self.assertFalse(public_key.is_private)

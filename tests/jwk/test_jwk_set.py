@@ -26,7 +26,7 @@ class TestKeySet(TestCase):
         keys = []
         pem1 = read_key("rsa-openssl-public.pem")
         keys.append(RSAKey.import_key(pem1))
-        pem2 = read_key(f"ec-p256-private.pem")
+        pem2 = read_key("ec-p256-private.pem")
         keys.append(ECKey.import_key(pem2))
 
         jwks = KeySet(keys)

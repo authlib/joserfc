@@ -12,7 +12,7 @@ class Recipient:
             self,
             parent: t.Union["CompactEncryption", "JSONEncryption"],
             header: t.Optional[Header] = None,
-            recipient_key: t.Optional[Key]=None):
+            recipient_key: t.Optional[Key] = None):
         self.__parent = parent
         self.header = header
         self.recipient_key = recipient_key
@@ -95,7 +95,7 @@ class JSONEncryption:
             plaintext: t.Optional[bytes] = None,
             unprotected: t.Optional[Header] = None,
             aad: t.Optional[bytes] = None,
-            flatten: bool=False):
+            flatten: bool = False):
         #: protected header in dict
         self.protected: Header = protected
         #: the plaintext in bytes

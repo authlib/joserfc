@@ -18,7 +18,7 @@ from .types import KeyDict
 from ..util import to_bytes
 
 
-def load_pem_key(raw: bytes, ssh_type: t.Optional[bytes]=None, password: t.Optional[bytes]=None):
+def load_pem_key(raw: bytes, ssh_type: t.Optional[bytes] = None, password: t.Optional[bytes] = None):
     if ssh_type and raw.startswith(ssh_type):
         key = load_ssh_public_key(raw, backend=default_backend())
 

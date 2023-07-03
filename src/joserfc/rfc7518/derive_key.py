@@ -12,12 +12,13 @@ __all__ = [
     "u32be_len_input",
 ]
 
+
 def derive_key_for_concat_kdf(
         shared_key: bytes,
         header: Header,
         cek_size: int,
         key_size: t.Optional[int],
-        tag: t.Optional[bytes]=None):
+        tag: t.Optional[bytes] = None):
     # PartyUInfo
     apu_info = u32be_len_input(header.get("apu"), True)
     # PartyVInfo

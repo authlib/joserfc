@@ -210,7 +210,7 @@ class TestCompactExamples(TestCase):
 
         # RSA1_5 is not allowed by default
         self.assertRaises(ValueError, decrypt_compact, expected, key)
-        _registry = JWERegistry(algorithms=['RSA1_5','A128CBC-HS256'])
+        _registry = JWERegistry(algorithms=['RSA1_5', 'A128CBC-HS256'])
         jwe_data = decrypt_compact(expected, key, registry=_registry)
         self.assertEqual(jwe_data.plaintext, plaintext)
 

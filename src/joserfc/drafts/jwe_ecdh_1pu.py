@@ -37,7 +37,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
     tag_aware = True
     recommended: bool = False
 
-    def __init__(self, key_wrapping: t.Optional[JWEKeyWrapping]=None):
+    def __init__(self, key_wrapping: t.Optional[JWEKeyWrapping]):
         if key_wrapping is None:
             self.name = "ECDH-1PU"
             self.description = "ECDH-1PU using one-pass KDF and CEK in the Direct Key Agreement mode"

@@ -1,6 +1,5 @@
 import typing as t
 from .models import (
-    JWEDirectEncryption,
     CompactEncryption,
     JSONEncryption,
     Recipient,

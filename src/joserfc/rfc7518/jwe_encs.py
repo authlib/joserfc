@@ -46,8 +46,8 @@ class CBCHS2EncModel(JWEEncModel):
 
     def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
         """Key Encryption with AES_CBC_HMAC_SHA2."""
-        hkey = cek[: self.key_len]
-        ekey = cek[self.key_len :]
+        hkey = cek[:self.key_len]
+        ekey = cek[self.key_len:]
 
         pad = PKCS7(AES.block_size).padder()
         padded_data = pad.update(plaintext) + pad.finalize()
@@ -60,8 +60,8 @@ class CBCHS2EncModel(JWEEncModel):
 
     def decrypt(self, ciphertext: bytes, tag: bytes, cek: bytes, iv: bytes, aad: bytes) -> bytes:
         """Key Decryption with AES AES_CBC_HMAC_SHA2."""
-        hkey = cek[: self.key_len]
-        dkey = cek[self.key_len :]
+        hkey = cek[:self.key_len]
+        dkey = cek[self.key_len:]
 
         ctag = self._hmac(ciphertext, aad, iv, hkey)
         if not hmac.compare_digest(ctag, tag):

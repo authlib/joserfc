@@ -37,6 +37,7 @@ __all__ = [
     "guess_key",
 ]
 
+
 def __register():
     JWKRegistry.register(OctKey)
     JWKRegistry.register(RSAKey)
@@ -44,6 +45,7 @@ def __register():
     JWKRegistry.register(OKPKey)
     # add {"crv": "secp256k1"} for ECKey
     register_secp256k1()
+
 
 # register all key types
 __register()

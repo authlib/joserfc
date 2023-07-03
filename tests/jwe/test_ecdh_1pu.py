@@ -121,39 +121,39 @@ class TestECDH1PUJSON(TestCase):
                 "UCIsImNydiI6IlgyNTUxOSIsIngiOiJrOW9mX2NwQWFqeTBwb1c1Z2FpeFhHczluSGt3ZzFB"
                 "RnFVQUZhMzlkeUJjIn19"
             ),
-            "unprotected": {"jku":"https://alice.example.com/keys.jwks"},
-            "recipients":[
+            "unprotected": {"jku": "https://alice.example.com/keys.jwks"},
+            "recipients": [
                 {
-                    "header": {"kid":"bob-key-2"},
+                    "header": {"kid": "bob-key-2"},
                     "encrypted_key": (
                         "pOMVA9_PtoRe7xXW1139NzzN1UhiFoio8lGto9cf0t8PyU-sjNXH8-LIRLycq8CH"
                         "JQbDwvQeU1cSl55cQ0hGezJu2N9IY0QN"
                     )
                 },
                 {
-                    "header": {"kid":"2021-05-06"},
+                    "header": {"kid": "2021-05-06"},
                     "encrypted_key": (
                         "56GVudgRLIMEElQ7DpXsijJVRSWUSDNdbWkdV3g0GUNq6hcT_GkxwnxlPIWrTXCq"
                         "RpVKQC8fe4z3PQ2YH2afvjQ28aiCTWFE"
                     )
-                 }
+                }
             ],
             "iv": "AAECAwQFBgcICQoLDA0ODw",
             "ciphertext": "Az2IWsISEMDJvyc5XRL-3-d-RgNBOGolCsxFFoUXFYw",
             "tag": "HLb4fTlm8spGmij3RyOs2gJ4DpHM4hhVRwdF_hGb3WQ"
         }
         alice_key = load_key("okp-x25519-alice.json")
-        bob_key = load_key("okp-x25519-bob.json", {"kid":"bob-key-2"})
-        charlie_key = load_key("okp-x25519-charlie.json", {"kid":"2021-05-06"})
+        bob_key = load_key("okp-x25519-bob.json", {"kid": "bob-key-2"})
+        charlie_key = load_key("okp-x25519-charlie.json", {"kid": "2021-05-06"})
         protected = {
-            "alg":"ECDH-1PU+A128KW",
-            "enc":"A256CBC-HS512",
-            "apu":"QWxpY2U",
-            "apv":"Qm9iIGFuZCBDaGFybGll",
+            "alg": "ECDH-1PU+A128KW",
+            "enc": "A256CBC-HS512",
+            "apu": "QWxpY2U",
+            "apv": "Qm9iIGFuZCBDaGFybGll",
             "epk": {
-                "kty":"OKP",
-                "crv":"X25519",
-                "x":"k9of_cpAajy0poW5gaixXGs9nHkwg1AFqUAFa39dyBc"
+                "kty": "OKP",
+                "crv": "X25519",
+                "x": "k9of_cpAajy0poW5gaixXGs9nHkwg1AFqUAFa39dyBc"
             }
         }
         obj = decrypt_json(

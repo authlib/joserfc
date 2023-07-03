@@ -67,9 +67,10 @@ _value_validators = {
     "none": not_support,
 }
 
+
 class HeaderParameter:
     """Define the header parameter for JWS and JWE."""
-    def __init__(self, description: str, validate: t.Union[str, Validate], required: bool=False):
+    def __init__(self, description: str, validate: t.Union[str, Validate], required: bool = False):
         #: a short description of the header parameter
         self.description: str = description
         if isinstance(validate, str):
@@ -79,6 +80,7 @@ class HeaderParameter:
         #: if this header parameter is required
         self.required = required
 
+
 #: Define header parameters for JWS and JWE
 HeaderRegistryDict = t.Dict[str, HeaderParameter]
 
@@ -87,10 +89,10 @@ class KeyParameter:
     """Define the key parameter for JWK."""
     def __init__(
             self,
-             description: str,
-             validate: t.Union[str, Validate],
-             private: t.Optional[bool]=None,
-             required: bool=False):
+            description: str,
+            validate: t.Union[str, Validate],
+            private: t.Optional[bool] = None,
+            required: bool = False):
         #: a short description of the key parameter
         self.description: str = description
         if isinstance(validate, str):
@@ -102,6 +104,7 @@ class KeyParameter:
         #: if this key parameter is required
         self.required = required
 
+
 #: Define parameters for JWK
 KeyParameterRegistryDict = t.Dict[str, KeyParameter]
 KeyOperation = namedtuple("KeyOperation", ["description", "use", "private"])
@@ -111,7 +114,7 @@ KeyOperationRegistryDict = t.Dict[str, KeyOperation]
 JWS_HEADER_REGISTRY: HeaderRegistryDict = {
     "alg": HeaderParameter("Algorithm", is_str, True),
     "jku": HeaderParameter("JWK Set URL", is_url),
-    "jwk": HeaderParameter("JSON Web Key",  is_jwk),
+    "jwk": HeaderParameter("JSON Web Key", is_jwk),
     "kid": HeaderParameter("Key ID", is_str),
     "x5u": HeaderParameter("X.509 URL", is_url),
     "x5c": HeaderParameter("X.509 Certificate Chain", is_list_str),

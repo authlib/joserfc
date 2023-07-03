@@ -32,9 +32,9 @@ class TestChaCha20(TestCase):
     def test_xc20p_content_encryption_decryption(self):
         # https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha-03#appendix-A.3.1
         plaintext = bytes.fromhex(
-            '4c616469657320616e642047656e746c656d656e206f662074686520636c6173' +
-            '73206f66202739393a204966204920636f756c64206f6666657220796f75206f' +
-            '6e6c79206f6e652074697020666f7220746865206675747572652c2073756e73' +
+            '4c616469657320616e642047656e746c656d656e206f662074686520636c6173'
+            '73206f66202739393a204966204920636f756c64206f6666657220796f75206f'
+            '6e6c79206f6e652074697020666f7220746865206675747572652c2073756e73'
             '637265656e20776f756c642062652069742e'
         )
 
@@ -47,9 +47,9 @@ class TestChaCha20(TestCase):
         self.assertEqual(
             ciphertext,
             bytes.fromhex(
-                'bd6d179d3e83d43b9576579493c0e939572a1700252bfaccbed2902c21396cbb' +
-                '731c7f1b0b4aa6440bf3a82f4eda7e39ae64c6708c54c216cb96b72e1213b452' +
-                '2f8c9ba40db5d945b11b69b982c1bb9e3f3fac2bc369488f76b2383565d3fff9' +
+                'bd6d179d3e83d43b9576579493c0e939572a1700252bfaccbed2902c21396cbb'
+                '731c7f1b0b4aa6440bf3a82f4eda7e39ae64c6708c54c216cb96b72e1213b452'
+                '2f8c9ba40db5d945b11b69b982c1bb9e3f3fac2bc369488f76b2383565d3fff9'
                 '21f9664c97637da9768812f615c68b13b52e'
             )
         )
