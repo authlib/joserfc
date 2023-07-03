@@ -85,6 +85,7 @@ def encrypt_compact(
     obj = CompactEncryption(protected, to_bytes(plaintext))
     recipient = Recipient(obj)
     key = guess_key(public_key, recipient)
+    key.check_use("enc")
     recipient.recipient_key = key
     recipient.sender_key = sender_key
     obj.recipient = recipient
@@ -126,7 +127,9 @@ def decrypt_compact(
         registry = default_registry
 
     recipient = obj.recipient
-    recipient.recipient_key = guess_key(private_key, recipient)
+    key = guess_key(private_key, recipient)
+    key.check_use("enc")
+    recipient.recipient_key = key
     recipient.sender_key = sender_key
     return perform_decrypt(obj, registry)
 
@@ -172,7 +175,9 @@ def encrypt_json(
         if sender_key and not recipient.sender_key:
             recipient.sender_key = _guess_sender_key(recipient, sender_key)
         if not recipient.recipient_key:
-            recipient.recipient_key = guess_key(public_key, recipient)
+            key = guess_key(public_key, recipient)
+            key.check_use("enc")
+            recipient.recipient_key = key
 
     perform_encrypt(obj, registry)
     return represent_json(obj)
@@ -201,7 +206,9 @@ def decrypt_json(
         registry = default_registry
 
     for recipient in obj.recipients:
-        recipient.recipient_key = guess_key(private_key, recipient)
+        key = guess_key(private_key, recipient)
+        key.check_use("enc")
+        recipient.recipient_key = key
         if sender_key:
             recipient.sender_key = _guess_sender_key(recipient, sender_key)
 

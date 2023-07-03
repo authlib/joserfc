@@ -63,25 +63,31 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
     :param key: a very flexible key
     :param obj: a protocol that has ``headers`` and ``set_kid`` methods
     """
+    headers = obj.headers()
+
     if isinstance(key, (str, bytes)):
-        return OctKey.import_key(key)
+        rv_key = OctKey.import_key(key)
 
     elif isinstance(key, (SymmetricKey, AsymmetricKey)):
-        return key
+        rv_key = key
 
     elif isinstance(key, KeySet):
-        headers = obj.headers()
         kid = headers.get("kid")
-
         if not kid:
             # choose one key by random
             key: Key = random.choice(key.keys)
             # use side effect to add kid information
             obj.set_kid(key.kid)
-            return key
-        return key.get_by_kid(kid)
+            rv_key = key
+        else:
+            rv_key = key.get_by_kid(kid)
 
     elif callable(key):
-        return key(obj)
+        rv_key = key(obj)
 
-    raise ValueError("Invalid key")
+    else:
+        raise ValueError("Invalid key")
+
+    if "alg" in headers:
+        rv_key.check_alg(headers["alg"])
+    return rv_key

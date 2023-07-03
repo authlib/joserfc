@@ -160,7 +160,7 @@ def deserialize_compact(
 
 def serialize_json(
         members: t.Union[HeaderDict, t.List[HeaderDict]],
-        payload: bytes,
+        payload: t.AnyStr,
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWSRegistry] = None) -> JSONSerialization:
@@ -205,6 +205,7 @@ def serialize_json(
             __check_member(registry, member)
 
     members = [HeaderMember(**member) for member in members]
+    payload = to_bytes(payload)
     obj = JSONSignature(members, payload)
     obj.segments["payload"] = urlsafe_b64encode(payload)
     obj.flattened = flatten
