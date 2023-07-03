@@ -10,16 +10,15 @@ class TestJWECompact(TestCase):
     def run_case(self, alg: str, enc: str, private_key, public_key):
         protected = {"alg": alg, "enc": enc}
         payload = b'hello'
-        registry = JWERegistry(algorithms=[alg, enc])
         result = encrypt_compact(
             protected, payload, public_key,
-            registry=registry,
+            algorithms=[alg, enc],
         )
         self.assertEqual(result.count('.'), 4)
 
         obj = decrypt_compact(
             result, private_key,
-            registry=registry,
+            algorithms=[alg, enc],
         )
         self.assertEqual(obj.plaintext, payload)
 

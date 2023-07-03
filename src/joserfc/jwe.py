@@ -136,7 +136,7 @@ def decrypt_compact(
 
 def encrypt_json(
         obj: JSONEncryption,
-        public_key: KeyFlexible,
+        public_key: t.Optional[KeyFlexible],
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
         sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> JSONSerialization:

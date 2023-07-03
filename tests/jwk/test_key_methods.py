@@ -1,6 +1,11 @@
 from unittest import TestCase
 from joserfc.jwk import JWKRegistry, guess_key
 from joserfc.jwk import OctKey
+from joserfc.errors import (
+    UnsupportedKeyAlgorithmError,
+    UnsupportedKeyUseError,
+    UnsupportedKeyOperationError,
+)
 
 
 class Guest:
@@ -53,3 +58,40 @@ class TestKeyMethods(TestCase):
         key = JWKRegistry.generate_key("oct", 8)
         self.assertIsInstance(key, OctKey)
         self.assertRaises(ValueError, JWKRegistry.generate_key, "invalid", 8)
+
+    def test_check_use(self):
+        key = OctKey.import_key("secret", {"use": "sig"})
+        key.check_use("sig")
+        self.assertRaises(
+            UnsupportedKeyUseError,
+            key.check_use,
+            "enc"
+        )
+        self.assertRaises(
+            UnsupportedKeyUseError,
+            key.check_use,
+            "invalid"
+        )
+
+    def test_check_alg(self):
+        key = OctKey.import_key("secret", {"alg": "HS256"})
+        key.check_alg("HS256")
+        self.assertRaises(
+            UnsupportedKeyAlgorithmError,
+            key.check_alg,
+            "RS256"
+        )
+
+    def test_check_ops(self):
+        key = OctKey.import_key("secret", {"key_ops": ["sign", "verify"]})
+        key.check_key_op("sign")
+        self.assertRaises(
+            UnsupportedKeyOperationError,
+            key.check_key_op,
+            "wrapKey"
+        )
+        self.assertRaises(
+            UnsupportedKeyOperationError,
+            key.check_key_op,
+            "invalid"
+        )

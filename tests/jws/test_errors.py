@@ -13,6 +13,14 @@ from tests.base import load_key
 
 
 class TestJWSErrors(TestCase):
+    def test_without_alg(self):
+        # missing alg
+        self.assertRaises(
+            ValueError,
+            jws.serialize_compact,
+            {"kid": "123"}, "i", "secret"
+        )
+
     def test_none_alg(self):
         header = {"alg": "none"}
         text = jws.serialize_compact(
@@ -53,6 +61,12 @@ class TestJWSErrors(TestCase):
 
         # x5c should be a chain of string
         header = {"alg": "HS256", "x5c": "url"}
+        self.assertRaises(
+            ValueError,
+            jws.serialize_compact,
+            header, "i", "secret",
+        )
+        header = {"alg": "HS256", "x5c": [1, 2]}
         self.assertRaises(
             ValueError,
             jws.serialize_compact,

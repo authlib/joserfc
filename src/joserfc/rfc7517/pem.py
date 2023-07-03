@@ -18,44 +18,29 @@ from .types import KeyDict
 from ..util import to_bytes
 
 
-def load_pem_key(
-        raw: bytes,
-        ssh_type: t.Optional[bytes]=None,
-        key_type: t.Optional[str]=None,
-        password: t.Optional[bytes]=None):
+def load_pem_key(raw: bytes, ssh_type: t.Optional[bytes]=None, password: t.Optional[bytes]=None):
     if ssh_type and raw.startswith(ssh_type):
-        return load_ssh_public_key(raw, backend=default_backend())
+        key = load_ssh_public_key(raw, backend=default_backend())
 
-    if key_type == "public":
-        return load_pem_public_key(raw, backend=default_backend())
+    elif b"OPENSSH PRIVATE" in raw:
+        key = load_ssh_private_key(raw, password=password, backend=default_backend())
 
-    if key_type == "private" or password is not None:
-        return __load_private_key(raw, password=password)
+    elif b"PUBLIC" in raw:
+        key = load_pem_public_key(raw, backend=default_backend())
 
-    if b"PUBLIC" in raw:
-        return load_pem_public_key(raw, backend=default_backend())
+    elif b"PRIVATE" in raw:
+        key = load_pem_private_key(raw, password=password, backend=default_backend())
 
-    if b"OPENSSH PRIVATE" in raw:
-        return load_ssh_private_key(raw, password=password, backend=default_backend())
-
-    if b"PRIVATE" in raw:
-        return __load_private_key(raw, password=password)
-
-    if b"CERTIFICATE" in raw:
+    elif b"CERTIFICATE" in raw:
         cert = load_pem_x509_certificate(raw, default_backend())
-        return cert.public_key()
+        key = cert.public_key()
 
-    try:
-        return __load_private_key(raw, password=password)
-    except ValueError:
-        return load_pem_public_key(raw, backend=default_backend())
-
-
-def __load_private_key(raw: bytes, password: t.Optional[bytes]=None):
-    try:
-        return load_pem_private_key(raw, password=password, backend=default_backend())
-    except ValueError:
-        return load_ssh_private_key(raw, password=password, backend=default_backend())
+    else:
+        try:
+            key = load_pem_private_key(raw, password=password, backend=default_backend())
+        except ValueError:
+            key = load_pem_public_key(raw, backend=default_backend())
+    return key
 
 
 def dump_pem_key(key, encoding=None, private=False, password=None) -> bytes:
@@ -72,7 +57,7 @@ def dump_pem_key(key, encoding=None, private=False, password=None) -> bytes:
         encoding = Encoding.PEM
     elif encoding == "DER":
         encoding = Encoding.DER
-    else:
+    else:  # pragma: no cover
         raise ValueError("Invalid encoding: {!r}".format(encoding))
 
     if private:
