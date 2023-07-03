@@ -47,6 +47,9 @@ EdDSA          OKPKey      :bdg-danger:`No`
 ES256K         ECKey       :bdg-danger:`No`
 ============== ========== ==================
 
+.. note::
+    ``EdDSA`` algorithm only accepts ``OKPKey`` with "crv" of "Ed25519" and "Ed448".
+
 .. _jwe_algorithms:
 
 JSON Web Encryption

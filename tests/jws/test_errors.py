@@ -152,6 +152,18 @@ class TestJWSErrors(TestCase):
             bad_text, key1
         )
 
+    def test_okp_bad_signature(self):
+        header = {"alg": "EdDSA"}
+        key1 = load_key("okp-ed448-private.pem")
+        key2 = load_key("okp-ed25519-private.json")
+        algorithms = ["EdDSA"]
+        text = jws.serialize_compact(header, "i", key1, algorithms=algorithms)
+        self.assertRaises(
+            BadSignatureError,
+            jws.deserialize_compact,
+            text, key2, algorithms=algorithms,
+        )
+
 
 class TestJWSWithKeyErrors(TestCase):
     def test_invalid_key_use(self):

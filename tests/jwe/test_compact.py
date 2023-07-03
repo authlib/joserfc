@@ -1,8 +1,14 @@
 from unittest import TestCase
-from joserfc.jwe import encrypt_compact, decrypt_compact, JWERegistry
+from joserfc.jwe import encrypt_compact, decrypt_compact
 from joserfc.jwk import RSAKey, ECKey, OctKey
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
-from joserfc.errors import InvalidKeyLengthError
+from joserfc.errors import (
+    InvalidKeyLengthError,
+    MissingAlgorithmError,
+    MissingEncryptionError,
+    DecodeError,
+)
+from joserfc.util import json_b64encode
 from tests.base import load_key
 
 
@@ -60,3 +66,25 @@ class TestJWECompact(TestCase):
         for alg in algs:
             key = OctKey.generate_key(algs[alg])
             self.run_cases([alg], key, key)
+
+    def test_with_zip_header(self):
+        private_key: RSAKey = load_key('rsa-openssl-private.pem')
+        public_key: RSAKey = load_key('rsa-openssl-public.pem')
+        protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256", "zip": "DEF"}
+        plaintext = b"hello"
+        result = encrypt_compact(protected, plaintext, public_key)
+        obj = decrypt_compact(result, private_key)
+        self.assertEqual(obj.plaintext, plaintext)
+
+    def test_invalid_compact_data(self):
+        private_key: RSAKey = load_key('rsa-openssl-private.pem')
+        value = b"a.b.c.d.e.f.g"
+        self.assertRaises(ValueError, decrypt_compact, value, private_key)
+        value = b"a.b.c.d.e"
+        self.assertRaises(DecodeError, decrypt_compact, value, private_key)
+
+        value = json_b64encode({"enc": "A128CBC-HS256"}) + b".b.c.d.e"
+        self.assertRaises(MissingAlgorithmError, decrypt_compact, value, private_key)
+
+        value = json_b64encode({"alg": "RSA-OAEP"}) + b".b.c.d.e"
+        self.assertRaises(MissingEncryptionError, decrypt_compact, value, private_key)

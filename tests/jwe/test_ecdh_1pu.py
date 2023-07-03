@@ -86,6 +86,27 @@ class TestECDH1PUCompact(TestFixture):
             for enc in allowed_enc_values:
                 self.run_compact_case(alg, enc, bob_key, alice_key)
 
+    def test_load_sender_key_via_skid(self):
+        alice_key = load_key("ec-p256-alice.json", {"kid": "alice"})
+        bob_key = load_key("ec-p256-bob.json", {"kid": "bob"})
+        key = KeySet([alice_key, bob_key])
+
+        protected = {"alg": "ECDH-1PU+A128KW", "enc": "A128CBC-HS256", "kid": "bob", "skid": "alice"}
+        value = encrypt_compact(
+            protected, b'hello',
+            public_key=key,
+            registry=ecdh_registry,
+            sender_key=key,
+        )
+        self.assertEqual(value.count("."), 4)
+        obj = decrypt_compact(
+            value,
+            private_key=key,
+            registry=ecdh_registry,
+            sender_key=key,
+        )
+        self.assertEqual(obj.plaintext, b'hello')
+
 
 TestECDH1PUCompact.load_fixture('jwe_compact_ecdh_1pu.json')
 

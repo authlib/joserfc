@@ -3,6 +3,7 @@ import datetime
 from unittest import TestCase
 from joserfc import jwt
 from joserfc.errors import (
+    InsecureClaimError,
     InvalidClaimError,
     MissingClaimError,
     ExpiredTokenError,
@@ -11,6 +12,25 @@ from joserfc.errors import (
 
 
 class TestJWTClaims(TestCase):
+    def test_check_sensitive_data(self):
+        jwt.check_sensitive_data({})
+        jwt.check_sensitive_data({"card": 123})
+
+        for key in ("password", "token", "secret", "secret_key", "api_key"):
+            claims = {key: "123"}
+            self.assertRaises(
+                InsecureClaimError,
+                jwt.check_sensitive_data,
+                claims
+            )
+
+        claims = {"card": "6011000000000000"}
+        self.assertRaises(
+            InsecureClaimError,
+            jwt.check_sensitive_data,
+            claims
+        )
+
     def test_convert_time(self):
         now = datetime.datetime.now()
         encoded_text = jwt.encode({"alg": "HS256"}, {"iat": now}, "secret")

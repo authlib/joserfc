@@ -80,11 +80,15 @@ class TestRSAKey(TestCase):
         # as_dict
         data = key.as_dict()
         self.assertIn('d', data)
+        data = key.as_dict(private=True)
+        self.assertIn('d', data)
         data = key.as_dict(private=False)
         self.assertNotIn('d', data)
 
         # as_pem
         data = key.as_pem()
+        self.assertIn(b"PRIVATE", data)
+        data = key.as_pem(private=True)
         self.assertIn(b"PRIVATE", data)
         data = key.as_pem(private=False)
         self.assertIn(b"PUBLIC", data)

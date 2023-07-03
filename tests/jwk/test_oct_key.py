@@ -22,6 +22,42 @@ class TestOctKey(TestCase):
         key = OctKey.import_key(data)
         self.assertEqual(key.as_dict(), data)
 
+        # with use and key ops
+        data = {
+            "kty": "oct",
+            "alg": "A128KW",
+            "k": "GawgguFyGrWKav7AX4VKUg",
+            "use": "sig",
+            "key_ops": ["sign", "verify"]
+        }
+        key = OctKey.import_key(data)
+        self.assertEqual(key.as_dict(), data)
+
+    def test_import_missing_k(self):
+        data = {
+            "kty": "oct",
+            "alg": "A128KW",
+        }
+        self.assertRaises(ValueError, OctKey.import_key, data)
+
+    def test_invalid_typeof_k(self):
+        data = {
+            "kty": "oct",
+            "alg": "A128KW",
+            "k": 123,
+        }
+        self.assertRaises(ValueError, OctKey.import_key, data)
+
+    def test_mismatch_use_key_ops(self):
+        data = {
+            "kty": "oct",
+            "alg": "A128KW",
+            "k": "GawgguFyGrWKav7AX4VKUg",
+            "use": "sig",
+            "key_ops": ["wrapKey"]
+        }
+        self.assertRaises(ValueError, OctKey.import_key, data)
+
     def test_import_pem_key(self):
         public_pem = read_key("ec-p256-public.pem")
         self.assertRaises(ValueError, OctKey.import_key, public_pem)
