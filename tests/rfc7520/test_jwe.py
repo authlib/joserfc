@@ -36,7 +36,7 @@ class TestJWERFC7520(TestFixture):
         general_obj = decrypt_json(data["general_json"], key, algorithms=algorithms)
         self.assertEqual(obj2.protected, general_obj.protected)
         self.assertEqual(obj2.flatten, general_obj.flatten)
-        self.assertEqual(general_obj.flatten, False)
+        self.assertFalse(general_obj.flatten)
 
         enc_data.flatten = True
         value3 = encrypt_json(enc_data, None, algorithms=algorithms)
@@ -44,7 +44,7 @@ class TestJWERFC7520(TestFixture):
         flattened_obj = decrypt_json(data["flattened_json"], key, algorithms=algorithms)
         self.assertEqual(obj3.protected, flattened_obj.protected)
         self.assertEqual(obj3.flatten, flattened_obj.flatten)
-        self.assertEqual(flattened_obj.flatten, True)
+        self.assertTrue(flattened_obj.flatten)
 
 
 TestJWERFC7520.load_fixture("jwe_rfc7520.json")

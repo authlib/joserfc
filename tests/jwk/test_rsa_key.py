@@ -22,7 +22,7 @@ class TestRSAKey(TestCase):
         }
         key: RSAKey = RSAKey.import_key(data)
         self.assertEqual(key.as_dict(), data)
-        self.assertEqual(key.is_private, False)
+        self.assertFalse(key.is_private)
         self.assertIsNone(key.private_key)
 
     def test_import_only_from_d(self):
@@ -47,7 +47,7 @@ class TestRSAKey(TestCase):
             ),
         }
         key: RSAKey = RSAKey.import_key(data)
-        self.assertEqual(key.is_private, True)
+        self.assertTrue(key.is_private)
         data["p"] = (
             "9gY2w6I6S6L0juEKsbeDAwpd9WMfgqFoeA9vEyEUuk4kLwBKcoe1x4HG68ik918hdDSE"
             "9vDQSccA3xXHOAFOPJ8R9EeIAbTi1VwBYnbTp87X-xcPWlEPkrdoUKW60tgs1aNd_Nnc"
@@ -58,20 +58,20 @@ class TestRSAKey(TestCase):
     def test_import_key_from_ssh(self):
         ssh_public_pem = read_key("ssh-rsa-public.pem")
         key: RSAKey = RSAKey.import_key(ssh_public_pem)
-        self.assertEqual(key.is_private, False)
+        self.assertFalse(key.is_private)
 
         ssh_private_pem = read_key("ssh-rsa-private.pem")
         key: RSAKey = RSAKey.import_key(ssh_private_pem)
-        self.assertEqual(key.is_private, True)
+        self.assertTrue(key.is_private)
 
     def test_import_key_from_openssl(self):
         public_pem = read_key("rsa-openssl-public.pem")
         key: RSAKey = RSAKey.import_key(public_pem)
-        self.assertEqual(key.is_private, False)
+        self.assertFalse(key.is_private)
 
         private_pem = read_key("rsa-openssl-private.pem")
         key: RSAKey = RSAKey.import_key(private_pem)
-        self.assertEqual(key.is_private, True)
+        self.assertTrue(key.is_private)
 
     def test_output_as_methods(self):
         private_pem = read_key("rsa-openssl-private.pem")
@@ -103,3 +103,9 @@ class TestRSAKey(TestCase):
 
         key: RSAKey = RSAKey.generate_key(private=False)
         self.assertFalse(key.is_private)
+
+    def test_import_from_der_bytes(self):
+        origin_key = RSAKey.generate_key()
+        value1 = origin_key.as_der()
+        key1 = RSAKey.import_key(value1)
+        self.assertEqual(value1, key1.as_der())

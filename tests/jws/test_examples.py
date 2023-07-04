@@ -26,13 +26,13 @@ class TestJWSExamples(TestFixture):
         member = {"protected": protected}
         value2 = jws.serialize_json(member, payload, private_key, algorithms=algorithms)
         obj2 = jws.deserialize_json(value2, public_key, algorithms=algorithms)
-        self.assertEqual(obj2.flattened, True)
+        self.assertTrue(obj2.flattened)
         if "flattened_json" in data:
             self.assertEqual(value2, data["flattened_json"])
 
         value3 = jws.serialize_json([member], payload, private_key, algorithms=algorithms)
         obj3 = jws.deserialize_json(value3, public_key, algorithms=algorithms)
-        self.assertEqual(obj3.flattened, False)
+        self.assertFalse(obj3.flattened)
         if "general_json" in data:
             self.assertEqual(value3, data["general_json"])
 

@@ -25,11 +25,11 @@ class TestJWSRFC7520(TestFixture):
 
         obj2 = jws.deserialize_json(data["general_json"], public_key, algorithms=algorithms)
         self.assertEqual(obj2.payload, payload)
-        self.assertEqual(obj2.flattened, False)
+        self.assertFalse(obj2.flattened)
 
         obj3 = jws.deserialize_json(data["flattened_json"], public_key, algorithms=algorithms)
         self.assertEqual(obj3.payload, payload)
-        self.assertEqual(obj3.flattened, True)
+        self.assertTrue(obj3.flattened)
 
         # try serialize and deserialize pair
         value4 = jws.serialize_compact(protected, payload, private_key, algorithms=algorithms)
@@ -40,12 +40,12 @@ class TestJWSRFC7520(TestFixture):
         value5 = jws.serialize_json([member], payload, private_key, algorithms=algorithms)
         obj5 = jws.deserialize_json(value5, public_key, algorithms=algorithms)
         self.assertEqual(obj5.payload, payload)
-        self.assertEqual(obj5.flattened, False)
+        self.assertFalse(obj5.flattened)
 
         value6 = jws.serialize_json(member, payload, private_key, algorithms=algorithms)
         obj6 = jws.deserialize_json(value6, public_key, algorithms=algorithms)
         self.assertEqual(obj6.payload, payload)
-        self.assertEqual(obj6.flattened, True)
+        self.assertTrue(obj6.flattened)
 
         # signature won't change with these algorithms
         if protected["alg"].startswith(("HS", "RS")):
@@ -156,6 +156,59 @@ class TestJWSRFC7520(TestFixture):
             "signature": "xuLifqLGiblpv9zBpuZczWhNj1gARaLV3UxvxhJxZuk"
         }
         self.assertEqual(value2, flattened_json)
+
+    def test_multiple_signatures(self):
+        output = {
+            "payload": (
+                "SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb"
+                "3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGl"
+                "mIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub"
+                "3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4"
+            ),
+            "signatures": [
+                {
+                    "protected": "eyJhbGciOiJSUzI1NiJ9",
+                    "header": {
+                        "kid": "bilbo.baggins@hobbiton.example"
+                    },
+                    "signature": (
+                        "MIsjqtVlOpa71KE-Mss8_Nq2YH4FGhiocsqrgi5NvyG53uoimic1tc"
+                        "MdSg-qptrzZc7CG6Svw2Y13TDIqHzTUrL_lR2ZFcryNFiHkSw129Egh"
+                        "GpwkpxaTn_THJTCglNbADko1MZBCdwzJxwqZc-1RlpO2HibUYyXSwO9"
+                        "7BSe0_evZKdjvvKSgsIqjytKSeAMbhMBdMma622_BG5t4sdbuCHtFjp"
+                        "9iJmkio47AIwqkZV1aIZsv33uPUqBBCXbYoQJwt7mxPftHmNlGoOSMx"
+                        "R_3thmXTCm4US-xiNOyhbm8afKK64jU6_TPtQHiJeQJxz9G3Tx-083B745_AfYOnlC9w"
+                    )
+                },
+                {
+                    "header": {
+                        "alg": "ES512",
+                        "kid": "bilbo.baggins@hobbiton.example"
+                    },
+                    "signature": (
+                        "ARcVLnaJJaUWG8fG-8t5BREVAuTY8n8YHjwDO1muhcdCoFZFFjfISu0"
+                        "Cdkn9Ybdlmi54ho0x924DUz8sK7ZXkhc7AFM8ObLfTvNCrqcI3Jkl2U"
+                        "5IX3utNhODH6v7xgy1Qahsn0fyb4zSAkje8bAWz4vIfj5pCMYxxm4fgV3q7ZYhm5eD"
+                    )
+                },
+                {
+                    "protected": "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9",
+                    "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+                }
+            ]
+        }
+
+        def resolve_key(recipient):
+            headers = recipient.headers()
+            if headers["alg"] == "ES512":
+                return load_key("RFC7520-EC-public.json")
+            elif headers["alg"] == "RS256":
+                return load_key("RFC7520-RSA-public.json")
+            return load_key("RFC7520-oct-sig.json")
+
+        algorithms = ["RS256", "ES512", "HS256"]
+        obj = jws.deserialize_json(output, resolve_key, algorithms=algorithms)
+        self.assertEqual([m.headers()["alg"] for m in obj.members], algorithms)
 
 
 TestJWSRFC7520.load_fixture("jws_rfc7520.json")

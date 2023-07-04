@@ -1,5 +1,5 @@
 from unittest import TestCase
-from joserfc.jwe import encrypt_compact, decrypt_compact
+from joserfc.jwe import JWERegistry, encrypt_compact, decrypt_compact
 from joserfc.jwk import RSAKey, ECKey, OctKey
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from joserfc.errors import (
@@ -66,6 +66,29 @@ class TestJWECompact(TestCase):
         for alg in algs:
             key = OctKey.generate_key(algs[alg])
             self.run_cases([alg], key, key)
+
+    def test_PBES2HS_with_header(self):
+        key = OctKey.generate_key(128)
+        protected = {
+            "alg": "PBES2-HS256+A128KW",
+            "enc": "A128CBC-HS256",
+            "p2s": "QoGrcBpns_cLWCQPEVuA-g",
+            "p2c": 1024,
+        }
+        registry = JWERegistry(algorithms=["PBES2-HS256+A128KW", "A128CBC-HS256"])
+        value1 = encrypt_compact(protected, b"i", key, registry=registry)
+        obj1 = decrypt_compact(value1, key, registry=registry)
+        self.assertIn("p2c", obj1.headers())
+        self.assertEqual(obj1.headers()["p2c"], 1024)
+
+        # invalid type
+        protected["p2c"] = "1024"
+        self.assertRaises(
+            ValueError,
+            encrypt_compact,
+            protected, b"i", key,
+            registry=registry,
+        )
 
     def test_with_zip_header(self):
         private_key: RSAKey = load_key('rsa-openssl-private.pem')

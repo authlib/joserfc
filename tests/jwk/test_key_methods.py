@@ -95,3 +95,6 @@ class TestKeyMethods(TestCase):
             key.check_key_op,
             "invalid"
         )
+
+    def test_import_without_kty(self):
+        self.assertRaises(ValueError, JWKRegistry.import_key, {})

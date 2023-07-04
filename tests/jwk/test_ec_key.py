@@ -7,11 +7,11 @@ class TestECKey(TestCase):
     def run_import_key(self, name):
         public_pem = read_key(f"ec-{name}-public.pem")
         key1 = ECKey.import_key(public_pem)
-        self.assertEqual(key1.is_private, False)
+        self.assertFalse(key1.is_private)
 
         private_pem = read_key(f"ec-{name}-private.pem")
         key2 = ECKey.import_key(private_pem)
-        self.assertEqual(key2.is_private, True)
+        self.assertTrue(key2.is_private)
 
         # public key match
         self.assertEqual(
@@ -37,6 +37,20 @@ class TestECKey(TestCase):
     def test_generate_key(self):
         self.assertRaises(ValueError, ECKey.generate_key, "Invalid")
 
-        key: ECKey = ECKey.generate_key(private=False)
+        key = ECKey.generate_key(private=True)
+        self.assertTrue(key.is_private)
+
+        key = ECKey.generate_key(private=False)
         self.assertFalse(key.is_private)
         self.assertIsNone(key.private_key)
+
+    def test_import_from_der_bytes(self):
+        origin_key = ECKey.generate_key()
+        value1 = origin_key.as_der()
+        value2 = origin_key.as_der(private=False)
+
+        key1 = ECKey.import_key(value1)
+        key2 = ECKey.import_key(value2)
+        self.assertEqual(value1, key1.as_der())
+        self.assertEqual(value2, key1.as_der(private=False))
+        self.assertEqual(value2, key2.as_der())
