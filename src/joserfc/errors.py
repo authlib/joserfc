@@ -56,6 +56,10 @@ class MissingAlgorithmError(JoseError):
     description = 'Missing "alg" value in header'
 
 
+class ConflictAlgorithmError(JoseError):
+    error = "conflict_algorithm"
+
+
 class MissingEncryptionError(JoseError):
     error = "missing_encryption"
     description = 'Missing "enc" value in header'

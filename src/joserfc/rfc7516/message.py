@@ -11,6 +11,7 @@ from ..errors import (
     DecodeError,
     InvalidCEKLengthError,
     InvalidEncryptedKeyError,
+    ConflictAlgorithmError,
 )
 from ..util import (
     json_b64encode,
@@ -123,7 +124,7 @@ def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], regi
 
         if alg.direct_mode:
             if len(recipients) > 1:
-                raise
+                raise ConflictAlgorithmError(f"Algorithm {alg.name} SHOULD have 1 recipient only")
 
             if alg.key_agreement:
                 # 3. When Direct Key Agreement is employed,

@@ -190,6 +190,16 @@ def check_registry_header(registry: HeaderRegistryDict, header: Header):
                 raise ValueError(f'"{key}" in header {error}')
 
 
+def check_registry_header_types(registry: HeaderRegistryDict, header: Header):
+    for key in registry:
+        if key in header:
+            try:
+                reg: HeaderParameter = registry[key]
+                reg.validate(header[key])
+            except ValueError as error:
+                raise ValueError(f'"{key}" in header {error}')
+
+
 def check_crit_header(header: Header):
     # check crit header
     if "crit" in header:

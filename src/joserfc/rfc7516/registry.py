@@ -6,6 +6,7 @@ from ..registry import (
     JWE_HEADER_REGISTRY,
     check_supported_header,
     check_registry_header,
+    check_registry_header_types,
     check_crit_header,
 )
 
@@ -67,6 +68,8 @@ class JWERegistry:
         if alg.more_header_registry:
             if check_more:
                 check_registry_header(alg.more_header_registry, header)
+            else:
+                check_registry_header_types(alg.more_header_registry, header)
 
             if self.strict_check_header:
                 allowed_registry = self.header_registry.copy()
@@ -96,10 +99,8 @@ class JWERegistry:
         """
         return self._get_algorithm("zip", name)
 
-    def _get_algorithm(self, location: str, name: str):
-        if location not in self.algorithms:
-            raise ValueError(f'Invalid location "{location}"')
-        registry: t.Dict[str, JWEAlgorithm] = self.algorithms[location]  # type: ignore
+    def _get_algorithm(self, location: t.Literal["alg", "enc", "zip"], name: str):
+        registry: t.Dict[str, JWEAlgorithm] = self.algorithms[location]
         if name not in registry:
             raise ValueError(f'Algorithm of "{name}" is not supported')
 
