@@ -84,9 +84,10 @@ def extract_json(value: JSONSerialization) -> JSONSignature:
 
     members = []
     for sig in signatures:
-        protected_segment = sig["protected"]
-        protected = json_b64decode(protected_segment)
-        member = HeaderMember(protected)
+        member = HeaderMember()
+        if "protected" in sig:
+            protected_segment = sig["protected"]
+            member.protected = json_b64decode(protected_segment)
         if "header" in sig:
             member.header = sig["header"]
         members.append(member)
@@ -119,7 +120,10 @@ def verify_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> bool:
 
 
 def _verify_signature(signature: JSONSignatureDict, payload_segment, alg: JWSAlgModel, key) -> bool:
-    protected_segment = signature["protected"].encode("utf-8")
+    if "protected" in signature:
+        protected_segment = signature["protected"].encode("utf-8")
+    else:
+        protected_segment = b""
     sig = urlsafe_b64decode(signature["signature"].encode("utf-8"))
     signing_input = b".".join([protected_segment, payload_segment])
     return alg.verify(signing_input, sig, key)
