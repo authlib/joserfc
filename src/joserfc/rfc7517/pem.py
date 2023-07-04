@@ -1,11 +1,12 @@
 import typing as t
 from abc import ABCMeta, abstractmethod
-from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
     load_pem_public_key,
     load_ssh_public_key,
     load_ssh_private_key,
+    load_der_private_key,
+    load_der_public_key,
     Encoding,
     PrivateFormat,
     PublicFormat,
@@ -31,15 +32,11 @@ def load_pem_key(raw: bytes, ssh_type: t.Optional[bytes] = None, password: t.Opt
     elif b"PRIVATE" in raw:
         key = load_pem_private_key(raw, password=password, backend=default_backend())
 
-    elif b"CERTIFICATE" in raw:
-        cert = load_pem_x509_certificate(raw, default_backend())
-        key = cert.public_key()
-
     else:
         try:
-            key = load_pem_private_key(raw, password=password, backend=default_backend())
+            key = load_der_private_key(raw, password=password, backend=default_backend())
         except ValueError:
-            key = load_pem_public_key(raw, backend=default_backend())
+            key = load_der_public_key(raw, backend=default_backend())
     return key
 
 
