@@ -43,7 +43,7 @@ def update_conf(language: str):
 def sphinx_build(language: str):
     docs_path = (root_path / language).resolve()
     update_conf(language)
-    cmd = ["sphinx-build", docs_path, f"build/{language}"]
+    cmd = ["sphinx-build", "-b", "dirhtml", docs_path, f"build/{language}"]
     subprocess.run(cmd)
 
 
