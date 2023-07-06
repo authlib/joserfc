@@ -266,6 +266,8 @@ Or, you can generate a key set for a certain "kty":
 Import a key set
 ~~~~~~~~~~~~~~~~
 
+An example about importing JWKS from a local file:
+
 .. code-block:: python
 
     import json
@@ -273,6 +275,15 @@ Import a key set
     with open("your-jwks.json") as f:
         data = json.load(f)
         key_set = KeySet.import_key_set(data)
+
+An example about importing JWKS from a URL:
+
+.. code-block:: python
+
+    import requests
+
+    resp = requests.get("https://example.com/jwks.json")
+    key_set = KeySet.import_key_set(resp.json())
 
 Key methods
 -----------

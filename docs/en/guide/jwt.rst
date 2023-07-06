@@ -56,6 +56,8 @@ into a token object which contains ``.header`` and ``.claims`` properties:
     # token.header = {'alg': 'HS256', 'typ': 'JWT'}
     # token.claims = {"iss": "https://authlib.org"}
 
+.. _claims:
+
 Validate claims
 ---------------
 

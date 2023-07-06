@@ -1,10 +1,8 @@
 :root {
   --syntax-light-pre-bg: #ecf5ff;
   --syntax-light-cap-bg: #d6e7fb;
+  --syntax-light-highlight-bg: #dbecff;
   --syntax-dark-pre-bg: #1a2b3e;
   --syntax-dark-cap-bg: #223e5e;
-}
-
-#ethical-ad-placement {
-  display: none;
+  --syntax-dark-highlight-bg: #091c33;
 }
