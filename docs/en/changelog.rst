@@ -1,6 +1,18 @@
 Changelog
 =========
 
+0.4.0
+-----
+
+**Released on July 6, 2023**
+
+- Change ``options`` to ``parameters`` for JWK methods
+- Change ``JWSRegistry`` and ``JWERegistry`` parameters
+- Guess ``sender_key`` from JWKs in JWE
+- Add importing key from DER encoding bytes
+- Fix JWS JSON serialization when members have only unprotected headers
+- Check key type before processing algorithms of JWS and JWE
+
 0.3.0
 -----
 
