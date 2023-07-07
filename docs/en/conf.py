@@ -45,7 +45,7 @@ html_theme_options = {
     "twitter_creator": "lepture",
     "twitter_url": "https://twitter.com/authlib",
     "github_url": "https://github.com/authlib/joserfc",
-    "discord_url": "https://discord.gg/RNetSNNq",
+    "discord_url": "https://discord.gg/HvBVAeNAaV",
     "nav_links": [
         {
             "title": "Projects",

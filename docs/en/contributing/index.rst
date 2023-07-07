@@ -78,4 +78,5 @@ Next
 
 .. toctree::
     structure
+    authors
     sponsors

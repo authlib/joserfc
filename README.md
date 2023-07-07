@@ -32,11 +32,11 @@ print(token.claims)
 
 It follows RFCs with extensible API. The module has implementations of:
 
-- RFC7515: [JSON Web Signature](https://jose.authlib.org/en/latest/guide/jws/)
-- RFC7516: [JSON Web Encryption](https://jose.authlib.org/en/latest/guide/jwe/)
-- RFC7517: [JSON Web Key](https://jose.authlib.org/en/latest/guide/jwk/)
-- RFC7518: [JSON Web Algorithms](https://jose.authlib.org/en/latest/guide/algorithms/)
-- RFC7519: [JSON Web Token](https://jose.authlib.org/en/latest/guide/jwt/)
+- RFC7515: [JSON Web Signature](https://jose.authlib.org/en/dev/guide/jws/)
+- RFC7516: [JSON Web Encryption](https://jose.authlib.org/en/dev/guide/jwe/)
+- RFC7517: [JSON Web Key](https://jose.authlib.org/en/dev/guide/jwk/)
+- RFC7518: [JSON Web Algorithms](https://jose.authlib.org/en/dev/guide/algorithms/)
+- RFC7519: [JSON Web Token](https://jose.authlib.org/en/dev/guide/jwt/)
 - RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
 - RFC7638: ``thumbprint`` for JWK
 - RFC8037: ``OKP`` Key and ``EdDSA`` algorithm
@@ -44,8 +44,8 @@ It follows RFCs with extensible API. The module has implementations of:
 
 And draft RFCs implementation of:
 
-- [`C20P` and `XC20P`](https://jose.authlib.org/en/latest/guide/algorithms/#c20p-and-xc20p)
-- [Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model](https://jose.authlib.org/en/latest/guide/algorithms/#ecdh-1pu-algorithms)
+- [`C20P` and `XC20P`](https://jose.authlib.org/en/dev/guide/algorithms/#c20p-and-xc20p)
+- [Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model](https://jose.authlib.org/en/dev/guide/algorithms/#ecdh-1pu-algorithms)
 
 ## Useful Links
 
