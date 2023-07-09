@@ -60,11 +60,13 @@ def extract_json(data: JSONSerialization) -> JSONEncryption:
         obj.flatten = False
         for item in data["recipients"]:
             recipient = Recipient(obj, item.get("header"))
-            recipient.encrypted_key = urlsafe_b64decode(to_bytes(item["encrypted_key"]))
+            if "encrypted_key" in item:
+                recipient.encrypted_key = urlsafe_b64decode(to_bytes(item["encrypted_key"]))
             obj.recipients.append(recipient)
     else:
         obj.flatten = True
         recipient = Recipient(obj, data.get("header"))
-        recipient.encrypted_key = urlsafe_b64decode(to_bytes(data["encrypted_key"]))
+        if "encrypted_key" in data:
+            recipient.encrypted_key = urlsafe_b64decode(to_bytes(data["encrypted_key"]))
         obj.recipients.append(recipient)
     return obj
