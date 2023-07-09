@@ -107,11 +107,11 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
 
     @property
     def raw_value(self):
-        return self._raw_value
+        raise NotImplementedError()
 
     @property
     def is_private(self) -> bool:
-        return False
+        raise NotImplementedError()
 
     @property
     def dict_value(self) -> KeyDict:

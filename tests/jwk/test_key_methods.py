@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import JWKRegistry, guess_key
-from joserfc.jwk import OctKey
+from joserfc.jwk import OctKey, RSAKey
 from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyUseError,
@@ -94,6 +94,12 @@ class TestKeyMethods(TestCase):
             UnsupportedKeyOperationError,
             key.check_key_op,
             "invalid"
+        )
+        key = RSAKey.generate_key(private=False)
+        self.assertRaises(
+            UnsupportedKeyOperationError,
+            key.check_key_op,
+            "sign"
         )
 
     def test_import_without_kty(self):

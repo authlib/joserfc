@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc import jwe
-from joserfc.jwk import OctKey
+from joserfc.jwk import OctKey, RSAKey
 from joserfc.registry import HeaderParameter
 from joserfc.errors import InvalidKeyTypeError, InvalidKeyLengthError
 from tests.base import load_key
@@ -67,6 +67,13 @@ class TestJWEErrors(TestCase):
             InvalidKeyLengthError,
             jwe.encrypt_compact,
             protected, b"i", "secret"
+        )
+        protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256"}
+        rsa_key = RSAKey.generate_key(1024)
+        self.assertRaises(
+            InvalidKeyLengthError,
+            jwe.encrypt_compact,
+            protected, b"i", rsa_key
         )
 
     def test_extra_header(self):

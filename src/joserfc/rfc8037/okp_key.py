@@ -130,4 +130,4 @@ def get_key_curve(key: Union[PublicOKPKey, PrivateOKPKey]):
         return "X25519"
     elif isinstance(key, (X448PublicKey, X448PrivateKey)):
         return "X448"
-    raise ValueError("Invalid key")
+    raise ValueError("Invalid key")  # pragma: no cover

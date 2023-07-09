@@ -7,10 +7,14 @@ class TestOctKey(TestCase):
     def test_import_key_from_str(self):
         key = OctKey.import_key('rfc')
         self.assertEqual(key['k'], 'cmZj')
+        self.assertEqual(key.raw_value, b"rfc")
+        self.assertEqual(dict(key), key.as_dict())
 
     def test_import_key_from_bytes(self):
         key = OctKey.import_key(b'rfc')
         self.assertEqual(key['k'], 'cmZj')
+        self.assertEqual(key.raw_value, b"rfc")
+        self.assertEqual(dict(key), key.as_dict())
 
     def test_import_key_from_dict(self):
         # https://www.rfc-editor.org/rfc/rfc7517#appendix-A.3

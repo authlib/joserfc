@@ -77,3 +77,12 @@ class TestJSON(TestCase):
             deserialize_json,
             value, key
         )
+
+    def test_with_public_header(self):
+        key: RSAKey = load_key('rsa-openssl-private.pem')
+        member = {'protected': {'alg': 'RS256'}, 'header': {'kid': 'abc'}}
+        value = serialize_json(member, b'hello', key)
+        self.assertIn('header', value)
+        obj = deserialize_json(value, key)
+        self.assertEqual(obj.payload, b'hello')
+        self.assertEqual(obj.headers(), {'alg': 'RS256', 'kid': 'abc'})
