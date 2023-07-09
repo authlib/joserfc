@@ -10,7 +10,6 @@ from ..util import (
 
 
 def sign_compact(obj: CompactSignature, alg: JWSAlgModel, key) -> bytes:
-    key.check_use("sig")
     header_segment = json_b64encode(obj.headers())
     payload_segment = urlsafe_b64encode(obj.payload)
     signing_input = header_segment + b"." + payload_segment
@@ -51,7 +50,6 @@ def extract_compact(value: bytes) -> CompactSignature:
 
 
 def verify_compact(obj: CompactSignature, alg: JWSAlgModel, key) -> bool:
-    key.check_use("sig")
     signing_input = obj.segments["header"] + b"." + obj.segments["payload"]
     sig = urlsafe_b64decode(obj.segments["signature"])
     return alg.verify(signing_input, sig, key)

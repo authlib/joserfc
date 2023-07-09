@@ -178,23 +178,16 @@ def check_supported_header(registry: HeaderRegistryDict, header: Header):
         raise ValueError(f'Unsupported {unsupported_keys} in header')
 
 
-def check_registry_header(registry: HeaderRegistryDict, header: Header):
+def validate_registry_header(
+        registry: HeaderRegistryDict,
+        header: Header,
+        check_required: bool = True):
     for key in registry:
         reg: HeaderParameter = registry[key]
-        if reg.required and key not in header:
+        if check_required and reg.required and key not in header:
             raise ValueError(f'Required "{key}" is missing in header')
         if key in header:
             try:
-                reg.validate(header[key])
-            except ValueError as error:
-                raise ValueError(f'"{key}" in header {error}')
-
-
-def check_registry_header_types(registry: HeaderRegistryDict, header: Header):
-    for key in registry:
-        if key in header:
-            try:
-                reg: HeaderParameter = registry[key]
                 reg.validate(header[key])
             except ValueError as error:
                 raise ValueError(f'"{key}" in header {error}')

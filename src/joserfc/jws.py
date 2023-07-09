@@ -8,7 +8,7 @@ from .rfc7515.model import (
 )
 from .rfc7515.registry import (
     JWSRegistry,
-    default_registry,
+    construct_registry,
 )
 from .rfc7515.compact import (
     sign_compact,
@@ -49,7 +49,6 @@ __all__ = [
     "extract_json",
     "validate_json",
     "detach_content",
-    "default_registry",
 ]
 
 
@@ -90,15 +89,14 @@ def serialize_compact(
     :param registry: a JWSRegistry to use
     :return: JWS in str
     """
-    if algorithms:
-        registry = JWSRegistry(algorithms=algorithms)
-    elif registry is None:
-        registry = default_registry
+    if registry is None:
+        registry = construct_registry(algorithms)
 
     registry.check_header(protected)
     obj = CompactSignature(protected, to_bytes(payload))
     alg: JWSAlgModel = registry.get_alg(protected["alg"])
     key: Key = guess_key(private_key, obj)
+    key.check_use("sig")
     out = sign_compact(obj, alg, key)
     return out.decode("utf-8")
 
@@ -117,14 +115,13 @@ def validate_compact(
     :param registry: a JWSRegistry to use
     :raise: ValueError or BadSignatureError
     """
-    if algorithms:
-        registry = JWSRegistry(algorithms=algorithms)
-    elif registry is None:
-        registry = default_registry
+    if registry is None:
+        registry = construct_registry(algorithms)
 
     headers = obj.headers()
     alg: JWSAlgModel = registry.get_alg(headers["alg"])
     key: Key = guess_key(public_key, obj)
+    key.check_use("sig")
     if not verify_compact(obj, alg, key):
         raise BadSignatureError()
 
@@ -190,10 +187,8 @@ def serialize_json(
             "signature":"<signature contents>"
         }
     """
-    if algorithms:
-        registry = JWSRegistry(algorithms=algorithms)
-    elif registry is None:
-        registry = default_registry
+    if registry is None:
+        registry = construct_registry(algorithms)
 
     if isinstance(members, dict):
         flatten = True
@@ -228,10 +223,8 @@ def validate_json(
     :param registry: a JWSRegistry to use
     :raise: ValueError or BadSignatureError
     """
-    if algorithms:
-        registry = JWSRegistry(algorithms=algorithms)
-    elif registry is None:
-        registry = default_registry
+    if registry is None:
+        registry = construct_registry(algorithms)
     find_key = lambda d: guess_key(public_key, d)
     if not verify_json(obj, registry.get_alg, find_key):
         raise BadSignatureError()

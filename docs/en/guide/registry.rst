@@ -74,8 +74,8 @@ the value type.
       File "$/joserfc/jws.py", line 98, in serialize_compact
         registry.check_header(protected)
       File "$/joserfc/rfc7515/registry.py", line 63, in check_header
-        check_registry_header(self.header_registry, header)
-      File "$/joserfc/registry.py", line 187, in check_registry_header
+        validate_registry_header(self.header_registry, header)
+      File "$/joserfc/registry.py", line 193, in validate_registry_header
         raise ValueError(f'"{key}" in header {error}')
     ValueError: "kid" in header must be a str
 
