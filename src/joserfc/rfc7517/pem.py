@@ -89,8 +89,10 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
         return cls.import_public_key(value)
 
     @classmethod
-    def import_from_bytes(cls, value: bytes):
-        return load_pem_key(value, cls.ssh_type)
+    def import_from_bytes(cls, value: bytes, password=None):
+        if password is not None:
+            password = to_bytes(password)
+        return load_pem_key(value, cls.ssh_type, password)
 
     @staticmethod
     def as_bytes(key, encoding=None, private=None, password=None) -> bytes:

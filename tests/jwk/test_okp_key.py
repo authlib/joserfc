@@ -73,3 +73,14 @@ class TestOKPKey(TestCase):
         # as_der
         data = key.as_der()
         self.assertIsInstance(data, bytes)
+
+    def test_output_with_password(self):
+        key = OKPKey.import_key(read_key("okp-ed25519-private.json"))
+        pem = key.as_pem(password="secret")
+        self.assertRaises(
+            TypeError,
+            OKPKey.import_key,
+            pem
+        )
+        key2 = OKPKey.import_key(pem, password="secret")
+        self.assertEqual(key.as_pem(), key2.as_pem())

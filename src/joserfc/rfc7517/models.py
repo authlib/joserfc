@@ -38,7 +38,7 @@ class NativeKeyBinding(object, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def import_from_bytes(cls, value: bytes):
+    def import_from_bytes(cls, value: bytes, password=None):
         pass
 
     @staticmethod
@@ -216,13 +216,13 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
         cls.binding.validate_dict_key_use_operations(data)
 
     @classmethod
-    def import_key(cls, value: KeyAny, parameters: KeyParameters = None) -> "BaseKey":
+    def import_key(cls, value: KeyAny, parameters: KeyParameters = None, password=None) -> "BaseKey":
         if isinstance(value, dict):
             cls.validate_dict_key(value)
             raw_key = cls.binding.import_from_dict(value)
             return cls(raw_key, value, parameters)
 
-        raw_key = cls.binding.import_from_bytes(to_bytes(value))
+        raw_key = cls.binding.import_from_bytes(to_bytes(value), password)
         return cls(raw_key, value, parameters)
 
     @classmethod

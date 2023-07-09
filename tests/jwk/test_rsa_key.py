@@ -109,3 +109,15 @@ class TestRSAKey(TestCase):
         value1 = origin_key.as_der()
         key1 = RSAKey.import_key(value1)
         self.assertEqual(value1, key1.as_der())
+
+    def test_output_with_password(self):
+        private_pem = read_key("rsa-openssl-private.pem")
+        key: RSAKey = RSAKey.import_key(private_pem)
+        pem = key.as_pem(password="secret")
+        self.assertRaises(
+            TypeError,
+            RSAKey.import_key,
+            pem
+        )
+        key2 = RSAKey.import_key(pem, password="secret")
+        self.assertEqual(key.as_dict(), key2.as_dict())

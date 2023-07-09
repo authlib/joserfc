@@ -29,7 +29,7 @@ class OctBinding(NativeKeyBinding):
         return urlsafe_b64decode(to_bytes(value["k"]))
 
     @classmethod
-    def import_from_bytes(cls, value: bytes):
+    def import_from_bytes(cls, value: bytes, password=None):
         # security check
         if value.startswith(POSSIBLE_UNSAFE_KEYS):
             raise ValueError("This key may not be safe to import")
