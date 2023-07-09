@@ -55,9 +55,10 @@ def serialize_json(
 
     rv = {
         "payload": to_unicode(payload),
-        "protected": to_unicode(protected_segment),
         "signature": to_unicode(signature),
     }
+    if protected_segment:
+        rv["protected"] = to_unicode(protected_segment)
     if _member.header:
         rv["header"] = _member.header
     return rv
@@ -82,14 +83,9 @@ def deserialize_json(
 
     registry.check_header(headers)
     key = guess_key(public_key, member)
-    if obj.segments["header"]:
-        protected_segment = to_bytes(obj.segments["header"])
-    else:
-        protected_segment = b""
-
     alg = registry.get_alg(headers["alg"])
-    signing_input = b".".join([protected_segment, obj.payload])
-    sig = urlsafe_b64decode(obj.segments["signature"].encode("utf-8"))
+    signing_input = b".".join([obj.segments["header"], obj.payload])
+    sig = urlsafe_b64decode(obj.segments["signature"])
     if not alg.verify(signing_input, sig, key):
         raise BadSignatureError()
     return obj
@@ -100,8 +96,10 @@ def _extract_json(value: JSONSerialization):
         return None
 
     if "protected" in value:
-        protected = json_b64decode(value["protected"])
+        protected_segment = to_bytes(value["protected"])
+        protected = json_b64decode(protected_segment)
     else:
+        protected_segment = b""
         protected = None
 
     header = value.get("header")
@@ -113,8 +111,8 @@ def _extract_json(value: JSONSerialization):
     payload = to_bytes(value["payload"])
     obj = JSONSignature([member], payload)
     obj.segments = {
-        "header": value.get("protected"),
-        "signature": value["signature"]
+        "header": protected_segment,
+        "signature": to_bytes(value["signature"]),
     }
     obj.flattened = True
     return obj

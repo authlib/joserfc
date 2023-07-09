@@ -12,6 +12,7 @@ from joserfc.errors import (
     BadSignatureError,
 )
 from joserfc.util import to_bytes
+from joserfc import jws
 from tests.base import TestFixture
 
 
@@ -78,7 +79,7 @@ class TestRFC7797(TestFixture):
         )
 
     def test_compact_bad_signature(self):
-        protected = {"alg": "HS256", "b64": True, "crit": ["b64"]}
+        protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
         value = serialize_compact(protected, "hello", key)
         self.assertRaises(
             BadSignatureError,
@@ -87,11 +88,40 @@ class TestRFC7797(TestFixture):
         )
 
     def test_compact_use_registry(self):
-        protected = {"alg": "HS256", "b64": True, "crit": ["b64"]}
         registry = JWSRegistry()
+        protected = {"alg": "HS256", "b64": True, "crit": ["b64"]}
         value = serialize_compact(protected, "hello", key, registry=registry)
         obj = deserialize_compact(value, key, registry=registry)
         self.assertEqual(obj.protected, protected)
+
+        protected = {"alg": "HS256"}
+        value = serialize_compact(protected, "hello", key, registry=registry)
+        obj = deserialize_compact(value, key, registry=registry)
+        self.assertEqual(obj.protected, protected)
+
+    def test_json_without_protected_header(self):
+        registry = JWSRegistry()
+        header = {"alg": "HS256", "b64": False, "crit": ["b64"]}
+        member = {"header": header}
+        value = serialize_json(member, "hello", key, registry=registry)
+        obj = deserialize_json(value, key, registry=registry)
+        self.assertTrue(obj.flattened)
+        self.assertEqual(obj.headers(), header)
+
+    def test_general_json(self):
+        members = [{"protected": {"alg": "HS256"}}]
+        value = jws.serialize_json(members, "hello", key)
+        obj = deserialize_json(value, key)
+        self.assertFalse(obj.flattened)
+
+    def test_json_bad_signature(self):
+        member = {"protected": {"alg": "HS256", "b64": False, "crit": ["b64"]}}
+        value = serialize_json(member, "hello", key)
+        self.assertRaises(
+            BadSignatureError,
+            deserialize_json,
+            value, "secret"
+        )
 
 
 TestRFC7797.load_fixture("jws_rfc7797.json")
