@@ -36,9 +36,10 @@ class TestFixture(TestCase):
 
     @classmethod
     def attach_case(cls, data):
+        runner = data.get("runner", "run_test")
 
         def method(self):
-            self.run_test(data)
+            getattr(self, runner)(data)
 
         case_name = data['name']
         name = f'test_{case_name}'

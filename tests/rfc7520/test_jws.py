@@ -158,6 +158,7 @@ class TestJWSRFC7520(TestFixture):
         self.assertEqual(value2, flattened_json)
 
     def test_multiple_signatures(self):
+        # https://www.rfc-editor.org/rfc/rfc7520#section-4.8
         output = {
             "payload": (
                 "SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb"
