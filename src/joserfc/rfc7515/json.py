@@ -2,12 +2,15 @@ import typing as t
 import binascii
 from .model import JWSAlgModel, HeaderMember, JSONSignature
 from .types import (
+    HeaderDict,
     JSONSignatureDict,
     JSONSerialization,
     GeneralJSONSerialization,
     FlattenedJSONSerialization,
 )
+from .registry import JWSRegistry
 from ..util import (
+    to_bytes,
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
@@ -15,19 +18,47 @@ from ..util import (
 )
 from ..errors import DecodeError
 
-FindAlgorithm = t.Callable[[str], JWSAlgModel]
+
+def construct_json_signature(
+        members: t.Union[HeaderDict, t.List[HeaderDict]],
+        payload: t.AnyStr,
+        registry: JWSRegistry) -> JSONSignature:
+    if isinstance(members, dict):
+        flattened = True
+        __check_member(registry, members)
+        members = [members]
+    else:
+        flattened = False
+        for member in members:
+            __check_member(registry, member)
+
+    members = [HeaderMember(**member) for member in members]
+    payload = to_bytes(payload)
+    obj = JSONSignature(members, payload)
+    obj.flattened = flattened
+    return obj
 
 
-def sign_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> JSONSerialization:
+def __check_member(registry: JWSRegistry, member: HeaderDict):
+    header = {}
+    if "protected" in member:
+        header.update(member["protected"])
+    if "header" in member:
+        header.update(member["header"])
+    registry.check_header(header)
+
+
+def sign_json(obj: JSONSignature, registry: JWSRegistry, find_key) -> JSONSerialization:
     signatures: t.List[JSONSignatureDict] = []
 
     payload_segment = obj.segments["payload"]
     for member in obj.members:
         headers = member.headers()
-        alg = find_alg(headers["alg"])
+        registry.check_header(headers)
+        alg = registry.get_alg(headers["alg"])
         key = find_key(member)
         key.check_use("sig")
-        signature = _sign_member(payload_segment, member, alg, key)
+        signature = __sign_member(payload_segment, member, alg, key)
         signatures.append(signature)
 
     rv = {"payload": payload_segment.decode("utf-8")}
@@ -40,7 +71,7 @@ def sign_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> JSONSeri
     return rv
 
 
-def _sign_member(payload_segment, member: HeaderMember, alg: JWSAlgModel, key) -> JSONSignatureDict:
+def __sign_member(payload_segment, member: HeaderMember, alg: JWSAlgModel, key) -> JSONSignatureDict:
     if member.protected:
         protected_segment = json_b64encode(member.protected)
     else:
@@ -99,7 +130,7 @@ def extract_json(value: JSONSerialization) -> JSONSignature:
     return obj
 
 
-def verify_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> bool:
+def verify_json(obj: JSONSignature, registry: JWSRegistry, find_key) -> bool:
     """Verify the signature of this JSON serialization with the given
     algorithm and key.
 
@@ -111,7 +142,8 @@ def verify_json(obj: JSONSignature, find_alg: FindAlgorithm, find_key) -> bool:
     for index, signature in enumerate(obj.signatures):
         member = obj.members[index]
         headers = member.headers()
-        alg = find_alg(headers["alg"])
+        registry.check_header(headers)
+        alg = registry.get_alg(headers["alg"])
         key = find_key(member)
         key.check_use("sig")
         if not _verify_signature(signature, payload_segment, alg, key):

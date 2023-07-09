@@ -17,6 +17,7 @@ from .rfc7515.compact import (
     detach_compact_content,
 )
 from .rfc7515.json import (
+    construct_json_signature,
     sign_json,
     verify_json,
     extract_json,
@@ -38,6 +39,7 @@ __all__ = [
     "types",
     "JWSAlgModel",
     "JWSRegistry",
+    "HeaderMember",
     "CompactSignature",
     "JSONSignature",
     "serialize_compact",
@@ -119,9 +121,10 @@ def validate_compact(
         registry = construct_registry(algorithms)
 
     headers = obj.headers()
-    alg: JWSAlgModel = registry.get_alg(headers["alg"])
+    registry.check_header(headers)
     key: Key = guess_key(public_key, obj)
     key.check_use("sig")
+    alg: JWSAlgModel = registry.get_alg(headers["alg"])
     if not verify_compact(obj, alg, key):
         raise BadSignatureError()
 
@@ -190,23 +193,10 @@ def serialize_json(
     if registry is None:
         registry = construct_registry(algorithms)
 
-    if isinstance(members, dict):
-        flatten = True
-        __check_member(registry, members)
-        members = [members]
-    else:
-        flatten = False
-        for member in members:
-            __check_member(registry, member)
-
-    members = [HeaderMember(**member) for member in members]
-    payload = to_bytes(payload)
-    obj = JSONSignature(members, payload)
-    obj.segments["payload"] = urlsafe_b64encode(payload)
-    obj.flattened = flatten
-
+    obj = construct_json_signature(members, payload, registry)
+    obj.segments["payload"] = urlsafe_b64encode(obj.payload)
     find_key = lambda d: guess_key(private_key, d)
-    return sign_json(obj, registry.get_alg, find_key)
+    return sign_json(obj, registry, find_key)
 
 
 def validate_json(
@@ -226,7 +216,7 @@ def validate_json(
     if registry is None:
         registry = construct_registry(algorithms)
     find_key = lambda d: guess_key(public_key, d)
-    if not verify_json(obj, registry.get_alg, find_key):
+    if not verify_json(obj, registry, find_key):
         raise BadSignatureError()
 
 
@@ -273,12 +263,3 @@ def detach_content(value: t.Union[str, JSONSerialization]):
     if isinstance(value, str):
         return detach_compact_content(value)
     return detach_json_content(value)
-
-
-def __check_member(registry: JWSRegistry, member: HeaderDict):
-    header = {}
-    if "protected" in member:
-        header.update(member["protected"])
-    if "header" in member:
-        header.update(member["header"])
-    registry.check_header(header)

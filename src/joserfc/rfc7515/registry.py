@@ -19,6 +19,7 @@ class JWSRegistry(object):
     :param algorithms: allowed algorithms to be used
     :param strict_check_header: only allow header key in the registry to be used
     """
+    default_header_registry: HeaderRegistryDict = JWS_HEADER_REGISTRY
     algorithms: Dict[str, JWSAlgModel] = {}
     recommended: List[str] = []
 
@@ -28,7 +29,7 @@ class JWSRegistry(object):
             algorithms: Optional[List[str]] = None,
             strict_check_header: bool = True):
         self.header_registry: HeaderRegistryDict = {}
-        self.header_registry.update(JWS_HEADER_REGISTRY)
+        self.header_registry.update(self.default_header_registry)
         if header_registry is not None:
             self.header_registry.update(header_registry)
         self.allowed = algorithms

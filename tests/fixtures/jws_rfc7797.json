@@ -1,0 +1,66 @@
+{
+  "payload": "$.02",
+  "tests": [
+    {
+      "name": "4.1 HS256",
+      "protected": {
+        "alg": "HS256"
+      },
+      "compact": "eyJhbGciOiJIUzI1NiJ9.JC4wMg.5mvfOroL-g7HyqJoozehmsaqmvTYGEq5jTI1gVvoEoQ",
+      "flattened_json": {
+        "protected": "eyJhbGciOiJIUzI1NiJ9",
+        "payload": "JC4wMg",
+        "signature": "5mvfOroL-g7HyqJoozehmsaqmvTYGEq5jTI1gVvoEoQ"
+      }
+    },
+    {
+      "name": "4.2 HS256 with b64=false",
+      "protected": {
+        "alg": "HS256",
+        "b64": false,
+        "crit": [
+          "b64"
+        ]
+      },
+      "compact": "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+      "flattened_json": {
+        "protected": "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
+        "payload": "$.02",
+        "signature": "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY"
+      }
+    },
+    {
+      "name": "HS256 with b64=true",
+      "protected": {
+        "alg": "HS256",
+        "b64": true,
+        "crit": [
+          "b64"
+        ]
+      },
+      "compact": "eyJhbGciOiJIUzI1NiIsImI2NCI6dHJ1ZSwiY3JpdCI6WyJiNjQiXX0.JC4wMg.6BjugbC8MfrT_yy5WxWVFZrEHVPDtpdsV9u-wbzQDV8",
+      "flattened_json": {
+        "protected": "eyJhbGciOiJIUzI1NiIsImI2NCI6dHJ1ZSwiY3JpdCI6WyJiNjQiXX0",
+        "payload": "JC4wMg",
+        "signature": "6BjugbC8MfrT_yy5WxWVFZrEHVPDtpdsV9u-wbzQDV8"
+      }
+    },
+    {
+      "name": "HS256 with b64=false, safe payload",
+      "payload": "hello",
+      "protected": {
+        "alg": "HS256",
+        "b64": false,
+        "crit": [
+          "b64"
+        ]
+      },
+      "compact": "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19.hello.xsz-SVW1Jtg1IiB5GN-ln0jj2w994q2hTPdPT0bZeQ4",
+      "flattened_json": {
+        "protected": "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
+        "payload": "hello",
+        "signature": "xsz-SVW1Jtg1IiB5GN-ln0jj2w994q2hTPdPT0bZeQ4"
+      }
+    }
+  ]
+}

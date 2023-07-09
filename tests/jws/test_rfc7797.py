@@ -1,0 +1,97 @@
+from joserfc.jwk import OctKey
+from joserfc.rfc7797 import (
+    JWSRegistry,
+    serialize_compact,
+    deserialize_compact,
+    serialize_json,
+    deserialize_json,
+)
+from joserfc.errors import (
+    DecodeError,
+    MissingAlgorithmError,
+    BadSignatureError,
+)
+from joserfc.util import to_bytes
+from tests.base import TestFixture
+
+
+key = OctKey.import_key({
+    "kty": "oct",
+    "k": (
+        "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj"
+        "0iPS4hcgUuTwjAzZr1Z9CAow"
+    )
+})
+
+
+class TestRFC7797(TestFixture):
+    def run_test(self, data):
+        protected = data["protected"]
+        payload = data["payload"]
+        value1 = serialize_compact(protected, payload, key)
+        self.assertEqual(value1, data["compact"])
+        obj1 = deserialize_compact(value1, key, payload=payload)
+        self.assertEqual(obj1.headers(), protected)
+        self.assertEqual(obj1.payload, to_bytes(payload))
+        value2 = serialize_json({"protected": protected}, payload, key)
+        self.assertEqual(value2, data["flattened_json"])
+        obj2 = deserialize_json(value2, key)
+        self.assertTrue(obj2.flattened)
+        self.assertEqual(obj2.payload, to_bytes(payload))
+        self.assertEqual(obj2.members[0].protected, protected)
+
+    def test_b64_without_crit(self):
+        protected = {"alg": "HS256", "b64": False}
+        self.assertRaises(
+            ValueError,
+            serialize_compact,
+            protected, "i", key
+        )
+
+    def test_invalid_b64_value(self):
+        protected = {"alg": "HS256", "b64": "true", "crit": ["b64"]}
+        self.assertRaises(
+            ValueError,
+            serialize_compact,
+            protected, "i", key
+        )
+
+    def test_compact_invalid_value_length(self):
+        self.assertRaises(
+            ValueError,
+            deserialize_compact,
+            b"a.b.c.d.e", key
+        )
+
+    def test_invalid_header(self):
+        self.assertRaises(
+            DecodeError,
+            deserialize_compact,
+            b"a.b.c", key
+        )
+
+    def test_compact_missing_alg(self):
+        self.assertRaises(
+            MissingAlgorithmError,
+            deserialize_compact,
+            b"e30.a.b", key
+        )
+
+    def test_compact_bad_signature(self):
+        protected = {"alg": "HS256", "b64": True, "crit": ["b64"]}
+        value = serialize_compact(protected, "hello", key)
+        self.assertRaises(
+            BadSignatureError,
+            deserialize_compact,
+            value, "secret"
+        )
+
+    def test_compact_use_registry(self):
+        protected = {"alg": "HS256", "b64": True, "crit": ["b64"]}
+        registry = JWSRegistry()
+        value = serialize_compact(protected, "hello", key, registry=registry)
+        obj = deserialize_compact(value, key, registry=registry)
+        self.assertEqual(obj.protected, protected)
+
+
+TestRFC7797.load_fixture("jws_rfc7797.json")
