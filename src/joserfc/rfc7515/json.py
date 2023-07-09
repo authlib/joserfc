@@ -99,11 +99,11 @@ def extract_json(value: JSONSerialization) -> JSONSignature:
         raise DecodeError("Invalid payload")
 
     if "signatures" in value:
-        flatten = False
+        flattened = False
         value: GeneralJSONSerialization
         signatures: t.List[JSONSignatureDict] = value["signatures"]
     else:
-        flatten = True
+        flattened = True
         value: FlattenedJSONSerialization
         _sig: JSONSignatureDict = {
             "protected": value["protected"],
@@ -125,7 +125,7 @@ def extract_json(value: JSONSerialization) -> JSONSignature:
 
     obj = JSONSignature(members, payload)
     obj.segments.update({"payload": payload_segment})
-    obj.flattened = flatten
+    obj.flattened = flattened
     obj.signatures = signatures
     return obj
 

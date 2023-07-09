@@ -32,30 +32,30 @@ class TestJWERFC7520(TestFixture):
 
         enc_data = JSONEncryption(protected, payload)
         enc_data.add_recipient(None, key)
-        enc_data.flatten = False
+        enc_data.flattened = False
         value2 = encrypt_json(enc_data, None, algorithms=algorithms)
         obj2 = decrypt_json(value2, key, algorithms=algorithms)
         self.assertEqual(obj2.protected, protected)
-        self.assertFalse(obj2.flatten)
+        self.assertFalse(obj2.flattened)
         self.assertEqual(obj2.plaintext, payload)
 
         if "general_json" in data:
             general_obj = decrypt_json(data["general_json"], key, algorithms=algorithms)
             self.assertEqual(general_obj.protected, protected)
             self.assertEqual(general_obj.plaintext, payload)
-            self.assertFalse(general_obj.flatten)
+            self.assertFalse(general_obj.flattened)
 
-        enc_data.flatten = True
+        enc_data.flattened = True
         value3 = encrypt_json(enc_data, None, algorithms=algorithms)
         obj3 = decrypt_json(value3, key, algorithms=algorithms)
         self.assertEqual(obj3.protected, protected)
         self.assertEqual(obj3.plaintext, payload)
-        self.assertTrue(obj3.flatten)
+        self.assertTrue(obj3.flattened)
         if "flattened_json" in data:
             flattened_obj = decrypt_json(data["flattened_json"], key, algorithms=algorithms)
             self.assertEqual(flattened_obj.protected, protected)
             self.assertEqual(flattened_obj.plaintext, payload)
-            self.assertTrue(flattened_obj.flatten)
+            self.assertTrue(flattened_obj.flattened)
 
     def run_test_agreement(self, data):
         protected = data["protected"]
@@ -79,14 +79,14 @@ class TestJWERFC7520(TestFixture):
         enc_data = JSONEncryption(protected, payload)
         enc_data.add_recipient(None, key)
         enc_data.recipients[0].ephemeral_key = ephemeral_key
-        enc_data.flatten = False
+        enc_data.flattened = False
 
         value2 = encrypt_json(enc_data, None, algorithms=algorithms)
         obj2 = decrypt_json(value2, key, algorithms=algorithms)
         recipient = obj2.recipients[0]
         self.assertEqual(recipient.headers(), expected_header)
 
-        enc_data.flatten = True
+        enc_data.flattened = True
         value3 = encrypt_json(enc_data, None, algorithms=algorithms)
         obj3 = decrypt_json(value3, key, algorithms=algorithms)
         recipient = obj3.recipients[0]

@@ -33,7 +33,7 @@ def represent_json(obj: JSONEncryption) -> JSONSerialization:
         if data:
             recipients.append(item)
 
-    if obj.flatten and len(recipients) == 1:
+    if obj.flattened and len(recipients) == 1:
         data.update(recipients[0])
     else:
         data["recipients"] = recipients
@@ -57,14 +57,14 @@ def extract_json(data: JSONSerialization) -> JSONEncryption:
         obj.aad = urlsafe_b64decode(to_bytes(data["aad"]))
 
     if "recipients" in data:
-        obj.flatten = False
+        obj.flattened = False
         for item in data["recipients"]:
             recipient = Recipient(obj, item.get("header"))
             if "encrypted_key" in item:
                 recipient.encrypted_key = urlsafe_b64decode(to_bytes(item["encrypted_key"]))
             obj.recipients.append(recipient)
     else:
-        obj.flatten = True
+        obj.flattened = True
         recipient = Recipient(obj, data.get("header"))
         if "encrypted_key" in data:
             recipient.encrypted_key = urlsafe_b64decode(to_bytes(data["encrypted_key"]))

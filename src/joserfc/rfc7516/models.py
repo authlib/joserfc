@@ -95,7 +95,7 @@ class JSONEncryption:
             plaintext: t.Optional[bytes] = None,
             unprotected: t.Optional[Header] = None,
             aad: t.Optional[bytes] = None,
-            flatten: bool = False):
+            flattened: bool = False):
         #: protected header in dict
         self.protected: Header = protected
         #: the plaintext in bytes
@@ -105,7 +105,7 @@ class JSONEncryption:
         #: an optional additional authenticated data
         self.aad: t.Optional[bytes] = aad
         #: represents if the object is in flatten syntax
-        self.flatten: bool = flatten
+        self.flattened: bool = flattened
         #: a list of recipients
         self.recipients: t.List[Recipient] = []
 

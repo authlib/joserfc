@@ -12,7 +12,7 @@ class TestJSON(TestCase):
         key: RSAKey = load_key('rsa-openssl-private.pem')
         member = {'protected': {'alg': 'RS256'}}
 
-        # flatten
+        # flattened
         value = serialize_json(member, b'hello', key)
         self.assertIn('signature', value)
         self.assertNotIn('signatures', value)
