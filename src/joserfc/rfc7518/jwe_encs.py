@@ -7,6 +7,7 @@
 
     .. _`Section 5`: https://tools.ietf.org/html/rfc7518#section-5
 """
+import typing as t
 import hmac
 import hashlib
 from cryptography.hazmat.backends import default_backend
@@ -44,7 +45,7 @@ class CBCHS2EncModel(JWEEncModel):
         d = hmac.new(key, msg, self.hash_alg).digest()
         return d[: self.key_len]
 
-    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> t.Tuple[bytes, bytes]:
         """Key Encryption with AES_CBC_HMAC_SHA2."""
         hkey = cek[:self.key_len]
         ekey = cek[self.key_len:]
@@ -86,7 +87,7 @@ class GCMEncModel(JWEEncModel):
         self.key_size = key_size
         self.cek_size = key_size
 
-    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> t.Tuple[bytes, bytes]:
         """Key Encryption with AES GCM"""
         cipher = Cipher(AES(cek), GCM(iv), backend=default_backend())
         enc = cipher.encryptor()

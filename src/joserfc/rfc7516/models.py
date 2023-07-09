@@ -145,7 +145,7 @@ class JWEEncModel(object, metaclass=ABCMeta):
         return iv
 
     @abstractmethod
-    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> (bytes, bytes):
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> t.Tuple[bytes, bytes]:
         pass
 
     @abstractmethod
