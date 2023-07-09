@@ -90,6 +90,4 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
     else:
         raise ValueError("Invalid key")
 
-    if "alg" in headers:
-        rv_key.check_alg(headers["alg"])
     return rv_key
