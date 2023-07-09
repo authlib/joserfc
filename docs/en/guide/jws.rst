@@ -309,3 +309,50 @@ of using :ref:`registry`.
     >>> registry = jws.JWSRegistry(algorithms=["HS384"])
     >>> jws.serialize_compact({"alg": "HS384"}, b"payload", "secret", registry=registry)
     'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
+
+.. _rfc7797:
+
+Unencoded Payload Option
+------------------------
+
+The unencoded payload option, defined in RFC7797, allows the payload of a
+JWS (JSON Web Signature) to remain unencoded, without using base64 encoding.
+
+To enable this option, you need to set the ``b64`` header parameter to ``false``
+in the JWS header.
+
+To utilize the unencoded payload option in joserfc, you must import the
+serialize and deserialize methods from ``joserfc.rfc7797``.
+
+Here are examples demonstrating the usage of the ``b64`` option:
+
+.. code-block:: python
+
+    from joserfc.rfc7797 import serialize_compact, deserialize_compact
+
+    protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
+    value = serialize_compact(protected, "hello", "secret")
+    # => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19.hello.mdPbZLtc3tqQ6NCV1pKF-qfEx-3jtR6rv109phKAc4I'
+    deserialize_compact(value, "secret")
+
+.. note::
+
+    The ``crit`` MUST be present with ``"b64"`` in its value set when
+    ``b64`` is in the header.
+
+Since the payload is not base64 encoded, if the payload contains non urlsafe
+characters, the compact serialization will detach the payload:
+
+.. code-block:: python
+
+    from joserfc.rfc7797 import serialize_compact, deserialize_compact
+
+    protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
+    value = serialize_compact(protected, "$.02", "secret")
+    # => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..GbtzAD3Cwe6snTZnaAxapwQz5QftEz7agx_6aMtZ4w0'
+    # since the payload is detached, you need to specify the
+    # payload when calling deserialize_compact
+    deserialize_compact(value, "secret", payload="$.02")
+
+There are also methods for JSON serialization: ``serialize_json`` and
+``deserialize_json``.

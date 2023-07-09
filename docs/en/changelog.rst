@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.5.0
+-----
+
+Not released.
+
+- Add RFC7797 JSON Web Signature (JWS) Unencoded Payload Option
+- Fix ``decrypt_json`` when there is no ``encrypted_key``
+- Rename JWE CompleteJSONSerialization to GeneralJSONSerialization
+
 0.4.0
 -----
 

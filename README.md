@@ -39,6 +39,7 @@ It follows RFCs with extensible API. The module has implementations of:
 - RFC7519: [JSON Web Token](https://jose.authlib.org/en/dev/guide/jwt/)
 - RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
 - RFC7638: ``thumbprint`` for JWK
+- RFC7797: [JSON Web Signature (JWS) Unencoded Payload Option](https://jose.authlib.org/en/dev/guide/jws/#rfc7797)
 - RFC8037: ``OKP`` Key and ``EdDSA`` algorithm
 - RFC8812: ``ES256K`` algorithm
 
