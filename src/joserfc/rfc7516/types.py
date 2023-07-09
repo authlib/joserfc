@@ -3,7 +3,7 @@ import typing as t
 __all__ = [
     "JSONSerialization",
     "FlattenJSONSerialization",
-    "CompleteJSONSerialization",
+    "GeneralJSONSerialization",
 ]
 
 JSONRecipientDict = t.TypedDict("JSONRecipientDict", {
@@ -11,7 +11,7 @@ JSONRecipientDict = t.TypedDict("JSONRecipientDict", {
     "encrypted_key": str,
 }, total=False)
 
-CompleteJSONSerialization = t.TypedDict("CompleteJSONSerialization", {
+GeneralJSONSerialization = t.TypedDict("GeneralJSONSerialization", {
     "protected": str,
     "unprotected": t.Dict[str, any],
     "iv": str,
@@ -32,4 +32,4 @@ FlattenJSONSerialization = t.TypedDict("FlattenJSONSerialization", {
     "tag": str,
 }, total=False)
 
-JSONSerialization = t.Union[CompleteJSONSerialization, FlattenJSONSerialization]
+JSONSerialization = t.Union[GeneralJSONSerialization, FlattenJSONSerialization]
