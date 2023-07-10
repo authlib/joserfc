@@ -163,7 +163,7 @@ and the ``decode`` method will use a private key to decrypt.
 The key parameter
 -----------------
 
-In the above example, we're using :ref:`OctKey` only simplicity. There are other
+In the above example, we're using :ref:`OctKey` only for simplicity. There are other
 types of keys in :ref:`jwk`.
 
 Key types

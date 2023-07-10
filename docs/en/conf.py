@@ -46,6 +46,8 @@ html_theme_options = {
     "twitter_url": "https://twitter.com/authlib",
     "github_url": "https://github.com/authlib/joserfc",
     "discord_url": "https://discord.gg/HvBVAeNAaV",
+    "carbon_ads_code": "CE7DKK3W",
+    "carbon_ads_placement": "joseauthliborg",
     "nav_links": [
         {
             "title": "Projects",
