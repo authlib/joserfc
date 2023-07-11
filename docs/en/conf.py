@@ -26,6 +26,11 @@ extensions = [
     "sphinx_design",
 ]
 
+extlinks = {
+    'issue': ('https://github.com/authlib/joserfc/issues/%s', 'issue #%s'),
+    'pull': ('https://github.com/authlib/joserfc/pull/%s', 'pull request #%s'),
+}
+
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
 }
