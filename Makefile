@@ -1,9 +1,9 @@
 build-docs:
-	@sphinx-build docs/en build/_html -b dirhtml -a
+	@sphinx-build docs/en public/en/dev -b dirhtml -a
 
 
 clean-docs:
-	@rm -fr build/_html
+	@rm -fr public/en
 
 
 coverage:

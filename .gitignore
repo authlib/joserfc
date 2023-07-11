@@ -54,4 +54,5 @@ __pypackages__/
 .idea/
 .vscode/
 
+public/en
 demo.py
