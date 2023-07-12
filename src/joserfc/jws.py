@@ -104,6 +104,7 @@ def serialize_compact(
     alg: JWSAlgModel = registry.get_alg(protected["alg"])
     key: Key = guess_key(private_key, obj)
     key.check_use("sig")
+    alg.check_key_type(key)
     key.check_alg(protected["alg"])
     out = sign_compact(obj, alg, key)
     return out.decode("utf-8")
@@ -131,6 +132,7 @@ def validate_compact(
     key: Key = guess_key(public_key, obj)
     key.check_use("sig")
     alg: JWSAlgModel = registry.get_alg(headers["alg"])
+    alg.check_key_type(key)
     if not verify_compact(obj, alg, key):
         raise BadSignatureError()
 

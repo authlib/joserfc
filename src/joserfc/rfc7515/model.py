@@ -1,6 +1,7 @@
 import typing as t
 from abc import ABCMeta, abstractmethod
 from .types import SegmentsDict, JSONSignatureDict
+from ..errors import InvalidKeyTypeError
 from ..registry import Header
 
 
@@ -67,6 +68,10 @@ class JWSAlgModel(object, metaclass=ABCMeta):
     key_type = "oct"
     algorithm_type = "JWS"
     algorithm_location = "sig"
+
+    def check_key_type(self, key):
+        if key.key_type != self.key_type:
+            raise InvalidKeyTypeError(f'Algorithm "{self.name}" requires "{self.key_type}" key')
 
     @abstractmethod
     def sign(self, msg: bytes, key) -> bytes:

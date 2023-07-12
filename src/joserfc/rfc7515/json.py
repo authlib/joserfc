@@ -58,6 +58,7 @@ def sign_json(obj: JSONSignature, registry: JWSRegistry, find_key) -> JSONSerial
         alg = registry.get_alg(headers["alg"])
         key = find_key(member)
         key.check_use("sig")
+        alg.check_key_type(key)
         signature = __sign_member(payload_segment, member, alg, key)
         signatures.append(signature)
 
@@ -146,6 +147,7 @@ def verify_json(obj: JSONSignature, registry: JWSRegistry, find_key) -> bool:
         alg = registry.get_alg(headers["alg"])
         key = find_key(member)
         key.check_use("sig")
+        alg.check_key_type(key)
         if not _verify_signature(signature, payload_segment, alg, key):
             return False
     return True

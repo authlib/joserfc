@@ -7,6 +7,7 @@ from joserfc.errors import (
     UnsupportedKeyUseError,
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyOperationError,
+    InvalidKeyTypeError,
 )
 from joserfc.util import urlsafe_b64encode
 from tests.base import load_key
@@ -189,6 +190,15 @@ class TestJWSWithKeyErrors(TestCase):
         header = {"alg": "HS256"}
         self.assertRaises(
             UnsupportedKeyOperationError,
+            jws.serialize_compact,
+            header, "i", key
+        )
+
+    def test_invalid_key_type(self):
+        key = OctKey.generate_key()
+        header = {"alg": "RS256"}
+        self.assertRaises(
+            InvalidKeyTypeError,
             jws.serialize_compact,
             header, "i", key
         )
