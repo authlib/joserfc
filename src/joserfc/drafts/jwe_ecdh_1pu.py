@@ -72,28 +72,21 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
 
     def __encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient, tag: t.Optional[bytes]) -> bytes:
         sender_key: CurveKey = recipient.sender_key
-        recipient_pubkey = recipient.recipient_key.get_op_key("deriveKey")
-        sender_shared_key = sender_key.exchange_shared_key(recipient_pubkey)
-        ephemeral_shared_key = recipient.ephemeral_key.exchange_shared_key(recipient_pubkey)
+        sender_shared_key = sender_key.exchange_derive_key(recipient.recipient_key)
+        ephemeral_shared_key = recipient.ephemeral_key.exchange_derive_key(recipient.recipient_key)
         shared_key = ephemeral_shared_key + sender_shared_key
         headers = recipient.headers()
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size, tag)
 
     def __decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient, tag: t.Optional[bytes]) -> bytes:
         self._check_enc(enc)
-
         headers = recipient.headers()
         assert "epk" in headers
 
         recipient_key: CurveKey = recipient.recipient_key
-        sender_key: CurveKey = recipient.sender_key
-
         ephemeral_key = recipient_key.import_key(headers["epk"])
-        ephemeral_pubkey = ephemeral_key.get_op_key("deriveKey")
-        sender_pubkey = sender_key.get_op_key("deriveKey")
-
-        sender_shared_key = recipient_key.exchange_shared_key(sender_pubkey)
-        ephemeral_shared_key = recipient_key.exchange_shared_key(ephemeral_pubkey)
+        sender_shared_key = recipient_key.exchange_derive_key(recipient.sender_key)
+        ephemeral_shared_key = recipient_key.exchange_derive_key(ephemeral_key)
         shared_key = ephemeral_shared_key + sender_shared_key
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size, tag)
 

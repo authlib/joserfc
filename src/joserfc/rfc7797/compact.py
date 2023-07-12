@@ -1,6 +1,5 @@
 import typing as t
 import re
-import binascii
 from ..registry import Header
 from ..jwk import KeyFlexible, guess_key
 from ..jws import (
@@ -13,11 +12,11 @@ from ..util import (
     to_bytes,
     to_unicode,
     json_b64encode,
-    json_b64decode,
     urlsafe_b64encode,
     urlsafe_b64decode,
 )
-from ..errors import BadSignatureError, MissingAlgorithmError, DecodeError
+from ..rfc7515.compact import decode_header
+from ..errors import BadSignatureError
 from .registry import JWSRegistry
 
 
@@ -101,12 +100,7 @@ def _extract_compact(value: bytes, payload: t.Optional[t.AnyStr] = None):
         raise ValueError("Invalid JSON Web Signature")
 
     header_segment, payload_segment, signature_segment = parts
-    try:
-        protected = json_b64decode(header_segment)
-        if "alg" not in protected:
-            raise MissingAlgorithmError()
-    except (TypeError, ValueError, binascii.Error):
-        raise DecodeError("Invalid header")
+    protected = decode_header(header_segment)
 
     if "b64" not in protected:
         return None

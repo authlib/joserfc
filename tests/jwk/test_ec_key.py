@@ -4,6 +4,14 @@ from tests.keys import read_key
 
 
 class TestECKey(TestCase):
+    def test_exchange_derive_key(self):
+        key1 = ECKey.generate_key("P-256")
+        key2 = ECKey.generate_key("P-384")
+        self.assertRaises(ValueError, key1.exchange_derive_key, key2)
+
+        key3 = ECKey.generate_key("P-256", private=False)
+        self.assertRaises(ValueError, key3.exchange_derive_key, key1)
+
     def run_import_key(self, name):
         public_pem = read_key(f"ec-{name}-public.pem")
         key1 = ECKey.import_key(public_pem)

@@ -28,12 +28,7 @@ def extract_compact(value: bytes) -> CompactSignature:
         raise ValueError("Invalid JSON Web Signature")
 
     header_segment, payload_segment, signature_segment = parts
-    try:
-        protected = json_b64decode(header_segment)
-        if "alg" not in protected:
-            raise MissingAlgorithmError()
-    except (TypeError, ValueError, binascii.Error):
-        raise DecodeError("Invalid header")
+    protected = decode_header(header_segment)
 
     try:
         payload = urlsafe_b64decode(payload_segment)
@@ -60,3 +55,13 @@ def detach_compact_content(value: str) -> str:
     parts = value.split(".")
     parts[1] = ""
     return ".".join(parts)
+
+
+def decode_header(header_segment: bytes):
+    try:
+        protected = json_b64decode(header_segment)
+        if "alg" not in protected:
+            raise MissingAlgorithmError()
+    except (TypeError, ValueError, binascii.Error):
+        raise DecodeError("Invalid header")
+    return protected

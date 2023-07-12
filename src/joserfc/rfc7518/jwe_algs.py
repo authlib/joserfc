@@ -195,8 +195,7 @@ class ECDHESAlgModel(JWEKeyAgreement):
     def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient):
         recipient_key: CurveKey = recipient.recipient_key
         ephemeral_key: CurveKey = recipient.ephemeral_key
-        pubkey = recipient_key.get_op_key("deriveKey")
-        shared_key = ephemeral_key.exchange_shared_key(pubkey)
+        shared_key = ephemeral_key.exchange_derive_key(recipient_key)
         headers = recipient.headers()
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size)
 
@@ -205,9 +204,8 @@ class ECDHESAlgModel(JWEKeyAgreement):
         assert "epk" in headers
 
         recipient_key: CurveKey = self.check_recipient_key(recipient.recipient_key)
-        epk = recipient_key.import_key(headers["epk"])
-        pubkey = epk.get_op_key("deriveKey")
-        shared_key = recipient_key.exchange_shared_key(pubkey)
+        ephemeral_key = recipient_key.import_key(headers["epk"])
+        shared_key = recipient_key.exchange_derive_key(ephemeral_key)
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size)
 
 

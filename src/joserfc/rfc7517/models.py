@@ -278,7 +278,7 @@ class CurveKey(AsymmetricKey[NativePublicKey, NativePrivateKey]):
         pass
 
     @abstractmethod
-    def exchange_shared_key(self, pubkey) -> bytes:
+    def exchange_derive_key(self, key: "CurveKey") -> bytes:
         pass
 
 

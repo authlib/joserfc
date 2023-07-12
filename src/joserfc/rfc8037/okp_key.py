@@ -79,9 +79,10 @@ class OKPKey(CurveKey[PublicOKPKey, PrivateOKPKey]):
     required_fields = frozenset(["crv", "x"])
     private_only_fields = frozenset(["d"])
 
-    def exchange_shared_key(self, pubkey: Union[X25519PublicKey, X448PublicKey]) -> bytes:
+    def exchange_derive_key(self, key: "OKPKey") -> bytes:
         # used in ECDHESAlgorithm
-        if self.private_key and isinstance(self.private_key, (X25519PrivateKey, X448PrivateKey)):
+        pubkey = key.get_op_key("deriveKey")
+        if self.private_key and self.curve_name in ("X25519", "X448") and self.curve_name == key.curve_name:
             return self.private_key.exchange(pubkey)
         raise ValueError("Invalid key for exchanging shared key")
 

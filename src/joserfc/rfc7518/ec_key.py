@@ -87,9 +87,9 @@ class ECKey(CurveKey[EllipticCurvePublicKey, EllipticCurvePrivateKey]):
     }
     binding = ECBinding
 
-    def exchange_shared_key(self, pubkey: EllipticCurvePublicKey) -> bytes:
-        # used in ECDHESAlgorithm
-        if self.private_key:
+    def exchange_derive_key(self, key: "ECKey") -> bytes:
+        pubkey = key.get_op_key("deriveKey")
+        if self.private_key and self.curve_name == key.curve_name:
             return self.private_key.exchange(ECDH(), pubkey)
         raise ValueError("Invalid key for exchanging shared key")
 
