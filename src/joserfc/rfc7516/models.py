@@ -2,7 +2,6 @@ import os
 import typing as t
 from abc import ABCMeta, abstractmethod
 from ..rfc7517.models import Key, CurveKey
-from ..rfc7518.oct_key import OctKey
 from ..registry import Header, HeaderRegistryDict
 from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
 
@@ -174,6 +173,7 @@ class KeyManagement:
     description: str
     recommended: bool = False
     key_size: t.Optional[int] = None
+    key_types: t.List[str]
     algorithm_type = "JWE"
     algorithm_location = "alg"
     more_header_registry: HeaderRegistryDict = {}
@@ -183,15 +183,17 @@ class KeyManagement:
     def direct_mode(self) -> bool:
         return self.key_size is None
 
-    @staticmethod
-    def check_recipient_key(key) -> Key:
-        raise NotImplementedError()
+    def check_key_type(self, key: Key):
+        if key.key_type not in self.key_types:
+            raise InvalidKeyTypeError()
 
     def prepare_recipient_header(self, recipient: Recipient):
         raise NotImplementedError()
 
 
 class JWEDirectEncryption(KeyManagement, metaclass=ABCMeta):
+    key_types = ["oct"]
+
     @abstractmethod
     def compute_cek(self, size: int, recipient: Recipient) -> bytes:
         pass
@@ -212,15 +214,11 @@ class JWEKeyEncryption(KeyManagement, metaclass=ABCMeta):
 
 
 class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
+    key_types = ["oct"]
+
     @property
     def direct_mode(self) -> bool:
         return False
-
-    @staticmethod
-    def check_recipient_key(key) -> OctKey:
-        if isinstance(key, OctKey):
-            return key
-        raise InvalidKeyTypeError()
 
     def check_op_key(self, op_key: bytes):
         if len(op_key) * 8 != self.key_size:
@@ -245,17 +243,13 @@ class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
 
 class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
     tag_aware = False
+    key_types = ["EC", "OKP"]
     key_agreement = True
     key_wrapping: JWEKeyWrapping
 
-    @staticmethod
-    def check_recipient_key(key) -> CurveKey:
-        if isinstance(key, CurveKey):
-            return key
-        raise InvalidKeyTypeError()
-
     def prepare_ephemeral_key(self, recipient: Recipient):
-        recipient_key = self.check_recipient_key(recipient.recipient_key)
+        recipient_key: CurveKey = recipient.recipient_key
+        self.check_key_type(recipient_key)
         if recipient.ephemeral_key is None:
             recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
         recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))

@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwe import JWERegistry, encrypt_compact, decrypt_compact
-from joserfc.jwk import RSAKey, ECKey, OctKey
+from joserfc.jwk import RSAKey, ECKey, OctKey, KeySet
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from joserfc.errors import (
     InvalidKeyLengthError,
@@ -111,3 +111,14 @@ class TestJWECompact(TestCase):
 
         value = json_b64encode({"alg": "RSA-OAEP"}) + b".b.c.d.e"
         self.assertRaises(MissingEncryptionError, decrypt_compact, value, private_key)
+
+    def test_with_key_set(self):
+        keys = KeySet([
+            OctKey.generate_key(),
+            OctKey.generate_key(),
+            RSAKey.generate_key(),
+        ])
+        protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256"}
+        value = encrypt_compact(protected, b"foo", keys)
+        obj = decrypt_compact(value, keys)
+        self.assertEqual(obj.plaintext, b"foo")

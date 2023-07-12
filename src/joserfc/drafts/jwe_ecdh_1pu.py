@@ -7,6 +7,7 @@ from ..rfc7516.models import (
     JWEEncModel
 )
 from ..rfc7517.models import CurveKey
+from ..rfc7517.registry import JWKRegistry
 from ..rfc7518.jwe_algs import (
     A128KW,
     A192KW,
@@ -34,6 +35,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         "apv": HeaderParameter("Agreement PartyVInfo", "str"),
         "skid": HeaderParameter("Sender Key ID", "str"),
     }
+    key_types = ["EC", "OKP"]
     tag_aware = True
     recommended: bool = False
 
@@ -102,3 +104,4 @@ JWE_ALG_MODELS = [
 def register_ecdh_1pu():
     for model in JWE_ALG_MODELS:
         JWERegistry.register(model)
+        JWKRegistry.algorithm_key_types[model.name] = model.key_types
