@@ -1,16 +1,7 @@
 from unittest import TestCase
 from joserfc import jwe
-from joserfc.jwe import JWERegistry, encrypt_compact, decrypt_compact
 from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
-from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
-from joserfc.errors import (
-    ConflictAlgorithmError,
-    MissingAlgorithmError,
-    MissingEncryptionError,
-    DecodeError,
-)
-from joserfc.util import json_b64encode
-from tests.base import load_key
+from joserfc.errors import ConflictAlgorithmError
 
 
 class TestJWEJSON(TestCase):

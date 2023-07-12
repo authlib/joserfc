@@ -1,4 +1,3 @@
-import random
 import typing as t
 from .rfc7517 import (
     SymmetricKey,
@@ -77,10 +76,9 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
         kid = headers.get("kid")
         if not kid:
             # choose one key by random
-            key: Key = _random_key(key.keys, headers["alg"])
+            rv_key: Key = key.pick_random_key(headers["alg"])
             # use side effect to add kid information
-            obj.set_kid(key.kid)
-            rv_key = key
+            obj.set_kid(rv_key.kid)
         else:
             rv_key = key.get_by_kid(kid)
 
@@ -91,10 +89,3 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
         raise ValueError("Invalid key")
 
     return rv_key
-
-
-def _random_key(keys: t.List[Key], alg: str):
-    key_types = JWKRegistry.algorithm_key_types.get(alg)
-    if key_types:
-        keys = [k for k in keys if k.key_type in key_types]
-    return random.choice(keys)

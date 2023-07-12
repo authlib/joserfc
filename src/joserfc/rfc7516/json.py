@@ -30,8 +30,7 @@ def represent_json(obj: JSONEncryption) -> JSONSerialization:
             item["header"] = recipient.header
         if recipient.encrypted_key:
             item["encrypted_key"] = to_unicode(urlsafe_b64encode(recipient.encrypted_key))
-        if data:
-            recipients.append(item)
+        recipients.append(item)
 
     if obj.flattened and len(recipients) == 1:
         data.update(recipients[0])

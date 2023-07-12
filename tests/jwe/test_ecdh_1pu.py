@@ -1,6 +1,7 @@
 from unittest import TestCase
 from joserfc.jwe import (
     JWERegistry,
+    JSONEncryption,
     encrypt_compact,
     decrypt_compact,
     encrypt_json,
@@ -170,3 +171,21 @@ class TestECDH1PUJSON(TestCase):
             sender_key=alice_key
         )
         self.assertEqual(value1["protected"], result["protected"])
+
+    def test_with_key_set(self):
+        alice_key = load_key("okp-x25519-alice.json", {"kid": "alice"})
+        bob_key = load_key("okp-x25519-bob.json", {"kid": "bob"})
+        charlie_key = load_key("okp-x25519-charlie.json", {"kid": "charlie"})
+        keys = KeySet([alice_key, bob_key, charlie_key])
+
+        obj = JSONEncryption(
+            {"enc": "A128CBC-HS256"},
+            plaintext=b"hello",
+            aad=b"world",
+        )
+        obj.add_recipient({"alg": "ECDH-1PU+A128KW", "kid": "alice", "skid": "charlie"})
+        obj.add_recipient({"alg": "ECDH-1PU+A256KW", "kid": "bob"})
+        value = encrypt_json(obj, keys, registry=ecdh_registry, sender_key=keys)
+        obj1 = decrypt_json(value, keys, registry=ecdh_registry, sender_key=keys)
+        self.assertEqual(obj1.plaintext, b"hello")
+        self.assertEqual(obj1.aad, b"world")

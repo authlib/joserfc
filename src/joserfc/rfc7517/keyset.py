@@ -1,4 +1,5 @@
 import typing as t
+import random
 from .models import Key, SymmetricKey
 from .types import KeySetDict, KeyParameters
 from .registry import JWKRegistry
@@ -28,6 +29,16 @@ class KeySet:
             if key.kid == kid:
                 return key
         raise ValueError(f'No key for kid: "{kid}"')
+
+    def pick_random_key(self, algorithm: str) -> t.Optional[Key]:
+        key_types = JWKRegistry.algorithm_key_types.get(algorithm)
+        if key_types:
+            keys = [k for k in self.keys if k.key_type in key_types]
+        else:
+            keys = self.keys
+        if keys:
+            return random.choice(keys)
+        return None
 
     @classmethod
     def import_key_set(cls, value: KeySetDict, parameters: KeyParameters = None) -> "KeySet":

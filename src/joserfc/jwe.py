@@ -224,5 +224,7 @@ def _guess_sender_key(recipient, key: t.Union[CurveKey, KeySet]):
         skid = headers.get('skid')
         if skid:
             return key.get_by_kid(skid)
-        return None
+        skey = key.pick_random_key(headers["alg"])
+        recipient.add_header("skid", skey.kid)
+        return skey
     return key

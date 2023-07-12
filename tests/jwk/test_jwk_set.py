@@ -1,6 +1,8 @@
 from unittest import TestCase
-from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
+from joserfc.jwk import JWKRegistry, KeySet, RSAKey, ECKey, OctKey
 from tests.keys import read_key
+
+JWKRegistry.algorithm_key_types["RS256"] = ["RSA"]
 
 
 class TestKeySet(TestCase):
@@ -34,6 +36,13 @@ class TestKeySet(TestCase):
             self.assertNotIn('d', d1)
 
         self.assertRaises(ValueError, jwks.as_dict, private=True)
+
+    def test_random_key(self):
+        key_set = KeySet.generate_key_set("oct", 8, count=1)
+        key1 = key_set.pick_random_key("INVALID")
+        self.assertIsNotNone(key1)
+        key2 = key_set.pick_random_key("RS256")
+        self.assertIsNone(key2)
 
     def test_key_set_methods(self):
         key_set = KeySet.generate_key_set("oct", 8)
