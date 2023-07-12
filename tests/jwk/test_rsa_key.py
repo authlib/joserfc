@@ -25,6 +25,25 @@ class TestRSAKey(TestCase):
         self.assertFalse(key.is_private)
         self.assertIsNone(key.private_key)
 
+    def test_with_oth(self):
+        data = {
+            "kty": "RSA",
+            "n": (
+                "0vx7agoebGcQSuuPiLJXZptN9nndrQmbXEps2aiAFbWhM78LhWx4cbbfAAtVT86"
+                "zwu1RK7aPFFxuhDR1L6tSoc_BJECPebWKRXjBZCiFV4n3oknjhMstn64tZ_2W-5"
+                "JsGY4Hc5n9yBXArwl93lqt7_RN5w6Cf0h4QyQ5v-65YGjQR0_FDW2QvzqY368QQ"
+                "MicAtaSqzs8KJZgnYb9c7d0zgdAZHzu6qMQvRL5hajrn1n91CbOpbISD08qNLyr"
+                "dkt-bFTWhAI4vMQFh6WeZu0fM4lFd2NcRwr3XPksINHaQ-G_xBniIqbw0Ls1jF4"
+                "4-csFCur-kEgU8awapJzKnqDKgw"
+            ),
+            "e": "AQAB",
+            "oth": "invalid information"
+        }
+        self.assertRaises(
+            ValueError,
+            RSAKey.import_key, data
+        )
+
     def test_import_only_from_d(self):
         data = {
             "kty": "RSA",

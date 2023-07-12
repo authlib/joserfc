@@ -62,6 +62,22 @@ class TestOctKey(TestCase):
         }
         self.assertRaises(ValueError, OctKey.import_key, data)
 
+    def test_invalid_use(self):
+        data = {
+            "kty": "oct",
+            "k": "GawgguFyGrWKav7AX4VKUg",
+            "use": "invalid",
+        }
+        self.assertRaises(ValueError, OctKey.import_key, data)
+
+    def test_invalid_key_ops(self):
+        data = {
+            "kty": "oct",
+            "k": "GawgguFyGrWKav7AX4VKUg",
+            "key_ops": ["invalid"],
+        }
+        self.assertRaises(ValueError, OctKey.import_key, data)
+
     def test_import_pem_key(self):
         public_pem = read_key("ec-p256-public.pem")
         self.assertRaises(ValueError, OctKey.import_key, public_pem)
