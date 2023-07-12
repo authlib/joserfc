@@ -9,17 +9,12 @@ class JoseError(Exception):
     #: long-string to describe this error
     description = ""
 
-    def __init__(self, description: Optional[str] = None, error: Optional[str] = None):
-        if error is not None:
-            self.error = error
+    def __init__(self, description: Optional[str] = None):
         if description is not None:
             self.description = description
 
         message = "{}: {}".format(self.error, self.description)
         super(JoseError, self).__init__(message)
-
-    def __repr__(self):
-        return '<{} "{}">'.format(self.__class__.__name__, self.error)
 
 
 class DecodeError(JoseError):
