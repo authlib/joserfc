@@ -77,7 +77,7 @@ You can generate an "EC" key with a given key size (in bit):
     from joserfc.jwk import RSAKey
 
     key_size = 2048
-    key = OctKey.generate_key(key_size)
+    key = RSAKey.generate_key(key_size)
 
 Import an "RSA" key
 ~~~~~~~~~~~~~~~~~~~
@@ -145,6 +145,8 @@ The "crv" values that :class:`ECKey` supports:
 - ``P-384`` via RFC7518
 - ``P-521`` via RFC7518
 - ``secp256k1`` via RFC8812
+
+.. hint:: It is ``P-521``, not ``P-512``, it is not a typo.
 
 Import an "EC" key
 ~~~~~~~~~~~~~~~~~~
