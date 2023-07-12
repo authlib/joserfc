@@ -2,7 +2,11 @@ from unittest import TestCase
 from joserfc import jwe
 from joserfc.jwk import OctKey, RSAKey
 from joserfc.registry import HeaderParameter
-from joserfc.errors import InvalidKeyTypeError, InvalidKeyLengthError
+from joserfc.errors import (
+    InvalidKeyTypeError,
+    InvalidKeyLengthError,
+    DecodeError,
+)
 from tests.base import load_key
 
 
@@ -45,6 +49,17 @@ class TestJWEErrors(TestCase):
             InvalidKeyTypeError,
             jwe.encrypt_compact,
             protected, b"i", key,
+        )
+
+    def test_A128KW_unwrap_error(self):
+        key1 = OctKey.generate_key(128)
+        key2 = OctKey.generate_key(128)
+        protected = {"alg": "A128KW", "enc": "A128CBC-HS256"}
+        value = jwe.encrypt_compact(protected, b"i", key1)
+        self.assertRaises(
+            DecodeError,
+            jwe.decrypt_compact,
+            value, key2
         )
 
     def test_invalid_alg(self):

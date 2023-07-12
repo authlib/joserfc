@@ -39,12 +39,33 @@ class TestJWECompact(TestCase):
         algs = ['RSA1_5', 'RSA-OAEP', 'RSA-OAEP-256']
         self.run_cases(algs, private_key, public_key)
 
+        protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256"}
+        value = encrypt_compact(protected, "i", private_key)
+        key2 = RSAKey.generate_key()
+        self.assertRaises(
+            DecodeError,
+            decrypt_compact,
+            value, key2
+        )
+
     def test_ECDH_ES_alg(self):
         algs = ['ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW']
         for size in [256, 384, 512]:
             private_key: ECKey = load_key(f'ec-p{size}-private.pem')
             public_key: ECKey = load_key(f'ec-p{size}-public.pem')
             self.run_cases(algs, private_key, public_key)
+
+        key1 = ECKey.generate_key("P-256")
+        key2 = ECKey.generate_key("P-256")
+        for alg in ["ECDH-ES", "ECDH-ES+A128KW"]:
+            for enc in ["A128CBC-HS256", "A128GCM"]:
+                protected = {"alg": alg, "enc": enc}
+                value = encrypt_compact(protected, "i", key1)
+                self.assertRaises(
+                    DecodeError,
+                    decrypt_compact,
+                    value, key2,
+                )
 
     def test_dir_alg(self):
         self.assertRaises(InvalidKeyLengthError, encrypt_compact, {"alg": "dir", "enc": "A128GCM"}, b"j", "secret")
@@ -57,6 +78,17 @@ class TestJWECompact(TestCase):
             key = OctKey.generate_key(size)
             self.run_cases([f"A{size}GCMKW"], key, key)
 
+        key1 = OctKey.generate_key(128)
+        key2 = OctKey.generate_key(128)
+        protected = {"alg": "A128GCMKW", "enc": "A128CBC-HS256"}
+        algorithms = ["A128GCMKW", "A128CBC-HS256"]
+        value = encrypt_compact(protected, "i", key1, algorithms=algorithms)
+        self.assertRaises(
+            DecodeError,
+            decrypt_compact,
+            value, key2, algorithms=algorithms,
+        )
+
     def test_PBES2HS_alg(self):
         algs = {
             "PBES2-HS256+A128KW": 128,
@@ -66,6 +98,17 @@ class TestJWECompact(TestCase):
         for alg in algs:
             key = OctKey.generate_key(algs[alg])
             self.run_cases([alg], key, key)
+
+        key1 = OctKey.generate_key(128)
+        key2 = OctKey.generate_key(128)
+        protected = {"alg": "PBES2-HS256+A128KW", "enc": "A128CBC-HS256"}
+        algorithms = ["PBES2-HS256+A128KW", "A128CBC-HS256"]
+        value = encrypt_compact(protected, "i", key1, algorithms=algorithms)
+        self.assertRaises(
+            DecodeError,
+            decrypt_compact,
+            value, key2, algorithms=algorithms,
+        )
 
     def test_PBES2HS_with_header(self):
         key = OctKey.generate_key(128)

@@ -74,11 +74,6 @@ class InvalidEncryptionAlgorithmError(JoseError):
     error = 'invalid_encryption_algorithm'
 
 
-class UnwrapError(JoseError):
-    error = "unwrap_error"
-    description = "Unwrap AES key failed"
-
-
 class InvalidCEKLengthError(JoseError):
     error = "invalid_cek_length"
     description = 'Invalid "cek" length'

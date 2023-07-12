@@ -12,8 +12,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher
 from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.ciphers.modes import GCM
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from .rsa_key import RSAKey
-from .oct_key import OctKey
+from cryptography.exceptions import InvalidTag
 from .derive_key import derive_key_for_concat_kdf
 from ..rfc7517.models import CurveKey
 from ..rfc7516.models import (
@@ -28,8 +27,7 @@ from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode
 from ..registry import HeaderParameter
 from ..errors import (
     InvalidKeyLengthError,
-    InvalidKeyTypeError,
-    UnwrapError,
+    DecodeError,
 )
 
 
@@ -76,7 +74,10 @@ class RSAAlgModel(JWEKeyEncryption):
         key = recipient.recipient_key
         self.check_key_type(key)
         op_key = key.get_op_key("decrypt")
-        cek = op_key.decrypt(recipient.encrypted_key, self.padding)
+        try:
+            cek = op_key.decrypt(recipient.encrypted_key, self.padding)
+        except ValueError as error:
+            raise DecodeError(str(error))
         return cek
 
 
@@ -96,7 +97,7 @@ class AESAlgModel(JWEKeyWrapping):
         try:
             cek = aes_key_unwrap(key, ek, default_backend())
         except InvalidUnwrap:
-            raise UnwrapError()
+            raise DecodeError("Unwrap AES key failed")
         return cek
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
@@ -163,7 +164,10 @@ class AESGCMAlgModel(JWEKeyWrapping):
 
         cipher = Cipher(AES(op_key), GCM(iv, tag), backend=default_backend())
         d = cipher.decryptor()
-        cek = d.update(recipient.encrypted_key) + d.finalize()
+        try:
+            cek = d.update(recipient.encrypted_key) + d.finalize()
+        except InvalidTag as error:
+            raise DecodeError(str(error))
         return cek
 
 
