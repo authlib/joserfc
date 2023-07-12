@@ -18,6 +18,7 @@ class JWKRegistry:
         key = JWKRegistry.import_key(data)
     """
     key_types: t.Dict[str, t.Type[Key]] = {}
+    algorithm_key_types: t.Dict[str, t.List[str]] = {}
 
     @classmethod
     def register(cls, model: t.Type[Key]):

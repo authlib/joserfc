@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jws import JWSRegistry, serialize_compact, deserialize_compact
-from joserfc.jwk import OctKey, KeySet
+from joserfc.jwk import OctKey, RSAKey, KeySet
 from joserfc.errors import BadSignatureError, DecodeError, MissingAlgorithmError
 
 
@@ -44,6 +44,11 @@ class TestCompact(TestCase):
             OctKey.import_key("c"),
         ])
         value = serialize_compact({"alg": "HS256"}, b"foo", keys)
+        obj = deserialize_compact(value, keys)
+        self.assertEqual(obj.payload, b"foo")
+
+        keys.keys.append(RSAKey.generate_key())
+        value = serialize_compact({"alg": "RS256"}, b"foo", keys)
         obj = deserialize_compact(value, keys)
         self.assertEqual(obj.payload, b"foo")
 

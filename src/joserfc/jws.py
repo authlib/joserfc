@@ -31,7 +31,7 @@ from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8037.jws_eddsa import EdDSA
 from .rfc8812 import ES256K
 from .errors import BadSignatureError
-from .jwk import Key, KeyFlexible, guess_key
+from .jwk import JWKRegistry, Key, KeyFlexible, guess_key
 from .util import to_bytes, urlsafe_b64encode
 from .registry import Header
 
@@ -59,10 +59,15 @@ def __register():
     # register alg in RFC7518
     for _alg in JWS_ALGORITHMS:
         JWSRegistry.register(_alg)
+        JWKRegistry.algorithm_key_types[_alg.name] = [_alg.key_type]
+
     # register alg in RFC8037
     JWSRegistry.register(EdDSA)
+    JWKRegistry.algorithm_key_types[EdDSA.name] = [EdDSA.key_type]
+
     # register alg in RFC8812
     JWSRegistry.register(ES256K)
+    JWKRegistry.algorithm_key_types[ES256K.name] = [ES256K.key_type]
 
 
 __register()

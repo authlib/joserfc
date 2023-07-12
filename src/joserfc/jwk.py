@@ -1,5 +1,5 @@
 import random
-from typing import Callable, Union, Any, AnyStr, Protocol
+import typing as t
 from .rfc7517 import (
     SymmetricKey,
     AsymmetricKey,
@@ -17,8 +17,8 @@ from .rfc8812 import register_secp256k1
 from .registry import Header
 
 
-KeyCallable = Callable[[Any, bool], Key]
-KeyFlexible = Union[AnyStr, Key, KeySet, KeyCallable]
+KeyCallable = t.Callable[[t.Any, bool], Key]
+KeyFlexible = t.Union[t.AnyStr, Key, KeySet, KeyCallable]
 
 __all__ = [
     "types",
@@ -51,7 +51,7 @@ def __register():
 __register()
 
 
-class GuestProtocol(Protocol):  # pragma: no cover
+class GuestProtocol(t.Protocol):  # pragma: no cover
     def headers(self) -> Header:
         ...
 
@@ -77,7 +77,7 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
         kid = headers.get("kid")
         if not kid:
             # choose one key by random
-            key: Key = random.choice(key.keys)
+            key: Key = _random_key(key.keys, headers["alg"])
             # use side effect to add kid information
             obj.set_kid(key.kid)
             rv_key = key
@@ -91,3 +91,10 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
         raise ValueError("Invalid key")
 
     return rv_key
+
+
+def _random_key(keys: t.List[Key], alg: str):
+    key_types = JWKRegistry.algorithm_key_types.get(alg)
+    if key_types:
+        keys = [k for k in keys if k.key_type in key_types]
+    return random.choice(keys)

@@ -6,6 +6,7 @@ from .okp_key import OKPKey
 class EdDSAAlgModel(JWSAlgModel):
     name = "EdDSA"
     description = "Edwards-curve Digital Signature Algorithm for JWS"
+    key_type = "OKP"
 
     def sign(self, msg: bytes, key: OKPKey) -> bytes:
         op_key = key.get_op_key("sign")
