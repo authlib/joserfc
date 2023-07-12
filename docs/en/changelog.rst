@@ -4,13 +4,14 @@ Changelog
 0.5.0
 -----
 
-Not released.
+**Released on July 12, 2023**
 
 - Add RFC7797 JSON Web Signature (JWS) Unencoded Payload Option
 - Fix ``decrypt_json`` when there is no ``encrypted_key``
 - Rename JWE CompleteJSONSerialization to GeneralJSONSerialization
 - Rename ``JSONEncryption.flatten`` to ``.flattened``
 - Load and dump RSA, EC, and OKP key with password
+- Rename Curve key method: ``exchange_shared_key`` to ``exchange_derive_key``
 
 0.4.0
 -----
