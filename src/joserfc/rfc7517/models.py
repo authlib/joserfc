@@ -16,8 +16,8 @@ from ..errors import (
 )
 
 
-NativePublicKey = t.TypeVar("NativePublicKey")
 NativePrivateKey = t.TypeVar("NativePrivateKey")
+NativePublicKey = t.TypeVar("NativePublicKey")
 
 
 class NativeKeyBinding(object, metaclass=ABCMeta):
@@ -66,7 +66,7 @@ class NativeKeyBinding(object, metaclass=ABCMeta):
                     raise ValueError('"use" and "key_ops" does not match')
 
 
-class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
+class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
     key_type: str
     value_registry: KeyParameterRegistryDict
     param_registry: KeyParameterRegistryDict = JWK_PARAMETER_REGISTRY
@@ -230,7 +230,7 @@ class BaseKey(t.Generic[NativePublicKey, NativePrivateKey]):
         raise NotImplementedError()
 
 
-class SymmetricKey(BaseKey[NativePublicKey, NativePrivateKey], metaclass=ABCMeta):
+class SymmetricKey(BaseKey[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     @property
     def raw_value(self) -> bytes:
         """The raw key in bytes."""
@@ -252,7 +252,7 @@ class SymmetricKey(BaseKey[NativePublicKey, NativePrivateKey], metaclass=ABCMeta
         return self.raw_value
 
 
-class AsymmetricKey(BaseKey[NativePublicKey, NativePrivateKey], metaclass=ABCMeta):
+class AsymmetricKey(BaseKey[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     @property
     def raw_value(self) -> t.Union[NativePublicKey, NativePrivateKey]:
         return self._raw_value
@@ -271,7 +271,7 @@ class AsymmetricKey(BaseKey[NativePublicKey, NativePrivateKey], metaclass=ABCMet
         return self.as_bytes(encoding="DER", private=private, password=password)
 
 
-class CurveKey(AsymmetricKey[NativePublicKey, NativePrivateKey]):
+class CurveKey(AsymmetricKey[NativePrivateKey, NativePublicKey]):
     @property
     @abstractmethod
     def curve_name(self) -> str:

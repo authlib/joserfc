@@ -75,7 +75,7 @@ class ECBinding(CryptographyBinding):
         }
 
 
-class ECKey(CurveKey[EllipticCurvePublicKey, EllipticCurvePrivateKey]):
+class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
     key_type: str = "EC"
     #: Registry definition for EC Key
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.2

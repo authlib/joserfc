@@ -80,7 +80,7 @@ class RSABinding(CryptographyBinding):
         return {"n": int_to_base64(numbers.n), "e": int_to_base64(numbers.e)}
 
 
-class RSAKey(AsymmetricKey[RSAPublicKey, RSAPrivateKey]):
+class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
     key_type: str = "RSA"
     #: Registry definition for RSA Key
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.3

@@ -64,7 +64,7 @@ class OKPBinding(CryptographyBinding):
         }
 
 
-class OKPKey(CurveKey[PublicOKPKey, PrivateOKPKey]):
+class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
     """Key class of the ``OKP`` key type."""
 
     key_type: str = "OKP"
