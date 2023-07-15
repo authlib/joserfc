@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     branches:
-      - main
+      - wip-docs
     tags:
       - "1.*"
     paths-ignore:
@@ -19,6 +19,11 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        language: [ "en", "zh" ]
+
     steps:
       - name: update VERSION_PATH
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
@@ -37,7 +42,7 @@ jobs:
         run: pip install .
 
       - name: sphinx build
-        run: make build-docs
+        run: make build-docs -e lang=${{ matrix.language }}
         env:
           REF_NAME: ${{ github.ref_name }}
           REF_TYPE: ${{ github.ref_type }}
@@ -46,5 +51,5 @@ jobs:
       - name: deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build/en
-          target-folder: en/${{ env.VERSION_PATH }}/
+          folder: build/${{ matrix.language }}
+          target-folder: ${{ matrix.language }}/${{ env.VERSION_PATH }}/

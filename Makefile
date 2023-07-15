@@ -5,11 +5,9 @@ dev-docs:
 
 
 build-docs:
-	@rm -fr build
-	@sphinx-build docs build/en -D language=en -b dirhtml
-	@sphinx-build docs build/zh -D language=zh -b dirhtml
-	@rm build/*/.buildinfo
-	@rm -r build/*/.doctrees
+	@sphinx-build docs build/${lang} -D language=${lang} -b dirhtml
+	@rm build/${lang}/.buildinfo
+	@rm -r build/${lang}/.doctrees
 
 
 clean-docs:
