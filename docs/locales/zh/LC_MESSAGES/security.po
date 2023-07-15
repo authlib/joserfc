@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../security.rst:2
+msgid "Security"
+msgstr ""
+
+#: ../../security.rst:4
+msgid ""
+"If you think you have found a potential security vulnerability in "
+"``joserfc``, please email <me@lepture.com> directly."
+msgstr ""
+
+#: ../../security.rst:7
+msgid "Do not file a public issue."
+msgstr ""
+
+#: ../../security.rst:9
+msgid ""
+"Please do not disclose this to anyone else. We will retrieve a CVE "
+"identifier if necessary and give you full credit under whatever name or "
+"alias you provide. We will only request an identifier when we have a fix "
+"and can publish it in a release."
+msgstr ""
+
+#: ../../security.rst:15
+msgid "The Process"
+msgstr ""
+
+#: ../../security.rst:17
+msgid "Here is the process when we have received a security report:"
+msgstr ""
+
+#: ../../security.rst:19
+msgid "we will reply to you in 24 hours"
+msgstr ""
+
+#: ../../security.rst:20
+msgid ""
+"we will confirm it in 2 days, if we can't reproduce it, we will send "
+"emails to you for more information"
+msgstr ""
+
+#: ../../security.rst:22
+msgid ""
+"we will fix the issue in 1 week after we confirm it. If we can't fix it "
+"for the moment, we will let you know."
+msgstr ""
+
+#: ../../security.rst:24
+msgid ""
+"we will push the source code to GitHub when it has been released in PyPI "
+"for 1 week."
+msgstr ""
+
+#: ../../security.rst:26
+msgid "if necessary, we will retrieve a CVE after releasing to PyPI."
+msgstr ""
+
+#: ../../security.rst:29
+msgid "Previous CVEs"
+msgstr ""
+
+#: ../../security.rst:31
+msgid "Waiting..."
+msgstr ""
+

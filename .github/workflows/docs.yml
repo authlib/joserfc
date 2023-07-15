@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "1.*"
     paths-ignore:
       - ".github/*"
       - "tests/*"
@@ -20,7 +22,7 @@ jobs:
     steps:
       - name: update VERSION_PATH
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        run: echo VERSION_PATH=$(echo $GITHUB_REF | cut -d / -f 3 | cut -d . -f 1,2) >> $GITHUB_ENV
+        run: echo VERSION_PATH=v$(echo $GITHUB_REF | cut -d / -f 3 | cut -d . -f 1) >> $GITHUB_ENV
 
       - uses: actions/checkout@v3
 
@@ -35,16 +37,11 @@ jobs:
         run: pip install .
 
       - name: sphinx build
-        run: python docs/build.py
+        run: make build-docs
         env:
           REF_NAME: ${{ github.ref_name }}
           REF_TYPE: ${{ github.ref_type }}
           REPOSITORY: ${{ github.repository }}
-
-      - name: remove hidden files
-        run: |
-          rm build/en/.buildinfo
-          rm -fr build/en/.doctrees
 
       - name: deploy
         uses: JamesIves/github-pages-deploy-action@v4

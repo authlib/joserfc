@@ -1,0 +1,147 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../changelog.rst:2
+msgid "Changelog"
+msgstr ""
+
+#: ../../changelog.rst:5
+msgid "0.5.0"
+msgstr ""
+
+#: ../../changelog.rst:7
+msgid "**Released on July 12, 2023**"
+msgstr ""
+
+#: ../../changelog.rst:9
+msgid "Add RFC7797 JSON Web Signature (JWS) Unencoded Payload Option"
+msgstr ""
+
+#: ../../changelog.rst:10
+msgid "Fix ``decrypt_json`` when there is no ``encrypted_key``"
+msgstr ""
+
+#: ../../changelog.rst:11
+msgid "Rename JWE CompleteJSONSerialization to GeneralJSONSerialization"
+msgstr ""
+
+#: ../../changelog.rst:12
+msgid "Rename ``JSONEncryption.flatten`` to ``.flattened``"
+msgstr ""
+
+#: ../../changelog.rst:13
+msgid "Load and dump RSA, EC, and OKP key with password"
+msgstr ""
+
+#: ../../changelog.rst:14
+msgid ""
+"Rename Curve key method: ``exchange_shared_key`` to "
+"``exchange_derive_key``"
+msgstr ""
+
+#: ../../changelog.rst:17
+msgid "0.4.0"
+msgstr ""
+
+#: ../../changelog.rst:19
+msgid "**Released on July 6, 2023**"
+msgstr ""
+
+#: ../../changelog.rst:21
+msgid "Change ``options`` to ``parameters`` for JWK methods"
+msgstr ""
+
+#: ../../changelog.rst:22
+msgid "Change ``JWSRegistry`` and ``JWERegistry`` parameters"
+msgstr ""
+
+#: ../../changelog.rst:23
+msgid "Guess ``sender_key`` from JWKs in JWE"
+msgstr ""
+
+#: ../../changelog.rst:24
+msgid "Add importing key from DER encoding bytes"
+msgstr ""
+
+#: ../../changelog.rst:25
+msgid "Fix JWS JSON serialization when members have only unprotected headers"
+msgstr ""
+
+#: ../../changelog.rst:26
+msgid "Check key type before processing algorithms of JWS and JWE"
+msgstr ""
+
+#: ../../changelog.rst:29
+msgid "0.3.0"
+msgstr ""
+
+#: ../../changelog.rst:31
+msgid "**Released on June 29, 2023**"
+msgstr ""
+
+#: ../../changelog.rst:33
+msgid "Return ``str`` instead of ``bytes`` for JWS and JWE serializations"
+msgstr ""
+
+#: ../../changelog.rst:34
+msgid "Add a ``detach_content`` method for JWS"
+msgstr ""
+
+#: ../../changelog.rst:35
+msgid "Remove ``jwt.extract`` method, because ``extract`` won't work for JWE"
+msgstr ""
+
+#: ../../changelog.rst:36
+msgid "Add ``JWKRegistry`` for JWK"
+msgstr ""
+
+#: ../../changelog.rst:37
+msgid "Update ``JSONEncryption.add_recipient`` parameters"
+msgstr ""
+
+#: ../../changelog.rst:38
+msgid "Export register methods for JWE drafts"
+msgstr ""
+
+#: ../../changelog.rst:41
+msgid "0.2.0"
+msgstr ""
+
+#: ../../changelog.rst:43
+msgid "**Released on June 25, 2023**"
+msgstr ""
+
+#: ../../changelog.rst:45
+msgid "A beta release."
+msgstr ""
+
+#: ../../changelog.rst:48
+msgid "0.1.0"
+msgstr ""
+
+#: ../../changelog.rst:50
+msgid "**Released on Mar 5, 2023**"
+msgstr ""
+
+#: ../../changelog.rst:52
+msgid "Initial release."
+msgstr ""
+

@@ -1,0 +1,1639 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"PO-Revision-Date: 2023-07-15 14:44+0900\n"
+"Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../guide/algorithms.rst:6 ../../guide/jws.rst:247
+#: ../../guide/registry.rst:21
+msgid "Algorithms"
+msgstr "算法"
+
+#: ../../guide/algorithms.rst:8
+msgid ""
+"This documentation describes the algorithms to be used with JSON Web "
+"Signature (JWS), JSON Web Encryption (JWE), and JSON Web Key (JWK)."
+msgstr ""
+
+#: ../../guide/algorithms.rst:13 ../../guide/jwk.rst:6
+msgid "JSON Web Key"
+msgstr ""
+
+#: ../../guide/algorithms.rst:15
+msgid "The JSON Web Key (JWK) algorithms contains:"
+msgstr "JSON Web Key（JWK）的算法包括："
+
+#: ../../guide/algorithms.rst:17
+msgid ""
+":ref:`OctKey` : accepts key size in bits, which means the ``key_size`` "
+"MUST be dividable by 8."
+msgstr ""
+
+#: ../../guide/algorithms.rst:18
+msgid ""
+":ref:`RSAKey` : accepts key size in bits, ``key_size`` MUST ``>=512`` and"
+" dividable by 8."
+msgstr ""
+
+#: ../../guide/algorithms.rst:19
+msgid ""
+":ref:`ECKey` : accepts ``crv`` with ``P-256``, ``P-384``, ``P-521``, and "
+"``secp256k1``."
+msgstr ""
+
+#: ../../guide/algorithms.rst:20
+msgid ""
+":ref:`OKPKey` : accepts ``crv`` with ``Ed25519``, ``Ed448``, ``X25519``, "
+"and ``X448``."
+msgstr ""
+
+#: ../../guide/algorithms.rst:25 ../../guide/jws.rst:6
+msgid "JSON Web Signature"
+msgstr ""
+
+#: ../../guide/algorithms.rst:27
+msgid ""
+"``joserfc.jws`` module supports algorithms from RFC7518, RFC8037, and "
+"RFC8812. You MUST specify the correct key type for each algorithm."
+msgstr ""
+
+#: ../../guide/algorithms.rst:31 ../../guide/algorithms.rst:62
+#: ../../guide/jws.rst:253
+msgid "Algorithm name"
+msgstr "算法名"
+
+#: ../../guide/algorithms.rst:31 ../../guide/algorithms.rst:62
+msgid "Key Type"
+msgstr "密钥类型"
+
+#: ../../guide/algorithms.rst:31 ../../guide/algorithms.rst:62
+#: ../../guide/jws.rst:253
+msgid "Recommended"
+msgstr "是推荐"
+
+#: ../../guide/algorithms.rst:33 ../../guide/jws.rst:255
+msgid "none"
+msgstr ""
+
+#: ../../guide/algorithms.rst:33 ../../guide/algorithms.rst:34
+#: ../../guide/algorithms.rst:35 ../../guide/algorithms.rst:36
+#: ../../guide/algorithms.rst:64 ../../guide/algorithms.rst:65
+#: ../../guide/algorithms.rst:66 ../../guide/algorithms.rst:67
+#: ../../guide/algorithms.rst:75 ../../guide/algorithms.rst:76
+#: ../../guide/algorithms.rst:77 ../../guide/jwk.rst:19
+msgid "OctKey"
+msgstr ""
+
+#: ../../guide/algorithms.rst:33 ../../guide/algorithms.rst:35
+#: ../../guide/algorithms.rst:36 ../../guide/algorithms.rst:38
+#: ../../guide/algorithms.rst:39 ../../guide/algorithms.rst:41
+#: ../../guide/algorithms.rst:42 ../../guide/algorithms.rst:43
+#: ../../guide/algorithms.rst:44 ../../guide/algorithms.rst:45
+#: ../../guide/algorithms.rst:46 ../../guide/algorithms.rst:47
+#: ../../guide/algorithms.rst:66 ../../guide/algorithms.rst:68
+#: ../../guide/algorithms.rst:70 ../../guide/algorithms.rst:73
+#: ../../guide/algorithms.rst:75 ../../guide/algorithms.rst:76
+#: ../../guide/algorithms.rst:77 ../../guide/algorithms.rst:78
+#: ../../guide/algorithms.rst:79 ../../guide/algorithms.rst:80
+#: ../../guide/jws.rst:255 ../../guide/jws.rst:257 ../../guide/jws.rst:258
+#: ../../guide/jws.rst:260 ../../guide/jws.rst:261 ../../guide/jws.rst:263
+#: ../../guide/jws.rst:264 ../../guide/jws.rst:265 ../../guide/jws.rst:266
+#: ../../guide/jws.rst:267 ../../guide/jws.rst:268 ../../guide/jws.rst:269
+msgid ":bdg-danger:`No`"
+msgstr ":bdg-danger:`否`"
+
+#: ../../guide/algorithms.rst:34 ../../guide/jws.rst:256
+msgid "HS256"
+msgstr ""
+
+#: ../../guide/algorithms.rst:34 ../../guide/algorithms.rst:37
+#: ../../guide/algorithms.rst:40 ../../guide/algorithms.rst:64
+#: ../../guide/algorithms.rst:65 ../../guide/algorithms.rst:67
+#: ../../guide/algorithms.rst:69 ../../guide/algorithms.rst:71
+#: ../../guide/algorithms.rst:72 ../../guide/algorithms.rst:74
+msgid ":bdg-success:`Yes`"
+msgstr ":bdg-success:`是`"
+
+#: ../../guide/algorithms.rst:35 ../../guide/jws.rst:257
+msgid "HS384"
+msgstr ""
+
+#: ../../guide/algorithms.rst:36 ../../guide/jws.rst:258
+msgid "HS512"
+msgstr ""
+
+#: ../../guide/algorithms.rst:37 ../../guide/jws.rst:259
+msgid "RS256"
+msgstr ""
+
+#: ../../guide/algorithms.rst:37 ../../guide/algorithms.rst:38
+#: ../../guide/algorithms.rst:39 ../../guide/algorithms.rst:43
+#: ../../guide/algorithms.rst:44 ../../guide/algorithms.rst:45
+#: ../../guide/algorithms.rst:68 ../../guide/algorithms.rst:69
+#: ../../guide/algorithms.rst:70 ../../guide/algorithms.rst:78
+#: ../../guide/algorithms.rst:79 ../../guide/algorithms.rst:80
+#: ../../guide/jwk.rst:64
+msgid "RSAKey"
+msgstr ""
+
+#: ../../guide/algorithms.rst:38 ../../guide/jws.rst:260
+msgid "RS384"
+msgstr ""
+
+#: ../../guide/algorithms.rst:39 ../../guide/jws.rst:261
+msgid "RS512"
+msgstr ""
+
+#: ../../guide/algorithms.rst:40 ../../guide/jws.rst:262
+msgid "ES256"
+msgstr ""
+
+#: ../../guide/algorithms.rst:40 ../../guide/algorithms.rst:41
+#: ../../guide/algorithms.rst:42 ../../guide/algorithms.rst:47
+#: ../../guide/algorithms.rst:71 ../../guide/algorithms.rst:72
+#: ../../guide/algorithms.rst:73 ../../guide/algorithms.rst:74
+#: ../../guide/jwk.rst:125
+msgid "ECKey"
+msgstr ""
+
+#: ../../guide/algorithms.rst:41 ../../guide/jws.rst:263
+msgid "ES384"
+msgstr ""
+
+#: ../../guide/algorithms.rst:42 ../../guide/jws.rst:264
+msgid "ES512"
+msgstr ""
+
+#: ../../guide/algorithms.rst:43 ../../guide/jws.rst:265
+msgid "PS256"
+msgstr ""
+
+#: ../../guide/algorithms.rst:44 ../../guide/jws.rst:266
+msgid "PS384"
+msgstr ""
+
+#: ../../guide/algorithms.rst:45 ../../guide/jws.rst:267
+msgid "PS512"
+msgstr ""
+
+#: ../../guide/algorithms.rst:46 ../../guide/jws.rst:268
+msgid "EdDSA"
+msgstr ""
+
+#: ../../guide/algorithms.rst:46 ../../guide/algorithms.rst:101
+#: ../../guide/jwk.rst:180
+msgid "OKPKey"
+msgstr ""
+
+#: ../../guide/algorithms.rst:47 ../../guide/jws.rst:269
+msgid "ES256K"
+msgstr ""
+
+#: ../../guide/algorithms.rst:51
+msgid ""
+"``EdDSA`` algorithm only accepts ``OKPKey`` with \"crv\" of \"Ed25519\" "
+"and \"Ed448\"."
+msgstr ""
+
+#: ../../guide/algorithms.rst:56 ../../guide/jwe.rst:6
+msgid "JSON Web Encryption"
+msgstr ""
+
+#: ../../guide/algorithms.rst:58
+msgid ""
+"``joserfc.jwe`` module supports algorithms from RFC7518, and drafts of "
+"``ECDH-1PU``. You MUST specify the correct key type for each algorithm."
+msgstr ""
+
+#: ../../guide/algorithms.rst:64
+msgid "dir"
+msgstr ""
+
+#: ../../guide/algorithms.rst:65
+msgid "A128KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:66
+msgid "A192KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:67
+msgid "A256KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:68
+msgid "RSA1_5"
+msgstr ""
+
+#: ../../guide/algorithms.rst:69
+msgid "RSA-OAEP"
+msgstr ""
+
+#: ../../guide/algorithms.rst:70
+msgid "RSA-OAEP-256"
+msgstr ""
+
+#: ../../guide/algorithms.rst:71 ../../guide/algorithms.rst:106
+msgid "ECDH-ES"
+msgstr ""
+
+#: ../../guide/algorithms.rst:72 ../../guide/algorithms.rst:107
+msgid "ECDH-ES+A128KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:73 ../../guide/algorithms.rst:108
+msgid "ECDH-ES+A192KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:74 ../../guide/algorithms.rst:109
+msgid "ECDH-ES+A256KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:75
+msgid "A128GCMKW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:76
+msgid "A192GCMKW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:77
+msgid "A256GCMKW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:78
+msgid "PBES2-HS256+A128KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:79
+msgid "PBES2-HS384+A192KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:80
+msgid "PBES2-HS512+A256KW"
+msgstr ""
+
+#: ../../guide/algorithms.rst:83
+msgid ""
+"All algorithms defined in RFC7518 for \"enc\" value are recommended, "
+"which including:"
+msgstr ""
+
+#: ../../guide/algorithms.rst:86
+msgid "A128CBC-HS256"
+msgstr ""
+
+#: ../../guide/algorithms.rst:87
+msgid "A192CBC-HS384"
+msgstr ""
+
+#: ../../guide/algorithms.rst:88
+msgid "A256CBC-HS512"
+msgstr ""
+
+#: ../../guide/algorithms.rst:89
+msgid "A128GCM"
+msgstr ""
+
+#: ../../guide/algorithms.rst:90
+msgid "A192GCM"
+msgstr ""
+
+#: ../../guide/algorithms.rst:91
+msgid "A256GCM"
+msgstr ""
+
+#: ../../guide/algorithms.rst:93
+msgid ""
+"A ``DEF`` algorithm for the \"zip\" (compression) header parameter is "
+"also defined in RFC7518, which is recommended."
+msgstr ""
+
+#: ../../guide/algorithms.rst:96
+msgid ""
+"There are also additional algorithms for \"alg\" and \"enc\" in draft "
+"versions. Please refer to the following sections for more information."
+msgstr ""
+
+#: ../../guide/algorithms.rst:103
+msgid ""
+"You can use ``OKPKey`` with the \"crv\" (curve) parameter set to "
+"``X25519`` or ``X448`` for the following algorithms:"
+msgstr ""
+
+#: ../../guide/algorithms.rst:111
+msgid ""
+"This allows you to utilize these elliptic curve algorithms with "
+"``OKPKey`` for your cryptographic operations."
+msgstr ""
+
+#: ../../guide/algorithms.rst:117
+msgid "C20P and XC20P"
+msgstr "C20P 与 XC20P"
+
+#: ../../guide/algorithms.rst:119
+msgid ""
+"``C20P`` and ``XC20P`` algorithms are still in drafts, they are not "
+"registered by default. To use ``C20P`` and ``XC20P``, developers have to "
+"install the ``PyCryptodome`` module."
+msgstr ""
+
+#: ../../guide/algorithms.rst:126
+msgid ""
+"This is caused by ``cryptography`` package does only support \"ChaCha20\""
+" cipher, not **XChaCha20**, while ``pycryptodome`` supports both "
+"\"ChaCha20\" and \"XChaCha20\" ciphers."
+msgstr ""
+
+#: ../../guide/algorithms.rst:130
+msgid "Register ciphers"
+msgstr "注册密码算法"
+
+#: ../../guide/algorithms.rst:132
+msgid ""
+"The default :ref:`registry` doesn't contain draft ciphers, developers "
+"MUST register ``C20P`` and ``XC20P`` at first:"
+msgstr ""
+
+#: ../../guide/algorithms.rst:142
+msgid "Use custom ``registry``"
+msgstr "自定义注册表 ``registry``"
+
+#: ../../guide/algorithms.rst:147
+msgid ""
+"Use a custom ``registry`` in :meth:`encrypt_compact`, "
+":meth:`decrypt_compact`, :meth:`encrypt_json`, and :meth:`decrypt_json`."
+msgstr ""
+
+#: ../../guide/algorithms.rst:172
+msgid "ECDH-1PU algorithms"
+msgstr "ECDH-1PU 相关算法"
+
+#: ../../guide/algorithms.rst:174
+msgid ""
+"Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model "
+"(ECDH-1PU) are still in drafts, they are not registered by default. To "
+"use ``ECDH-1PU`` related algorithms, developers MUST register them "
+"manually:"
+msgstr ""
+
+#: ../../guide/algorithms.rst:184
+msgid ""
+"Then use a custom ``registry`` with the required ``ECDH-1PU`` algorithms."
+" For instance:"
+msgstr ""
+
+#: ../../guide/algorithms.rst:207
+msgid ""
+"The ``ECDH-1PU`` algorithms require a **sender key**, which MUST be a "
+"private key when calling :meth:`encrypt_compact` and :meth:`encrypt_json`"
+" methods."
+msgstr ""
+
+#: ../../guide/algorithms.rst:210
+msgid ""
+"The ``sender_key`` can be a :class:`~joserfc.jwk.KeySet`, and JWE will "
+"find the correct key according to ``skid`` header value."
+msgstr ""
+
+#: ../../guide/index.rst:4
+msgid "Guide"
+msgstr "教程"
+
+#: ../../guide/index.rst:6
+msgid ""
+"This section provides a quick overview of how to get started with "
+"``joserfc`` and perform encoding and decoding a JWT."
+msgstr ""
+
+#: ../../guide/index.rst:10
+msgid "Encode and decode JWT"
+msgstr "JWT 的编码与解码"
+
+#: ../../guide/index.rst:24
+msgid "Learn the details of :ref:`jwt` in the next chapter."
+msgstr ""
+
+#: ../../guide/index.rst:27
+msgid "Import and generate JWK"
+msgstr "JWK 的导入与导出"
+
+#: ../../guide/index.rst:54
+msgid "Learn the details of :ref:`jwk` in the next chapter."
+msgstr ""
+
+#: ../../guide/index.rst:57
+msgid "Dive deep"
+msgstr "深入了解"
+
+#: ../../guide/index.rst:59
+msgid "Next, learn each module in details."
+msgstr "接下来，详细学习下面的每个模块。"
+
+#: ../../guide/introduction.rst:4
+msgid "Introduction"
+msgstr "介绍"
+
+#: ../../guide/introduction.rst:6
+msgid ""
+"``joserfc`` is a Python library that provides a comprehensive "
+"implementation of several essential JSON Object Signing and Encryption "
+"(JOSE) standards."
+msgstr ""
+
+#: ../../guide/introduction.rst:9
+msgid ""
+"Derived from Authlib_, ``joserfc`` offers a redesigned API specifically "
+"tailored to JOSE functionality, making it easier for developers to work "
+"with JWS, JWE, JWK, JWA, and JWT in their Python applications."
+msgstr ""
+
+#: ../../guide/introduction.rst:16
+msgid "Features"
+msgstr "特点"
+
+#: ../../guide/introduction.rst:18
+msgid ""
+"**Python Type Hints**: ``joserfc`` takes advantage of Python's type "
+"hinting capabilities, providing a more expressive and readable codebase. "
+"The use of type hints enhances development workflows by enabling better "
+"static analysis, improved IDE support, and more reliable code "
+"refactoring."
+msgstr ""
+
+#: ../../guide/introduction.rst:23
+msgid ""
+"**Organized Codebase with RFC Compliance**: ``joserfc`` is structured "
+"following the RFC standards, ensuring clear separation and organization "
+"of the different JOSE functionalities. It strictly follows the latest "
+"versions of the JOSE standards, guaranteeing the highest level of "
+"interoperability and compliance."
+msgstr ""
+
+#: ../../guide/introduction.rst:29
+msgid "Why joserfc?"
+msgstr "为何创建 joserfc"
+
+#: ../../guide/introduction.rst:31
+msgid ""
+"``joserfc`` is derived from Authlib to facilitate easy maintenance and "
+"modularity. Previously, Authlib was developed as a mono library to design"
+" a comprehensive API that covered a wide range of authentication and "
+"security needs. However, as the project evolved, it became evident that "
+"splitting the modules from Authlib would improve maintainability and "
+"provide more focused and specialized libraries."
+msgstr ""
+
+#: ../../guide/introduction.rst:37
+msgid ""
+"With ``joserfc``, developers can now benefit from a standalone library "
+"dedicated specifically to JOSE standards. This focused approach allows "
+"for better code organization, improved documentation, and a more "
+"streamlined development experience. By utilizing ``joserfc``, developers "
+"can confidently integrate JOSE functionalities into their projects, "
+"knowing that they are working with a dedicated and well-maintained "
+"solution."
+msgstr ""
+
+#: ../../guide/jwe.rst:11
+msgid ""
+"JSON Web Encryption (JWE) represents encrypted content using JSON-based "
+"data structures. (via RFC7516_)"
+msgstr ""
+
+#: ../../guide/jwe.rst:17
+msgid "Compact Encryption"
+msgstr ""
+
+#: ../../guide/jwe.rst:19
+msgid ""
+"The JWE Compact Serialization represents encrypted content as a compact, "
+"URL-safe string.  This string is:"
+msgstr ""
+
+#: ../../guide/jwe.rst:30 ../../guide/jws.rst:29
+msgid ""
+"An example of a compact serialization (line breaks for display purposes "
+"only):"
+msgstr ""
+
+#: ../../guide/jwe.rst:47 ../../guide/jwe.rst:112
+msgid "Encryption"
+msgstr "加密"
+
+#: ../../guide/jwe.rst:49
+msgid ""
+"You can call :meth:`jwe.encrypt_compact` to construct a compact JWE "
+"serialization:"
+msgstr ""
+
+#: ../../guide/jwe.rst:60
+msgid ""
+"A compact JWE is constructed by ``protected`` header, ``plaintext`` and a"
+" public key. In the above example, ``protected`` is the \"protected "
+"header\" part, `\"hello\"` is the plaintext part, and ``key`` is the "
+"public key part (oct key is a symmetric key, it is a shared key, there is"
+" no public or private differences)."
+msgstr ""
+
+#: ../../guide/jwe.rst:65
+msgid ""
+"It is suggested that you learn the :ref:`jwk` section, and find the "
+"correct key type according to :ref:`JSON Web Encryption Algorithms "
+"<jwe_algorithms>`."
+msgstr ""
+
+#: ../../guide/jwe.rst:69 ../../guide/jwe.rst:154
+msgid "Decryption"
+msgstr "解密"
+
+#: ../../guide/jwe.rst:71
+msgid ""
+"It is very easy to decrypt the compact serialization in the previous "
+"example with :meth:`jwe.decrypt_compact`:"
+msgstr ""
+
+#: ../../guide/jwe.rst:82
+msgid ""
+"If the algorithm is accepting an asymmetric key, you MUST use a private "
+"key in ``decrypt_compact`` method."
+msgstr ""
+
+#: ../../guide/jwe.rst:86
+msgid "JSON Encryption"
+msgstr ""
+
+#: ../../guide/jwe.rst:88
+msgid ""
+"The JWE JSON Serialization represents encrypted content as a JSON object."
+"  This representation is neither optimized for compactness nor URL safe."
+msgstr ""
+
+#: ../../guide/jwe.rst:92
+msgid ""
+"An example of a JWE using the general JWE JSON Serialization is as "
+"follows:"
+msgstr ""
+
+#: ../../guide/jwe.rst:114
+msgid ""
+"The structure for JSON JWE serialization is a little complex, developers "
+"SHOULD create an object of :class:`jwe.JSONEncryption` at first:"
+msgstr ""
+
+#: ../../guide/jwe.rst:136
+msgid "If you prefer adding recipient keys from existing key set:"
+msgstr ""
+
+#: ../../guide/jwe.rst:156
+msgid ""
+"Calling :meth:`jwe.decrypt_json` could decrypt the JSON Serialization in "
+"the above example. Most of the time, you would need a JWK Set of private "
+"keys for decryption."
+msgstr ""
+
+#: ../../guide/jwe.rst:174 ../../guide/jws.rst:189
+msgid "General and Flattened"
+msgstr ""
+
+#: ../../guide/jwe.rst:176
+msgid ""
+"The above example is a General JWE JSON Serialization, there is also a "
+"Flattened JWE JSON Serialization. The Flattened one MUST ONLY contain one"
+" recipient."
+msgstr ""
+
+#: ../../guide/jwe.rst:179
+msgid ""
+"The syntax of a JWE using the flattened JWE JSON Serialization is as "
+"follows:"
+msgstr ""
+
+#: ../../guide/jwe.rst:194
+msgid ""
+"It is flattened, it moves all the members out of the ``recipients`` "
+"field. To ``encrypt_json`` into a flattened serialization, you can just "
+"mark the ``JSONEncryption.flattened = True``:"
+msgstr ""
+
+#: ../../guide/jwe.rst:203
+msgid "And make sure only adding one recipient."
+msgstr ""
+
+#: ../../guide/jwe.rst:206 ../../guide/jwt.rst:267
+msgid "Algorithms & Registry"
+msgstr "算法和注册表"
+
+#: ../../guide/jwe.rst:208
+msgid ""
+"``joserfc.jwe`` module would ONLY allow recommended algorithms by "
+"default, you can find which algorithm is recommended according to "
+":ref:`JSON Web Encryption Algorithms <jwe_algorithms>`."
+msgstr ""
+
+#: ../../guide/jwe.rst:212
+msgid ""
+"It is possible to support non-recommended algorithms by passing the "
+"``algorithms`` parameter, or with a custom ``registry``."
+msgstr ""
+
+#: ../../guide/jwe.rst:222
+msgid ""
+"The registry is a little complex, find out more on the :ref:`registry` "
+"section."
+msgstr ""
+
+#: ../../guide/jwk.rst:11
+msgid ""
+"A JSON Web Key (JWK) is a JavaScript Object Notation (JSON) data "
+"structure that represents a cryptographic key (via RFC7517_)."
+msgstr ""
+
+#: ../../guide/jwk.rst:21
+msgid ""
+"An :class:`OctKey` is a symmetric key defined in `RFC7518 section 6.4 "
+"<https://www.rfc-editor.org/rfc/rfc7518#section-6.4>`_."
+msgstr ""
+
+#: ../../guide/jwk.rst:25
+msgid "Create an \"oct\" key"
+msgstr "生成一个 OctKey"
+
+#: ../../guide/jwk.rst:27
+msgid ""
+"You can generate an ``OctKey`` with the :meth:`OctKey.generate_key` "
+"method:"
+msgstr ""
+
+#: ../../guide/jwk.rst:37
+msgid "Import an \"oct\" key"
+msgstr "导入一个 OctKey"
+
+#: ../../guide/jwk.rst:39
+msgid "You can import an ``OctKey`` from string, bytes and a JWK (in dict)."
+msgstr ""
+
+#: ../../guide/jwk.rst:52
+msgid "When importing a key, you can add extra parameters into a key:"
+msgstr ""
+
+#: ../../guide/jwk.rst:66
+msgid ""
+"An :class:`RSAKey` is an asymmetric key defined in `RFC7518 section 6.3 "
+"<https://www.rfc-editor.org/rfc/rfc7518#section-6.3>`_. It represents RSA"
+" keys."
+msgstr ""
+
+#: ../../guide/jwk.rst:71
+msgid "Generate an \"RSA\" key"
+msgstr "生成一个 RSAKey"
+
+#: ../../guide/jwk.rst:73
+msgid "You can generate an \"EC\" key with a given key size (in bit):"
+msgstr ""
+
+#: ../../guide/jwk.rst:83
+msgid "Import an \"RSA\" key"
+msgstr "导入一个 RSAKey"
+
+#: ../../guide/jwk.rst:85
+msgid "You can import an ``RSAKey`` from string, bytes and a JWK (in dict)."
+msgstr ""
+
+#: ../../guide/jwk.rst:127
+msgid ""
+"An :class:`ECKey` is an asymmetric key defined in `RFC7518 section 6.2 "
+"<https://www.rfc-editor.org/rfc/rfc7518#section-6.2>`_. It represents "
+"Elliptic Curve [DSS] keys."
+msgstr ""
+
+#: ../../guide/jwk.rst:132
+msgid "Generate an \"EC\" key"
+msgstr "生成一个 ECKey"
+
+#: ../../guide/jwk.rst:134
+msgid "You can generate an \"EC\" key with the given curve:"
+msgstr ""
+
+#: ../../guide/jwk.rst:142
+msgid "The \"crv\" values that :class:`ECKey` supports:"
+msgstr ""
+
+#: ../../guide/jwk.rst:144
+msgid "``P-256`` via RFC7518"
+msgstr ""
+
+#: ../../guide/jwk.rst:145
+msgid "``P-384`` via RFC7518"
+msgstr ""
+
+#: ../../guide/jwk.rst:146
+msgid "``P-521`` via RFC7518"
+msgstr ""
+
+#: ../../guide/jwk.rst:147
+msgid "``secp256k1`` via RFC8812"
+msgstr ""
+
+#: ../../guide/jwk.rst:149
+msgid "It is ``P-521``, not ``P-512``, it is not a typo."
+msgstr ""
+
+#: ../../guide/jwk.rst:152
+msgid "Import an \"EC\" key"
+msgstr "导入一个 ECKey"
+
+#: ../../guide/jwk.rst:154
+msgid "You can import an ``ECKey`` from string, bytes and a JWK (in dict)."
+msgstr ""
+
+#: ../../guide/jwk.rst:182
+msgid "An :class:`OKPKey` is an asymmetric key defined in RFC8037_."
+msgstr ""
+
+#: ../../guide/jwk.rst:187
+msgid "Generate an \"OKP\" key"
+msgstr "生成一个 OKPKey"
+
+#: ../../guide/jwk.rst:189
+msgid "You can generate an \"OKP\" key with the given curve:"
+msgstr ""
+
+#: ../../guide/jwk.rst:197
+msgid ""
+":class:`OKPKey` accepts \"crv\" values of ``Ed25519``, ``Ed448``, "
+"``X25519``, and ``X448``."
+msgstr ""
+
+#: ../../guide/jwk.rst:201
+msgid "Import an \"OKP\" key"
+msgstr "导入一个 OKPKey"
+
+#: ../../guide/jwk.rst:203
+msgid "You can import an ``OKPKey`` from string, bytes and a JWK (in dict)."
+msgstr ""
+
+#: ../../guide/jwk.rst:226
+msgid "Key Set"
+msgstr ""
+
+#: ../../guide/jwk.rst:228
+msgid ""
+"A JWK Set is a JSON object that represents a set of JWKs. An example of a"
+" JWK Set:"
+msgstr ""
+
+#: ../../guide/jwk.rst:252
+msgid "Create a key set"
+msgstr "生成一个 KeySet"
+
+#: ../../guide/jwk.rst:254
+msgid "You can create a key set with a given set of keys:"
+msgstr ""
+
+#: ../../guide/jwk.rst:262
+msgid "Or, you can generate a key set for a certain \"kty\":"
+msgstr ""
+
+#: ../../guide/jwk.rst:269
+msgid "Import a key set"
+msgstr "导入一个 KeySet"
+
+#: ../../guide/jwk.rst:271
+msgid "An example about importing JWKS from a local file:"
+msgstr ""
+
+#: ../../guide/jwk.rst:281
+msgid "An example about importing JWKS from a URL:"
+msgstr ""
+
+#: ../../guide/jwk.rst:291
+msgid "Key methods"
+msgstr ""
+
+#: ../../guide/jwk.rst:296
+msgid "``thumbprint``"
+msgstr ""
+
+#: ../../guide/jwk.rst:298
+msgid ""
+"Call this method will generate the thumbprint with algorithm defined in "
+"RFC7638."
+msgstr ""
+
+#: ../../guide/jwk.rst:308
+msgid "``as_dict``"
+msgstr ""
+
+#: ../../guide/jwk.rst:310
+msgid ""
+"Dump a key or key set into dict format, which can be used to convert to "
+"JSON:"
+msgstr ""
+
+#: ../../guide/jwk.rst:320
+msgid "``as_pem``"
+msgstr ""
+
+#: ../../guide/jwk.rst:322
+msgid "Dump an asymmetric key into PEM format (in bytes):"
+msgstr "将非对称密钥转换为 PEM 格式（数据为字节形式）："
+
+#: ../../guide/jwk.rst:333
+msgid "``as_der``"
+msgstr ""
+
+#: ../../guide/jwk.rst:335
+msgid "Dump an asymmetric key into DER format (in bytes):"
+msgstr ""
+
+#: ../../guide/jwk.rst:346
+msgid "``JWKRegistry``"
+msgstr ""
+
+#: ../../guide/jwk.rst:348
+msgid ""
+"The :class:`JWKRegistry` class serves as a registry for storing all the "
+"supported key types in the ``joserfc`` library. While developers "
+"typically use specific key types such as ``RSAKey`` or ``ECKey``, this "
+"registry offers a means to dynamically import and generate keys."
+msgstr ""
+
+#: ../../guide/jwk.rst:354
+msgid "Import keys"
+msgstr ""
+
+#: ../../guide/jwk.rst:356
+msgid ""
+"The :meth:`JWKRegistry.import_key` can choose the correct key type "
+"automatically when importing a JWK in dict:"
+msgstr ""
+
+#: ../../guide/jwk.rst:373
+msgid ""
+"If the key is in bytes or string, not dict, developers SHOULD specify the"
+" key type manually:"
+msgstr ""
+
+#: ../../guide/jwk.rst:382
+msgid "Generate keys"
+msgstr ""
+
+#: ../../guide/jwk.rst:384
+msgid ""
+"The :meth:`JWKRegistry.generate_key` can generate a key with all the "
+"supported key types. For ``oct`` and ``RSA`` the parameters in this "
+"method:"
+msgstr ""
+
+#: ../../guide/jwk.rst:394
+msgid "For ``EC`` and ``OKP`` keys, the parameters are:"
+msgstr ""
+
+#: ../../guide/jwk.rst:403
+msgid "Options"
+msgstr ""
+
+#: ../../guide/jwk.rst:405
+msgid ""
+"The ``import_key`` and ``generate_key`` methods available in ``OctKey``, "
+"``RSAKey``, ``ECKey``, ``OKPKey``, and ``JWKRegistry`` classes have an "
+"optional ``parameters`` parameter. This ``parameters`` allows you to "
+"provide a dict that includes additional key parameters to be included in "
+"the JWK."
+msgstr ""
+
+#: ../../guide/jwk.rst:410
+msgid "Some of the standard (registered) header fields are:"
+msgstr ""
+
+#: ../../guide/jwk.rst:412
+msgid "``kty``: Key Type, it is automatically added"
+msgstr ""
+
+#: ../../guide/jwk.rst:413
+msgid "``use``: Public Key Use, \"sig\" or \"enc\""
+msgstr ""
+
+#: ../../guide/jwk.rst:414
+msgid "``key_ops``: Key Operations, allowed operations of this key"
+msgstr ""
+
+#: ../../guide/jwk.rst:415
+msgid "``alg``: Algorithm, allowed algorithm of this key"
+msgstr ""
+
+#: ../../guide/jwk.rst:416
+msgid "``kid``: Key ID, a string of the key ID"
+msgstr ""
+
+#: ../../guide/jwk.rst:418
+msgid ""
+"When using ``import_key`` and ``generate_key``, developers can pass the "
+"extra key ``parameters``:"
+msgstr ""
+
+#: ../../guide/jwk.rst:425
+msgid ""
+"The above ``RSAKey`` then can only be used for ``JWS`` with ``alg`` of "
+"``RS256``, and it can only be used for deserialization (``verify``)."
+msgstr ""
+
+#: ../../guide/jws.rst:11
+msgid ""
+"JSON Web Signature (JWS) represents content secured with digital "
+"signatures or Message Authentication Codes (MACs) using JSON-based data "
+"structures. (via RFC7515_)"
+msgstr ""
+
+#: ../../guide/jws.rst:18
+msgid "Compact Signature"
+msgstr ""
+
+#: ../../guide/jws.rst:20
+msgid ""
+"The JWS Compact Serialization represents digitally signed or MACed "
+"content as a compact, URL-safe string. This string is:"
+msgstr ""
+
+#: ../../guide/jws.rst:39 ../../guide/jws.rst:115
+msgid "Serialization"
+msgstr ""
+
+#: ../../guide/jws.rst:41
+msgid ""
+"You can call :meth:`jws.serialize_compact` to construct a compact JWS "
+"serialization:"
+msgstr ""
+
+#: ../../guide/jws.rst:51
+msgid ""
+"A compact JWS is constructed by protected header, payload and a private "
+"key. In the above example, ``protected`` is the \"protected header\" "
+"part, `\"hello\"` is the payload part, and `\"secret\"` is a plain "
+"private key."
+msgstr ""
+
+#: ../../guide/jws.rst:55
+msgid ""
+"We encourage developers to use a specified key type, the above "
+"`\"secret\"` is actually a :class:`jwk.OctKey`. A better example could "
+"be:"
+msgstr ""
+
+#: ../../guide/jws.rst:68
+msgid "You can learn more about :ref:`jwk` in previous section."
+msgstr ""
+
+#: ../../guide/jws.rst:71 ../../guide/jws.rst:172
+msgid "Deserialization"
+msgstr ""
+
+#: ../../guide/jws.rst:73
+msgid ""
+"Calling :meth:`jws.deserialize_compact` to extract and verify the compact"
+" serialization with a public key."
+msgstr ""
+
+#: ../../guide/jws.rst:88
+msgid "JSON Signature"
+msgstr ""
+
+#: ../../guide/jws.rst:90
+msgid ""
+"The JWS JSON Serialization represents digitally signed or MACed content "
+"as a JSON object.  This representation is neither optimized for "
+"compactness nor URL-safe."
+msgstr ""
+
+#: ../../guide/jws.rst:94
+msgid "An example of a JSON serialization:"
+msgstr ""
+
+#: ../../guide/jws.rst:117
+msgid ""
+"You can call :meth:`jws.serialize_json` to construct a JSON JWS "
+"serialization:"
+msgstr ""
+
+#: ../../guide/jws.rst:146
+msgid ""
+"The JSON JWS serialization is constructed by members, payload and private"
+" key. A **member** is a combination of protected header and public "
+"header:"
+msgstr ""
+
+#: ../../guide/jws.rst:156
+msgid ""
+"The ``protected`` header will be base64 encoded in the JSON "
+"serialization, together with the payload to sign a signature for the "
+"member:"
+msgstr ""
+
+#: ../../guide/jws.rst:168
+msgid ""
+"In the above example, we passed a :class:`jwk.KeySet` as the private key "
+"parameter, the :meth:`jws.serialize_json` will find the correct key in "
+"the key set by ``kid``."
+msgstr ""
+
+#: ../../guide/jws.rst:174
+msgid ""
+"Calling :meth:`jws.deserialize_json` to extract and verify the JSON "
+"serialization with a public key."
+msgstr ""
+
+#: ../../guide/jws.rst:191
+msgid ""
+"There are two types of JSON JWS serializations, \"general\" and "
+"\"flattened\". The above example is a General JSON Serialization. A "
+"Flattened JSON Serialization contains only one member. Compair the bellow"
+" examples:"
+msgstr ""
+
+#: ../../guide/jws.rst:195
+msgid "Flattened JSON Serialization"
+msgstr ""
+
+#: ../../guide/jws.rst:205
+msgid "General JSON Serialization"
+msgstr ""
+
+#: ../../guide/jws.rst:219
+msgid ""
+"You can pass a member dict to construct a flattened serialization; and a "
+"list of members to construct a general serialization:"
+msgstr ""
+
+#: ../../guide/jws.rst:235
+msgid ""
+"The returned value from ``deserialize_json`` is an object of "
+":class:`jws.JSONSignature`, you can tell if the signature is flattened or"
+" general with ``obj.flattened``:"
+msgstr ""
+
+#: ../../guide/jws.rst:249
+msgid ""
+"``joserfc.jws`` module supports algorithms from RFC7518, RFC8037, and "
+"RFC8812. Here lists all the algorithms ``joserfc.jws`` supporting:"
+msgstr ""
+
+#: ../../guide/jws.rst:253
+msgid "Description"
+msgstr ""
+
+#: ../../guide/jws.rst:255
+msgid "No digital signature or MAC performed"
+msgstr ""
+
+#: ../../guide/jws.rst:256
+msgid "HMAC using SHA-256"
+msgstr ""
+
+#: ../../guide/jws.rst:256 ../../guide/jws.rst:259 ../../guide/jws.rst:262
+msgid ":bdg-success:`YES`"
+msgstr ""
+
+#: ../../guide/jws.rst:257
+msgid "HMAC using SHA-384"
+msgstr ""
+
+#: ../../guide/jws.rst:258
+msgid "HMAC using SHA-512"
+msgstr ""
+
+#: ../../guide/jws.rst:259
+msgid "RSASSA-PKCS1-v1_5 using SHA-256"
+msgstr ""
+
+#: ../../guide/jws.rst:260
+msgid "RSASSA-PKCS1-v1_5 using SHA-384"
+msgstr ""
+
+#: ../../guide/jws.rst:261
+msgid "RSASSA-PKCS1-v1_5 using SHA-512"
+msgstr ""
+
+#: ../../guide/jws.rst:262
+msgid "ECDSA using P-256 and SHA-256"
+msgstr ""
+
+#: ../../guide/jws.rst:263
+msgid "ECDSA using P-384 and SHA-384"
+msgstr ""
+
+#: ../../guide/jws.rst:264
+msgid "ECDSA using P-521 and SHA-512"
+msgstr ""
+
+#: ../../guide/jws.rst:265
+msgid "RSASSA-PSS using SHA-256 and MGF1 with SHA-256"
+msgstr ""
+
+#: ../../guide/jws.rst:266
+msgid "RSASSA-PSS using SHA-384 and MGF1 with SHA-384"
+msgstr ""
+
+#: ../../guide/jws.rst:267
+msgid "RSASSA-PSS using SHA-512 and MGF1 with SHA-512"
+msgstr ""
+
+#: ../../guide/jws.rst:268
+msgid "Edwards-curve Digital Signature"
+msgstr ""
+
+#: ../../guide/jws.rst:269
+msgid "ECDSA using secp256k1 curve and SHA-256"
+msgstr ""
+
+#: ../../guide/jws.rst:273
+msgid "Algorithm not allowed"
+msgstr ""
+
+#: ../../guide/jws.rst:275
+msgid ""
+"The serialization and deserialization methods on ``joserfc.jws`` module "
+"accept an ``algorithms`` parameter for specifying the allowed algorithms."
+" By default, those ``serialize`` and ``deserialize`` methods will ONLY "
+"allow recommended algorithms defined by RFCs. With non recommended "
+"algorithms, you may encounter the below error."
+msgstr ""
+
+#: ../../guide/jws.rst:293
+msgid ""
+"``joserfc`` does support ``HS384``, but this algorithm is not recommended"
+" by specifications, developers MUST explict specify the supported "
+"algorithms either by the ``algorithms`` parameter, or ``registry`` "
+"parameter."
+msgstr ""
+
+#: ../../guide/jws.rst:303
+msgid ""
+"Developers can also apply the ``registry`` parameter to resolve this "
+"issue. Here is an example of using :ref:`registry`."
+msgstr ""
+
+#: ../../guide/jws.rst:316
+msgid "Unencoded Payload Option"
+msgstr ""
+
+#: ../../guide/jws.rst:318
+msgid ""
+"The unencoded payload option, defined in RFC7797, allows the payload of a"
+" JWS (JSON Web Signature) to remain unencoded, without using base64 "
+"encoding."
+msgstr ""
+
+#: ../../guide/jws.rst:321
+msgid ""
+"To enable this option, you need to set the ``b64`` header parameter to "
+"``false`` in the JWS header."
+msgstr ""
+
+#: ../../guide/jws.rst:324
+msgid ""
+"To utilize the unencoded payload option in joserfc, you must import the "
+"serialize and deserialize methods from ``joserfc.rfc7797``."
+msgstr ""
+
+#: ../../guide/jws.rst:327
+msgid "Here are examples demonstrating the usage of the ``b64`` option:"
+msgstr ""
+
+#: ../../guide/jws.rst:340
+msgid ""
+"The ``crit`` MUST be present with ``\"b64\"`` in its value set when "
+"``b64`` is in the header."
+msgstr ""
+
+#: ../../guide/jws.rst:343
+msgid ""
+"Since the payload is not base64 encoded, if the payload contains non "
+"urlsafe characters, the compact serialization will detach the payload:"
+msgstr ""
+
+#: ../../guide/jws.rst:357
+msgid ""
+"There are also methods for JSON serialization: ``serialize_json`` and "
+"``deserialize_json``."
+msgstr ""
+
+#: ../../guide/jwt.rst:6
+msgid "JSON Web Token"
+msgstr ""
+
+#: ../../guide/jwt.rst:11
+msgid ""
+"JSON Web Token (JWT) is built on top of :ref:`jws` or :ref:`jwe` and "
+"includes specific payload claims. These claims are required to be in JSON"
+" format and follow a predefined set of fields."
+msgstr ""
+
+#: ../../guide/jwt.rst:17
+msgid ""
+"Do you know that JSON Web Token (JWT) is not a part of JOSE. Instead, it "
+"was created by the OAuth working group."
+msgstr ""
+
+#: ../../guide/jwt.rst:21
+msgid "Encode token"
+msgstr ""
+
+#: ../../guide/jwt.rst:23
+msgid ""
+":meth:`encode` is the method for creating a JSON Web Token string. It "
+"encodes the payload with the given ``alg`` in header:"
+msgstr ""
+
+#: ../../guide/jwt.rst:36
+msgid "The returned value of ``text`` in above example is:"
+msgstr ""
+
+#: ../../guide/jwt.rst:44
+msgid "Line breaks for display only."
+msgstr ""
+
+#: ../../guide/jwt.rst:47
+msgid "Decode token"
+msgstr ""
+
+#: ../../guide/jwt.rst:49
+msgid ""
+":meth:`decode` is the method to translate a JSON Web Token string into a "
+"token object which contains ``.header`` and ``.claims`` properties:"
+msgstr ""
+
+#: ../../guide/jwt.rst:62
+msgid "Validate claims"
+msgstr ""
+
+#: ../../guide/jwt.rst:64
+msgid ""
+"The ``jwt.decode`` method will only verify if the payload is a JSON "
+"base64 string."
+msgstr ""
+
+#: ../../guide/jwt.rst:67
+msgid ""
+"You can define claims requests :class:`JWTClaimsRegistry` for validating "
+"the decoded claims. The ``JWTClaimsRegistry`` accepts each claim as an "
+"`Individual Claims Requests <ClaimsOption>`_ JSON object."
+msgstr ""
+
+#: ../../guide/jwt.rst:84
+msgid "The Individual Claims Requests JSON object contains:"
+msgstr ""
+
+#: ../../guide/jwt.rst:88
+msgid "``essential``"
+msgstr ""
+
+#: ../../guide/jwt.rst:87
+msgid ""
+"OPTIONAL. Indicates whether the Claim being requested is an Essential "
+"Claim. If the value is true, this indicates that the Claim is an "
+"Essential Claim."
+msgstr ""
+
+#: ../../guide/jwt.rst:91
+msgid "``value``"
+msgstr ""
+
+#: ../../guide/jwt.rst:91
+msgid "OPTIONAL. Requests that the Claim be returned with a particular value."
+msgstr ""
+
+#: ../../guide/jwt.rst:95
+msgid "``values``"
+msgstr ""
+
+#: ../../guide/jwt.rst:94
+msgid ""
+"OPTIONAL. Requests that the Claim be returned with one of a set of "
+"values, with the values appearing in order of preference."
+msgstr ""
+
+#: ../../guide/jwt.rst:98
+msgid "Missing essential claims"
+msgstr ""
+
+#: ../../guide/jwt.rst:108
+msgid "Invalid claims values"
+msgstr ""
+
+#: ../../guide/jwt.rst:118
+msgid "Default validators"
+msgstr ""
+
+#: ../../guide/jwt.rst:120
+msgid ""
+"The ``JWTClaimsRegistry`` has built-in validators for timing related "
+"fields:"
+msgstr ""
+
+#: ../../guide/jwt.rst:122
+msgid "``exp``: expiration time"
+msgstr ""
+
+#: ../../guide/jwt.rst:123
+msgid "``nbf``: not before"
+msgstr ""
+
+#: ../../guide/jwt.rst:124
+msgid "``iat``: issued at"
+msgstr ""
+
+#: ../../guide/jwt.rst:127
+msgid "JWS & JWE"
+msgstr ""
+
+#: ../../guide/jwt.rst:129
+msgid ""
+"JWT is built on top of JWS and JWE, all of the above examples are in JWS."
+" Here is an example of JWE:"
+msgstr ""
+
+#: ../../guide/jwt.rst:142
+msgid ""
+"The JWE formatted result contains 5 parts, while JWS only contains 3 "
+"parts, a JWE example would be something like this (line breaks for "
+"display only):"
+msgstr ""
+
+#: ../../guide/jwt.rst:153
+msgid "Another difference is the key used for ``encode`` and ``decode``."
+msgstr ""
+
+#: ../../guide/jwt.rst:155
+msgid ""
+"For :ref:`jws`, a private key is used for ``encode``, and a public key is"
+" used for ``decode``. The ``encode`` method will use a private key to "
+"sign, and the ``decode`` method will use a public key to verify."
+msgstr ""
+
+#: ../../guide/jwt.rst:159
+msgid ""
+"For :ref:`jwe`, it is the contrary, a public key is used for ``encode``, "
+"and a private key is used for ``decode``. The ``encode`` method  will use"
+" a public key to encrypt, and the ``decode`` method will use a private "
+"key to decrypt."
+msgstr ""
+
+#: ../../guide/jwt.rst:164
+msgid "The key parameter"
+msgstr ""
+
+#: ../../guide/jwt.rst:166
+msgid ""
+"In the above example, we're using :ref:`OctKey` only for simplicity. "
+"There are other types of keys in :ref:`jwk`."
+msgstr ""
+
+#: ../../guide/jwt.rst:170
+msgid "Key types"
+msgstr ""
+
+#: ../../guide/jwt.rst:172
+msgid ""
+"Each algorithm (``alg`` in header) requires a certain type of key. For "
+"example:"
+msgstr ""
+
+#: ../../guide/jwt.rst:174
+msgid "``HS256`` requires ``OctKey``"
+msgstr ""
+
+#: ../../guide/jwt.rst:175
+msgid "``RS256`` requires ``RSAKey``"
+msgstr ""
+
+#: ../../guide/jwt.rst:176
+msgid "``ES256`` requires ``ECKey`` or ``OKPKey``"
+msgstr ""
+
+#: ../../guide/jwt.rst:178
+msgid "You can find the correct key type for each algorithm at:"
+msgstr ""
+
+#: ../../guide/jwt.rst:180 ../../guide/jwt.rst:275
+msgid ":ref:`JSON Web Signature Algorithms <jws_algorithms>`"
+msgstr ""
+
+#: ../../guide/jwt.rst:181 ../../guide/jwt.rst:276
+msgid ":ref:`JSON Web Encryption Algorithms <jwe_algorithms>`"
+msgstr ""
+
+#: ../../guide/jwt.rst:183
+msgid "Here is an example of a JWT with \"alg\" of ``RS256`` in JWS type:"
+msgstr ""
+
+#: ../../guide/jwt.rst:202
+msgid ""
+"In production, ``jwt.encode`` is usually used by the *client* side, a "
+"client normally does not have the access to private keys. The server "
+"provider would usually expose the public keys in JWK Set."
+msgstr ""
+
+#: ../../guide/jwt.rst:207
+msgid "Use key set"
+msgstr ""
+
+#: ../../guide/jwt.rst:209
+msgid ""
+"You can also pass a JWK Set to the ``key`` parameter of :meth:`encode` "
+"and :meth:`decode` methods."
+msgstr ""
+
+#: ../../guide/jwt.rst:226
+msgid ""
+"The methods will find the correct key according to the ``kid`` you "
+"specified. If there is no ``kid`` in header, it will pick on randomly and"
+" add the ``kid`` of the key into header."
+msgstr ""
+
+#: ../../guide/jwt.rst:230
+msgid ""
+"A client would usually get the public key set from a public URL, normally"
+" the ``decode`` code would be something like:"
+msgstr ""
+
+#: ../../guide/jwt.rst:246
+msgid "Callable key"
+msgstr ""
+
+#: ../../guide/jwt.rst:248
+msgid "It is also possible to assign a callable function as the ``key``:"
+msgstr ""
+
+#: ../../guide/jwt.rst:269
+msgid ""
+"The :meth:`encode` and :meth:`decode` accept an ``algorithms`` parameter "
+"for specifying the allowed algorithms. By default, it only allows your to"
+" use recommended algorithms."
+msgstr ""
+
+#: ../../guide/jwt.rst:273
+msgid "You can find out the recommended algorithms at:"
+msgstr ""
+
+#: ../../guide/jwt.rst:278
+msgid ""
+"For instance, ``HS386`` is not a recommended algorithm, and you want to "
+"use this algorithm:"
+msgstr ""
+
+#: ../../guide/jwt.rst:289
+msgid ""
+"If not specifying the ``algorithms`` parameter, the ``encode`` method "
+"will raise an error."
+msgstr ""
+
+#: ../../guide/registry.rst:6
+msgid "Registry"
+msgstr ""
+
+#: ../../guide/registry.rst:11
+msgid ""
+"The ``registry`` is specifically designed to store supported algorithms, "
+"allowed algorithms, registered header parameters, and provides methods to"
+" validate algorithms and headers."
+msgstr ""
+
+#: ../../guide/registry.rst:17
+msgid ""
+"We'll use ``JWSRegistry`` as our reference, but keep in mind that the "
+"behavior of ``JWERegistry`` is identical."
+msgstr ""
+
+#: ../../guide/registry.rst:23
+msgid ""
+"The ``JWSRegistry`` or ``JWERegistry`` serves as a storage for all "
+"supported algorithms in JWS or JWE. By default, it enforces the usage of "
+"recommended algorithms, ensuring a higher level of security."
+msgstr ""
+
+#: ../../guide/registry.rst:27
+msgid "Find all the supported and recommended algorithms in:"
+msgstr ""
+
+#: ../../guide/registry.rst:29
+msgid ":ref:`jws_algorithms`"
+msgstr ""
+
+#: ../../guide/registry.rst:30
+msgid ":ref:`jwe_algorithms`"
+msgstr ""
+
+#: ../../guide/registry.rst:32
+msgid ""
+"You have the flexibility to create a custom registry tailored to your "
+"specific program requirements, allowing you to define and restrict the "
+"algorithms used. For instance, you can design a custom JWS registry that "
+"only permits the usage of ``RS256`` and ``ES256`` algorithms. This "
+"ensures that only these specific algorithms are allowed in your program."
+msgstr ""
+
+#: ../../guide/registry.rst:45
+msgid ""
+"An example of a custom JWE registry that only permits the usage of "
+"``{\"alg\": \"A128KW\", \"enc\": \"A128GCM\"}``:"
+msgstr ""
+
+#: ../../guide/registry.rst:56
+msgid "Headers"
+msgstr ""
+
+#: ../../guide/registry.rst:58
+msgid ""
+"By default, the ``JWSRegistry`` only permits the usage of registered "
+"header parameters. Additionally, it verifies the validity of the header "
+"parameter values before allowing their usage."
+msgstr ""
+
+#: ../../guide/registry.rst:63
+msgid "Type checking"
+msgstr ""
+
+#: ../../guide/registry.rst:65
+msgid ""
+"The header parameter registry for JWS and JWE performs an initial check "
+"on the value type."
+msgstr ""
+
+#: ../../guide/registry.rst:82
+msgid ""
+"In the above example, ``kid`` MUST be a string instead of an integer. The"
+" default registry validates the ``kid`` before processing the "
+"serialization."
+msgstr ""
+
+#: ../../guide/registry.rst:86
+msgid "Critical headers"
+msgstr ""
+
+#: ../../guide/registry.rst:88
+msgid ""
+"There is a special \"crit\" header parameter for JWS and JWE, which "
+"specifies the critical header parameters. These critical parameters are "
+"considered mandatory, indicating that they must be present. For example:"
+msgstr ""
+
+#: ../../guide/registry.rst:106
+msgid ""
+"Since \"kid\" is listed as a critical (``crit``) header parameter, it is "
+"mandatory and must be included in the header."
+msgstr ""
+
+#: ../../guide/registry.rst:110
+msgid "Additional headers"
+msgstr ""
+
+#: ../../guide/registry.rst:112
+msgid ""
+"By default, the registry for JWS and JWE only permits registered header "
+"parameters. Any additional header beyond those supported by the algorithm"
+" will result in an error."
+msgstr ""
+
+#: ../../guide/registry.rst:129
+msgid ""
+"To resolve this error, you have two options. First, you can register the "
+"additional header parameters with the registry. This allows the registry "
+"to recognize and validate those parameters instead of raising an error."
+msgstr ""
+
+#: ../../guide/registry.rst:150
+msgid ""
+"Alternatively, you can choose to disable the strict header checking "
+"altogether. By turning off strict header checking, the registry will no "
+"longer raise an error for unrecognized header parameters. However, please"
+" note that this approach may compromise the security and integrity of the"
+" token, so it should be used with caution."
+msgstr ""
+
+#: ../../guide/registry.rst:162
+msgid "Registry for JWT"
+msgstr ""
+
+#: ../../guide/registry.rst:164
+msgid ""
+"JSON Web Token (JWT) is built on top of :ref:`jws` or :ref:`jwe`. The "
+"``encode`` and ``decode`` methods accept a ``registry`` parameter. "
+"Depending on the algorithm of the JWT, you need to decide whether to use "
+"``JWSRegistry`` or ``JWERegistry``."
+msgstr ""

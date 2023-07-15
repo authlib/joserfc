@@ -1,0 +1,88 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../stability.rst:2
+msgid "API stability"
+msgstr ""
+
+#: ../../stability.rst:4
+msgid ""
+"The API of joserfc is currently a work in progress and may not be "
+"considered fully stable. However, with each release, the API stability is"
+" improving and getting closer to a stable state."
+msgstr ""
+
+#: ../../stability.rst:9
+msgid "Interfaces"
+msgstr ""
+
+#: ../../stability.rst:11
+msgid ""
+"Starting from **version 0.5.0**, the method names and their parameters "
+"are expected to remain stable. This means that once you have updated your"
+" code to use the methods provided by joserfc, you can rely on them "
+"without the need for frequent changes."
+msgstr ""
+
+#: ../../stability.rst:16
+msgid "Python Versions"
+msgstr ""
+
+#: ../../stability.rst:18
+msgid ""
+"``joserfc`` is designed to support Python 3.8 and above. It is "
+"recommended to use ``joserfc`` with Python versions 3.8 and higher to "
+"ensure compatibility and take advantage of the latest language features "
+"and improvements."
+msgstr ""
+
+#: ../../stability.rst:23
+msgid "New RFCs"
+msgstr ""
+
+#: ../../stability.rst:25
+msgid ""
+"To maintain a stable and reliable library, joserfc will not introduce new"
+" RFC implementations until the 1.0.0 release. This approach ensures that "
+"the existing functionality is thoroughly tested and the library reaches a"
+" mature state before incorporating new specifications."
+msgstr ""
+
+#: ../../stability.rst:30
+msgid ""
+"When new RFC implementations are added after the 1.0.0 release, the minor"
+" version of joserfc will be incremented. This versioning approach helps "
+"to communicate the introduction of new features and RFC support to users,"
+" while also indicating potential changes to the API and behavior."
+msgstr ""
+
+#: ../../stability.rst:36
+msgid "Upgrade notes"
+msgstr ""
+
+#: ../../stability.rst:38
+msgid ""
+"Please note that while efforts are made to maintain compatibility and "
+"stability, it is always a good practice to thoroughly test and validate "
+"your code when upgrading to a new version of joserfc to ensure a smooth "
+"transition and avoid any potential compatibility issues."
+msgstr ""
+

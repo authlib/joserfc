@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"PO-Revision-Date: 2023-07-15 14:44+0900\n"
+"Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../index.rst:59
+msgid "Getting started"
+msgstr "开始上手"
+
+#: ../../index.rst:66
+msgid "Essentials"
+msgstr "必读文档"
+
+#: ../../index.rst:75
+msgid "Recipes"
+msgstr "小技巧"
+
+#: ../../index.rst:83
+msgid "Development"
+msgstr "开发者文档"
+
+#: ../../index.rst:2
+msgid "JOSE RFC"
+msgstr ""
+
+#: ../../index.rst:4
+msgid ""
+"``joserfc`` is a Python library that provides a comprehensive "
+"implementation of several essential JSON Object Signing and Encryption "
+"(JOSE) standards, including JWS (JSON Web Signature), JWE (JSON Web "
+"Encryption), JWK (JSON Web Key), JWA (JSON Web Algorithms), and JWT (JSON"
+" Web Tokens)."
+msgstr ""
+
+#: ../../index.rst:9
+msgid ""
+"It is derived from Authlib_, but features a redesigned API specific to "
+"JOSE functionality."
+msgstr ""
+
+#: ../../index.rst:14
+msgid "Usage"
+msgstr "使用方法"
+
+#: ../../index.rst:16
+msgid ""
+"A quick and simple JWT encoding and decoding would look something like "
+"this:"
+msgstr ""
+
+#: ../../index.rst:30
+msgid "You would find more details and advanced usage in :ref:`jwt` section."
+msgstr ""
+
+#: ../../index.rst:33
+msgid "RFCs"
+msgstr ""
+
+#: ../../index.rst:35
+msgid "It follows RFCs with extensible API. The module has implementations of:"
+msgstr ""
+
+#: ../../index.rst:37
+msgid "RFC7515: :ref:`JSON Web Signature <jws>`"
+msgstr ""
+
+#: ../../index.rst:38
+msgid "RFC7516: :ref:`JSON Web Encryption <jwe>`"
+msgstr ""
+
+#: ../../index.rst:39
+msgid "RFC7517: :ref:`JSON Web Key <jwk>`"
+msgstr ""
+
+#: ../../index.rst:40
+msgid "RFC7518: :ref:`JSON Web Algorithms <jwa>`"
+msgstr ""
+
+#: ../../index.rst:41
+msgid "RFC7519: :ref:`JSON Web Token <jwt>`"
+msgstr ""
+
+#: ../../index.rst:42
+msgid ""
+"RFC7520: Examples of Protecting Content Using JSON Object Signing and "
+"Encryption"
+msgstr ""
+
+#: ../../index.rst:43
+msgid "RFC7638: ``thumbprint`` for JWK"
+msgstr ""
+
+#: ../../index.rst:44
+msgid "RFC8037: ``OKP`` Key and ``EdDSA`` algorithm"
+msgstr ""
+
+#: ../../index.rst:45
+msgid "RFC8812: ``ES256K`` algorithm"
+msgstr ""
+
+#: ../../index.rst:47
+msgid "And draft RFCs implementation of:"
+msgstr ""
+
+#: ../../index.rst:49
+msgid ":ref:`chacha20`"
+msgstr ""
+
+#: ../../index.rst:50
+msgid ":ref:`ecdh1pu`"
+msgstr ""
+
+#: ../../index.rst:52
+msgid "RFC7520 is implemented as test cases."
+msgstr ""
+
+#: ../../index.rst:55
+msgid "Next"
+msgstr "继续阅读"
+
+#: ../../index.rst:57
+msgid ""
+"Explore the following sections to discover more about ``joserfc`` and its"
+" features."
+msgstr ""

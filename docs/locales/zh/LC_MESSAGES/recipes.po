@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../recipes/azure.rst:2
+msgid "Dynamic keys for Azure"
+msgstr ""
+
+#: ../../recipes/azure.rst:6
+msgid "Use callable key"
+msgstr ""
+
+#: ../../recipes/azure.rst:10
+msgid "Step by step"
+msgstr ""
+
+#: ../../recipes/openssl.rst:2
+msgid "Using OpenSSL command"
+msgstr ""
+
+#: ../../recipes/openssl.rst:7
+msgid ""
+"JOSE RFC provides a method :meth:`JWKRegistry.generate_key` for "
+"generating keys to be used for JWS/JWE/JWT. However, you can also use "
+"other tools to generate the keys, here lists some of the commands you "
+"might find helpful for ``openssl``."
+msgstr ""
+
+#: ../../recipes/openssl.rst:13
+msgid "Generating EC keys"
+msgstr ""
+
+#: ../../recipes/openssl.rst:16
+msgid "EC key with crv P-256"
+msgstr ""
+
+#: ../../recipes/openssl.rst:26
+msgid "Using OpenSSL command line tool:"
+msgstr ""
+
+#: ../../recipes/openssl.rst:36
+msgid "OpenSSL encourage using prime256v1 instead of secp256r1"
+msgstr ""
+
+#: ../../recipes/openssl.rst:40
+msgid "EC key with crv P-384"
+msgstr ""
+
+#: ../../recipes/openssl.rst:60
+msgid "EC key with crv P-512"
+msgstr ""
+
+#: ../../recipes/openssl.rst:78
+msgid ""
+"It is **secp521r1**, not secp512r1. But the \"crv\" value in EC Key is "
+"\"P-512\"."
+msgstr ""
+
+#: ../../recipes/openssl.rst:82
+msgid "EC key with crv secp256k1"
+msgstr ""
+

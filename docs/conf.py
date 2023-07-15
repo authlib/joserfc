@@ -7,10 +7,11 @@ version = __version__
 release = __version__
 
 language = "en"
+locale_dirs = ["locales/"]
 
 html_title = "joserfc"
 
-templates_path = ["_templates"]
+# templates_path = ["_templates"]
 html_static_path = ["_static"]
 html_css_files = [
   'custom.css',
@@ -74,6 +75,31 @@ html_theme_options = {
                 },
             ]
         },
-        {"title": "Sponsor me", "url": "https://github.com/sponsors/lepture"},
+        {"title": "Sponsor me", "url": "https://github.com/sponsors/authlib"},
     ]
 }
+
+html_baseurl = "https://jose.authlib.org/en/dev/"
+html_context = {
+    "source_type": "github",
+    "source_user": "authlib",
+    "source_repo": "joserfc",
+    "source_docs_path": "/docs/",
+}
+
+def setup(app):
+    import os
+    global language, html_baseurl
+
+    language = app.config.language
+    ref_name = os.getenv("REF_NAME")
+    if ref_name and ref_name.startswith("1."):
+        version_path = "v1"
+    else:
+        version_path = "dev"
+
+    html_baseurl = f"https://jose.authlib.org/{language}/{version_path}/"
+    html_context["languages"] = [
+        ("English", f"/en/{version_path}/%s/"),
+        ("简体中文", f"/zh/{version_path}/%s/"),
+    ]

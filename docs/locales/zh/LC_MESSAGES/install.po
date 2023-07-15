@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"PO-Revision-Date: 2023-07-15 14:44+0900\n"
+"Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: ../../install.rst:4
+msgid "Installation"
+msgstr "安装"
+
+#: ../../install.rst:6
+msgid ""
+"We recommend using the latest version of Python. ``joserfc`` supports "
+"Python 3.8 and newer. The package has a dependency of cryptography_, if "
+"you encountered any issues related with cryptography, you can follow the "
+"documentation `installation of cryptography "
+"<https://cryptography.io/en/latest/installation/>`_."
+msgstr ""
+
+#: ../../install.rst:14
+msgid "pip install"
+msgstr ""
+
+#: ../../install.rst:16
+msgid ""
+"``joserfc`` is conveniently available as a Python package on PyPI and can"
+" be easily installed using pip."
+msgstr ""
+
+#: ../../install.rst
+msgid "General"
+msgstr "正常安装"
+
+#: ../../install.rst
+msgid "C20P and XC20P"
+msgstr "C20P 与 XC20P"
+
+#: ../../install.rst:35
+msgid ""
+"To use :ref:`chacha20` algorithms, developers have to install the "
+"``PyCryptodome`` module."
+msgstr ""
+
+#: ../../install.rst:38
+msgid "Dependency management"
+msgstr "依赖管理"
+
+#: ../../install.rst:40
+msgid ""
+"There are several ways to manage the dependencies of your project, here "
+"are some examples to track ``joserfc`` in your project."
+msgstr ""
+
+#: ../../install.rst:44 ../../install.rst:49
+msgid "pyproject.toml"
+msgstr ""
+
+#: ../../install.rst:46
+msgid ""
+"If you're using ``pyproject.toml`` for your Python project, you can add "
+"``joserfc`` to ``project.dependencies``."
+msgstr ""
+
+#: ../../install.rst:58 ../../install.rst:63
+msgid "Pipfile"
+msgstr ""
+
+#: ../../install.rst:60
+msgid ""
+"If you prefer **pipenv**, you would like to track dependencies in "
+"``Pipfile``, then add ``joserfc`` to ``[packages]`` section."
+msgstr ""
+
+#: ../../install.rst:70 ../../install.rst:75
+msgid "requirements.txt"
+msgstr ""
+
+#: ../../install.rst:72
+msgid ""
+"If you're tracking dependencies in ``requirements.txt``, you can add "
+"``joserfc`` to the requirements file."
+msgstr ""
