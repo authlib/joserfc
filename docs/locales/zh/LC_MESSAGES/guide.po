@@ -29,6 +29,8 @@ msgid ""
 "This documentation describes the algorithms to be used with JSON Web "
 "Signature (JWS), JSON Web Encryption (JWE), and JSON Web Key (JWK)."
 msgstr ""
+"本文档描述了在 JSON Web Signature (JWS)、JSON Web Encryption (JWE) 和 "
+"JSON Web Key (JWK) 中使用的算法。"
 
 #: ../../guide/algorithms.rst:13 ../../guide/jwk.rst:6
 msgid "JSON Web Key"
@@ -43,24 +45,28 @@ msgid ""
 ":ref:`OctKey` : accepts key size in bits, which means the ``key_size`` "
 "MUST be dividable by 8."
 msgstr ""
+":ref:`OctKey` ：接受以比特为单位的密钥大小，这意味着 ``key_size`` 必须是 8 的倍数。"
 
 #: ../../guide/algorithms.rst:18
 msgid ""
 ":ref:`RSAKey` : accepts key size in bits, ``key_size`` MUST ``>=512`` and"
 " dividable by 8."
 msgstr ""
+":ref:`RSAKey` ：接受以比特为单位的密钥大小，``key_size`` 必须 ``>=512`` 且为 8 的倍数。"
 
 #: ../../guide/algorithms.rst:19
 msgid ""
 ":ref:`ECKey` : accepts ``crv`` with ``P-256``, ``P-384``, ``P-521``, and "
 "``secp256k1``."
 msgstr ""
+":ref:`ECKey` ：接受 ``crv`` 为 ``P-256``、``P-384``、``P-521`` 和 ``secp256k1``。"
 
 #: ../../guide/algorithms.rst:20
 msgid ""
 ":ref:`OKPKey` : accepts ``crv`` with ``Ed25519``, ``Ed448``, ``X25519``, "
 "and ``X448``."
 msgstr ""
+":ref:`OKPKey` ：接受 ``crv`` 为 ``Ed25519``、``Ed448``、``X25519`` 和 ``X448``。"
 
 #: ../../guide/algorithms.rst:25 ../../guide/jws.rst:6
 msgid "JSON Web Signature"
@@ -71,6 +77,8 @@ msgid ""
 "``joserfc.jws`` module supports algorithms from RFC7518, RFC8037, and "
 "RFC8812. You MUST specify the correct key type for each algorithm."
 msgstr ""
+"``joserfc.jws`` 模块支持 RFC7518、RFC8037 和 RFC8812 中的算法。"
+"您必须为每个算法指定正确的密钥类型。"
 
 #: ../../guide/algorithms.rst:31 ../../guide/algorithms.rst:62
 #: ../../guide/jws.rst:253
@@ -209,6 +217,7 @@ msgid ""
 "``EdDSA`` algorithm only accepts ``OKPKey`` with \"crv\" of \"Ed25519\" "
 "and \"Ed448\"."
 msgstr ""
+"``EdDSA`` 算法只接受具有 \"crv\" 为 \"Ed25519\" 和 \"Ed448\" 的 ``OKPKey``。"
 
 #: ../../guide/algorithms.rst:56 ../../guide/jwe.rst:6
 msgid "JSON Web Encryption"
@@ -219,6 +228,8 @@ msgid ""
 "``joserfc.jwe`` module supports algorithms from RFC7518, and drafts of "
 "``ECDH-1PU``. You MUST specify the correct key type for each algorithm."
 msgstr ""
+"``joserfc.jwe`` 模块支持 RFC7518 中的算法，以及 ``ECDH-1PU`` 的草案。"
+"您必须为每个算法指定正确的密钥类型。"
 
 #: ../../guide/algorithms.rst:64
 msgid "dir"
@@ -293,6 +304,7 @@ msgid ""
 "All algorithms defined in RFC7518 for \"enc\" value are recommended, "
 "which including:"
 msgstr ""
+"RFC7518 中定义的所有用于 \"enc\" 值的算法都是推荐使用的，包括："
 
 #: ../../guide/algorithms.rst:86
 msgid "A128CBC-HS256"
@@ -323,18 +335,22 @@ msgid ""
 "A ``DEF`` algorithm for the \"zip\" (compression) header parameter is "
 "also defined in RFC7518, which is recommended."
 msgstr ""
+"RFC7518 还定义了用于 \"zip\"（压缩）头参数的 ``DEF`` 算法，该算法推荐使用。"
 
 #: ../../guide/algorithms.rst:96
 msgid ""
 "There are also additional algorithms for \"alg\" and \"enc\" in draft "
 "versions. Please refer to the following sections for more information."
 msgstr ""
+"草案版本中还有针对 \"alg\" 和 \"enc\" 的额外算法。请参考以下章节获取更多信息。"
 
 #: ../../guide/algorithms.rst:103
 msgid ""
 "You can use ``OKPKey`` with the \"crv\" (curve) parameter set to "
 "``X25519`` or ``X448`` for the following algorithms:"
 msgstr ""
+"对于以下算法，您可以使用 ``OKPKey`` 并将 \"crv\"（曲线）参数设置为 "
+"``X25519`` 或 ``X448``："
 
 #: ../../guide/algorithms.rst:111
 msgid ""
@@ -352,6 +368,8 @@ msgid ""
 "registered by default. To use ``C20P`` and ``XC20P``, developers have to "
 "install the ``PyCryptodome`` module."
 msgstr ""
+"``C20P`` 和 ``XC20P`` 算法仍处于草案阶段，默认状态下他们未注册到 ``JWERegistry``。"
+"要使用 ``C20P`` 和 ``XC20P``，开发人员必须安装 ``PyCryptodome`` 模块。"
 
 #: ../../guide/algorithms.rst:126
 msgid ""
@@ -359,6 +377,8 @@ msgid ""
 " cipher, not **XChaCha20**, while ``pycryptodome`` supports both "
 "\"ChaCha20\" and \"XChaCha20\" ciphers."
 msgstr ""
+"这是由于 ``cryptography`` 库只支持 \"ChaCha20\" 密码算法，不支持 **XChaCha20**，"
+"而 ``pycryptodome`` 同时支持 \"ChaCha20\" 和 \"XChaCha20\" 密码算法。"
 
 #: ../../guide/algorithms.rst:130
 msgid "Register ciphers"
@@ -369,6 +389,7 @@ msgid ""
 "The default :ref:`registry` doesn't contain draft ciphers, developers "
 "MUST register ``C20P`` and ``XC20P`` at first:"
 msgstr ""
+"默认的 :ref:`registry` 不包含草案算法，开发人员必须先注册 ``C20P`` 和 ``XC20P``："
 
 #: ../../guide/algorithms.rst:142
 msgid "Use custom ``registry``"
@@ -379,6 +400,8 @@ msgid ""
 "Use a custom ``registry`` in :meth:`encrypt_compact`, "
 ":meth:`decrypt_compact`, :meth:`encrypt_json`, and :meth:`decrypt_json`."
 msgstr ""
+"在 :meth:`encrypt_compact`、:meth:`decrypt_compact`、:meth:`encrypt_json` "
+"和 :meth:`decrypt_json` 中使用自定义 ``registry``。"
 
 #: ../../guide/algorithms.rst:172
 msgid "ECDH-1PU algorithms"
@@ -391,12 +414,15 @@ msgid ""
 "use ``ECDH-1PU`` related algorithms, developers MUST register them "
 "manually:"
 msgstr ""
+"椭圆曲线迪菲-赫尔曼一次通用模型（ECDH-1PU）密钥协商仍然处于草案阶段，默认情况下未注册。"
+"要使用与 ``ECDH-1PU`` 相关的算法，开发人员必须手动注册它们："
 
 #: ../../guide/algorithms.rst:184
 msgid ""
 "Then use a custom ``registry`` with the required ``ECDH-1PU`` algorithms."
 " For instance:"
 msgstr ""
+"然后使用带有所需的 ``ECDH-1PU`` 算法的自定义 ``registry``。例如："
 
 #: ../../guide/algorithms.rst:207
 msgid ""
@@ -404,12 +430,16 @@ msgid ""
 "private key when calling :meth:`encrypt_compact` and :meth:`encrypt_json`"
 " methods."
 msgstr ""
+"``ECDH-1PU`` 算法需要一个 **发送方密钥**，在调用 :meth:`encrypt_compact` "
+"和 :meth:`encrypt_json` 方法时，该密钥必须是私钥。"
 
 #: ../../guide/algorithms.rst:210
 msgid ""
 "The ``sender_key`` can be a :class:`~joserfc.jwk.KeySet`, and JWE will "
 "find the correct key according to ``skid`` header value."
 msgstr ""
+"``sender_key`` 可以是 :class:`~joserfc.jwk.KeySet`，JWE 会根据 ``skid`` "
+"头部值查找正确的密钥。"
 
 #: ../../guide/index.rst:4
 msgid "Guide"
@@ -420,6 +450,7 @@ msgid ""
 "This section provides a quick overview of how to get started with "
 "``joserfc`` and perform encoding and decoding a JWT."
 msgstr ""
+"本章节提供了关于如何开始使用 ``joserfc`` 并进行 JWT 编码和解码的快速概述。"
 
 #: ../../guide/index.rst:10
 msgid "Encode and decode JWT"
@@ -427,7 +458,7 @@ msgstr "JWT 的编码与解码"
 
 #: ../../guide/index.rst:24
 msgid "Learn the details of :ref:`jwt` in the next chapter."
-msgstr ""
+msgstr "您可以在下一章节中了解 :ref:`jwt` 的详细信息。"
 
 #: ../../guide/index.rst:27
 msgid "Import and generate JWK"
@@ -435,7 +466,7 @@ msgstr "JWK 的导入与导出"
 
 #: ../../guide/index.rst:54
 msgid "Learn the details of :ref:`jwk` in the next chapter."
-msgstr ""
+msgstr "您可以在下一章节中了解 :ref:`jwk` 的详细信息。"
 
 #: ../../guide/index.rst:57
 msgid "Dive deep"
@@ -455,6 +486,8 @@ msgid ""
 "implementation of several essential JSON Object Signing and Encryption "
 "(JOSE) standards."
 msgstr ""
+"``joserfc`` 是一个 Python 库，提供了对多个重要的 JSON Object Signing and Encryption "
+"(JOSE) 标准的全面实现。"
 
 #: ../../guide/introduction.rst:9
 msgid ""
@@ -462,6 +495,8 @@ msgid ""
 "tailored to JOSE functionality, making it easier for developers to work "
 "with JWS, JWE, JWK, JWA, and JWT in their Python applications."
 msgstr ""
+"``joserfc`` 源自 Authlib_，专门为 JOSE 功能量身定制。同时我们重新设计了 API，"
+"让开发人员更容易在其 Python 应用程序中处理 JWS、JWE、JWK、JWA 和 JWT。"
 
 #: ../../guide/introduction.rst:16
 msgid "Features"
@@ -475,6 +510,9 @@ msgid ""
 "static analysis, improved IDE support, and more reliable code "
 "refactoring."
 msgstr ""
+"**Python 类型提示**：``joserfc`` 充分利用了 Python 的类型提示功能，"
+"提供了更具表达力和可读性的代码库。使用类型提示可以增强开发工作流程，"
+"实现更好的静态分析、改善 IDE 支持和更可靠的代码重构。"
 
 #: ../../guide/introduction.rst:23
 msgid ""
@@ -484,6 +522,8 @@ msgid ""
 "versions of the JOSE standards, guaranteeing the highest level of "
 "interoperability and compliance."
 msgstr ""
+"**代码库组织有序且符合 RFC 标准**：``joserfc`` 的结构遵循 RFC 标准，确保不同的 "
+"JOSE 功能之间的清晰分离和组织。它严格遵循最新的 JOSE 标准版本，确保最高水平的互操作性和合规性。"
 
 #: ../../guide/introduction.rst:29
 msgid "Why joserfc?"
@@ -498,6 +538,9 @@ msgid ""
 "splitting the modules from Authlib would improve maintainability and "
 "provide more focused and specialized libraries."
 msgstr ""
+"``joserfc`` 分离自 Authlib，以便于简化维护和模块化。之前，Authlib 是作为一个单体库开发的，"
+"旨在设计一个涵盖广泛身份验证和安全需求的全面 API。然而，随着项目的发展，我们发现是时候将模块从 "
+"Authlib 中拆分出来了，这将有助于提高项目的可维护性，并提供更专注和专业化的 JOSE 库。"
 
 #: ../../guide/introduction.rst:37
 msgid ""
@@ -515,6 +558,8 @@ msgid ""
 "JSON Web Encryption (JWE) represents encrypted content using JSON-based "
 "data structures. (via RFC7516_)"
 msgstr ""
+"JSON Web Encryption (JWE) 使用基于 JSON 的数据结构表示加密内容。（参考 RFC7516_）"
+
 
 #: ../../guide/jwe.rst:17
 msgid "Compact Encryption"
@@ -525,6 +570,7 @@ msgid ""
 "The JWE Compact Serialization represents encrypted content as a compact, "
 "URL-safe string.  This string is:"
 msgstr ""
+"JWE Compact Serialization 将加密内容表示为紧凑的、URL 安全的字符串。该字符串为："
 
 #: ../../guide/jwe.rst:30 ../../guide/jws.rst:29
 msgid ""

@@ -47,12 +47,17 @@ msgid ""
 "Encryption), JWK (JSON Web Key), JWA (JSON Web Algorithms), and JWT (JSON"
 " Web Tokens)."
 msgstr ""
+"``joserfc`` 是一个提供了多个重要 JSON Object Signing and Encryption (JOSE) "
+"标准的全面实现的 Python 库，包括 JWS (JSON Web Signature)，JWE (JSON Web Encryption)，"
+"JWK (JSON Web Key)，JWA (JSON Web Algorithms)，和 JWT (JSON Web Tokens)。"
+
 
 #: ../../index.rst:9
 msgid ""
 "It is derived from Authlib_, but features a redesigned API specific to "
 "JOSE functionality."
 msgstr ""
+"它源于 Authlib_，但我们专门为 JOSE 功能重新设计了 API。"
 
 #: ../../index.rst:14
 msgid "Usage"
@@ -63,10 +68,11 @@ msgid ""
 "A quick and simple JWT encoding and decoding would look something like "
 "this:"
 msgstr ""
+"一个快速而简单的 JWT 编码和解码的示例如下："
 
 #: ../../index.rst:30
 msgid "You would find more details and advanced usage in :ref:`jwt` section."
-msgstr ""
+msgstr "您可以在 :ref:`jwt` 部分找到更多详细信息和高级用法。"
 
 #: ../../index.rst:33
 msgid "RFCs"
@@ -74,7 +80,7 @@ msgstr ""
 
 #: ../../index.rst:35
 msgid "It follows RFCs with extensible API. The module has implementations of:"
-msgstr ""
+msgstr "它遵循可扩展的 API，并遵循 RFC 标准。该模块包含以下实现："
 
 #: ../../index.rst:37
 msgid "RFC7515: :ref:`JSON Web Signature <jws>`"
@@ -116,7 +122,7 @@ msgstr ""
 
 #: ../../index.rst:47
 msgid "And draft RFCs implementation of:"
-msgstr ""
+msgstr "同时包含如下 JOSE 草案的实现："
 
 #: ../../index.rst:49
 msgid ":ref:`chacha20`"
@@ -128,7 +134,7 @@ msgstr ""
 
 #: ../../index.rst:52
 msgid "RFC7520 is implemented as test cases."
-msgstr ""
+msgstr "RFC7520 是测试案例，详情请参考源码里的 tests 部分。"
 
 #: ../../index.rst:55
 msgid "Next"
@@ -139,3 +145,4 @@ msgid ""
 "Explore the following sections to discover more about ``joserfc`` and its"
 " features."
 msgstr ""
+"浏览以下部分，了解更多关于 ``joserfc`` 及其特性的内容。"

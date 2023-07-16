@@ -31,6 +31,9 @@ msgid ""
 "documentation `installation of cryptography "
 "<https://cryptography.io/en/latest/installation/>`_."
 msgstr ""
+"我们建议使用最新版本的 Python。``joserfc`` 支持 Python 3.8 及更高版本。该库依赖 "
+"cryptography_，如果您遇到与 cryptography 相关的任何问题，您可以参考文档 "
+"`cryptography 的安装指南 <https://cryptography.io/en/latest/installation/>`_。"
 
 #: ../../install.rst:14
 msgid "pip install"
@@ -41,6 +44,7 @@ msgid ""
 "``joserfc`` is conveniently available as a Python package on PyPI and can"
 " be easily installed using pip."
 msgstr ""
+"``joserfc`` 是一个 Python 库，您可以方便地在 PyPI 上获取，并可使用 pip 进行安装。"
 
 #: ../../install.rst
 msgid "General"
@@ -55,6 +59,7 @@ msgid ""
 "To use :ref:`chacha20` algorithms, developers have to install the "
 "``PyCryptodome`` module."
 msgstr ""
+"要使用 :ref:`chacha20` 算法，开发人员必须安装 ``PyCryptodome`` 模块。"
 
 #: ../../install.rst:38
 msgid "Dependency management"
@@ -65,6 +70,7 @@ msgid ""
 "There are several ways to manage the dependencies of your project, here "
 "are some examples to track ``joserfc`` in your project."
 msgstr ""
+"有多种方法可以管理项目的依赖关系，以下是一些示例，可以用来跟踪您项目中的 ``joserfc``。"
 
 #: ../../install.rst:44 ../../install.rst:49
 msgid "pyproject.toml"
@@ -75,6 +81,8 @@ msgid ""
 "If you're using ``pyproject.toml`` for your Python project, you can add "
 "``joserfc`` to ``project.dependencies``."
 msgstr ""
+"如果您的 Python 项目使用 ``pyproject.toml``，您可以将 ``joserfc`` 添加到 "
+"``project.dependencies`` 中。"
 
 #: ../../install.rst:58 ../../install.rst:63
 msgid "Pipfile"
@@ -85,6 +93,8 @@ msgid ""
 "If you prefer **pipenv**, you would like to track dependencies in "
 "``Pipfile``, then add ``joserfc`` to ``[packages]`` section."
 msgstr ""
+"如果您更喜欢使用 **pipenv**，您可以在 ``Pipfile`` 中跟踪依赖项，然后将 "
+"``joserfc`` 添加到 ``[packages]`` 部分。"
 
 #: ../../install.rst:70 ../../install.rst:75
 msgid "requirements.txt"
@@ -95,3 +105,5 @@ msgid ""
 "If you're tracking dependencies in ``requirements.txt``, you can add "
 "``joserfc`` to the requirements file."
 msgstr ""
+"如果您在 ``requirements.txt`` 中跟踪依赖项，您可以将 ``joserfc`` 添加到 "
+"``requirements.txt`` 文件中。"
