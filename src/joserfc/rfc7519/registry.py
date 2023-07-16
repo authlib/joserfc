@@ -9,11 +9,10 @@ from ..errors import (
 
 
 #: http://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests
-ClaimsOption = TypedDict("ClaimsOption", {
-    "essential": bool,
-    "value": Union[str, int],
-    "values": List[Union[str, int]],
-}, total=False)
+class ClaimsOption(TypedDict, total=False):
+    essential: bool
+    value: Union[str, int]
+    values: List[Union[str, int]]
 
 
 class ClaimsRegistry:
@@ -24,7 +23,7 @@ class ClaimsRegistry:
         self.essential_keys = {key for key in kwargs if kwargs[key].get("essential")}
 
     def check_value(self, claim_name: str, value: Any):
-        option: ClaimsOption = self.options.get(claim_name)
+        option = self.options.get(claim_name)
         if option:
             option_value = option.get("value")
             if option_value and value != option_value:
@@ -56,7 +55,7 @@ class JWTClaimsRegistry(ClaimsRegistry):
         self.leeway = leeway
         super().__init__(**kwargs)
 
-    def validate_aud(self, value):
+    def validate_aud(self, value: Any):
         """The "aud" (audience) claim identifies the recipients that the JWT is
         intended for.  Each principal intended to process the JWT MUST
         identify itself with a value in the audience claim.  If the principal
@@ -69,16 +68,16 @@ class JWTClaimsRegistry(ClaimsRegistry):
         interpretation of audience values is generally application specific.
         Use of this claim is OPTIONAL.
         """
-        option: ClaimsOption = self.options.get("aud")
+        option = self.options.get("aud")
         if not option:
             return
 
         option_values = option.get("values")
 
-        if not option_values:
+        if option_values is None:
             option_value = option.get("value")
             if option_value:
-                option_values = option_value
+                option_values = [option_value]
 
         if not option_values:
             return

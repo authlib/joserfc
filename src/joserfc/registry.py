@@ -29,9 +29,8 @@ def is_list_str(values):
     if not isinstance(values, list):
         raise ValueError("must be a list[str]")
 
-    for value in values:
-        if not isinstance(value, str):
-            raise ValueError("must be a list[str]")
+    if not all(isinstance(value, str) for value in values):
+        raise ValueError("must be a list[str]")
 
 
 def is_jwk(value):
@@ -42,9 +41,8 @@ def is_jwk(value):
 def in_choices(choices: t.List[str]):
     def _is_one_of(value):
         if isinstance(value, list):
-            for v in value:
-                if v not in choices:
-                    raise ValueError(f"must be one of {choices}")
+            if not all(v in choices for v in value):
+                raise ValueError(f"must be one of {choices}")
 
         elif value not in choices:
             raise ValueError(f"must be one of {choices}")
@@ -56,8 +54,8 @@ def not_support(_):
     raise ValueError("is not supported")
 
 
-Validate = t.Callable[[t.Any], t.NoReturn]
-_value_validators = {
+Validate = t.Callable[[t.Any], None]
+_value_validators: t.Dict[str, Validate] = {
     "str": is_str,
     "list[str]": is_list_str,
     "int": is_int,
@@ -72,11 +70,9 @@ class HeaderParameter:
     """Define the header parameter for JWS and JWE."""
     def __init__(self, description: str, validate: t.Union[str, Validate], required: bool = False):
         #: a short description of the header parameter
-        self.description: str = description
-        if isinstance(validate, str):
-            validate: Validate = _value_validators[validate]
+        self.description = description
         #: a function for validating the header parameter's value
-        self.validate: Validate = validate
+        self.validate = _value_validators[validate] if isinstance(validate, str) else validate
         #: if this header parameter is required
         self.required = required
 
@@ -95,10 +91,8 @@ class KeyParameter:
             required: bool = False):
         #: a short description of the key parameter
         self.description: str = description
-        if isinstance(validate, str):
-            validate: Validate = _value_validators[validate]
         #: a function for validating the key parameter's value
-        self.validate: Validate = validate
+        self.validate = _value_validators[validate] if isinstance(validate, str) else validate
         #: if this key parameter for private key only
         self.private = private
         #: if this key parameter is required
@@ -183,7 +177,7 @@ def validate_registry_header(
         header: Header,
         check_required: bool = True):
     for key in registry:
-        reg: HeaderParameter = registry[key]
+        reg = registry[key]
         if check_required and reg.required and key not in header:
             raise ValueError(f'Required "{key}" is missing in header')
         if key in header:

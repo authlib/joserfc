@@ -20,15 +20,15 @@ NativePrivateKey = t.TypeVar("NativePrivateKey")
 NativePublicKey = t.TypeVar("NativePublicKey")
 
 
-class NativeKeyBinding(object, metaclass=ABCMeta):
-    use_key_ops_registry = {
+class NativeKeyBinding(metaclass=ABCMeta):
+    use_key_ops_registry: t.ClassVar[t.Dict[str, t.List[str]]] = {
         "sig": ["sign", "verify"],
         "enc": ["encrypt", "decrypt", "wrapKey", "unwrapKey", "deriveKey", "deriveBits"],
     }
 
     @classmethod
     @abstractmethod
-    def convert_raw_key_to_dict(cls, raw_key, private: bool) -> KeyDict:
+    def convert_raw_key_to_dict(cls, raw_key: t.Any, private: bool) -> KeyDict:
         pass
 
     @classmethod
@@ -38,7 +38,7 @@ class NativeKeyBinding(object, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def import_from_bytes(cls, value: bytes, password=None):
+    def import_from_bytes(cls, value: bytes, password: t.Optional[t.Any] = None):
         pass
 
     @staticmethod
@@ -67,13 +67,13 @@ class NativeKeyBinding(object, metaclass=ABCMeta):
 
 
 class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
-    key_type: str
-    value_registry: KeyParameterRegistryDict
-    param_registry: KeyParameterRegistryDict = JWK_PARAMETER_REGISTRY
-    operation_registry: KeyOperationRegistryDict = JWK_OPERATION_REGISTRY
-    binding = NativeKeyBinding
+    key_type: t.ClassVar[str]
+    value_registry: t.ClassVar[KeyParameterRegistryDict]
+    param_registry: t.ClassVar[KeyParameterRegistryDict] = JWK_PARAMETER_REGISTRY
+    operation_registry: t.ClassVar[KeyOperationRegistryDict] = JWK_OPERATION_REGISTRY
+    binding: t.ClassVar[t.Type[NativeKeyBinding]] = NativeKeyBinding
 
-    def __init__(self, raw_value, original_value, parameters: KeyParameters = None):
+    def __init__(self, raw_value: t.Any, original_value: t.Any, parameters: t.Optional[KeyParameters] = None):
         self._raw_value = raw_value
         self.original_value = original_value
         self.extra_parameters = parameters
@@ -84,7 +84,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
                 data.update(dict(parameters))
 
             self.validate_dict_key(data)
-            self._dict_value = data
+            self._dict_value: t.Optional[KeyDict] = data
         else:
             self._dict_value = None
 
@@ -142,7 +142,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         fields.append("kty")
         return thumbprint(self.dict_value, fields)
 
-    def as_dict(self, private: t.Optional[bool] = None, **params) -> KeyDict:
+    def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> KeyDict:
         """Output this key to a JWK format (in dict). By default, it will return
         the :property:`dict_value` of this key.
 
@@ -216,7 +216,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         cls.binding.validate_dict_key_use_operations(data)
 
     @classmethod
-    def import_key(cls, value: KeyAny, parameters: KeyParameters = None, password=None) -> "BaseKey":
+    def import_key(cls, value: KeyAny, parameters: t.Optional[KeyParameters] = None, password: t.Optional[t.Any] = None) -> "BaseKey":
         if isinstance(value, dict):
             cls.validate_dict_key(value)
             raw_key = cls.binding.import_from_dict(value)
@@ -226,7 +226,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         return cls(raw_key, value, parameters)
 
     @classmethod
-    def generate_key(cls, size_or_crv, parameters: KeyParameters = None, private: bool = True) -> "BaseKey":
+    def generate_key(cls, size_or_crv, parameters: t.Optional[KeyParameters] = None, private: bool = True) -> "BaseKey":
         raise NotImplementedError()
 
 
