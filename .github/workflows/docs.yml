@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     branches:
-      - wip-docs
+      - main
     tags:
       - "1.*"
     paths-ignore:
