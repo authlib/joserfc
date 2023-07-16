@@ -27,6 +27,9 @@ classifiers = [
   "Topic :: Security :: Cryptography",
 ]
 
+[project.optional-dependencies]
+drafts = ["pycryptodome"]
+
 [project.urls]
 Documentation = "https://jose.authlib.org/"
 Source = "https://github.com/authlib/joserfc"
