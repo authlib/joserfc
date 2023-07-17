@@ -6,6 +6,7 @@ __all__ = [
     "GeneralJSONSerialization",
 ]
 
+
 class JSONRecipientDict(t.TypedDict, total=False):
     header: t.Dict[str, t.Any]
     encrypted_key: str
@@ -30,5 +31,6 @@ class FlattenJSONSerialization(t.TypedDict, total=False):
     aad: str
     ciphertext: str
     tag: str
+
 
 JSONSerialization = t.Union[GeneralJSONSerialization, FlattenJSONSerialization]

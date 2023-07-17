@@ -266,7 +266,11 @@ def detach_content(value: t.Union[str, JSONSerialization]):
 
         >>> obj = jws.serialize_json({"protected": {"alg": "HS256"}}, b"hello", "secret")
         >>> jws.detach_content(obj)
-        {'payload': '', 'signature': 'UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A', 'protected': 'eyJhbGciOiJIUzI1NiJ9'}
+        {
+            'payload': '',
+            'signature': 'UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A',
+            'protected': 'eyJhbGciOiJIUzI1NiJ9'
+        }
     """
     if isinstance(value, str):
         return detach_compact_content(value)

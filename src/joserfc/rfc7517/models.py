@@ -216,7 +216,11 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         cls.binding.validate_dict_key_use_operations(data)
 
     @classmethod
-    def import_key(cls, value: KeyAny, parameters: t.Optional[KeyParameters] = None, password: t.Optional[t.Any] = None) -> "BaseKey":
+    def import_key(
+            cls,
+            value: KeyAny,
+            parameters: t.Optional[KeyParameters] = None,
+            password: t.Optional[t.Any] = None) -> "BaseKey":
         if isinstance(value, dict):
             cls.validate_dict_key(value)
             raw_key = cls.binding.import_from_dict(value)
@@ -226,7 +230,11 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         return cls(raw_key, value, parameters)
 
     @classmethod
-    def generate_key(cls, size_or_crv, parameters: t.Optional[KeyParameters] = None, private: bool = True) -> "BaseKey":
+    def generate_key(
+            cls,
+            size_or_crv,
+            parameters: t.Optional[KeyParameters] = None,
+            private: bool = True) -> "BaseKey":
         raise NotImplementedError()
 
 
