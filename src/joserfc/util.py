@@ -3,7 +3,7 @@ import struct
 import json
 
 
-def to_bytes(x, charset="utf-8", errors="strict"):
+def to_bytes(x, charset="utf-8", errors="strict") -> bytes:
     if isinstance(x, bytes):
         return x
     if isinstance(x, str):
