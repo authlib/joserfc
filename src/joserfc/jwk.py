@@ -3,7 +3,6 @@ from .rfc7517 import (
     SymmetricKey,
     AsymmetricKey,
     CurveKey,
-    Key,
     JWKRegistry,
     KeySet,
 )
@@ -16,7 +15,8 @@ from .rfc8812 import register_secp256k1
 from .registry import Header
 
 
-KeyCallable = t.Callable[[t.Any, bool], Key]
+Key = t.Union[OctKey, RSAKey, ECKey, OKPKey]
+KeyCallable = t.Callable[[t.Any], Key]
 KeyFlexible = t.Union[t.AnyStr, Key, KeySet, KeyCallable]
 
 __all__ = [
@@ -66,6 +66,8 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
     """
     headers = obj.headers()
 
+    rv_key: Key
+
     if isinstance(key, (str, bytes)):
         rv_key = OctKey.import_key(key)
 
@@ -76,7 +78,9 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
         kid = headers.get("kid")
         if not kid:
             # choose one key by random
-            rv_key: Key = key.pick_random_key(headers["alg"])
+            rv_key = key.pick_random_key(headers["alg"])
+            if rv_key is None:
+                raise ValueError("Invalid key")
             # use side effect to add kid information
             obj.set_kid(rv_key.kid)
         else:

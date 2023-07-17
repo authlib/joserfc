@@ -1,12 +1,12 @@
 import typing as t
 import random
-from .models import Key, SymmetricKey
+from .models import BaseKey, SymmetricKey
 from .types import KeySetDict, KeyParameters
 from .registry import JWKRegistry
 
 
 class KeySet:
-    def __init__(self, keys: t.List[Key]):
+    def __init__(self, keys: t.List[BaseKey]):
         self.keys = keys
 
     def as_dict(self, private=None, **params):
@@ -21,7 +21,7 @@ class KeySet:
                 keys.append(key.as_dict(private=private, **params))
         return {"keys": keys}
 
-    def get_by_kid(self, kid: t.Optional[str] = None) -> Key:
+    def get_by_kid(self, kid: t.Optional[str] = None) -> BaseKey:
         if kid is None and len(self.keys) == 1:
             return self.keys[0]
 
@@ -30,7 +30,7 @@ class KeySet:
                 return key
         raise ValueError(f'No key for kid: "{kid}"')
 
-    def pick_random_key(self, algorithm: str) -> t.Optional[Key]:
+    def pick_random_key(self, algorithm: str) -> t.Optional[BaseKey]:
         key_types = JWKRegistry.algorithm_key_types.get(algorithm)
         if key_types:
             keys = [k for k in self.keys if k.key_type in key_types]

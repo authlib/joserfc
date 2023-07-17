@@ -1,7 +1,7 @@
 import os
 import typing as t
 from abc import ABCMeta, abstractmethod
-from ..rfc7517.models import Key, CurveKey
+from ..rfc7517.models import BaseKey, CurveKey
 from ..registry import Header, HeaderRegistryDict
 from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
 
@@ -11,11 +11,11 @@ class Recipient:
             self,
             parent: t.Union["CompactEncryption", "JSONEncryption"],
             header: t.Optional[Header] = None,
-            recipient_key: t.Optional[Key] = None):
+            recipient_key: t.Optional[BaseKey] = None):
         self.__parent = parent
         self.header = header
         self.recipient_key = recipient_key
-        self.sender_key: t.Optional[Key] = None
+        self.sender_key: t.Optional[BaseKey] = None
         self.encrypted_key: t.Optional[bytes] = None
         self.ephemeral_key: t.Optional[CurveKey] = None
         self.segments = {}  # store temporary segments
@@ -57,7 +57,7 @@ class CompactEncryption:
     def headers(self):
         return self.protected
 
-    def attach_recipient(self, key: Key, header: t.Optional[Header] = None):
+    def attach_recipient(self, key: BaseKey, header: t.Optional[Header] = None):
         """Add a recipient to the JWE Compact Serialization. Please add a key that
         comply with the given "alg" value.
 
@@ -111,7 +111,7 @@ class JSONEncryption:
         self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
-    def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[Key] = None):
+    def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[BaseKey] = None):
         """Add a recipient to the JWE JSON Serialization. Please add a key that
         comply with the "alg" to this recipient.
 
@@ -183,7 +183,7 @@ class KeyManagement:
     def direct_mode(self) -> bool:
         return self.key_size is None
 
-    def check_key_type(self, key: Key):
+    def check_key_type(self, key: BaseKey):
         if key.key_type not in self.key_types:
             raise InvalidKeyTypeError()
 

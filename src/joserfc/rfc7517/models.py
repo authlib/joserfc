@@ -77,6 +77,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         self._raw_value = raw_value
         self.original_value = original_value
         self.extra_parameters = parameters
+        self._dict_value: KeyDict = {}
         if isinstance(original_value, dict):
             data = original_value.copy()
             data["kty"] = self.key_type
@@ -84,9 +85,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
                 data.update(dict(parameters))
 
             self.validate_dict_key(data)
-            self._dict_value: t.Optional[KeyDict] = data
-        else:
-            self._dict_value = None
+            self._dict_value = data
 
     def keys(self):
         return self.dict_value.keys()
@@ -288,6 +287,3 @@ class CurveKey(AsymmetricKey[NativePrivateKey, NativePublicKey]):
     @abstractmethod
     def exchange_derive_key(self, key: "CurveKey") -> bytes:
         pass
-
-
-Key = t.Union[SymmetricKey, AsymmetricKey, CurveKey]

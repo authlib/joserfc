@@ -1,5 +1,5 @@
 import typing as t
-from .models import Key
+from .models import BaseKey
 from .types import KeyAny, KeyParameters
 from ..util import to_bytes
 
@@ -17,15 +17,19 @@ class JWKRegistry:
         data = {"kty": "oct", "k": "..."}
         key = JWKRegistry.import_key(data)
     """
-    key_types: t.Dict[str, t.Type[Key]] = {}
+    key_types: t.Dict[str, t.Type[BaseKey]] = {}
     algorithm_key_types: t.Dict[str, t.List[str]] = {}
 
     @classmethod
-    def register(cls, model: t.Type[Key]):
+    def register(cls, model: t.Type[BaseKey]):
         cls.key_types[model.key_type] = model
 
     @classmethod
-    def import_key(cls, data: KeyAny, key_type: t.Optional[str] = None, parameters: KeyParameters = None) -> Key:
+    def import_key(
+            cls,
+            data: KeyAny,
+            key_type: t.Optional[str] = None,
+            parameters: t.Optional[KeyParameters] = None) -> BaseKey:
         """A class method for importing a key from bytes, string, and dict.
         When ``value`` is a dict, this method can tell the key type automatically,
         otherwise, developers SHOULD pass the ``key_type`` themselves.
@@ -36,9 +40,10 @@ class JWKRegistry:
         :return: OctKey, RSAKey, ECKey, or OKPKey
         """
         if isinstance(data, dict) and key_type is None:
-            if "kty" not in data:
+            if "kty" in data:
+                key_type = data["kty"]
+            else:
                 raise ValueError("Missing key type")
-            key_type = data["kty"]
 
         if key_type not in cls.key_types:
             raise ValueError(f'Invalid key type: "{key_type}"')
@@ -54,8 +59,8 @@ class JWKRegistry:
             cls,
             key_type: str,
             crv_or_size: t.Union[str, int],
-            parameters: KeyParameters = None,
-            private: bool = True) -> Key:
+            parameters: t.Optional[KeyParameters] = None,
+            private: bool = True) -> BaseKey:
         """A class method for generating key according to the given key type.
         When ``key_type`` is "oct" and "RSA", the second parameter SHOULD be
         a key size in bits. When ``key_type`` is "EC" and "OKP", the second
@@ -70,4 +75,4 @@ class JWKRegistry:
             raise ValueError(f'Invalid key type: "{key_type}"')
 
         key_cls = cls.key_types[key_type]
-        return key_cls.generate_key(crv_or_size, parameters, private)  # type: ignore
+        return key_cls.generate_key(crv_or_size, parameters, private)
