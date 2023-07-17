@@ -63,3 +63,9 @@ exclude_lines = [
   "raise NotImplementedError",
   "@(abc\\.)?abstractmethod",
 ]
+
+[tool.mypy]
+python_version = "3.8"
+files = ["src/joserfc"]
+show_error_codes = true
+pretty = true
