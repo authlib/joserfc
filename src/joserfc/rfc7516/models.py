@@ -126,8 +126,8 @@ class JWEEncModel(object, metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = False
-    algorithm_type = "JWE"
-    algorithm_location = "enc"
+    algorithm_type: t.Literal["JWE"] = "JWE"
+    algorithm_location: t.Literal["enc"] = "enc"
 
     iv_size: int
     cek_size: int
@@ -156,8 +156,8 @@ class JWEZipModel(object, metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = True
-    algorithm_type = "JWE"
-    algorithm_location = "zip"
+    algorithm_type: t.Literal["JWE"] = "JWE"
+    algorithm_location: t.Literal["zip"] = "zip"
 
     @abstractmethod
     def compress(self, s: bytes) -> bytes:
@@ -174,10 +174,9 @@ class KeyManagement:
     recommended: bool = False
     key_size: t.Optional[int] = None
     key_types: t.List[str]
-    algorithm_type = "JWE"
-    algorithm_location = "alg"
+    algorithm_type: t.Literal["JWE"] = "JWE"
+    algorithm_location: t.Literal["alg"] = "alg"
     more_header_registry: HeaderRegistryDict = {}
-    key_agreement: bool = False
 
     @property
     def direct_mode(self) -> bool:
@@ -214,6 +213,7 @@ class JWEKeyEncryption(KeyManagement, metaclass=ABCMeta):
 
 
 class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
+    key_size: int
     key_types = ["oct"]
 
     @property
@@ -242,10 +242,9 @@ class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
 
 
 class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
-    tag_aware = False
     key_types = ["EC", "OKP"]
-    key_agreement = True
-    key_wrapping: JWEKeyWrapping
+    tag_aware: bool = False
+    key_wrapping: t.Optional[JWEKeyWrapping]
 
     def prepare_ephemeral_key(self, recipient: Recipient):
         recipient_key: CurveKey = recipient.recipient_key

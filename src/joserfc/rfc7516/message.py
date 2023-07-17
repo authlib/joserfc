@@ -5,6 +5,10 @@ from .models import (
     Recipient,
     JWEAlgModel,
     JWEEncModel,
+    JWEKeyAgreement,
+    JWEDirectEncryption,
+    JWEKeyEncryption,
+    JWEKeyWrapping,
 )
 from .registry import JWERegistry
 from ..errors import (
@@ -38,11 +42,12 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     # the specified compression algorithm and let M be the octet sequence
     # representing the compressed plaintext; otherwise, let M be the octet
     # sequence representing the plaintext.
+    assert obj.plaintext is not None
     if "zip" in obj.protected:
         zip_ = registry.get_zip(obj.protected["zip"])
-        plaintext = zip_.compress(obj.plaintext)
+        plaintext: bytes = zip_.compress(obj.plaintext)  # type: ignore
     else:
-        plaintext = obj.plaintext
+        plaintext: bytes = obj.plaintext  # type: ignore
 
     # Step 13, Compute the Encoded Protected Header value BASE64URL(UTF8(JWE Protected Header)).
     aad = json_b64encode(obj.protected, "ascii")
@@ -107,8 +112,8 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
 
 
 def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], registry: JWERegistry):
-    cek = b""
-    delayed_tasks = []
+    cek: bytes = b""
+    delayed_tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient]] = []
     for recipient in recipients:
         # https://www.rfc-editor.org/rfc/rfc7516#section-5
         headers = recipient.headers()
@@ -119,23 +124,24 @@ def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], regi
         # the resulting JWE.)
         alg = registry.get_alg(headers["alg"])
 
-        if alg.key_agreement:
+        if isinstance(alg, JWEKeyAgreement):
             alg.prepare_ephemeral_key(recipient)
 
         if alg.direct_mode:
             if len(recipients) > 1:
                 raise ConflictAlgorithmError(f"Algorithm {alg.name} SHOULD have 1 recipient only")
 
-            if alg.key_agreement:
+            if isinstance(alg, JWEKeyAgreement):
                 # 3. When Direct Key Agreement is employed,
                 # let the CEK be the agreed upon key.
-                cek: bytes = alg.encrypt_agreed_upon_key(enc, recipient)
+                cek = alg.encrypt_agreed_upon_key(enc, recipient)
                 if len(cek) * 8 != enc.cek_size:
                     raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
             else:
                 # 6. When Direct Encryption is employed, let the CEK be the shared
                 # symmetric key.
-                cek: bytes = alg.compute_cek(enc.cek_size, recipient)
+                assert isinstance(alg, JWEDirectEncryption)
+                cek = alg.compute_cek(enc.cek_size, recipient)
 
             # 5. When Direct Key Agreement or Direct Encryption are employed, let
             # the JWE Encrypted Key be the empty octet sequence.
@@ -149,18 +155,19 @@ def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], regi
                 # content encryption algorithm.
                 cek = enc.generate_cek()
 
-            if alg.key_agreement:
+            if isinstance(alg, JWEKeyAgreement):
                 delayed_tasks.append((alg, recipient))
             else:
                 # 4. When Key Wrapping, or Key Encryption are employed, encrypt the CEK
                 # to the recipient and let the result be the JWE Encrypted Key.
+                assert isinstance(alg, (JWEKeyWrapping, JWEKeyEncryption))
                 recipient.encrypted_key = alg.encrypt_cek(cek, recipient)
     return cek, delayed_tasks
 
 
 def post_encrypt_recipients(
         enc: JWEEncModel,
-        tasks: t.List[t.Tuple[JWEAlgModel, Recipient]],
+        tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient]],
         cek: bytes,
         tag: bytes):
     for alg, recipient in tasks:
@@ -174,20 +181,24 @@ def post_encrypt_recipients(
 
 
 def decrypt_recipient(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient, tag: bytes):
+    cek: bytes
     if alg.direct_mode:
         # 10.  When Direct Key Agreement or Direct Encryption are employed,
         # verify that the JWE Encrypted Key value is an empty octet
         # sequence.
         if recipient.encrypted_key:
             raise InvalidEncryptedKeyError()
-        if alg.key_agreement:
+
+        if isinstance(alg, JWEKeyAgreement):
             # 8. When Direct Key Agreement is employed, let the CEK be the agreed upon key.
             cek = alg.decrypt_agreed_upon_key(enc, recipient)
         else:
             # 11. When Direct Encryption is employed, let the CEK be the shared
             # symmetric key.
+            assert isinstance(alg, JWEDirectEncryption)
             cek = alg.compute_cek(enc.cek_size, recipient)
-    elif alg.key_agreement:
+    elif isinstance(alg, JWEKeyAgreement):
+        agreed_upon_key: bytes
         if alg.tag_aware:
             agreed_upon_key = alg.decrypt_agreed_upon_key_with_tag(enc, recipient, tag)
         else:
@@ -195,6 +206,7 @@ def decrypt_recipient(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient, 
 
         # 8. When Key Agreement with Key Wrapping is employed, the agreed upon key
         # will be used to decrypt the JWE Encrypted Key.
+        assert recipient.encrypted_key is not None
         cek = alg.unwrap_cek_with_auk(recipient.encrypted_key, agreed_upon_key)
     else:
         # 9. When Key Wrapping, Key Encryption, or Key Agreement with Key
@@ -206,5 +218,6 @@ def decrypt_recipient(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient, 
         # recipient's possession.  It is therefore normal to only be able
         # to decrypt one of the per-recipient JWE Encrypted Key values to
         # obtain the CEK value.
+        assert isinstance(alg, (JWEKeyWrapping, JWEKeyEncryption))
         cek = alg.decrypt_cek(recipient)
     return cek

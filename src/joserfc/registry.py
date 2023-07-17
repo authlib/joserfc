@@ -100,7 +100,7 @@ class KeyParameter:
 
 
 class KeyOperation:
-    def __init__(self, description: str, use: str, private: bool):
+    def __init__(self, description: str, use: str, private: t.Optional[bool]):
         self.description = description
         self.use = use
         self.private = private

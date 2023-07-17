@@ -14,6 +14,8 @@ from cryptography.hazmat.primitives.ciphers.modes import GCM
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.exceptions import InvalidTag
 from .derive_key import derive_key_for_concat_kdf
+from .oct_key import OctKey
+from .rsa_key import RSAKey
 from ..rfc7517.models import CurveKey
 from ..rfc7516.models import (
     JWEDirectEncryption,
@@ -37,7 +39,7 @@ class DirectAlgModel(JWEDirectEncryption):
     recommended = True
 
     def compute_cek(self, size: int, recipient: Recipient):
-        key = recipient.recipient_key
+        key: OctKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         cek = key.raw_value
         if len(cek) * 8 != size:
@@ -63,7 +65,7 @@ class RSAAlgModel(JWEKeyEncryption):
         self.recommended = recommended
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient):
-        key = recipient.recipient_key
+        key: RSAKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         op_key = key.get_op_key("encrypt")
         if op_key.key_size < self.key_size:
@@ -71,10 +73,11 @@ class RSAAlgModel(JWEKeyEncryption):
         return op_key.encrypt(cek, self.padding)
 
     def decrypt_cek(self, recipient: Recipient) -> bytes:
-        key = recipient.recipient_key
+        key: RSAKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         op_key = key.get_op_key("decrypt")
         try:
+            assert recipient.encrypted_key is not None
             cek = op_key.decrypt(recipient.encrypted_key, self.padding)
         except ValueError as error:
             raise DecodeError(str(error))
@@ -101,15 +104,16 @@ class AESAlgModel(JWEKeyWrapping):
         return cek
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
-        key = recipient.recipient_key
+        key: OctKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         op_key = key.get_op_key("wrapKey")
         return self.wrap_cek(cek, op_key)
 
     def decrypt_cek(self, recipient: Recipient) -> bytes:
-        key = recipient.recipient_key
+        key: OctKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         op_key = key.get_op_key("unwrapKey")
+        assert recipient.encrypted_key is not None
         return self.unwrap_cek(recipient.encrypted_key, op_key)
 
 
@@ -131,7 +135,7 @@ class AESGCMAlgModel(JWEKeyWrapping):
         raise RuntimeError(f"{self.name} can not be used together with Key Agreement")
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
-        key = recipient.recipient_key
+        key: OctKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         op_key = key.get_op_key("wrapKey")
         self.check_op_key(op_key)
@@ -151,7 +155,7 @@ class AESGCMAlgModel(JWEKeyWrapping):
         return encrypted_key
 
     def decrypt_cek(self, recipient: Recipient) -> bytes:
-        key = recipient.recipient_key
+        key: OctKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         op_key = key.get_op_key("unwrapKey")
         self.check_op_key(op_key)
@@ -165,6 +169,7 @@ class AESGCMAlgModel(JWEKeyWrapping):
         cipher = Cipher(AES(op_key), GCM(iv, tag), backend=default_backend())
         d = cipher.decryptor()
         try:
+            assert recipient.encrypted_key is not None
             cek = d.update(recipient.encrypted_key) + d.finalize()
         except InvalidTag as error:
             raise DecodeError(str(error))
@@ -194,8 +199,8 @@ class ECDHESAlgModel(JWEKeyAgreement):
         self.key_wrapping = key_wrapping
 
     def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient):
-        recipient_key: CurveKey = recipient.recipient_key
-        ephemeral_key: CurveKey = recipient.ephemeral_key
+        recipient_key: CurveKey = recipient.recipient_key  # type: ignore
+        ephemeral_key: CurveKey = recipient.ephemeral_key  # type: ignore
         shared_key = ephemeral_key.exchange_derive_key(recipient_key)
         headers = recipient.headers()
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size)
@@ -204,7 +209,7 @@ class ECDHESAlgModel(JWEKeyAgreement):
         headers = recipient.headers()
         assert "epk" in headers
 
-        recipient_key: CurveKey = recipient.recipient_key
+        recipient_key: CurveKey = recipient.recipient_key  # type: ignore
         self.check_key_type(recipient_key)
         ephemeral_key = recipient_key.import_key(headers["epk"])
         shared_key = recipient_key.exchange_derive_key(ephemeral_key)
@@ -213,6 +218,7 @@ class ECDHESAlgModel(JWEKeyAgreement):
 
 class PBES2HSAlgModel(JWEKeyEncryption):
     # https://www.rfc-editor.org/rfc/rfc7518#section-4.8
+    key_size: int
     more_header_registry = {
         "p2s": HeaderParameter("PBES2 Salt Input", "str", True),
         "p2c": HeaderParameter("PBES2 Count", "int", True),
@@ -256,7 +262,7 @@ class PBES2HSAlgModel(JWEKeyEncryption):
         else:
             p2c = headers["p2c"]
 
-        key = recipient.recipient_key
+        key: OctKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), p2s, p2c)
         return self.key_wrapping.wrap_cek(cek, kek)
@@ -267,9 +273,10 @@ class PBES2HSAlgModel(JWEKeyEncryption):
         assert "p2c" in headers
         p2s = urlsafe_b64decode(to_bytes(headers["p2s"]))
         p2c = headers["p2c"]
-        key = recipient.recipient_key
+        key: OctKey = recipient.recipient_key  # type: ignore
         self.check_key_type(key)
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), p2s, p2c)
+        assert recipient.encrypted_key is not None
         return self.key_wrapping.unwrap_cek(recipient.encrypted_key, kek)
 
 

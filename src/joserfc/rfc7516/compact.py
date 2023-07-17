@@ -13,9 +13,12 @@ from ..util import (
 
 
 def represent_compact(obj: CompactEncryption) -> bytes:
+    assert obj.recipient is not None
+    encrypted_key = obj.recipient.encrypted_key
+    assert encrypted_key is not None
     return b".".join([
         obj.base64_segments["aad"],
-        urlsafe_b64encode(obj.recipient.encrypted_key),
+        urlsafe_b64encode(encrypted_key),
         obj.base64_segments["iv"],
         obj.base64_segments["ciphertext"],
         obj.base64_segments["tag"],

@@ -37,7 +37,6 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
     }
     key_types = ["EC", "OKP"]
     tag_aware = True
-    recommended: bool = False
 
     def __init__(self, key_wrapping: t.Optional[JWEKeyWrapping]):
         if key_wrapping is None:
@@ -73,9 +72,11 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         return self.__decrypt_agreed_upon_key(enc, recipient, tag)
 
     def __encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient, tag: t.Optional[bytes]) -> bytes:
-        sender_key: CurveKey = recipient.sender_key
-        sender_shared_key = sender_key.exchange_derive_key(recipient.recipient_key)
-        ephemeral_shared_key = recipient.ephemeral_key.exchange_derive_key(recipient.recipient_key)
+        sender_key: CurveKey = recipient.sender_key  # type: ignore
+        recipient_key: CurveKey = recipient.recipient_key  # type: ignore
+        ephemeral_key: CurveKey = recipient.ephemeral_key  # type: ignore
+        sender_shared_key = sender_key.exchange_derive_key(recipient_key)
+        ephemeral_shared_key = ephemeral_key.exchange_derive_key(recipient_key)
         shared_key = ephemeral_shared_key + sender_shared_key
         headers = recipient.headers()
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size, tag)
@@ -85,9 +86,10 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         headers = recipient.headers()
         assert "epk" in headers
 
-        recipient_key: CurveKey = recipient.recipient_key
-        ephemeral_key = recipient_key.import_key(headers["epk"])
-        sender_shared_key = recipient_key.exchange_derive_key(recipient.sender_key)
+        recipient_key: CurveKey = recipient.recipient_key  # type: ignore
+        ephemeral_key: CurveKey = recipient_key.import_key(headers["epk"])  # type: ignore
+        sender_key: CurveKey = recipient.sender_key  # type: ignore
+        sender_shared_key = recipient_key.exchange_derive_key(sender_key)
         ephemeral_shared_key = recipient_key.exchange_derive_key(ephemeral_key)
         shared_key = ephemeral_shared_key + sender_shared_key
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size, tag)

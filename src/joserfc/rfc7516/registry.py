@@ -32,12 +32,12 @@ class JWERegistry:
     :param algorithms: allowed algorithms to be used
     :param strict_check_header: only allow header key in the registry to be used
     """
-    algorithms: AlgorithmsDict = {
+    algorithms: t.ClassVar[AlgorithmsDict] = {
         "alg": {},
         "enc": {},
         "zip": {},
     }
-    recommended: t.List[str] = []
+    recommended: t.ClassVar[t.List[str]] = []
 
     def __init__(
             self,
@@ -53,8 +53,7 @@ class JWERegistry:
 
     @classmethod
     def register(cls, model: JWEAlgorithm):
-        location: t.Literal["alg", "enc", "zip"] = model.algorithm_location
-        cls.algorithms[location][model.name] = model
+        cls.algorithms[model.algorithm_location][model.name] = model
         if model.recommended:
             cls.recommended.append(model.name)
 
