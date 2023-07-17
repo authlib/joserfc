@@ -28,7 +28,6 @@ class TestJSON(TestCase):
 
         obj = deserialize_json(value, key)
         self.assertEqual(obj.payload, b'hello')
-        self.assertRaises(ValueError, obj.headers)
 
     def test_serialize_with_unprotected_header(self):
         key: RSAKey = load_key('rsa-openssl-private.pem')

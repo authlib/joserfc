@@ -1,10 +1,12 @@
 import typing as t
+from typing import overload
 from .rfc7515 import types
 from .rfc7515.model import (
     JWSAlgModel,
     HeaderMember,
     CompactSignature,
-    JSONSignature,
+    GeneralJSONSignature,
+    FlattenedJSONSignature,
 )
 from .rfc7515.registry import (
     JWSRegistry,
@@ -17,15 +19,18 @@ from .rfc7515.compact import (
     detach_compact_content,
 )
 from .rfc7515.json import (
-    construct_json_signature,
-    sign_json,
-    verify_json,
-    extract_json,
+    sign_general_json,
+    sign_flattened_json,
+    verify_general_json,
+    verify_flattened_json,
+    extract_general_json,
+    extract_flattened_json,
     detach_json_content,
 )
 from .rfc7515.types import (
     HeaderDict,
-    JSONSerialization,
+    GeneralJSONSerialization,
+    FlattenedJSONSerialization,
 )
 from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8037.jws_eddsa import EdDSA
@@ -39,9 +44,13 @@ __all__ = [
     "types",
     "JWSAlgModel",
     "JWSRegistry",
+    "HeaderDict",
     "HeaderMember",
     "CompactSignature",
-    "JSONSignature",
+    "GeneralJSONSignature",
+    "FlattenedJSONSignature",
+    "GeneralJSONSerialization",
+    "FlattenedJSONSerialization",
     "serialize_compact",
     "deserialize_compact",
     "extract_compact",
@@ -166,12 +175,30 @@ def deserialize_compact(
     return obj
 
 
+@overload
+def serialize_json(
+        members: t.List[HeaderDict],
+        payload: t.AnyStr,
+        private_key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None) -> GeneralJSONSignature: ...
+
+
+@overload
+def serialize_json(
+        members: HeaderDict,
+        payload: t.AnyStr,
+        private_key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None) -> FlattenedJSONSignature: ...
+
+
 def serialize_json(
         members: t.Union[HeaderDict, t.List[HeaderDict]],
         payload: t.AnyStr,
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None) -> JSONSerialization:
+        registry: t.Optional[JWSRegistry] = None):
     """Generate a JWS JSON Serialization (in dict). The JWS JSON Serialization
     represents digitally signed or MACed content as a JSON object. This representation
     is neither optimized for compactness nor URL-safe.
@@ -201,14 +228,16 @@ def serialize_json(
     if registry is None:
         registry = construct_registry(algorithms)
 
-    obj = construct_json_signature(members, payload, registry)
-    obj.segments["payload"] = urlsafe_b64encode(obj.payload)
     find_key = lambda d: guess_key(private_key, d)
-    return sign_json(obj, registry, find_key)
+    _payload = to_bytes(payload)
+    if isinstance(members, list):
+        return sign_general_json(members, _payload, registry, find_key)
+    else:
+        return sign_flattened_json(members, _payload, registry, find_key)
 
 
 def validate_json(
-        obj: JSONSignature,
+        obj: t.Union[GeneralJSONSignature, FlattenedJSONSignature],
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWSRegistry] = None):
@@ -223,16 +252,22 @@ def validate_json(
     """
     if registry is None:
         registry = construct_registry(algorithms)
+
     find_key = lambda d: guess_key(public_key, d)
-    if not verify_json(obj, registry, find_key):
+    valid: bool
+    if isinstance(obj, GeneralJSONSignature):
+        valid = verify_general_json(obj, registry, find_key)
+    else:
+        valid = verify_flattened_json(obj, registry, find_key)
+    if not valid:
         raise BadSignatureError()
 
 
 def deserialize_json(
-        value: JSONSerialization,
+        value: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization],
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None) -> JSONSignature:
+        registry: t.Optional[JWSRegistry] = None) -> t.Union[GeneralJSONSignature, FlattenedJSONSignature]:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a dict of the JSON signature
@@ -241,12 +276,15 @@ def deserialize_json(
     :param registry: a JWSRegistry to use
     :return: object of the SignatureData
     """
-    obj = extract_json(value)
+    if "signatures" in value:
+        obj = extract_general_json(value)
+    else:
+        obj = extract_flattened_json(value)
     validate_json(obj, public_key, algorithms, registry)
     return obj
 
 
-def detach_content(value: t.Union[str, JSONSerialization]):
+def detach_content(value: t.Union[str, t.Dict]):
     """In some contexts, it is useful to integrity-protect content that is
     not itself contained in a JWS. This method is an implementation of
     https://www.rfc-editor.org/rfc/rfc7515#appendix-F

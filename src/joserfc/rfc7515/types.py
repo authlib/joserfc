@@ -10,35 +10,31 @@ __all__ = [
     "JSONSerialization",
 ]
 
-SegmentsDict = t.TypedDict("SegmentsDict", {
-    "header": bytes,
-    "payload": bytes,
-    "signature": bytes,
-}, total=False)
 
-HeaderDict = t.TypedDict("HeaderDict", {
-    "protected": Header,
-    "header": Header,
-}, total=False)
+class SegmentsDict(t.TypedDict, total=False):
+    header: bytes
+    payload: bytes
+    signature: bytes
 
 
-JSONSignatureDict = t.TypedDict("JSONSignatureDict", {
-    "protected": str,
-    "header": Header,
-    "signature": str,
-}, total=False)
+class HeaderDict(t.TypedDict, total=False):
+    protected: Header
+    header: Header
 
 
-GeneralJSONSerialization = t.TypedDict("GeneralJSONSerialization", {
-    "payload": str,
-    "signatures": t.List[JSONSignatureDict],
-})
+class JSONSignatureDict(t.TypedDict, total=False):
+    protected: str
+    header: Header
+    signature: str
 
-FlattenedJSONSerialization = t.TypedDict("FlattenedJSONSerialization", {
-    "payload": str,
-    "protected": str,
-    "header": Header,
-    "signature": str,
-}, total=False)
 
-JSONSerialization = t.Union[GeneralJSONSerialization, FlattenedJSONSerialization]
+class GeneralJSONSerialization(t.TypedDict):
+    payload: str
+    signatures: t.List[JSONSignatureDict]
+
+
+class FlattenedJSONSerialization(t.TypedDict, total=False):
+    payload: str
+    protected: str
+    header: Header
+    signature: str

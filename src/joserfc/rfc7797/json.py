@@ -2,8 +2,8 @@ import typing as t
 from ..jws import (
     HeaderDict,
     HeaderMember,
-    JSONSignature,
-    JSONSerialization,
+    FlattenedJSONSignature,
+    FlattenedJSONSerialization,
     JWSRegistry as _JWSRegistry,
     serialize_json as _serialize_json,
     deserialize_json as _deserialize_json,
@@ -26,7 +26,7 @@ def serialize_json(
         payload: t.AnyStr,
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[_JWSRegistry] = None) -> JSONSerialization:
+        registry: t.Optional[_JWSRegistry] = None) -> FlattenedJSONSerialization:
 
     _member = HeaderMember(**member)
     headers = _member.headers()
@@ -65,10 +65,10 @@ def serialize_json(
 
 
 def deserialize_json(
-        value: JSONSerialization,
+        value: FlattenedJSONSerialization,
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[_JWSRegistry] = None) -> JSONSignature:
+        registry: t.Optional[_JWSRegistry] = None) -> FlattenedJSONSignature:
     obj = _extract_json(value)
     if obj is None:
         return _deserialize_json(value, public_key, algorithms, registry)
@@ -76,13 +76,12 @@ def deserialize_json(
     if registry is None:
         registry = JWSRegistry(algorithms=algorithms)
 
-    member = obj.members[0]
-    headers = member.headers()
+    headers = obj.headers()
     if headers["b64"] is True:
         return _deserialize_json(value, public_key, registry=registry)
 
     registry.check_header(headers)
-    key = guess_key(public_key, member)
+    key = guess_key(public_key, obj.member)
     alg = registry.get_alg(headers["alg"])
     signing_input = b".".join([obj.segments["header"], obj.payload])
     sig = urlsafe_b64decode(obj.segments["signature"])
@@ -91,7 +90,7 @@ def deserialize_json(
     return obj
 
 
-def _extract_json(value: JSONSerialization):
+def _extract_json(value: FlattenedJSONSignature):
     if "signatures" in value:
         return None
 
@@ -109,10 +108,9 @@ def _extract_json(value: JSONSerialization):
         return None
 
     payload = to_bytes(value["payload"])
-    obj = JSONSignature([member], payload)
+    obj = FlattenedJSONSignature(member, payload)
     obj.segments = {
         "header": protected_segment,
         "signature": to_bytes(value["signature"]),
     }
-    obj.flattened = True
     return obj

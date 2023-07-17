@@ -40,21 +40,31 @@ class CompactSignature:
         self.protected["kid"] = kid
 
 
-class JSONSignature:
-    """JSON Web Signature object for JSON mode. This object is used to
-    represent the JWS instance.
-    """
+class FlattenedJSONSignature:
+    flattened = True
+
+    def __init__(self, member: HeaderMember, payload: bytes):
+        self.member = member
+        self.payload = payload
+        self.signature: t.Optional[JSONSignatureDict] = None
+        self.segments: SegmentsDict = {}
+
+    @property
+    def members(self):
+        return [self.member]
+
+    def headers(self) -> Header:
+        return self.member.headers()
+
+
+class GeneralJSONSignature:
+    flattened = False
+
     def __init__(self, members: t.List[HeaderMember], payload: bytes):
         self.members = members
         self.payload = payload
         self.signatures: t.List[JSONSignatureDict] = []
-        self.flattened: bool = False
         self.segments: SegmentsDict = {}
-
-    def headers(self) -> Header:
-        if self.flattened and len(self.members) == 1:
-            return self.members[0].headers()
-        raise ValueError("Only flattened JSON Serialization has .headers() method.")
 
 
 class JWSAlgModel(object, metaclass=ABCMeta):
