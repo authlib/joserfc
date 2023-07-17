@@ -90,13 +90,13 @@ def decode(
         if registry is not None:
             assert isinstance(registry, JWERegistry)
         jwe_obj = decrypt_compact(_value, key, algorithms, registry)
-        _header =  jwe_obj.headers()
+        _header = jwe_obj.headers()
         payload: bytes = jwe_obj.plaintext  # type: ignore
     else:
         if registry is not None:
             assert isinstance(registry, JWSRegistry)
         jws_obj = deserialize_compact(_value, key, algorithms, registry)
-        _header =  jws_obj.headers()
+        _header = jws_obj.headers()
         payload: bytes = jws_obj.payload  # type: ignore
 
     try:

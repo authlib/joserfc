@@ -20,6 +20,7 @@ KeyParameters = t.TypedDict("KeyParameters", {
     "x5t#S256": str,
 }, total=False)
 
+
 #: JWKs in dict
 class KeySetDict(t.TypedDict):
     keys: t.List[KeyDict]

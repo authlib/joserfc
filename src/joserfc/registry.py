@@ -1,5 +1,4 @@
 import typing as t
-from collections import namedtuple
 
 Header = t.Dict[str, t.Any]
 

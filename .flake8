@@ -3,3 +3,4 @@ max-line-length=120
 
 per-file-ignores =
   src/joserfc/jws.py: E731
+  src/joserfc/rfc7797/json.py: E731

@@ -37,7 +37,7 @@ from .rfc8037.jws_eddsa import EdDSA
 from .rfc8812 import ES256K
 from .errors import BadSignatureError
 from .jwk import JWKRegistry, Key, KeyFlexible, guess_key
-from .util import to_bytes, urlsafe_b64encode
+from .util import to_bytes
 from .registry import Header
 
 __all__ = [
@@ -57,7 +57,6 @@ __all__ = [
     "validate_compact",
     "serialize_json",
     "deserialize_json",
-    "extract_json",
     "detach_content",
 ]
 

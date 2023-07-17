@@ -7,7 +7,6 @@ __all__ = [
     "JSONSignatureDict",
     "GeneralJSONSerialization",
     "FlattenedJSONSerialization",
-    "JSONSerialization",
 ]
 
 
