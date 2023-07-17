@@ -1,4 +1,6 @@
 import typing as t
+from ..rfc7515.json import verify_signature
+from ..rfc7515.types import JSONSignatureDict
 from ..jws import (
     HeaderDict,
     HeaderMember,
@@ -15,7 +17,6 @@ from ..util import (
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
-    urlsafe_b64decode,
 )
 from ..errors import BadSignatureError
 from .registry import JWSRegistry
@@ -53,7 +54,7 @@ def serialize_json(
     signing_input = b".".join([protected_segment, to_bytes(payload)])
     signature = urlsafe_b64encode(alg.sign(signing_input, key))
 
-    rv = {
+    rv: FlattenedJSONSerialization = {
         "payload": to_unicode(payload),
         "signature": to_unicode(signature),
     }
@@ -80,17 +81,15 @@ def deserialize_json(
     if headers["b64"] is True:
         return _deserialize_json(value, public_key, registry=registry)
 
-    registry.check_header(headers)
-    key = guess_key(public_key, obj.member)
-    alg = registry.get_alg(headers["alg"])
-    signing_input = b".".join([obj.segments["header"], obj.payload])
-    sig = urlsafe_b64decode(obj.segments["signature"])
-    if not alg.verify(signing_input, sig, key):
+    payload_segment = obj.segments["payload"]
+    find_key = lambda d: guess_key(public_key, d)
+    assert obj.signature is not None
+    if not verify_signature(obj.member, obj.signature, payload_segment, registry, find_key):
         raise BadSignatureError()
     return obj
 
 
-def _extract_json(value: FlattenedJSONSignature):
+def _extract_json(value: FlattenedJSONSerialization):
     if "signatures" in value:
         return None
 
@@ -109,8 +108,11 @@ def _extract_json(value: FlattenedJSONSignature):
 
     payload = to_bytes(value["payload"])
     obj = FlattenedJSONSignature(member, payload)
-    obj.segments = {
-        "header": protected_segment,
-        "signature": to_bytes(value["signature"]),
-    }
+    _sig: JSONSignatureDict = {"signature": value["signature"]}
+    if "protected" in value:
+        _sig["protected"] = value["protected"]
+    if "header" in value:
+        _sig["header"] = value["header"]
+    obj.signature = _sig
+    obj.segments = {"payload": payload}
     return obj

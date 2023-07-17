@@ -88,7 +88,7 @@ def extract_general_json(value: GeneralJSONSerialization) -> GeneralJSONSignatur
     members = [__signature_to_member(sig) for sig in signatures]
     obj = GeneralJSONSignature(members, payload)
     obj.signatures = signatures
-    obj.segments.update({"payload": payload_segment})
+    obj.segments = {"payload": payload_segment}
     return obj
 
 
@@ -98,17 +98,17 @@ def extract_flattened_json(value: FlattenedJSONSerialization) -> FlattenedJSONSi
         payload = urlsafe_b64decode(payload_segment)
     except (TypeError, ValueError, binascii.Error):
         raise DecodeError("Invalid payload")
-    _sig: JSONSignatureDict = {
-        "protected": value["protected"],
-        "signature": value["signature"],
-    }
+
+    _sig: JSONSignatureDict = {"signature": value["signature"]}
+    if "protected" in value:
+        _sig["protected"] = value["protected"]
     if "header" in value:
         _sig["header"] = value["header"]
 
     member = __signature_to_member(_sig)
     obj = FlattenedJSONSignature(member, payload)
     obj.signature = _sig
-    obj.segments.update({"payload": payload_segment})
+    obj.segments = {"payload": payload_segment}
     return obj
 
 
