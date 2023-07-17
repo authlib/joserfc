@@ -27,7 +27,7 @@ FindKey = t.Callable[[HeaderMember], BaseKey]
 
 def sign_general_json(
         members: t.List[HeaderDict],
-        payload: t.AnyStr,
+        payload: bytes,
         registry: JWSRegistry,
         find_key: FindKey) -> GeneralJSONSerialization:
 
@@ -36,19 +36,20 @@ def sign_general_json(
         __sign_member(payload_segment, HeaderMember(**member), registry, find_key)
         for member in members
     ]
-    payload = payload_segment.decode("utf-8")
-    return {"payload": payload, "signatures": signatures}
+    return {
+        "payload": payload_segment.decode("utf-8"),
+        "signatures": signatures,
+    }
 
 
 def sign_flattened_json(
         member: HeaderDict,
-        payload: t.AnyStr,
+        payload: bytes,
         registry: JWSRegistry,
         find_key: FindKey) -> FlattenedJSONSerialization:
     payload_segment = urlsafe_b64encode(payload)
     signature = __sign_member(payload_segment, HeaderMember(**member), registry, find_key)
-    payload = payload_segment.decode("utf-8")
-    return {"payload": payload, **signature}
+    return {"payload": payload_segment.decode("utf-8"), **signature}  # type: ignore
 
 
 def __sign_member(
@@ -128,7 +129,7 @@ def verify_general_json(
     payload_segment = obj.segments["payload"]
     for index, signature in enumerate(obj.signatures):
         member = obj.members[index]
-        if not __verify_signature(member, signature, payload_segment, registry, find_key):
+        if not verify_signature(member, signature, payload_segment, registry, find_key):
             return False
     return True
 
@@ -138,10 +139,11 @@ def verify_flattened_json(
         registry: JWSRegistry,
         find_key: FindKey) -> bool:
     payload_segment = obj.segments["payload"]
-    return __verify_signature(obj.member, obj.signature, payload_segment, registry, find_key)
+    assert obj.signature is not None
+    return verify_signature(obj.member, obj.signature, payload_segment, registry, find_key)
 
 
-def __verify_signature(
+def verify_signature(
         member: HeaderMember,
         signature: JSONSignatureDict,
         payload_segment: bytes,

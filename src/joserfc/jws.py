@@ -58,7 +58,6 @@ __all__ = [
     "serialize_json",
     "deserialize_json",
     "extract_json",
-    "validate_json",
     "detach_content",
 ]
 
@@ -123,7 +122,7 @@ def validate_compact(
         obj: CompactSignature,
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None):
+        registry: t.Optional[JWSRegistry] = None) -> bool:
     """Validate the JWS Compact Serialization with the given key.
     This method is usually used together with ``extract_compact``.
 
@@ -131,7 +130,6 @@ def validate_compact(
     :param public_key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
-    :raise: ValueError or BadSignatureError
     """
     if registry is None:
         registry = construct_registry(algorithms)
@@ -142,8 +140,7 @@ def validate_compact(
     key.check_use("sig")
     alg: JWSAlgModel = registry.get_alg(headers["alg"])
     alg.check_key_type(key)
-    if not verify_compact(obj, alg, key):
-        raise BadSignatureError()
+    return verify_compact(obj, alg, key)
 
 
 def deserialize_compact(
@@ -171,7 +168,8 @@ def deserialize_compact(
     :return: object of the ``CompactSignature``
     """
     obj = extract_compact(to_bytes(value))
-    validate_compact(obj, public_key, algorithms, registry)
+    if not validate_compact(obj, public_key, algorithms, registry):
+        raise BadSignatureError()
     return obj
 
 
@@ -181,7 +179,7 @@ def serialize_json(
         payload: t.AnyStr,
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None) -> GeneralJSONSignature: ...
+        registry: t.Optional[JWSRegistry] = None) -> GeneralJSONSerialization: ...
 
 
 @overload
@@ -190,7 +188,7 @@ def serialize_json(
         payload: t.AnyStr,
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None) -> FlattenedJSONSignature: ...
+        registry: t.Optional[JWSRegistry] = None) -> FlattenedJSONSerialization: ...
 
 
 def serialize_json(
@@ -236,38 +234,27 @@ def serialize_json(
         return sign_flattened_json(members, _payload, registry, find_key)
 
 
-def validate_json(
-        obj: t.Union[GeneralJSONSignature, FlattenedJSONSignature],
+@overload
+def deserialize_json(
+        value: GeneralJSONSerialization,
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None):
-    """Validate the JWS JSON Serialization with the given key.
-    This method is usually used together with ``extract_json``.
+        registry: t.Optional[JWSRegistry] = None) -> GeneralJSONSignature: ...
 
-    :param obj: object of the JWS JSON Serialization
-    :param public_key: a flexible public key to verify the signature
-    :param algorithms: a list of allowed algorithms
-    :param registry: a JWSRegistry to use
-    :raise: ValueError or BadSignatureError
-    """
-    if registry is None:
-        registry = construct_registry(algorithms)
 
-    find_key = lambda d: guess_key(public_key, d)
-    valid: bool
-    if isinstance(obj, GeneralJSONSignature):
-        valid = verify_general_json(obj, registry, find_key)
-    else:
-        valid = verify_flattened_json(obj, registry, find_key)
-    if not valid:
-        raise BadSignatureError()
+@overload
+def deserialize_json(
+        value: FlattenedJSONSerialization,
+        public_key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None) -> FlattenedJSONSignature: ...
 
 
 def deserialize_json(
         value: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization],
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None) -> t.Union[GeneralJSONSignature, FlattenedJSONSignature]:
+        registry: t.Optional[JWSRegistry] = None):
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a dict of the JSON signature
@@ -275,13 +262,22 @@ def deserialize_json(
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
     :return: object of the SignatureData
+    :raise: ValueError or BadSignatureError
     """
+    if registry is None:
+        registry = construct_registry(algorithms)
+
+    find_key = lambda d: guess_key(public_key, d)
     if "signatures" in value:
-        obj = extract_general_json(value)
+        general_obj = extract_general_json(value)  # type: ignore
+        if not verify_general_json(general_obj, registry, find_key):
+            raise BadSignatureError()
+        return general_obj
     else:
-        obj = extract_flattened_json(value)
-    validate_json(obj, public_key, algorithms, registry)
-    return obj
+        flattened_obj = extract_flattened_json(value)  # type: ignore
+        if not verify_flattened_json(flattened_obj, registry, find_key):
+            raise BadSignatureError()
+        return flattened_obj
 
 
 def detach_content(value: t.Union[str, t.Dict]):
