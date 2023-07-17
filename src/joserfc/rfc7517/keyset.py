@@ -41,7 +41,10 @@ class KeySet:
         return None
 
     @classmethod
-    def import_key_set(cls, value: KeySetDict, parameters: KeyParameters = None) -> "KeySet":
+    def import_key_set(
+            cls,
+            value: KeySetDict,
+            parameters: t.Optional[KeyParameters] = None) -> "KeySet":
         keys = []
 
         for data in value["keys"]:
@@ -54,12 +57,12 @@ class KeySet:
             cls,
             key_type: str,
             crv_or_size: t.Union[str, int],
-            parameters: KeyParameters = None,
+            parameters: t.Optional[KeyParameters] = None,
             private: bool = True,
             count: int = 4) -> "KeySet":
 
         keys = []
-        for i in range(count):
+        for _ in range(count):
             key = JWKRegistry.generate_key(key_type, crv_or_size, parameters, private)
             keys.append(key)
 

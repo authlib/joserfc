@@ -1,5 +1,6 @@
 import random
 import string
+from typing import Optional
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
@@ -36,17 +37,21 @@ class OctBinding(NativeKeyBinding):
         return value
 
 
-class OctKey(SymmetricKey[bytes, bytes]):
+class OctKey(SymmetricKey):
     """OctKey is a symmetric key, defined by RFC7518 Section 6.4.
     """
-    key_type: str = "oct"
+    key_type = "oct"
     binding = OctBinding
 
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.4
     value_registry = {"k": KeyParameter("Key Value", "str", True, True)}
 
     @classmethod
-    def generate_key(cls, key_size=256, parameters: KeyParameters = None, private: bool = True) -> "OctKey":
+    def generate_key(
+            cls,
+            key_size=256,
+            parameters: Optional[KeyParameters] = None,
+            private: bool = True) -> "OctKey":
         """Generate a ``OctKey`` with the given bit size (not bytes).
 
         :param key_size: size in bit

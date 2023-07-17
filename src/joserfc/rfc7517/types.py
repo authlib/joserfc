@@ -21,6 +21,5 @@ KeyParameters = t.TypedDict("KeyParameters", {
 }, total=False)
 
 #: JWKs in dict
-KeySetDict = t.TypedDict("KeySetDict", {
-    "keys": t.List[KeyDict],
-})
+class KeySetDict(t.TypedDict):
+    keys: t.List[KeyDict]

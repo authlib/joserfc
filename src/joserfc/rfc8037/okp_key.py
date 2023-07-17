@@ -1,4 +1,4 @@
-from typing import Optional, Union, Dict
+from typing import Optional, Union, Dict, Type
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey, Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey, Ed448PrivateKey
@@ -28,7 +28,7 @@ PRIVATE_KEYS_MAP = {
     "X25519": X25519PrivateKey,
     "X448": X448PrivateKey,
 }
-PrivateKeyTypes = tuple(PRIVATE_KEYS_MAP.values())
+PrivateKeyTypes = (Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448PrivateKey)
 PublicOKPKey = Union[Ed25519PublicKey, Ed448PublicKey, X25519PublicKey, X448PublicKey]
 PrivateOKPKey = Union[Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448PrivateKey]
 
@@ -38,14 +38,14 @@ class OKPBinding(CryptographyBinding):
 
     @staticmethod
     def import_private_key(obj: KeyDict) -> PrivateOKPKey:
-        crv_key = PRIVATE_KEYS_MAP[obj["crv"]]
-        d_bytes = urlsafe_b64decode(to_bytes(obj["d"]))
-        return crv_key.from_private_bytes(d_bytes)
+        crv_key: Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[obj["crv"]]  # type: ignore
+        d = urlsafe_b64decode(to_bytes(obj["d"]))  # type: ignore
+        return crv_key.from_private_bytes(d)
 
     @staticmethod
     def import_public_key(obj: KeyDict) -> PublicOKPKey:
-        crv_key = PUBLIC_KEYS_MAP[obj["crv"]]
-        x_bytes = urlsafe_b64decode(to_bytes(obj["x"]))
+        crv_key: Type[PublicOKPKey] = PUBLIC_KEYS_MAP[obj["crv"]]  # type: ignore
+        x_bytes = urlsafe_b64decode(to_bytes(obj["x"]))  # type: ignore
         return crv_key.from_public_bytes(x_bytes)
 
     @staticmethod
@@ -67,7 +67,7 @@ class OKPBinding(CryptographyBinding):
 class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
     """Key class of the ``OKP`` key type."""
 
-    key_type: str = "OKP"
+    key_type = "OKP"
     #: Registry definition for OKP Key
     #: https://www.rfc-editor.org/rfc/rfc8037#section-2
     value_registry = {
@@ -81,8 +81,10 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     def exchange_derive_key(self, key: "OKPKey") -> bytes:
         # used in ECDHESAlgorithm
-        pubkey = key.get_op_key("deriveKey")
-        if self.private_key and self.curve_name in ("X25519", "X448") and self.curve_name == key.curve_name:
+        pubkey: Union[X25519PublicKey, X448PublicKey] = key.get_op_key("deriveKey")  # type: ignore
+        if isinstance(self.private_key, X25519PrivateKey) and isinstance(pubkey, X25519PublicKey):
+            return self.private_key.exchange(pubkey)
+        elif isinstance(self.private_key, X448PrivateKey) and isinstance(pubkey, X448PublicKey):
             return self.private_key.exchange(pubkey)
         raise ValueError("Invalid key for exchanging shared key")
 
@@ -92,13 +94,13 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     @cached_property
     def public_key(self) -> PublicOKPKey:
-        if self.is_private:
+        if isinstance(self.raw_value, PrivateKeyTypes):
             return self.raw_value.public_key()
         return self.raw_value
 
     @property
     def private_key(self) -> Optional[PrivateOKPKey]:
-        if self.is_private:
+        if isinstance(self.raw_value, PrivateKeyTypes):
             return self.raw_value
         return None
 
@@ -110,16 +112,17 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
     def generate_key(
             cls,
             crv: str = "Ed25519",
-            parameters: KeyParameters = None,
+            parameters: Optional[KeyParameters] = None,
             private: bool = True) -> "OKPKey":
         if crv not in PRIVATE_KEYS_MAP:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
 
-        private_key_cls = PRIVATE_KEYS_MAP[crv]
+        private_key_cls: Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]  # type: ignore
         raw_key = private_key_cls.generate()
-        if not private:
-            raw_key = raw_key.public_key()
-        return cls(raw_key, raw_key, parameters)
+        if private:
+            return cls(raw_key, raw_key, parameters)
+        pub_key = raw_key.public_key()
+        return cls(pub_key, pub_key, parameters)
 
 
 def get_key_curve(key: Union[PublicOKPKey, PrivateOKPKey]):

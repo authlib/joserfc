@@ -36,20 +36,21 @@ class ECBinding(CryptographyBinding):
 
     @staticmethod
     def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKey:
-        curve = DSS_CURVES[obj["crv"]]()
+        curve = DSS_CURVES[obj["crv"]]()  # type: ignore
         public_numbers = EllipticCurvePublicNumbers(
-            base64_to_int(obj["x"]),
-            base64_to_int(obj["y"]),
+            base64_to_int(obj["x"]),  # type: ignore
+            base64_to_int(obj["y"]),  # type: ignore
             curve,
         )
-        private_numbers = EllipticCurvePrivateNumbers(base64_to_int(obj["d"]), public_numbers)
+        d = base64_to_int(obj["d"])  # type: ignore
+        private_numbers = EllipticCurvePrivateNumbers(d, public_numbers)
         return private_numbers.private_key(default_backend())
 
     @staticmethod
     def export_private_key(key: EllipticCurvePrivateKey) -> Dict[str, str]:
         numbers = key.private_numbers()
         return {
-            "crv": CURVES_DSS[key.curve.name],
+            "crv": CURVES_DSS[key.curve.name],  # type: ignore
             "x": int_to_base64(numbers.public_numbers.x),
             "y": int_to_base64(numbers.public_numbers.y),
             "d": int_to_base64(numbers.private_value),
@@ -57,10 +58,10 @@ class ECBinding(CryptographyBinding):
 
     @staticmethod
     def import_public_key(obj: KeyDict) -> EllipticCurvePublicKey:
-        curve = DSS_CURVES[obj["crv"]]()
+        curve = DSS_CURVES[obj["crv"]]()  # type: ignore
         public_numbers = EllipticCurvePublicNumbers(
-            base64_to_int(obj["x"]),
-            base64_to_int(obj["y"]),
+            base64_to_int(obj["x"]),  # type: ignore
+            base64_to_int(obj["y"]),  # type: ignore
             curve,
         )
         return public_numbers.public_key(default_backend())
@@ -69,14 +70,14 @@ class ECBinding(CryptographyBinding):
     def export_public_key(key: EllipticCurvePublicKey) -> Dict[str, str]:
         numbers = key.public_numbers()
         return {
-            "crv": CURVES_DSS[numbers.curve.name],
+            "crv": CURVES_DSS[numbers.curve.name],  # type: ignore
             "x": int_to_base64(numbers.x),
             "y": int_to_base64(numbers.y),
         }
 
 
 class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
-    key_type: str = "EC"
+    key_type = "EC"
     #: Registry definition for EC Key
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.2
     value_registry = {
@@ -86,12 +87,6 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         "d": KeyParameter("EC Private Key", "str", private=True, required=False),
     }
     binding = ECBinding
-
-    def exchange_derive_key(self, key: "ECKey") -> bytes:
-        pubkey = key.get_op_key("deriveKey")
-        if self.private_key and self.curve_name == key.curve_name:
-            return self.private_key.exchange(ECDH(), pubkey)
-        raise ValueError("Invalid key for exchanging shared key")
 
     @property
     def is_private(self) -> bool:
@@ -105,13 +100,19 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @property
     def private_key(self) -> Optional[EllipticCurvePrivateKey]:
-        if self.is_private:
+        if isinstance(self.raw_value, EllipticCurvePrivateKey):
             return self.raw_value
         return None
 
+    def exchange_derive_key(self, key: "ECKey") -> bytes:
+        pubkey = key.get_op_key("deriveKey")
+        if self.private_key and self.curve_name == key.curve_name:
+            return self.private_key.exchange(ECDH(), pubkey)
+        raise ValueError("Invalid key for exchanging shared key")
+
     @property
     def curve_name(self) -> str:
-        return CURVES_DSS[self.raw_value.curve.name]
+        return CURVES_DSS[self.raw_value.curve.name]  # type: ignore
 
     @property
     def curve_key_size(self) -> int:
@@ -121,14 +122,15 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
     def generate_key(
             cls,
             crv: str = "P-256",
-            parameters: KeyParameters = None,
+            parameters: Optional[KeyParameters] = None,
             private: bool = True) -> "ECKey":
         if crv not in DSS_CURVES:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
         raw_key = generate_private_key(
-            curve=DSS_CURVES[crv](),
+            curve=DSS_CURVES[crv](),  # type: ignore
             backend=default_backend(),
         )
-        if not private:
-            raw_key = raw_key.public_key()
-        return cls(raw_key, raw_key, parameters)
+        if private:
+            return cls(raw_key, raw_key, parameters)
+        pub_key = raw_key.public_key()
+        return cls(pub_key, pub_key, parameters)

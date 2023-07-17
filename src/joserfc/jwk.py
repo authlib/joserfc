@@ -1,5 +1,6 @@
 import typing as t
 from .rfc7517 import (
+    BaseKey,
     SymmetricKey,
     AsymmetricKey,
     CurveKey,
@@ -22,6 +23,7 @@ KeyFlexible = t.Union[t.AnyStr, Key, KeySet, KeyCallable]
 __all__ = [
     "types",
     "JWKRegistry",
+    "BaseKey",
     "SymmetricKey",
     "AsymmetricKey",
     "CurveKey",
@@ -66,30 +68,28 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
     """
     headers = obj.headers()
 
-    rv_key: Key
-
     if isinstance(key, (str, bytes)):
-        rv_key = OctKey.import_key(key)
+        rv_key = OctKey.import_key(key)  # type: ignore
 
-    elif isinstance(key, (SymmetricKey, AsymmetricKey)):
-        rv_key = key
+    elif isinstance(key, BaseKey):
+        rv_key: Key = key  # type: ignore
 
     elif isinstance(key, KeySet):
         kid = headers.get("kid")
         if not kid:
             # choose one key by random
-            rv_key = key.pick_random_key(headers["alg"])
+            rv_key: Key = key.pick_random_key(headers["alg"])  # type: ignore
             if rv_key is None:
                 raise ValueError("Invalid key")
             # use side effect to add kid information
             obj.set_kid(rv_key.kid)
         else:
-            rv_key = key.get_by_kid(kid)
+            rv_key: Key = key.get_by_kid(kid)  # type: ignore
 
     elif callable(key):
-        rv_key = key(obj)
+        rv_key = key(obj)  # type: ignore
 
     else:
         raise ValueError("Invalid key")
 
-    return rv_key
+    return rv_key  # type: ignore

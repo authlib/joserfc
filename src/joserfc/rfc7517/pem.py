@@ -10,6 +10,7 @@ from cryptography.hazmat.primitives.serialization import (
     Encoding,
     PrivateFormat,
     PublicFormat,
+    KeySerializationEncryption,
     BestAvailableEncryption,
     NoEncryption,
 )
@@ -21,22 +22,22 @@ from ..util import to_bytes
 
 def load_pem_key(raw: bytes, ssh_type: t.Optional[bytes] = None, password: t.Optional[bytes] = None):
     if ssh_type and raw.startswith(ssh_type):
-        key = load_ssh_public_key(raw, backend=default_backend())
+        key = load_ssh_public_key(raw, backend=default_backend())  # type: ignore
 
     elif b"OPENSSH PRIVATE" in raw:
-        key = load_ssh_private_key(raw, password=password, backend=default_backend())
+        key = load_ssh_private_key(raw, password=password, backend=default_backend())  # type: ignore
 
     elif b"PUBLIC" in raw:
-        key = load_pem_public_key(raw, backend=default_backend())
+        key = load_pem_public_key(raw, backend=default_backend())  # type: ignore
 
     elif b"PRIVATE" in raw:
-        key = load_pem_private_key(raw, password=password, backend=default_backend())
+        key = load_pem_private_key(raw, password=password, backend=default_backend())  # type: ignore
 
     else:
         try:
-            key = load_der_private_key(raw, password=password, backend=default_backend())
+            key = load_der_private_key(raw, password=password, backend=default_backend())  # type: ignore
         except ValueError:
-            key = load_der_public_key(raw, backend=default_backend())
+            key = load_der_public_key(raw, backend=default_backend())  # type: ignore
     return key
 
 
@@ -58,6 +59,7 @@ def dump_pem_key(key, encoding=None, private=False, password=None) -> bytes:
         raise ValueError("Invalid encoding: {!r}".format(encoding))
 
     if private:
+        encryption_algorithm: KeySerializationEncryption
         if password is None:
             encryption_algorithm = NoEncryption()
         else:

@@ -99,9 +99,15 @@ class KeyParameter:
         self.required = required
 
 
+class KeyOperation:
+    def __init__(self, description: str, use: str, private: bool):
+        self.description = description
+        self.use = use
+        self.private = private
+
+
 #: Define parameters for JWK
 KeyParameterRegistryDict = t.Dict[str, KeyParameter]
-KeyOperation = namedtuple("KeyOperation", ["description", "use", "private"])
 KeyOperationRegistryDict = t.Dict[str, KeyOperation]
 
 #: Basic JWS header registry

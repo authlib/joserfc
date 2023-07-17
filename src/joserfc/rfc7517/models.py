@@ -1,4 +1,5 @@
 import typing as t
+from typing import overload
 from abc import ABCMeta, abstractmethod
 from .types import KeyDict, KeyAny, KeyParameters
 from ..registry import (
@@ -60,7 +61,8 @@ class NativeKeyBinding(metaclass=ABCMeta):
     @classmethod
     def validate_dict_key_use_operations(cls, dict_key: KeyDict):
         if "use" in dict_key and "key_ops" in dict_key:
-            operations = cls.use_key_ops_registry[dict_key["use"]]
+            _use: str = dict_key["use"]  # type: ignore
+            operations = cls.use_key_ops_registry[_use]
             for op in dict_key["key_ops"]:
                 if op not in operations:
                     raise ValueError('"use" and "key_ops" does not match')
@@ -68,12 +70,16 @@ class NativeKeyBinding(metaclass=ABCMeta):
 
 class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
     key_type: t.ClassVar[str]
+    binding: t.ClassVar[t.Type[NativeKeyBinding]]
     value_registry: t.ClassVar[KeyParameterRegistryDict]
     param_registry: t.ClassVar[KeyParameterRegistryDict] = JWK_PARAMETER_REGISTRY
     operation_registry: t.ClassVar[KeyOperationRegistryDict] = JWK_OPERATION_REGISTRY
-    binding: t.ClassVar[t.Type[NativeKeyBinding]] = NativeKeyBinding
 
-    def __init__(self, raw_value: t.Any, original_value: t.Any, parameters: t.Optional[KeyParameters] = None):
+    def __init__(
+            self,
+            raw_value: t.Union[NativePrivateKey, NativePublicKey],
+            original_value: t.Any,
+            parameters: t.Optional[KeyParameters] = None):
         self._raw_value = raw_value
         self.original_value = original_value
         self.extra_parameters = parameters
@@ -119,8 +125,8 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
             return self._dict_value
 
         data = self.binding.convert_raw_key_to_dict(self.raw_value, self.is_private)
-        if self.extra_parameters:
-            data.update(dict(self.extra_parameters))
+        if self.extra_parameters is not None:
+            data.update(self.extra_parameters)  # type: ignore
         data["kty"] = self.key_type
         self.validate_dict_key(data)
         self._dict_value = data
@@ -201,10 +207,17 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         if reg.private and not self.is_private:
             raise UnsupportedKeyOperationError(f'Invalid key_op "{operation}" for public key')
 
+    @overload
+    def get_op_key(self, operation: t.Literal["verify", "encrypt", "wrapKey", "deriveKey"]) -> NativePublicKey: ...
+
+    @overload
+    def get_op_key(self, operation: t.Literal["sign", "decrypt", "unwrapKey"]) -> NativePrivateKey: ...
+
     def get_op_key(self, operation: str) -> t.Union[NativePublicKey, NativePrivateKey]:
         self.check_key_op(operation)
         reg = self.operation_registry[operation]
         if reg.private:
+            assert self.private_key is not None
             return self.private_key
         return self.public_key
 
@@ -237,7 +250,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         raise NotImplementedError()
 
 
-class SymmetricKey(BaseKey[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
+class SymmetricKey(BaseKey[bytes, bytes], metaclass=ABCMeta):
     @property
     def raw_value(self) -> bytes:
         """The raw key in bytes."""
@@ -285,5 +298,5 @@ class CurveKey(AsymmetricKey[NativePrivateKey, NativePublicKey]):
         pass
 
     @abstractmethod
-    def exchange_derive_key(self, key: "CurveKey") -> bytes:
+    def exchange_derive_key(self, key) -> bytes:
         pass

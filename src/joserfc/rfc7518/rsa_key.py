@@ -28,20 +28,20 @@ class RSABinding(CryptographyBinding):
             # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
             raise ValueError('"oth" is not supported yet')
 
-        public_numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))
+        public_numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))  # type: ignore
 
         if has_all_prime_factors(obj):
             numbers = RSAPrivateNumbers(
-                d=base64_to_int(obj["d"]),
-                p=base64_to_int(obj["p"]),
-                q=base64_to_int(obj["q"]),
-                dmp1=base64_to_int(obj["dp"]),
-                dmq1=base64_to_int(obj["dq"]),
-                iqmp=base64_to_int(obj["qi"]),
+                d=base64_to_int(obj["d"]),  # type: ignore
+                p=base64_to_int(obj["p"]),  # type: ignore
+                q=base64_to_int(obj["q"]),  # type: ignore
+                dmp1=base64_to_int(obj["dp"]),  # type: ignore
+                dmq1=base64_to_int(obj["dq"]),  # type: ignore
+                iqmp=base64_to_int(obj["qi"]),  # type: ignore
                 public_numbers=public_numbers,
             )
         else:
-            d = base64_to_int(obj["d"])
+            d = base64_to_int(obj["d"])  # type: ignore
             p, q = rsa_recover_prime_factors(public_numbers.n, d, public_numbers.e)
             numbers = RSAPrivateNumbers(
                 d=d,
@@ -71,7 +71,7 @@ class RSABinding(CryptographyBinding):
 
     @staticmethod
     def import_public_key(obj: KeyDict) -> RSAPublicKey:
-        numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))
+        numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))  # type: ignore
         return numbers.public_key(default_backend())
 
     @staticmethod
@@ -81,7 +81,7 @@ class RSABinding(CryptographyBinding):
 
 
 class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
-    key_type: str = "RSA"
+    key_type = "RSA"
     #: Registry definition for RSA Key
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.3
     value_registry = {
@@ -109,7 +109,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
 
     @property
     def private_key(self) -> Optional[RSAPrivateKey]:
-        if self.is_private:
+        if isinstance(self.raw_value, RSAPrivateKey):
             return self.raw_value
         return None
 
@@ -117,7 +117,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
     def generate_key(
             cls,
             key_size: int = 2048,
-            parameters: KeyParameters = None,
+            parameters: Optional[KeyParameters] = None,
             private: bool = True) -> "RSAKey":
         if key_size < 512:
             raise ValueError("key_size must not be less than 512")
@@ -128,9 +128,10 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
             key_size=key_size,
             backend=default_backend(),
         )
-        if not private:
-            raw_key = raw_key.public_key()
-        return cls(raw_key, raw_key, parameters)
+        if private:
+            return cls(raw_key, raw_key, parameters)
+        pub_key = raw_key.public_key()
+        return cls(pub_key, pub_key, parameters)
 
 
 def has_all_prime_factors(obj) -> bool:

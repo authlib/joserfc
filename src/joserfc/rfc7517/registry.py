@@ -41,7 +41,7 @@ class JWKRegistry:
         """
         if isinstance(data, dict) and key_type is None:
             if "kty" in data:
-                key_type = data["kty"]
+                key_type = data["kty"]  # type: ignore
             else:
                 raise ValueError("Missing key type")
 
