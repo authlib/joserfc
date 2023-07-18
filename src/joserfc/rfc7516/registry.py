@@ -53,7 +53,7 @@ class JWERegistry:
 
     @classmethod
     def register(cls, model: JWEAlgorithm):
-        cls.algorithms[model.algorithm_location][model.name] = model
+        cls.algorithms[model.algorithm_location][model.name] = model  # type: ignore
         if model.recommended:
             cls.recommended.append(model.name)
 
@@ -95,7 +95,7 @@ class JWERegistry:
         return self._get_algorithm("zip", name)
 
     def _get_algorithm(self, location: t.Literal["alg", "enc", "zip"], name: str):
-        registry: t.Dict[str, JWEAlgorithm] = self.algorithms[location]
+        registry: t.Dict[str, JWEAlgorithm] = self.algorithms[location]  # type: ignore
         if name not in registry:
             raise ValueError(f'Algorithm of "{name}" is not supported')
 

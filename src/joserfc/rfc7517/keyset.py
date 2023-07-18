@@ -9,6 +9,9 @@ class KeySet:
     def __init__(self, keys: t.List[BaseKey]):
         self.keys = keys
 
+    def __iter__(self) -> t.Iterator[BaseKey]:
+        return iter(self.keys)
+
     def as_dict(self, private=None, **params):
         keys = []
 

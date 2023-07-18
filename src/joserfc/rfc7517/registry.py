@@ -12,6 +12,8 @@ class JWKRegistry:
 
     .. code-block:: python
 
+        from joserfc.jwk import JWKRegistry
+
         # instead of choosing which key type to use yourself,
         # JWKRegistry can import it automatically
         data = {"kty": "oct", "k": "..."}

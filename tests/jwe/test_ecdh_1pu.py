@@ -1,7 +1,7 @@
 from unittest import TestCase
 from joserfc.jwe import (
     JWERegistry,
-    JSONEncryption,
+    GeneralJSONEncryption,
     encrypt_compact,
     decrypt_compact,
     encrypt_json,
@@ -178,7 +178,7 @@ class TestECDH1PUJSON(TestCase):
         charlie_key = load_key("okp-x25519-charlie.json", {"kid": "charlie"})
         keys = KeySet([alice_key, bob_key, charlie_key])
 
-        obj = JSONEncryption(
+        obj = GeneralJSONEncryption(
             {"enc": "A128CBC-HS256"},
             plaintext=b"hello",
             aad=b"world",

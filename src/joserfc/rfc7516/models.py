@@ -9,7 +9,7 @@ from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
 class Recipient:
     def __init__(
             self,
-            parent: t.Union["CompactEncryption", "JSONEncryption"],
+            parent: t.Union["CompactEncryption", "GeneralJSONEncryption", "FlattenedJSONEncryption"],
             header: t.Optional[Header] = None,
             recipient_key: t.Optional[BaseKey] = None):
         self.__parent = parent
@@ -18,12 +18,11 @@ class Recipient:
         self.sender_key: t.Optional[BaseKey] = None
         self.encrypted_key: t.Optional[bytes] = None
         self.ephemeral_key: t.Optional[CurveKey] = None
-        self.segments = {}  # store temporary segments
 
     def headers(self) -> Header:
-        rv = {}
+        rv: Header = {}
         rv.update(self.__parent.protected)
-        if isinstance(self.__parent, JSONEncryption) and self.__parent.unprotected:
+        if isinstance(self.__parent, BaseJSONEncryption) and self.__parent.unprotected:
             rv.update(self.__parent.unprotected)
         if self.header:
             rv.update(self.header)
@@ -71,46 +70,40 @@ class CompactEncryption:
 
     @property
     def recipients(self) -> t.List[Recipient]:
-        return [self.recipient]
+        if self.recipient is not None:
+            return [self.recipient]
+        return []
 
 
-class JSONEncryption:
-    """An object to represent the JWE JSON Serialization. It is used by
-    ``encrypt_json``, and it is usually returned by ``decrypt_json`` method.
+class BaseJSONEncryption(metaclass=ABCMeta):
+    #: represents if the object is in flatten syntax
+    flattened: t.ClassVar[bool]
+    #: protected header in dict
+    protected: Header
+    #: the plaintext in bytes
+    plaintext: t.Optional[bytes]
+    #: unprotected header in dict
+    unprotected: t.Optional[Header]
+    #: an optional additional authenticated data
+    aad: t.Optional[bytes]
+    #: a list of recipients
+    recipients: t.List[Recipient]
 
-    To construct an object of ``JSONEncryption``:
-
-    .. code-block:: python
-
-        protected = {"enc": "A128CBC-HS256"}
-        plaintext = b"hello world"
-        obj = JSONEncryption(protected, plaintext)
-        # then add each recipient
-        obj.add_recipient({"alg": "A128KW"})
-    """
     def __init__(
             self,
             protected: Header,
             plaintext: t.Optional[bytes] = None,
             unprotected: t.Optional[Header] = None,
-            aad: t.Optional[bytes] = None,
-            flattened: bool = False):
-        #: protected header in dict
-        self.protected: Header = protected
-        #: the plaintext in bytes
-        self.plaintext: bytes = plaintext
-        #: unprotected header in dict
-        self.unprotected: t.Optional[Header] = unprotected
-        #: an optional additional authenticated data
-        self.aad: t.Optional[bytes] = aad
-        #: represents if the object is in flatten syntax
-        self.flattened: bool = flattened
-        #: a list of recipients
-        self.recipients: t.List[Recipient] = []
-
+            aad: t.Optional[bytes] = None):
+        self.protected = protected
+        self.plaintext = plaintext
+        self.unprotected = unprotected
+        self.aad = aad
+        self.recipients = []
         self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
+    @abstractmethod
     def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[BaseKey] = None):
         """Add a recipient to the JWE JSON Serialization. Please add a key that
         comply with the "alg" to this recipient.
@@ -118,8 +111,47 @@ class JSONEncryption:
         :param header: recipient's own (unprotected) header
         :param key: an instance of a key, e.g. (OctKey, RSAKey, ECKey, and etc)
         """
+
+
+class GeneralJSONEncryption(BaseJSONEncryption):
+    """An object to represent the JWE General JSON Serialization. It is used by
+    ``encrypt_json``, and it is usually returned by ``decrypt_json`` method.
+
+    To construct an object of ``GeneralJSONEncryption``:
+
+    .. code-block:: python
+
+        protected = {"enc": "A128CBC-HS256"}
+        plaintext = b"hello world"
+        obj = GeneralJSONEncryption(protected, plaintext)
+        # then add each recipient
+        obj.add_recipient({"alg": "A128KW"})
+    """
+    flattened = False
+
+    def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[BaseKey] = None):
         recipient = Recipient(self, header, key)
         self.recipients.append(recipient)
+
+
+class FlattenedJSONEncryption(BaseJSONEncryption):
+    """An object to represent the JWE Flattened JSON Serialization. It is used by
+    ``encrypt_json``, and it is usually returned by ``decrypt_json`` method.
+
+    To construct an object of ``FlattenedJSONEncryption``:
+
+    .. code-block:: python
+
+        protected = {"enc": "A128CBC-HS256"}
+        plaintext = b"hello world"
+        obj = FlattenedJSONEncryption(protected, plaintext)
+        # then add each recipient
+        obj.add_recipient({"alg": "A128KW"})
+    """
+    flattened = True
+
+    def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[BaseKey] = None):
+        self.recipients = [Recipient(self, header, key)]
 
 
 class JWEEncModel(object, metaclass=ABCMeta):
@@ -247,10 +279,12 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
     key_wrapping: t.Optional[JWEKeyWrapping]
 
     def prepare_ephemeral_key(self, recipient: Recipient):
-        recipient_key: CurveKey = recipient.recipient_key
+        recipient_key: CurveKey = recipient.recipient_key  # type: ignore
         self.check_key_type(recipient_key)
         if recipient.ephemeral_key is None:
-            recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
+            ephemeral_key: CurveKey = recipient_key.generate_key(
+                recipient_key.curve_name, private=True)  # type: ignore
+            recipient.ephemeral_key = ephemeral_key
         recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
 
     @abstractmethod
@@ -262,9 +296,11 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
         pass
 
     def wrap_cek_with_auk(self, cek: bytes, key: bytes) -> bytes:
+        assert self.key_wrapping is not None
         return self.key_wrapping.wrap_cek(cek, key)
 
     def unwrap_cek_with_auk(self, ek: bytes, key: bytes) -> bytes:
+        assert self.key_wrapping is not None
         return self.key_wrapping.unwrap_cek(ek, key)
 
     def encrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient, tag: bytes) -> bytes:

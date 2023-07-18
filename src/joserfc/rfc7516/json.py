@@ -1,5 +1,16 @@
-from .models import JSONEncryption, Recipient
-from .types import JSONSerialization
+import typing as t
+from .models import (
+    BaseJSONEncryption,
+    GeneralJSONEncryption,
+    FlattenedJSONEncryption,
+    Recipient,
+)
+from .types import (
+    JSONRecipientDict,
+    GeneralJSONSerialization,
+    FlattenedJSONSerialization,
+)
+from ..registry import Header
 from ..util import (
     to_bytes,
     to_unicode,
@@ -10,8 +21,33 @@ from ..util import (
 )
 
 
-def represent_json(obj: JSONEncryption) -> JSONSerialization:
-    data: JSONSerialization = {
+def represent_general_json(obj: GeneralJSONEncryption) -> GeneralJSONSerialization:
+    data = __represent_json_serialization(obj)
+    recipients = []
+    for recipient in obj.recipients:
+        item: JSONRecipientDict = {}
+        if recipient.header:
+            item["header"] = recipient.header
+        if recipient.encrypted_key:
+            item["encrypted_key"] = to_unicode(urlsafe_b64encode(recipient.encrypted_key))
+        recipients.append(item)
+    data["recipients"] = recipients
+    return data  # type: ignore
+
+
+def represent_flattened_json(obj: FlattenedJSONEncryption) -> FlattenedJSONSerialization:
+    data = __represent_json_serialization(obj)
+    recipient = obj.recipients[0]
+    assert recipient is not None
+    if recipient.header:
+        data["header"] = recipient.header
+    if recipient.encrypted_key:
+        data["encrypted_key"] = to_unicode(urlsafe_b64encode(recipient.encrypted_key))
+    return data  # type: ignore
+
+
+def __represent_json_serialization(obj: BaseJSONEncryption):
+    data: t.Dict[str, t.Union[str, Header]] = {
         "protected": to_unicode(json_b64encode(obj.protected)),
         "iv": to_unicode(obj.base64_segments["iv"]),
         "ciphertext": to_unicode(obj.base64_segments["ciphertext"]),
@@ -22,50 +58,52 @@ def represent_json(obj: JSONEncryption) -> JSONSerialization:
 
     if obj.unprotected:
         data["unprotected"] = obj.unprotected
-
-    recipients = []
-    for recipient in obj.recipients:
-        item = {}
-        if recipient.header:
-            item["header"] = recipient.header
-        if recipient.encrypted_key:
-            item["encrypted_key"] = to_unicode(urlsafe_b64encode(recipient.encrypted_key))
-        recipients.append(item)
-
-    if obj.flattened and len(recipients) == 1:
-        data.update(recipients[0])
-    else:
-        data["recipients"] = recipients
     return data
 
 
-def extract_json(data: JSONSerialization) -> JSONEncryption:
+def extract_general_json(data: GeneralJSONSerialization) -> GeneralJSONEncryption:
     protected = json_b64decode(data["protected"])
     unprotected = data.get("unprotected")
-    obj = JSONEncryption(protected, None, unprotected)
-    obj.base64_segments["iv"] = to_bytes(data["iv"])
-    obj.base64_segments["ciphertext"] = to_bytes(data["ciphertext"])
-    obj.base64_segments["tag"] = to_bytes(data["tag"])
-
-    # save decoded segments
-    obj.bytes_segments["iv"] = urlsafe_b64decode(obj.base64_segments["iv"])
-    obj.bytes_segments["ciphertext"] = urlsafe_b64decode(obj.base64_segments["ciphertext"])
-    obj.bytes_segments["tag"] = urlsafe_b64decode(obj.base64_segments["tag"])
-
-    if "aad" in data:
-        obj.aad = urlsafe_b64decode(to_bytes(data["aad"]))
-
-    if "recipients" in data:
-        obj.flattened = False
-        for item in data["recipients"]:
-            recipient = Recipient(obj, item.get("header"))
-            if "encrypted_key" in item:
-                recipient.encrypted_key = urlsafe_b64decode(to_bytes(item["encrypted_key"]))
-            obj.recipients.append(recipient)
-    else:
-        obj.flattened = True
-        recipient = Recipient(obj, data.get("header"))
-        if "encrypted_key" in data:
-            recipient.encrypted_key = urlsafe_b64decode(to_bytes(data["encrypted_key"]))
+    base64_segments, bytes_segments, aad = __extract_segments(data)
+    obj = GeneralJSONEncryption(protected, None, unprotected, aad)
+    obj.base64_segments = base64_segments
+    obj.bytes_segments = bytes_segments
+    for item in data["recipients"]:
+        recipient = Recipient(obj, item.get("header"))
+        if "encrypted_key" in item:
+            recipient.encrypted_key = urlsafe_b64decode(to_bytes(item["encrypted_key"]))
         obj.recipients.append(recipient)
     return obj
+
+
+def extract_flattened_json(data: FlattenedJSONSerialization) -> FlattenedJSONEncryption:
+    protected = json_b64decode(data["protected"])
+    unprotected = data.get("unprotected")
+    base64_segments, bytes_segments, aad = __extract_segments(data)
+    obj = FlattenedJSONEncryption(protected, None, unprotected, aad)
+    obj.base64_segments = base64_segments
+    obj.bytes_segments = bytes_segments
+
+    recipient = Recipient(obj, data.get("header"))
+    if "encrypted_key" in data:
+        recipient.encrypted_key = urlsafe_b64decode(to_bytes(data["encrypted_key"]))
+    obj.recipients.append(recipient)
+    return obj
+
+
+def __extract_segments(data: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization]):
+    base64_segments: t.Dict[str, bytes] = {
+        "iv": to_bytes(data["iv"]),
+        "ciphertext": to_bytes(data["ciphertext"]),
+        "tag": to_bytes(data["tag"]),
+    }
+    bytes_segments: t.Dict[str, bytes] = {
+        "iv": urlsafe_b64decode(base64_segments["iv"]),
+        "ciphertext": urlsafe_b64decode(base64_segments["ciphertext"]),
+        "tag": urlsafe_b64decode(base64_segments["tag"]),
+    }
+    if "aad" in data:
+        aad = urlsafe_b64decode(to_bytes(data["aad"]))
+    else:
+        aad = None
+    return base64_segments, bytes_segments, aad

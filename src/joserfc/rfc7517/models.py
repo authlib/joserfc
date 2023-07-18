@@ -85,11 +85,10 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         self.extra_parameters = parameters
         self._dict_value: KeyDict = {}
         if isinstance(original_value, dict):
-            data = original_value.copy()
-            data["kty"] = self.key_type
-            if parameters:
-                data.update(dict(parameters))
-
+            if parameters is not None:
+                data = {**original_value, **parameters, "kty": self.key_type}
+            else:
+                data = {**original_value, "kty": self.key_type}
             self.validate_dict_key(data)
             self._dict_value = data
 

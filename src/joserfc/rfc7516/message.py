@@ -1,7 +1,9 @@
 import typing as t
 from .models import (
     CompactEncryption,
-    JSONEncryption,
+    BaseJSONEncryption,
+    GeneralJSONEncryption,
+    FlattenedJSONEncryption,
     Recipient,
     JWEAlgModel,
     JWEEncModel,
@@ -22,10 +24,10 @@ from ..util import (
     urlsafe_b64encode,
 )
 
-EncryptionData = t.Union[CompactEncryption, JSONEncryption]
+EncryptionData = t.Union[CompactEncryption, GeneralJSONEncryption, FlattenedJSONEncryption]
 
 
-def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
+def perform_encrypt(obj: EncryptionData, registry: JWERegistry):
     enc = registry.get_enc(obj.protected["enc"])
     cek, delayed_tasks = pre_encrypt_recipients(enc, obj.recipients, registry)
 
@@ -57,7 +59,7 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
     # present (which can only be the case when using the JWE JSON Serialization),
     # instead let the Additional Authenticated Data encryption parameter be
     # ASCII(Encoded Protected Header || '.' || BASE64URL(JWE AAD)).
-    if isinstance(obj, JSONEncryption) and obj.aad:
+    if isinstance(obj, BaseJSONEncryption) and obj.aad:
         aad = aad + b"." + urlsafe_b64encode(obj.aad)
     obj.base64_segments["aad"] = aad
 
@@ -69,10 +71,9 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
 
     obj.base64_segments["ciphertext"] = urlsafe_b64encode(ciphertext)
     obj.base64_segments["tag"] = urlsafe_b64encode(tag)
-    return obj
 
 
-def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionData:
+def perform_decrypt(obj: EncryptionData, registry: JWERegistry):
     enc = registry.get_enc(obj.protected["enc"])
 
     iv = obj.bytes_segments["iv"]
@@ -99,7 +100,7 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
         raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
 
     aad = json_b64encode(obj.protected, "ascii")
-    if isinstance(obj, JSONEncryption) and obj.aad:
+    if isinstance(obj, BaseJSONEncryption) and obj.aad:
         aad = aad + b"." + urlsafe_b64encode(obj.aad)
 
     msg = enc.decrypt(ciphertext, tag, cek, iv, aad)
@@ -108,7 +109,6 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> EncryptionDat
         obj.plaintext = zip_.decompress(msg)
     else:
         obj.plaintext = msg
-    return obj
 
 
 def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], registry: JWERegistry):

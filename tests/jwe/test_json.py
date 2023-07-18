@@ -1,5 +1,6 @@
 from unittest import TestCase
 from joserfc import jwe
+from joserfc.jwe import GeneralJSONEncryption
 from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
 from joserfc.errors import ConflictAlgorithmError
 
@@ -8,7 +9,7 @@ class TestJWEJSON(TestCase):
     def test_multiple_recipients_with_key(self):
         key1 = RSAKey.generate_key()
         key2 = ECKey.generate_key()
-        obj = jwe.JSONEncryption({"enc": "A128CBC-HS256"}, b"i")
+        obj = GeneralJSONEncryption({"enc": "A128CBC-HS256"}, b"i")
         obj.add_recipient({"alg": "RSA-OAEP"}, key1)
         obj.add_recipient({"alg": "ECDH-ES+A128KW"}, key2)
         value = jwe.encrypt_json(obj, None)
@@ -18,7 +19,7 @@ class TestJWEJSON(TestCase):
     def test_multiple_recipients_without_key(self):
         key1 = RSAKey.generate_key(parameters={"kid": "rsa"})
         key2 = ECKey.generate_key(parameters={"kid": "ec"})
-        obj = jwe.JSONEncryption({"enc": "A128CBC-HS256"}, b"i")
+        obj = GeneralJSONEncryption({"enc": "A128CBC-HS256"}, b"i")
         obj.add_recipient({"alg": "RSA-OAEP", "kid": "rsa"})
         obj.add_recipient({"alg": "ECDH-ES+A128KW", "kid": "ec"})
         value = jwe.encrypt_json(obj, KeySet([key1, key2]))
@@ -26,7 +27,7 @@ class TestJWEJSON(TestCase):
         self.assertEqual(len(value["recipients"]), 2)
 
     def test_multiple_recipients_with_direct_mode(self):
-        obj = jwe.JSONEncryption({"enc": "A128CBC-HS256"}, b"i")
+        obj = GeneralJSONEncryption({"enc": "A128CBC-HS256"}, b"i")
         obj.add_recipient({"alg": "dir"}, OctKey.generate_key())
         obj.add_recipient({"alg": "RSA-OAEP"}, RSAKey.generate_key())
         self.assertRaises(
@@ -36,7 +37,7 @@ class TestJWEJSON(TestCase):
         )
 
     def test_with_aad(self):
-        obj = jwe.JSONEncryption({"enc": "A128CBC-HS256"}, b"i", aad=b"foo")
+        obj = GeneralJSONEncryption({"enc": "A128CBC-HS256"}, b"i", aad=b"foo")
         key1 = RSAKey.generate_key()
         obj.add_recipient({"alg": "RSA-OAEP"}, key1)
         value = jwe.encrypt_json(obj, None)

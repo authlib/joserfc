@@ -2,7 +2,8 @@ import json
 from tests.base import TestFixture, load_key
 from joserfc.jwk import ECKey
 from joserfc.jwe import (
-    JSONEncryption,
+    GeneralJSONEncryption,
+    FlattenedJSONEncryption,
     encrypt_compact,
     decrypt_compact,
     encrypt_json,
@@ -30,10 +31,9 @@ class TestJWERFC7520(TestFixture):
         self.assertEqual(obj1.protected, compact_obj.protected)
         self.assertEqual(obj1.plaintext, compact_obj.plaintext)
 
-        enc_data = JSONEncryption(protected, payload)
-        enc_data.add_recipient(None, key)
-        enc_data.flattened = False
-        value2 = encrypt_json(enc_data, None, algorithms=algorithms)
+        enc1 = GeneralJSONEncryption(protected, payload)
+        enc1.add_recipient(None, key)
+        value2 = encrypt_json(enc1, None, algorithms=algorithms)
         obj2 = decrypt_json(value2, key, algorithms=algorithms)
         self.assertEqual(obj2.protected, protected)
         self.assertFalse(obj2.flattened)
@@ -45,8 +45,9 @@ class TestJWERFC7520(TestFixture):
             self.assertEqual(general_obj.plaintext, payload)
             self.assertFalse(general_obj.flattened)
 
-        enc_data.flattened = True
-        value3 = encrypt_json(enc_data, None, algorithms=algorithms)
+        enc2 = FlattenedJSONEncryption(protected, payload)
+        enc2.add_recipient(None, key)
+        value3 = encrypt_json(enc2, None, algorithms=algorithms)
         obj3 = decrypt_json(value3, key, algorithms=algorithms)
         self.assertEqual(obj3.protected, protected)
         self.assertEqual(obj3.plaintext, payload)
@@ -76,18 +77,19 @@ class TestJWERFC7520(TestFixture):
             self.assertEqual(flattened_obj.plaintext, payload)
             self.assertEqual(flattened_obj.protected, expected_header)
 
-        enc_data = JSONEncryption(protected, payload)
-        enc_data.add_recipient(None, key)
-        enc_data.recipients[0].ephemeral_key = ephemeral_key
-        enc_data.flattened = False
+        enc3 = GeneralJSONEncryption(protected, payload)
+        enc3.add_recipient(None, key)
+        enc3.recipients[0].ephemeral_key = ephemeral_key
 
-        value2 = encrypt_json(enc_data, None, algorithms=algorithms)
+        value2 = encrypt_json(enc3, None, algorithms=algorithms)
         obj2 = decrypt_json(value2, key, algorithms=algorithms)
         recipient = obj2.recipients[0]
         self.assertEqual(recipient.headers(), expected_header)
 
-        enc_data.flattened = True
-        value3 = encrypt_json(enc_data, None, algorithms=algorithms)
+        enc4 = FlattenedJSONEncryption(protected, payload)
+        enc4.add_recipient(None, key)
+        enc4.recipients[0].ephemeral_key = ephemeral_key
+        value3 = encrypt_json(enc4, None, algorithms=algorithms)
         obj3 = decrypt_json(value3, key, algorithms=algorithms)
         recipient = obj3.recipients[0]
         self.assertEqual(recipient.headers(), expected_header)

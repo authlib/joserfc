@@ -1,10 +1,14 @@
 import typing as t
-from .rfc7516 import types
-from .rfc7516.types import JSONSerialization
+from typing import overload
+from .rfc7516.types import (
+    GeneralJSONSerialization,
+    FlattenedJSONSerialization,
+)
 from .rfc7516.models import (
     Recipient,
     CompactEncryption,
-    JSONEncryption,
+    GeneralJSONEncryption,
+    FlattenedJSONEncryption,
     JWEEncModel,
     JWEZipModel,
 )
@@ -14,7 +18,12 @@ from .rfc7516.registry import (
 )
 from .rfc7516.message import perform_encrypt, perform_decrypt
 from .rfc7516.compact import represent_compact, extract_compact
-from .rfc7516.json import represent_json, extract_json
+from .rfc7516.json import (
+    represent_general_json,
+    represent_flattened_json,
+    extract_general_json,
+    extract_flattened_json,
+)
 from .rfc7518.jwe_algs import JWE_ALG_MODELS
 from .rfc7518.jwe_encs import JWE_ENC_MODELS
 from .rfc7518.jwe_zips import JWE_ZIP_MODELS
@@ -23,13 +32,13 @@ from .util import to_bytes
 from .registry import Header
 
 __all__ = [
-    "types",
     "JWERegistry",
     "JWEEncModel",
     "JWEZipModel",
     "Recipient",
     "CompactEncryption",
-    "JSONEncryption",
+    "GeneralJSONEncryption",
+    "FlattenedJSONEncryption",
     "encrypt_compact",
     "decrypt_compact",
     "encrypt_json",
@@ -129,39 +138,62 @@ def decrypt_compact(
         registry = default_registry
 
     recipient = obj.recipient
+    assert recipient is not None
     key = guess_key(private_key, recipient)
     key.check_use("enc")
     recipient.recipient_key = key
     if sender_key:
         recipient.sender_key = _guess_sender_key(recipient, sender_key)
-    return perform_decrypt(obj, registry)
+    perform_decrypt(obj, registry)
+    return obj
 
 
+@overload
 def encrypt_json(
-        obj: JSONEncryption,
+        obj: GeneralJSONEncryption,
         public_key: t.Optional[KeyFlexible],
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> JSONSerialization:
+        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> GeneralJSONSerialization:
+    ...
+
+
+@overload
+def encrypt_json(
+        obj: FlattenedJSONEncryption,
+        public_key: t.Optional[KeyFlexible],
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWERegistry] = None,
+        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> FlattenedJSONSerialization:
+    ...
+
+
+def encrypt_json(
+        obj: t.Union[GeneralJSONEncryption, FlattenedJSONEncryption],
+        public_key: t.Optional[KeyFlexible],
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWERegistry] = None,
+        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None):
     """Generate a JWE JSON Serialization (in dict). The JWE JSON Serialization
     represents encrypted content as a JSON object. This representation is neither
     optimized for compactness nor URL safe.
 
-    When calling this method, developers MUST construct an instance of a ``JSONEncryption``
-    object. Here is an example::
+    When calling this method, developers MUST construct an instance of a
+    ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption`` object. Here
+    is an example::
 
-        from joserfc.jwe import JSONEncryption
+        from joserfc.jwe import GeneralJSONEncryption
 
         protected = {"enc": "A128CBC-HS256"}
         plaintext = b"hello world"
         header = {"jku": "https://server.example.com/keys.jwks"}  # optional shared header
-        obj = JSONEncryption(protected, plaintext, header)
+        obj = GeneralJSONEncryption(protected, plaintext, header)
         # add the recipients
         obj.add_recipient({"kid": "alice", "alg": "RSA1_5"})  # not configured a key
         bob_key = OctKey.import_key("bob secret")
         obj.add_recipient({"kid": "bob", "alg": "A128KW"}, bob_key)
 
-    :param obj: an instance of ``JSONEncryption``
+    :param obj: an instance of ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption``
     :param public_key: a public key used to encrypt the CEK
     :param algorithms: a list of allowed algorithms
     :param registry: a JWERegistry to use
@@ -183,48 +215,65 @@ def encrypt_json(
             recipient.recipient_key = key
 
     perform_encrypt(obj, registry)
-    return represent_json(obj)
+    if isinstance(obj, GeneralJSONEncryption):
+        return represent_general_json(obj)
+    return represent_flattened_json(obj)
 
 
 def decrypt_json(
-        data: JSONSerialization,
+        data: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization],
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> JSONEncryption:
-    """Decrypt the JWE JSON Serialization (in dict) to a ``JSONEncryption`` object.
+        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None):
+    """Decrypt the JWE JSON Serialization (in dict) to a
+    ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption`` object.
 
     :param data: JWE JSON Serialization in dict
     :param private_key: a flexible private key to decrypt the CEK
     :param algorithms: a list of allowed algorithms
     :param registry: a JWERegistry to use
     :param sender_key: only required when using ECDH-1PU
-    :return: an instance of ``JSONEncryption``
+    :return: an instance of ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption``
     """
-    obj = extract_json(data)
-
     if algorithms:
         registry = JWERegistry(algorithms=algorithms)
     elif registry is None:
         registry = default_registry
 
-    for recipient in obj.recipients:
+    if "recipients" in data:
+        general_obj = extract_general_json(data)  # type: ignore
+        _attach_recipient_keys(general_obj.recipients, private_key, sender_key)
+        perform_decrypt(general_obj, registry)
+        return general_obj
+    else:
+        flattened_obj = extract_flattened_json(data)  # type: ignore
+        _attach_recipient_keys(flattened_obj.recipients, private_key, sender_key)
+        perform_decrypt(flattened_obj, registry)
+        return flattened_obj
+
+
+def _attach_recipient_keys(
+        recipients: t.List[Recipient],
+        private_key: KeyFlexible,
+        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None):
+    for recipient in recipients:
         key = guess_key(private_key, recipient)
         key.check_use("enc")
         recipient.recipient_key = key
         if sender_key:
             recipient.sender_key = _guess_sender_key(recipient, sender_key)
 
-    return perform_decrypt(obj, registry)
 
-
-def _guess_sender_key(recipient, key: t.Union[CurveKey, KeySet]):
+def _guess_sender_key(recipient: Recipient, key: t.Union[CurveKey, KeySet]):
     if isinstance(key, KeySet):
         headers = recipient.headers()
         skid = headers.get('skid')
         if skid:
             return key.get_by_kid(skid)
         skey = key.pick_random_key(headers["alg"])
-        recipient.add_header("skid", skey.kid)
-        return skey
+        if skey is not None:
+            recipient.add_header("skid", skey.kid)
+            return skey
+        raise ValueError("Invalid key")
     return key

@@ -3,10 +3,10 @@ from joserfc.jwe import decrypt_compact, decrypt_json
 from joserfc.jwk import RSAKey, OctKey, KeySet
 from joserfc.util import json_b64encode, urlsafe_b64encode, to_bytes
 from joserfc.rfc7516.registry import JWERegistry, default_registry as registry
-from joserfc.rfc7516.models import CompactEncryption, JSONEncryption
+from joserfc.rfc7516.models import CompactEncryption, GeneralJSONEncryption
 from joserfc.rfc7516.message import perform_encrypt
 from joserfc.rfc7516.compact import represent_compact
-from joserfc.rfc7516.json import represent_json
+from joserfc.rfc7516.json import represent_general_json
 from tests.base import load_key
 
 
@@ -336,12 +336,12 @@ class TestCompactExamples(TestCase):
             "k": "GawgguFyGrWKav7AX4VKUg"
         }, {"kid": "7"})
         payload = b"Live long and prosper."
-        obj = JSONEncryption(protected, payload, shared_header)
+        obj = GeneralJSONEncryption(protected, payload, shared_header)
         obj.add_recipient(recipient1, key1)
         obj.add_recipient(recipient2, key2)
         _registry = JWERegistry(algorithms=['RSA1_5', 'A128KW', 'A128CBC-HS256'])
         perform_encrypt(obj, _registry)
-        expected = represent_json(obj)
+        expected = represent_general_json(obj)
 
         keys = KeySet([key1, key2])
         jwe_data = decrypt_json(expected, keys, registry=_registry)

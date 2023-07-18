@@ -1,8 +1,7 @@
 import typing as t
 
 __all__ = [
-    "JSONSerialization",
-    "FlattenJSONSerialization",
+    "FlattenedJSONSerialization",
     "GeneralJSONSerialization",
 ]
 
@@ -22,15 +21,12 @@ class GeneralJSONSerialization(t.TypedDict, total=False):
     recipients: t.List[JSONRecipientDict]
 
 
-class FlattenJSONSerialization(t.TypedDict, total=False):
+class FlattenedJSONSerialization(t.TypedDict, total=False):
     protected: str
     unprotected: t.Dict[str, t.Any]
-    header: t.Dict[str, t.Any]
-    encrypted_key: str
     iv: str
     aad: str
     ciphertext: str
     tag: str
-
-
-JSONSerialization = t.Union[GeneralJSONSerialization, FlattenJSONSerialization]
+    header: t.Dict[str, t.Any]
+    encrypted_key: str
