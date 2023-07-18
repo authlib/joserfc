@@ -9,6 +9,7 @@
     .. _`Section 3`: https://tools.ietf.org/html/rfc7518#section-3
 """
 
+import typing as t
 import hmac
 import hashlib
 from cryptography.hazmat.primitives import hashes
@@ -184,7 +185,7 @@ class RSAPSSAlgModel(JWSAlgModel):
             return False
 
 
-JWS_ALGORITHMS = [
+JWS_ALGORITHMS: t.List[JWSAlgModel] = [
     NoneAlgModel(),  # none
     HMACAlgModel(256, True),  # HS256
     HMACAlgModel(384),  # HS384

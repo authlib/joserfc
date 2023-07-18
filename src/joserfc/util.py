@@ -52,5 +52,5 @@ def json_b64encode(text, charset="utf-8") -> bytes:
     return urlsafe_b64encode(to_bytes(text, charset))
 
 
-def json_b64decode(text, charset="utf-8") -> dict:
+def json_b64decode(text, charset="utf-8"):
     return json.loads(urlsafe_b64decode(to_bytes(text, charset)))

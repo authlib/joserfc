@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+import typing as t
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.rsa import (
     generate_private_key,
@@ -15,8 +15,20 @@ from cryptography.hazmat.backends import default_backend
 from ..registry import KeyParameter
 from ..rfc7517.models import AsymmetricKey
 from ..rfc7517.pem import CryptographyBinding
-from ..rfc7517.types import KeyDict, KeyParameters
+from ..rfc7517.types import KeyParameters
 from ..util import int_to_base64, base64_to_int
+
+
+KeyDict = t.TypedDict("KeyDict", {
+    "n": str,
+    "e": str,
+    "d": str,
+    "p": str,
+    "q": str,
+    "dp": str,
+    "dq": str,
+    "qi": str,
+}, total=False)
 
 
 class RSABinding(CryptographyBinding):
@@ -28,20 +40,20 @@ class RSABinding(CryptographyBinding):
             # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
             raise ValueError('"oth" is not supported yet')
 
-        public_numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))  # type: ignore
+        public_numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))
 
         if has_all_prime_factors(obj):
             numbers = RSAPrivateNumbers(
-                d=base64_to_int(obj["d"]),  # type: ignore
-                p=base64_to_int(obj["p"]),  # type: ignore
-                q=base64_to_int(obj["q"]),  # type: ignore
-                dmp1=base64_to_int(obj["dp"]),  # type: ignore
-                dmq1=base64_to_int(obj["dq"]),  # type: ignore
-                iqmp=base64_to_int(obj["qi"]),  # type: ignore
+                d=base64_to_int(obj["d"]),
+                p=base64_to_int(obj["p"]),
+                q=base64_to_int(obj["q"]),
+                dmp1=base64_to_int(obj["dp"]),
+                dmq1=base64_to_int(obj["dq"]),
+                iqmp=base64_to_int(obj["qi"]),
                 public_numbers=public_numbers,
             )
         else:
-            d = base64_to_int(obj["d"])  # type: ignore
+            d = base64_to_int(obj["d"])
             p, q = rsa_recover_prime_factors(public_numbers.n, d, public_numbers.e)
             numbers = RSAPrivateNumbers(
                 d=d,
@@ -56,7 +68,7 @@ class RSABinding(CryptographyBinding):
         return numbers.private_key(default_backend())
 
     @staticmethod
-    def export_private_key(key: RSAPrivateKey) -> Dict[str, str]:
+    def export_private_key(key: RSAPrivateKey) -> KeyDict:
         numbers = key.private_numbers()
         return {
             "n": int_to_base64(numbers.public_numbers.n),
@@ -71,11 +83,11 @@ class RSABinding(CryptographyBinding):
 
     @staticmethod
     def import_public_key(obj: KeyDict) -> RSAPublicKey:
-        numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))  # type: ignore
+        numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))
         return numbers.public_key(default_backend())
 
     @staticmethod
-    def export_public_key(key: RSAPublicKey) -> Dict[str, str]:
+    def export_public_key(key: RSAPublicKey) -> t.Dict[str, str]:
         numbers = key.public_numbers()
         return {"n": int_to_base64(numbers.n), "e": int_to_base64(numbers.e)}
 
@@ -108,7 +120,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         return self.raw_value
 
     @property
-    def private_key(self) -> Optional[RSAPrivateKey]:
+    def private_key(self) -> t.Optional[RSAPrivateKey]:
         if isinstance(self.raw_value, RSAPrivateKey):
             return self.raw_value
         return None
@@ -117,7 +129,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
     def generate_key(
             cls,
             key_size: int = 2048,
-            parameters: Optional[KeyParameters] = None,
+            parameters: t.Optional[KeyParameters] = None,
             private: bool = True) -> "RSAKey":
         if key_size < 512:
             raise ValueError("key_size must not be less than 512")

@@ -108,7 +108,7 @@ class GCMEncModel(JWEEncModel):
             raise DecodeError(str(error))
 
 
-JWE_ENC_MODELS = [
+JWE_ENC_MODELS: t.List[JWEEncModel] = [
     CBCHS2EncModel(128, 256),  # A128CBC-HS256
     CBCHS2EncModel(192, 384),  # A192CBC-HS384
     CBCHS2EncModel(256, 512),  # A256CBC-HS512

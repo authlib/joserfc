@@ -18,7 +18,7 @@ from .oct_key import OctKey
 from .rsa_key import RSAKey
 from ..rfc7517.models import CurveKey
 from ..rfc7516.models import (
-    KeyManagement,
+    JWEAlgModel,
     JWEDirectEncryption,
     JWEKeyEncryption,
     JWEKeyWrapping,
@@ -287,7 +287,7 @@ A256KW = AESAlgModel(256, True)  # A256KW, Recommended
 
 
 #: https://www.rfc-editor.org/rfc/rfc7518#section-4.1
-JWE_ALG_MODELS: t.List[KeyManagement] = [
+JWE_ALG_MODELS: t.List[JWEAlgModel] = [
     # Avoid all RSA-PKCS1 v1.5 encryption algorithms ([RFC8017], Section 7.2),
     # preferring RSAES-OAEP ([RFC8017], Section 7.1).
     # https://www.rfc-editor.org/rfc/rfc8725#section-3.2

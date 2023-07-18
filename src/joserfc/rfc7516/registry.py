@@ -16,11 +16,6 @@ AlgorithmsDict = t.TypedDict("AlgorithmsDict", {
     "enc": t.Dict[str, JWEEncModel],
     "zip": t.Dict[str, JWEZipModel],
 })
-AlgorithmNamesDict = t.TypedDict("AlgorithmNamesDict", {
-    "alg": t.List[str],
-    "enc": t.List[str],
-    "zip": t.List[str],
-}, total=False)
 
 
 class JWERegistry:
