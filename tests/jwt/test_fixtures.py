@@ -21,6 +21,7 @@ class TestJWTFixtures(TestFixture):
             self.assertEqual(value, data["token"])
 
         obj = jwt.decode(value, public_key, algorithms=algorithms)
+        self.assertEqual(obj.header["typ"], "JWT")
         self.assertEqual(obj.claims, claims)
 
 
