@@ -1,5 +1,5 @@
 from unittest import TestCase
-from joserfc import jws, jwt
+from joserfc import jws, jwe, jwt
 from joserfc.jwk import OctKey
 from joserfc.errors import (
     InvalidPayloadError,
@@ -37,3 +37,43 @@ class TestJWT(TestCase):
 
         token = jwt.decode(result, key)
         self.assertEqual(token.claims, claims)
+
+    def test_using_registry(self):
+        key = OctKey.generate_key(128)
+        value1 = jwt.encode(
+            {"alg": "HS256"},
+            {"sub": "a"},
+            key, registry=jws.JWSRegistry()
+        )
+        jwt.decode(value1, key, registry=jws.JWSRegistry())
+        value2 = jwt.encode(
+            {"alg": "A128KW", "enc": "A128GCM"},
+            {"sub": "a"},
+            key, registry=jwe.JWERegistry()
+        )
+        jwt.decode(value2, key, registry=jwe.JWERegistry())
+
+        self.assertRaises(
+            AssertionError,
+            jwt.encode,
+            {"alg": "HS256"},
+            {"sub": "a"},
+            key, registry=jwe.JWERegistry(),
+        )
+        self.assertRaises(
+            AssertionError,
+            jwt.encode,
+            {"alg": "A128KW", "enc": "A128GCM"},
+            {"sub": "a"},
+            key, registry=jws.JWSRegistry(),
+        )
+        self.assertRaises(
+            AssertionError,
+            jwt.decode,
+            value1, key, registry=jwe.JWERegistry(),
+        )
+        self.assertRaises(
+            AssertionError,
+            jwt.decode,
+            value2, key, registry=jws.JWSRegistry(),
+        )

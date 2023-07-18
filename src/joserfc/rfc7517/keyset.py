@@ -1,15 +1,21 @@
 import typing as t
 import random
-from .models import BaseKey, SymmetricKey
+from .models import BaseKey as Key, SymmetricKey
 from .types import KeySetDict, KeyParameters
 from .registry import JWKRegistry
 
 
 class KeySet:
-    def __init__(self, keys: t.List[BaseKey]):
+    #: keys in the key set
+    keys: t.List[Key]
+
+    registry_cls: t.ClassVar[t.Type[JWKRegistry]]
+    algorithm_keys: t.ClassVar[t.Dict[str, t.List[str]]] = {}
+
+    def __init__(self, keys: t.List[Key]):
         self.keys = keys
 
-    def __iter__(self) -> t.Iterator[BaseKey]:
+    def __iter__(self) -> t.Iterator[Key]:
         return iter(self.keys)
 
     def as_dict(self, private=None, **params):
@@ -24,7 +30,7 @@ class KeySet:
                 keys.append(key.as_dict(private=private, **params))
         return {"keys": keys}
 
-    def get_by_kid(self, kid: t.Optional[str] = None) -> BaseKey:
+    def get_by_kid(self, kid: t.Optional[str] = None) -> Key:
         if kid is None and len(self.keys) == 1:
             return self.keys[0]
 
@@ -33,8 +39,8 @@ class KeySet:
                 return key
         raise ValueError(f'No key for kid: "{kid}"')
 
-    def pick_random_key(self, algorithm: str) -> t.Optional[BaseKey]:
-        key_types = JWKRegistry.algorithm_key_types.get(algorithm)
+    def pick_random_key(self, algorithm: str) -> t.Optional[Key]:
+        key_types = self.algorithm_keys.get(algorithm)
         if key_types:
             keys = [k for k in self.keys if k.key_type in key_types]
         else:
@@ -51,7 +57,7 @@ class KeySet:
         keys = []
 
         for data in value["keys"]:
-            keys.append(JWKRegistry.import_key(data, parameters=parameters))
+            keys.append(cls.registry_cls.import_key(data, parameters=parameters))
 
         return cls(keys)
 
@@ -66,7 +72,7 @@ class KeySet:
 
         keys = []
         for _ in range(count):
-            key = JWKRegistry.generate_key(key_type, crv_or_size, parameters, private)
+            key = cls.registry_cls.generate_key(key_type, crv_or_size, parameters, private)
             keys.append(key)
 
         return cls(keys)
