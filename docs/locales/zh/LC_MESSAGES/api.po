@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"POT-Creation-Date: 2023-07-18 21:27+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -48,26 +48,32 @@ msgstr ""
 #: joserfc.jwe.decrypt_compact joserfc.jwe.decrypt_json
 #: joserfc.jwe.encrypt_compact joserfc.jwe.encrypt_json joserfc.jwk.guess_key
 #: joserfc.jws.deserialize_compact joserfc.jws.deserialize_json
-#: joserfc.jws.serialize_compact joserfc.jws.validate_compact
-#: joserfc.jws.validate_json joserfc.jwt.Token joserfc.jwt.decode
-#: joserfc.jwt.encode joserfc.rfc7515.compact.extract_compact
-#: joserfc.rfc7515.json.extract_json joserfc.rfc7515.model.JWSAlgModel.sign
+#: joserfc.jws.serialize_compact joserfc.jws.validate_compact joserfc.jwt.Token
+#: joserfc.jwt.decode joserfc.jwt.encode
+#: joserfc.rfc7515.compact.extract_compact
+#: joserfc.rfc7515.model.JWSAlgModel.sign
 #: joserfc.rfc7515.model.JWSAlgModel.verify
 #: joserfc.rfc7515.registry.JWSRegistry
 #: joserfc.rfc7515.registry.JWSRegistry.get_alg
 #: joserfc.rfc7516.models.CompactEncryption.attach_recipient
-#: joserfc.rfc7516.models.JSONEncryption.add_recipient
+#: joserfc.rfc7516.models.FlattenedJSONEncryption.add_recipient
+#: joserfc.rfc7516.models.GeneralJSONEncryption.add_recipient
 #: joserfc.rfc7516.registry.JWERegistry
 #: joserfc.rfc7516.registry.JWERegistry.get_alg
 #: joserfc.rfc7516.registry.JWERegistry.get_enc
 #: joserfc.rfc7516.registry.JWERegistry.get_zip
+#: joserfc.rfc7517.models.BaseKey.as_dict
+#: joserfc.rfc7517.models.BaseKey.check_alg
+#: joserfc.rfc7517.models.BaseKey.check_key_op
+#: joserfc.rfc7517.models.BaseKey.check_use
 #: joserfc.rfc7517.registry.JWKRegistry.import_key
 #: joserfc.rfc7518.oct_key.OctKey.generate_key of
 msgid "Parameters"
 msgstr ""
 
 #: joserfc.rfc7516.models.CompactEncryption.attach_recipient:4
-#: joserfc.rfc7516.models.JSONEncryption.add_recipient:5 of
+#: joserfc.rfc7516.models.FlattenedJSONEncryption.add_recipient:5
+#: joserfc.rfc7516.models.GeneralJSONEncryption.add_recipient:5 of
 msgid "an instance of a key, e.g. (OctKey, RSAKey, ECKey, and etc)"
 msgstr ""
 
@@ -76,49 +82,68 @@ msgid "extra header in dict"
 msgstr ""
 
 #: ../../docstring joserfc.jwe.CompactEncryption.plaintext:1
-#: joserfc.jwe.JSONEncryption.plaintext:1 of
+#: joserfc.jwe.FlattenedJSONEncryption.plaintext:1
+#: joserfc.jwe.GeneralJSONEncryption.plaintext:1 of
 msgid "the plaintext in bytes"
 msgstr ""
 
 #: ../../docstring joserfc.jwe.CompactEncryption.protected:1
-#: joserfc.jwe.JSONEncryption.protected:1 of
+#: joserfc.jwe.FlattenedJSONEncryption.protected:1
+#: joserfc.jwe.GeneralJSONEncryption.protected:1 of
 msgid "protected header in dict"
 msgstr ""
 
-#: joserfc.rfc7516.models.JSONEncryption:1 of
+#: joserfc.rfc7516.models.FlattenedJSONEncryption:1 of
 msgid ""
-"An object to represent the JWE JSON Serialization. It is used by "
-"``encrypt_json``, and it is usually returned by ``decrypt_json`` method."
+"An object to represent the JWE Flattened JSON Serialization. It is used "
+"by ``encrypt_json``, and it is usually returned by ``decrypt_json`` "
+"method."
 msgstr ""
 
-#: joserfc.rfc7516.models.JSONEncryption:4 of
-msgid "To construct an object of ``JSONEncryption``:"
+#: joserfc.rfc7516.models.FlattenedJSONEncryption:4 of
+msgid "To construct an object of ``FlattenedJSONEncryption``:"
 msgstr ""
 
-#: ../../docstring joserfc.jwe.JSONEncryption.aad:1 of
+#: ../../docstring joserfc.jwe.FlattenedJSONEncryption.aad:1
+#: joserfc.jwe.GeneralJSONEncryption.aad:1 of
 msgid "an optional additional authenticated data"
 msgstr ""
 
-#: joserfc.rfc7516.models.JSONEncryption.add_recipient:1 of
+#: joserfc.rfc7516.models.FlattenedJSONEncryption.add_recipient:1
+#: joserfc.rfc7516.models.GeneralJSONEncryption.add_recipient:1 of
 msgid ""
 "Add a recipient to the JWE JSON Serialization. Please add a key that "
 "comply with the \"alg\" to this recipient."
 msgstr ""
 
-#: joserfc.rfc7516.models.JSONEncryption.add_recipient:4 of
+#: joserfc.rfc7516.models.FlattenedJSONEncryption.add_recipient:4
+#: joserfc.rfc7516.models.GeneralJSONEncryption.add_recipient:4 of
 msgid "recipient's own (unprotected) header"
 msgstr ""
 
-#: ../../docstring joserfc.jwe.JSONEncryption.flattened:1 of
+#: ../../docstring joserfc.jwe.FlattenedJSONEncryption.flattened:1
+#: joserfc.jwe.GeneralJSONEncryption.flattened:1 of
 msgid "represents if the object is in flatten syntax"
 msgstr ""
 
-#: ../../docstring joserfc.jwe.JSONEncryption.recipients:1 of
+#: ../../docstring joserfc.jwe.FlattenedJSONEncryption.recipients:1
+#: joserfc.jwe.GeneralJSONEncryption.recipients:1 of
 msgid "a list of recipients"
 msgstr ""
 
-#: ../../docstring joserfc.jwe.JSONEncryption.unprotected:1 of
+#: ../../docstring joserfc.jwe.FlattenedJSONEncryption.unprotected:1
+#: joserfc.jwe.GeneralJSONEncryption.unprotected:1 of
 msgid "unprotected header in dict"
+msgstr ""
+
+#: joserfc.rfc7516.models.GeneralJSONEncryption:1 of
+msgid ""
+"An object to represent the JWE General JSON Serialization. It is used by "
+"``encrypt_json``, and it is usually returned by ``decrypt_json`` method."
+msgstr ""
+
+#: joserfc.rfc7516.models.GeneralJSONEncryption:4 of
+msgid "To construct an object of ``GeneralJSONEncryption``:"
 msgstr ""
 
 #: joserfc.rfc7516.registry.JWERegistry:1 of
@@ -190,21 +215,21 @@ msgstr ""
 msgid "a flexible private key to decrypt the serialization"
 msgstr ""
 
-#: joserfc.jwe.decrypt_compact:16 joserfc.jwe.decrypt_json:5
-#: joserfc.jwe.encrypt_compact:13 joserfc.jwe.encrypt_json:21
+#: joserfc.jwe.decrypt_compact:16 joserfc.jwe.decrypt_json:6
+#: joserfc.jwe.encrypt_compact:13 joserfc.jwe.encrypt_json:22
 #: joserfc.jws.deserialize_compact:16 joserfc.jws.deserialize_json:5
 #: joserfc.jws.serialize_compact:14 joserfc.jws.validate_compact:6
-#: joserfc.jws.validate_json:6 joserfc.jwt.decode:6 joserfc.jwt.encode:6 of
+#: joserfc.jwt.decode:6 joserfc.jwt.encode:6 of
 msgid "a list of allowed algorithms"
 msgstr ""
 
-#: joserfc.jwe.decrypt_compact:17 joserfc.jwe.decrypt_json:6
-#: joserfc.jwe.encrypt_compact:14 joserfc.jwe.encrypt_json:22 of
+#: joserfc.jwe.decrypt_compact:17 joserfc.jwe.decrypt_json:7
+#: joserfc.jwe.encrypt_compact:14 joserfc.jwe.encrypt_json:23 of
 msgid "a JWERegistry to use"
 msgstr ""
 
-#: joserfc.jwe.decrypt_compact:18 joserfc.jwe.decrypt_json:7
-#: joserfc.jwe.encrypt_compact:15 joserfc.jwe.encrypt_json:23 of
+#: joserfc.jwe.decrypt_compact:18 joserfc.jwe.decrypt_json:8
+#: joserfc.jwe.encrypt_compact:15 joserfc.jwe.encrypt_json:24 of
 msgid "only required when using ECDH-1PU"
 msgstr ""
 
@@ -223,20 +248,20 @@ msgstr ""
 
 #: joserfc.jwe.decrypt_json:1 of
 msgid ""
-"Decrypt the JWE JSON Serialization (in dict) to a ``JSONEncryption`` "
-"object."
+"Decrypt the JWE JSON Serialization (in dict) to a "
+"``GeneralJSONEncryption`` or ``FlattenedJSONEncryption`` object."
 msgstr ""
 
-#: joserfc.jwe.decrypt_json:3 joserfc.jwe.encrypt_json:24 of
+#: joserfc.jwe.decrypt_json:4 joserfc.jwe.encrypt_json:25 of
 msgid "JWE JSON Serialization in dict"
 msgstr ""
 
-#: joserfc.jwe.decrypt_json:4 of
+#: joserfc.jwe.decrypt_json:5 of
 msgid "a flexible private key to decrypt the CEK"
 msgstr ""
 
-#: joserfc.jwe.decrypt_json:8 joserfc.jwe.encrypt_json:19 of
-msgid "an instance of ``JSONEncryption``"
+#: joserfc.jwe.decrypt_json:9 joserfc.jwe.encrypt_json:20 of
+msgid "an instance of ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption``"
 msgstr ""
 
 #: joserfc.jwe.encrypt_compact:1 of
@@ -254,7 +279,7 @@ msgstr ""
 msgid "the content (message) to be encrypted"
 msgstr ""
 
-#: joserfc.jwe.encrypt_compact:12 joserfc.jwe.encrypt_json:20 of
+#: joserfc.jwe.encrypt_compact:12 joserfc.jwe.encrypt_json:21 of
 msgid "a public key used to encrypt the CEK"
 msgstr ""
 
@@ -272,7 +297,8 @@ msgstr ""
 #: joserfc.jwe.encrypt_json:5 of
 msgid ""
 "When calling this method, developers MUST construct an instance of a "
-"``JSONEncryption`` object. Here is an example::"
+"``GeneralJSONEncryption`` or ``FlattenedJSONEncryption`` object. Here is "
+"an example::"
 msgstr ""
 
 #: ../../api/jwk.rst:2
@@ -283,6 +309,79 @@ msgstr ""
 msgid ""
 "This part of the documentation covers all the interfaces of "
 "``joserfc.jwk``."
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.as_dict:1 of
+msgid ""
+"Output this key to a JWK format (in dict). By default, it will return the"
+" ``dict_value`` of this key."
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.as_dict:4 of
+msgid "determine whether this method should output private key or not"
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.as_dict:5 of
+msgid "other parameters added into this key"
+msgstr ""
+
+#: joserfc.jws.deserialize_json joserfc.jwt.decode
+#: joserfc.rfc7515.compact.extract_compact
+#: joserfc.rfc7517.models.BaseKey.as_dict
+#: joserfc.rfc7517.models.BaseKey.check_alg
+#: joserfc.rfc7517.models.BaseKey.check_key_op
+#: joserfc.rfc7517.models.BaseKey.check_use of
+msgid "raise"
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.as_dict:6 of
+msgid "ValueError"
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_alg:1 of
+msgid "Check if this key supports the given \"alg\"."
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_alg:3 of
+msgid "the algorithm this key is intended to be used, e.g. \"HS256\", \"ECDH-EC\""
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_alg:4 of
+msgid "UnsupportedKeyAlgorithmError"
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_key_op:1 of
+msgid "Check if the given key_op is supported by this key."
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_key_op:3 of
+msgid "key operation value, such as \"sign\", \"encrypt\"."
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_key_op:4 of
+msgid "UnsupportedKeyOperationError"
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_use:1 of
+msgid "Check if this key supports the given \"use\"."
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_use:3 of
+msgid "this key is used for, e.g. \"sig\", \"enc\""
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.check_use:4 of
+msgid "UnsupportedKeyUseError"
+msgstr ""
+
+#: joserfc.jwk.BaseKey.dict_value:1 of
+msgid "Property of the Key in Dict (JSON)."
+msgstr ""
+
+#: joserfc.rfc7517.models.BaseKey.thumbprint:1 of
+msgid ""
+"Call this method will generate the thumbprint with algorithm defined in "
+"RFC7638."
 msgstr ""
 
 #: ../../docstring joserfc.jwk.ECKey.value_registry:1 of
@@ -414,12 +513,6 @@ msgid ""
 "represent the JWS instance."
 msgstr ""
 
-#: joserfc.rfc7515.model.JSONSignature:1 of
-msgid ""
-"JSON Web Signature object for JSON mode. This object is used to represent"
-" the JWS instance."
-msgstr ""
-
 #: joserfc.rfc7515.model.JWSAlgModel:1 of
 msgid ""
 "Interface for JWS algorithm. JWA specification (RFC7518) SHOULD implement"
@@ -489,13 +582,12 @@ msgid "a string (or bytes) of the JWS Compact Serialization"
 msgstr ""
 
 #: joserfc.jws.deserialize_compact:15 joserfc.jws.deserialize_json:4
-#: joserfc.jws.validate_compact:5 joserfc.jws.validate_json:5 of
+#: joserfc.jws.validate_compact:5 of
 msgid "a flexible public key to verify the signature"
 msgstr ""
 
 #: joserfc.jws.deserialize_compact:17 joserfc.jws.deserialize_json:6
-#: joserfc.jws.serialize_compact:15 joserfc.jws.validate_compact:7
-#: joserfc.jws.validate_json:7 of
+#: joserfc.jws.serialize_compact:15 joserfc.jws.validate_compact:7 of
 msgid "a JWSRegistry to use"
 msgstr ""
 
@@ -513,6 +605,10 @@ msgstr ""
 
 #: joserfc.jws.deserialize_json:7 of
 msgid "object of the SignatureData"
+msgstr ""
+
+#: joserfc.jws.deserialize_json:8 of
+msgid "ValueError or BadSignatureError"
 msgstr ""
 
 #: joserfc.jws.detach_content:1 of
@@ -538,21 +634,8 @@ msgstr ""
 msgid "JWS in bytes"
 msgstr ""
 
-#: joserfc.jws.validate_compact joserfc.jws.validate_json joserfc.jwt.decode
-#: joserfc.rfc7515.compact.extract_compact of
-msgid "raise"
-msgstr ""
-
 #: joserfc.rfc7515.compact.extract_compact:4 of
 msgid "DecodeError"
-msgstr ""
-
-#: joserfc.rfc7515.json.extract_json:1 of
-msgid "Extract the JWS JSON Serialization from dict to object."
-msgstr ""
-
-#: joserfc.rfc7515.json.extract_json:3 of
-msgid "JWS in dict"
 msgstr ""
 
 #: joserfc.jws.serialize_compact:1 of
@@ -624,20 +707,6 @@ msgstr ""
 msgid "object of the JWS Compact Serialization"
 msgstr ""
 
-#: joserfc.jws.validate_compact:8 joserfc.jws.validate_json:8 of
-msgid "ValueError or BadSignatureError"
-msgstr ""
-
-#: joserfc.jws.validate_json:1 of
-msgid ""
-"Validate the JWS JSON Serialization with the given key. This method is "
-"usually used together with ``extract_json``."
-msgstr ""
-
-#: joserfc.jws.validate_json:4 of
-msgid "object of the JWS JSON Serialization"
-msgstr ""
-
 #: ../../api/jwt.rst:2
 msgid "JWT API"
 msgstr ""
@@ -646,12 +715,6 @@ msgstr ""
 msgid ""
 "This part of the documentation covers all the interfaces of "
 "``joserfc.jwt``."
-msgstr ""
-
-#: joserfc.rfc7519.registry.ClaimsOption:1 of
-msgid ""
-"http://openid.net/specs/openid-connect-"
-"core-1_0.html#IndividualClaimsRequests"
 msgstr ""
 
 #: joserfc.rfc7519.registry.JWTClaimsRegistry.validate_aud:1 of
@@ -759,4 +822,3 @@ msgstr ""
 #: joserfc.jwt.encode:5 of
 msgid "key used to sign the signature"
 msgstr ""
-

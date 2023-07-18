@@ -148,7 +148,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
 
     def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> KeyDict:
         """Output this key to a JWK format (in dict). By default, it will return
-        the :property:`dict_value` of this key.
+        the ``dict_value`` of this key.
 
         :param private: determine whether this method should output private key or not
         :param params: other parameters added into this key

@@ -232,7 +232,8 @@ a list of members to construct a general serialization:
     # general
     jws.serialize_json([member], payload, private_key)
 
-The returned value from ``deserialize_json`` is an object of :class:`jws.JSONSignature`,
+The returned value from ``deserialize_json`` is an object of
+:class:`jws.GeneralJSONSignature` or :class:`jws.FlattenedJSONSignature`,
 you can tell if the signature is flattened or general with ``obj.flattened``:
 
 .. code-block:: python

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"POT-Creation-Date: 2023-07-18 21:24+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 
-#: ../../guide/algorithms.rst:6 ../../guide/jws.rst:247
+#: ../../guide/algorithms.rst:6 ../../guide/jws.rst:248
 #: ../../guide/registry.rst:21
 msgid "Algorithms"
 msgstr "算法"
@@ -29,8 +29,8 @@ msgid ""
 "This documentation describes the algorithms to be used with JSON Web "
 "Signature (JWS), JSON Web Encryption (JWE), and JSON Web Key (JWK)."
 msgstr ""
-"本文档描述了在 JSON Web Signature (JWS)、JSON Web Encryption (JWE) 和 "
-"JSON Web Key (JWK) 中使用的算法。"
+"本文档描述了在 JSON Web Signature (JWS)、JSON Web Encryption (JWE) 和 JSON Web Key"
+" (JWK) 中使用的算法。"
 
 #: ../../guide/algorithms.rst:13 ../../guide/jwk.rst:6
 msgid "JSON Web Key"
@@ -44,29 +44,25 @@ msgstr "JSON Web Key（JWK）的算法包括："
 msgid ""
 ":ref:`OctKey` : accepts key size in bits, which means the ``key_size`` "
 "MUST be dividable by 8."
-msgstr ""
-":ref:`OctKey` ：接受以比特为单位的密钥大小，这意味着 ``key_size`` 必须是 8 的倍数。"
+msgstr ":ref:`OctKey` ：接受以比特为单位的密钥大小，这意味着 ``key_size`` 必须是 8 的倍数。"
 
 #: ../../guide/algorithms.rst:18
 msgid ""
 ":ref:`RSAKey` : accepts key size in bits, ``key_size`` MUST ``>=512`` and"
 " dividable by 8."
-msgstr ""
-":ref:`RSAKey` ：接受以比特为单位的密钥大小，``key_size`` 必须 ``>=512`` 且为 8 的倍数。"
+msgstr ":ref:`RSAKey` ：接受以比特为单位的密钥大小，``key_size`` 必须 ``>=512`` 且为 8 的倍数。"
 
 #: ../../guide/algorithms.rst:19
 msgid ""
 ":ref:`ECKey` : accepts ``crv`` with ``P-256``, ``P-384``, ``P-521``, and "
 "``secp256k1``."
-msgstr ""
-":ref:`ECKey` ：接受 ``crv`` 为 ``P-256``、``P-384``、``P-521`` 和 ``secp256k1``。"
+msgstr ":ref:`ECKey` ：接受 ``crv`` 为 ``P-256``、``P-384``、``P-521`` 和 ``secp256k1``。"
 
 #: ../../guide/algorithms.rst:20
 msgid ""
 ":ref:`OKPKey` : accepts ``crv`` with ``Ed25519``, ``Ed448``, ``X25519``, "
 "and ``X448``."
-msgstr ""
-":ref:`OKPKey` ：接受 ``crv`` 为 ``Ed25519``、``Ed448``、``X25519`` 和 ``X448``。"
+msgstr ":ref:`OKPKey` ：接受 ``crv`` 为 ``Ed25519``、``Ed448``、``X25519`` 和 ``X448``。"
 
 #: ../../guide/algorithms.rst:25 ../../guide/jws.rst:6
 msgid "JSON Web Signature"
@@ -76,12 +72,10 @@ msgstr ""
 msgid ""
 "``joserfc.jws`` module supports algorithms from RFC7518, RFC8037, and "
 "RFC8812. You MUST specify the correct key type for each algorithm."
-msgstr ""
-"``joserfc.jws`` 模块支持 RFC7518、RFC8037 和 RFC8812 中的算法。"
-"您必须为每个算法指定正确的密钥类型。"
+msgstr "``joserfc.jws`` 模块支持 RFC7518、RFC8037 和 RFC8812 中的算法。您必须为每个算法指定正确的密钥类型。"
 
 #: ../../guide/algorithms.rst:31 ../../guide/algorithms.rst:62
-#: ../../guide/jws.rst:253
+#: ../../guide/jws.rst:254
 msgid "Algorithm name"
 msgstr "算法名"
 
@@ -90,11 +84,11 @@ msgid "Key Type"
 msgstr "密钥类型"
 
 #: ../../guide/algorithms.rst:31 ../../guide/algorithms.rst:62
-#: ../../guide/jws.rst:253
+#: ../../guide/jws.rst:254
 msgid "Recommended"
 msgstr "是推荐"
 
-#: ../../guide/algorithms.rst:33 ../../guide/jws.rst:255
+#: ../../guide/algorithms.rst:33 ../../guide/jws.rst:256
 msgid "none"
 msgstr ""
 
@@ -118,14 +112,14 @@ msgstr ""
 #: ../../guide/algorithms.rst:75 ../../guide/algorithms.rst:76
 #: ../../guide/algorithms.rst:77 ../../guide/algorithms.rst:78
 #: ../../guide/algorithms.rst:79 ../../guide/algorithms.rst:80
-#: ../../guide/jws.rst:255 ../../guide/jws.rst:257 ../../guide/jws.rst:258
-#: ../../guide/jws.rst:260 ../../guide/jws.rst:261 ../../guide/jws.rst:263
-#: ../../guide/jws.rst:264 ../../guide/jws.rst:265 ../../guide/jws.rst:266
-#: ../../guide/jws.rst:267 ../../guide/jws.rst:268 ../../guide/jws.rst:269
+#: ../../guide/jws.rst:256 ../../guide/jws.rst:258 ../../guide/jws.rst:259
+#: ../../guide/jws.rst:261 ../../guide/jws.rst:262 ../../guide/jws.rst:264
+#: ../../guide/jws.rst:265 ../../guide/jws.rst:266 ../../guide/jws.rst:267
+#: ../../guide/jws.rst:268 ../../guide/jws.rst:269 ../../guide/jws.rst:270
 msgid ":bdg-danger:`No`"
 msgstr ":bdg-danger:`否`"
 
-#: ../../guide/algorithms.rst:34 ../../guide/jws.rst:256
+#: ../../guide/algorithms.rst:34 ../../guide/jws.rst:257
 msgid "HS256"
 msgstr ""
 
@@ -137,15 +131,15 @@ msgstr ""
 msgid ":bdg-success:`Yes`"
 msgstr ":bdg-success:`是`"
 
-#: ../../guide/algorithms.rst:35 ../../guide/jws.rst:257
+#: ../../guide/algorithms.rst:35 ../../guide/jws.rst:258
 msgid "HS384"
 msgstr ""
 
-#: ../../guide/algorithms.rst:36 ../../guide/jws.rst:258
+#: ../../guide/algorithms.rst:36 ../../guide/jws.rst:259
 msgid "HS512"
 msgstr ""
 
-#: ../../guide/algorithms.rst:37 ../../guide/jws.rst:259
+#: ../../guide/algorithms.rst:37 ../../guide/jws.rst:260
 msgid "RS256"
 msgstr ""
 
@@ -159,15 +153,15 @@ msgstr ""
 msgid "RSAKey"
 msgstr ""
 
-#: ../../guide/algorithms.rst:38 ../../guide/jws.rst:260
+#: ../../guide/algorithms.rst:38 ../../guide/jws.rst:261
 msgid "RS384"
 msgstr ""
 
-#: ../../guide/algorithms.rst:39 ../../guide/jws.rst:261
+#: ../../guide/algorithms.rst:39 ../../guide/jws.rst:262
 msgid "RS512"
 msgstr ""
 
-#: ../../guide/algorithms.rst:40 ../../guide/jws.rst:262
+#: ../../guide/algorithms.rst:40 ../../guide/jws.rst:263
 msgid "ES256"
 msgstr ""
 
@@ -179,27 +173,27 @@ msgstr ""
 msgid "ECKey"
 msgstr ""
 
-#: ../../guide/algorithms.rst:41 ../../guide/jws.rst:263
+#: ../../guide/algorithms.rst:41 ../../guide/jws.rst:264
 msgid "ES384"
 msgstr ""
 
-#: ../../guide/algorithms.rst:42 ../../guide/jws.rst:264
+#: ../../guide/algorithms.rst:42 ../../guide/jws.rst:265
 msgid "ES512"
 msgstr ""
 
-#: ../../guide/algorithms.rst:43 ../../guide/jws.rst:265
+#: ../../guide/algorithms.rst:43 ../../guide/jws.rst:266
 msgid "PS256"
 msgstr ""
 
-#: ../../guide/algorithms.rst:44 ../../guide/jws.rst:266
+#: ../../guide/algorithms.rst:44 ../../guide/jws.rst:267
 msgid "PS384"
 msgstr ""
 
-#: ../../guide/algorithms.rst:45 ../../guide/jws.rst:267
+#: ../../guide/algorithms.rst:45 ../../guide/jws.rst:268
 msgid "PS512"
 msgstr ""
 
-#: ../../guide/algorithms.rst:46 ../../guide/jws.rst:268
+#: ../../guide/algorithms.rst:46 ../../guide/jws.rst:269
 msgid "EdDSA"
 msgstr ""
 
@@ -208,7 +202,7 @@ msgstr ""
 msgid "OKPKey"
 msgstr ""
 
-#: ../../guide/algorithms.rst:47 ../../guide/jws.rst:269
+#: ../../guide/algorithms.rst:47 ../../guide/jws.rst:270
 msgid "ES256K"
 msgstr ""
 
@@ -216,8 +210,7 @@ msgstr ""
 msgid ""
 "``EdDSA`` algorithm only accepts ``OKPKey`` with \"crv\" of \"Ed25519\" "
 "and \"Ed448\"."
-msgstr ""
-"``EdDSA`` 算法只接受具有 \"crv\" 为 \"Ed25519\" 和 \"Ed448\" 的 ``OKPKey``。"
+msgstr "``EdDSA`` 算法只接受具有 \"crv\" 为 \"Ed25519\" 和 \"Ed448\" 的 ``OKPKey``。"
 
 #: ../../guide/algorithms.rst:56 ../../guide/jwe.rst:6
 msgid "JSON Web Encryption"
@@ -227,9 +220,7 @@ msgstr ""
 msgid ""
 "``joserfc.jwe`` module supports algorithms from RFC7518, and drafts of "
 "``ECDH-1PU``. You MUST specify the correct key type for each algorithm."
-msgstr ""
-"``joserfc.jwe`` 模块支持 RFC7518 中的算法，以及 ``ECDH-1PU`` 的草案。"
-"您必须为每个算法指定正确的密钥类型。"
+msgstr "``joserfc.jwe`` 模块支持 RFC7518 中的算法，以及 ``ECDH-1PU`` 的草案。您必须为每个算法指定正确的密钥类型。"
 
 #: ../../guide/algorithms.rst:64
 msgid "dir"
@@ -303,8 +294,7 @@ msgstr ""
 msgid ""
 "All algorithms defined in RFC7518 for \"enc\" value are recommended, "
 "which including:"
-msgstr ""
-"RFC7518 中定义的所有用于 \"enc\" 值的算法都是推荐使用的，包括："
+msgstr "RFC7518 中定义的所有用于 \"enc\" 值的算法都是推荐使用的，包括："
 
 #: ../../guide/algorithms.rst:86
 msgid "A128CBC-HS256"
@@ -334,23 +324,19 @@ msgstr ""
 msgid ""
 "A ``DEF`` algorithm for the \"zip\" (compression) header parameter is "
 "also defined in RFC7518, which is recommended."
-msgstr ""
-"RFC7518 还定义了用于 \"zip\"（压缩）头参数的 ``DEF`` 算法，该算法推荐使用。"
+msgstr "RFC7518 还定义了用于 \"zip\"（压缩）头参数的 ``DEF`` 算法，该算法推荐使用。"
 
 #: ../../guide/algorithms.rst:96
 msgid ""
 "There are also additional algorithms for \"alg\" and \"enc\" in draft "
 "versions. Please refer to the following sections for more information."
-msgstr ""
-"草案版本中还有针对 \"alg\" 和 \"enc\" 的额外算法。请参考以下章节获取更多信息。"
+msgstr "草案版本中还有针对 \"alg\" 和 \"enc\" 的额外算法。请参考以下章节获取更多信息。"
 
 #: ../../guide/algorithms.rst:103
 msgid ""
 "You can use ``OKPKey`` with the \"crv\" (curve) parameter set to "
 "``X25519`` or ``X448`` for the following algorithms:"
-msgstr ""
-"对于以下算法，您可以使用 ``OKPKey`` 并将 \"crv\"（曲线）参数设置为 "
-"``X25519`` 或 ``X448``："
+msgstr "对于以下算法，您可以使用 ``OKPKey`` 并将 \"crv\"（曲线）参数设置为 ``X25519`` 或 ``X448``："
 
 #: ../../guide/algorithms.rst:111
 msgid ""
@@ -368,8 +354,8 @@ msgid ""
 "registered by default. To use ``C20P`` and ``XC20P``, developers have to "
 "install the ``PyCryptodome`` module."
 msgstr ""
-"``C20P`` 和 ``XC20P`` 算法仍处于草案阶段，默认状态下他们未注册到 ``JWERegistry``。"
-"要使用 ``C20P`` 和 ``XC20P``，开发人员必须安装 ``PyCryptodome`` 模块。"
+"``C20P`` 和 ``XC20P`` 算法仍处于草案阶段，默认状态下他们未注册到 ``JWERegistry``。要使用 ``C20P`` 和"
+" ``XC20P``，开发人员必须安装 ``PyCryptodome`` 模块。"
 
 #: ../../guide/algorithms.rst:126
 msgid ""
@@ -377,8 +363,8 @@ msgid ""
 " cipher, not **XChaCha20**, while ``pycryptodome`` supports both "
 "\"ChaCha20\" and \"XChaCha20\" ciphers."
 msgstr ""
-"这是由于 ``cryptography`` 库只支持 \"ChaCha20\" 密码算法，不支持 **XChaCha20**，"
-"而 ``pycryptodome`` 同时支持 \"ChaCha20\" 和 \"XChaCha20\" 密码算法。"
+"这是由于 ``cryptography`` 库只支持 \"ChaCha20\" 密码算法，不支持 **XChaCha20**，而 "
+"``pycryptodome`` 同时支持 \"ChaCha20\" 和 \"XChaCha20\" 密码算法。"
 
 #: ../../guide/algorithms.rst:130
 msgid "Register ciphers"
@@ -388,8 +374,7 @@ msgstr "注册密码算法"
 msgid ""
 "The default :ref:`registry` doesn't contain draft ciphers, developers "
 "MUST register ``C20P`` and ``XC20P`` at first:"
-msgstr ""
-"默认的 :ref:`registry` 不包含草案算法，开发人员必须先注册 ``C20P`` 和 ``XC20P``："
+msgstr "默认的 :ref:`registry` 不包含草案算法，开发人员必须先注册 ``C20P`` 和 ``XC20P``："
 
 #: ../../guide/algorithms.rst:142
 msgid "Use custom ``registry``"
@@ -400,8 +385,8 @@ msgid ""
 "Use a custom ``registry`` in :meth:`encrypt_compact`, "
 ":meth:`decrypt_compact`, :meth:`encrypt_json`, and :meth:`decrypt_json`."
 msgstr ""
-"在 :meth:`encrypt_compact`、:meth:`decrypt_compact`、:meth:`encrypt_json` "
-"和 :meth:`decrypt_json` 中使用自定义 ``registry``。"
+"在 :meth:`encrypt_compact`、:meth:`decrypt_compact`、:meth:`encrypt_json` 和 "
+":meth:`decrypt_json` 中使用自定义 ``registry``。"
 
 #: ../../guide/algorithms.rst:172
 msgid "ECDH-1PU algorithms"
@@ -414,15 +399,14 @@ msgid ""
 "use ``ECDH-1PU`` related algorithms, developers MUST register them "
 "manually:"
 msgstr ""
-"椭圆曲线迪菲-赫尔曼一次通用模型（ECDH-1PU）密钥协商仍然处于草案阶段，默认情况下未注册。"
-"要使用与 ``ECDH-1PU`` 相关的算法，开发人员必须手动注册它们："
+"椭圆曲线迪菲-赫尔曼一次通用模型（ECDH-1PU）密钥协商仍然处于草案阶段，默认情况下未注册。要使用与 ``ECDH-1PU`` "
+"相关的算法，开发人员必须手动注册它们："
 
 #: ../../guide/algorithms.rst:184
 msgid ""
 "Then use a custom ``registry`` with the required ``ECDH-1PU`` algorithms."
 " For instance:"
-msgstr ""
-"然后使用带有所需的 ``ECDH-1PU`` 算法的自定义 ``registry``。例如："
+msgstr "然后使用带有所需的 ``ECDH-1PU`` 算法的自定义 ``registry``。例如："
 
 #: ../../guide/algorithms.rst:207
 msgid ""
@@ -430,8 +414,8 @@ msgid ""
 "private key when calling :meth:`encrypt_compact` and :meth:`encrypt_json`"
 " methods."
 msgstr ""
-"``ECDH-1PU`` 算法需要一个 **发送方密钥**，在调用 :meth:`encrypt_compact` "
-"和 :meth:`encrypt_json` 方法时，该密钥必须是私钥。"
+"``ECDH-1PU`` 算法需要一个 **发送方密钥**，在调用 :meth:`encrypt_compact` 和 "
+":meth:`encrypt_json` 方法时，该密钥必须是私钥。"
 
 #: ../../guide/algorithms.rst:210
 msgid ""
@@ -449,8 +433,7 @@ msgstr "教程"
 msgid ""
 "This section provides a quick overview of how to get started with "
 "``joserfc`` and perform encoding and decoding a JWT."
-msgstr ""
-"本章节提供了关于如何开始使用 ``joserfc`` 并进行 JWT 编码和解码的快速概述。"
+msgstr "本章节提供了关于如何开始使用 ``joserfc`` 并进行 JWT 编码和解码的快速概述。"
 
 #: ../../guide/index.rst:10
 msgid "Encode and decode JWT"
@@ -495,8 +478,8 @@ msgid ""
 "tailored to JOSE functionality, making it easier for developers to work "
 "with JWS, JWE, JWK, JWA, and JWT in their Python applications."
 msgstr ""
-"``joserfc`` 源自 Authlib_，专门为 JOSE 功能量身定制。同时我们重新设计了 API，"
-"让开发人员更容易在其 Python 应用程序中处理 JWS、JWE、JWK、JWA 和 JWT。"
+"``joserfc`` 源自 Authlib_，专门为 JOSE 功能量身定制。同时我们重新设计了 API，让开发人员更容易在其 Python "
+"应用程序中处理 JWS、JWE、JWK、JWA 和 JWT。"
 
 #: ../../guide/introduction.rst:16
 msgid "Features"
@@ -510,9 +493,8 @@ msgid ""
 "static analysis, improved IDE support, and more reliable code "
 "refactoring."
 msgstr ""
-"**Python 类型提示**：``joserfc`` 充分利用了 Python 的类型提示功能，"
-"提供了更具表达力和可读性的代码库。使用类型提示可以增强开发工作流程，"
-"实现更好的静态分析、改善 IDE 支持和更可靠的代码重构。"
+"**Python 类型提示**：``joserfc`` 充分利用了 Python "
+"的类型提示功能，提供了更具表达力和可读性的代码库。使用类型提示可以增强开发工作流程，实现更好的静态分析、改善 IDE 支持和更可靠的代码重构。"
 
 #: ../../guide/introduction.rst:23
 msgid ""
@@ -522,8 +504,8 @@ msgid ""
 "versions of the JOSE standards, guaranteeing the highest level of "
 "interoperability and compliance."
 msgstr ""
-"**代码库组织有序且符合 RFC 标准**：``joserfc`` 的结构遵循 RFC 标准，确保不同的 "
-"JOSE 功能之间的清晰分离和组织。它严格遵循最新的 JOSE 标准版本，确保最高水平的互操作性和合规性。"
+"**代码库组织有序且符合 RFC 标准**：``joserfc`` 的结构遵循 RFC 标准，确保不同的 JOSE "
+"功能之间的清晰分离和组织。它严格遵循最新的 JOSE 标准版本，确保最高水平的互操作性和合规性。"
 
 #: ../../guide/introduction.rst:29
 msgid "Why joserfc?"
@@ -538,9 +520,9 @@ msgid ""
 "splitting the modules from Authlib would improve maintainability and "
 "provide more focused and specialized libraries."
 msgstr ""
-"``joserfc`` 分离自 Authlib，以便于简化维护和模块化。之前，Authlib 是作为一个单体库开发的，"
-"旨在设计一个涵盖广泛身份验证和安全需求的全面 API。然而，随着项目的发展，我们发现是时候将模块从 "
-"Authlib 中拆分出来了，这将有助于提高项目的可维护性，并提供更专注和专业化的 JOSE 库。"
+"``joserfc`` 分离自 Authlib，以便于简化维护和模块化。之前，Authlib "
+"是作为一个单体库开发的，旨在设计一个涵盖广泛身份验证和安全需求的全面 API。然而，随着项目的发展，我们发现是时候将模块从 Authlib "
+"中拆分出来了，这将有助于提高项目的可维护性，并提供更专注和专业化的 JOSE 库。"
 
 #: ../../guide/introduction.rst:37
 msgid ""
@@ -557,9 +539,7 @@ msgstr ""
 msgid ""
 "JSON Web Encryption (JWE) represents encrypted content using JSON-based "
 "data structures. (via RFC7516_)"
-msgstr ""
-"JSON Web Encryption (JWE) 使用基于 JSON 的数据结构表示加密内容。（参考 RFC7516_）"
-
+msgstr "JSON Web Encryption (JWE) 使用基于 JSON 的数据结构表示加密内容。（参考 RFC7516_）"
 
 #: ../../guide/jwe.rst:17
 msgid "Compact Encryption"
@@ -569,8 +549,7 @@ msgstr ""
 msgid ""
 "The JWE Compact Serialization represents encrypted content as a compact, "
 "URL-safe string.  This string is:"
-msgstr ""
-"JWE Compact Serialization 将加密内容表示为紧凑的、URL 安全的字符串。该字符串为："
+msgstr "JWE Compact Serialization 将加密内容表示为紧凑的、URL 安全的字符串。该字符串为："
 
 #: ../../guide/jwe.rst:30 ../../guide/jws.rst:29
 msgid ""
@@ -639,7 +618,7 @@ msgstr ""
 #: ../../guide/jwe.rst:114
 msgid ""
 "The structure for JSON JWE serialization is a little complex, developers "
-"SHOULD create an object of :class:`jwe.JSONEncryption` at first:"
+"SHOULD create an object of :class:`jwe.GeneralJSONEncryption` at first:"
 msgstr ""
 
 #: ../../guide/jwe.rst:136
@@ -673,32 +652,32 @@ msgstr ""
 #: ../../guide/jwe.rst:194
 msgid ""
 "It is flattened, it moves all the members out of the ``recipients`` "
-"field. To ``encrypt_json`` into a flattened serialization, you can just "
-"mark the ``JSONEncryption.flattened = True``:"
+"field. To ``encrypt_json`` into a flattened serialization, you can "
+"construct a :class`jwe.FlattenedJSONEncryption` instead:"
 msgstr ""
 
-#: ../../guide/jwe.rst:203
+#: ../../guide/jwe.rst:202
 msgid "And make sure only adding one recipient."
 msgstr ""
 
-#: ../../guide/jwe.rst:206 ../../guide/jwt.rst:267
+#: ../../guide/jwe.rst:205 ../../guide/jwt.rst:267
 msgid "Algorithms & Registry"
 msgstr "算法和注册表"
 
-#: ../../guide/jwe.rst:208
+#: ../../guide/jwe.rst:207
 msgid ""
 "``joserfc.jwe`` module would ONLY allow recommended algorithms by "
 "default, you can find which algorithm is recommended according to "
 ":ref:`JSON Web Encryption Algorithms <jwe_algorithms>`."
 msgstr ""
 
-#: ../../guide/jwe.rst:212
+#: ../../guide/jwe.rst:211
 msgid ""
 "It is possible to support non-recommended algorithms by passing the "
 "``algorithms`` parameter, or with a custom ``registry``."
 msgstr ""
 
-#: ../../guide/jwe.rst:222
+#: ../../guide/jwe.rst:221
 msgid ""
 "The registry is a little complex, find out more on the :ref:`registry` "
 "section."
@@ -1129,89 +1108,90 @@ msgstr ""
 #: ../../guide/jws.rst:235
 msgid ""
 "The returned value from ``deserialize_json`` is an object of "
-":class:`jws.JSONSignature`, you can tell if the signature is flattened or"
-" general with ``obj.flattened``:"
+":class:`jws.GeneralJSONSignature` or :class:`jws.FlattenedJSONSignature`,"
+" you can tell if the signature is flattened or general with "
+"``obj.flattened``:"
 msgstr ""
 
-#: ../../guide/jws.rst:249
+#: ../../guide/jws.rst:250
 msgid ""
 "``joserfc.jws`` module supports algorithms from RFC7518, RFC8037, and "
 "RFC8812. Here lists all the algorithms ``joserfc.jws`` supporting:"
 msgstr ""
 
-#: ../../guide/jws.rst:253
+#: ../../guide/jws.rst:254
 msgid "Description"
 msgstr ""
 
-#: ../../guide/jws.rst:255
+#: ../../guide/jws.rst:256
 msgid "No digital signature or MAC performed"
 msgstr ""
 
-#: ../../guide/jws.rst:256
+#: ../../guide/jws.rst:257
 msgid "HMAC using SHA-256"
 msgstr ""
 
-#: ../../guide/jws.rst:256 ../../guide/jws.rst:259 ../../guide/jws.rst:262
+#: ../../guide/jws.rst:257 ../../guide/jws.rst:260 ../../guide/jws.rst:263
 msgid ":bdg-success:`YES`"
 msgstr ""
 
-#: ../../guide/jws.rst:257
+#: ../../guide/jws.rst:258
 msgid "HMAC using SHA-384"
 msgstr ""
 
-#: ../../guide/jws.rst:258
+#: ../../guide/jws.rst:259
 msgid "HMAC using SHA-512"
 msgstr ""
 
-#: ../../guide/jws.rst:259
+#: ../../guide/jws.rst:260
 msgid "RSASSA-PKCS1-v1_5 using SHA-256"
 msgstr ""
 
-#: ../../guide/jws.rst:260
+#: ../../guide/jws.rst:261
 msgid "RSASSA-PKCS1-v1_5 using SHA-384"
 msgstr ""
 
-#: ../../guide/jws.rst:261
+#: ../../guide/jws.rst:262
 msgid "RSASSA-PKCS1-v1_5 using SHA-512"
 msgstr ""
 
-#: ../../guide/jws.rst:262
+#: ../../guide/jws.rst:263
 msgid "ECDSA using P-256 and SHA-256"
 msgstr ""
 
-#: ../../guide/jws.rst:263
+#: ../../guide/jws.rst:264
 msgid "ECDSA using P-384 and SHA-384"
 msgstr ""
 
-#: ../../guide/jws.rst:264
+#: ../../guide/jws.rst:265
 msgid "ECDSA using P-521 and SHA-512"
 msgstr ""
 
-#: ../../guide/jws.rst:265
+#: ../../guide/jws.rst:266
 msgid "RSASSA-PSS using SHA-256 and MGF1 with SHA-256"
 msgstr ""
 
-#: ../../guide/jws.rst:266
+#: ../../guide/jws.rst:267
 msgid "RSASSA-PSS using SHA-384 and MGF1 with SHA-384"
 msgstr ""
 
-#: ../../guide/jws.rst:267
+#: ../../guide/jws.rst:268
 msgid "RSASSA-PSS using SHA-512 and MGF1 with SHA-512"
 msgstr ""
 
-#: ../../guide/jws.rst:268
+#: ../../guide/jws.rst:269
 msgid "Edwards-curve Digital Signature"
 msgstr ""
 
-#: ../../guide/jws.rst:269
+#: ../../guide/jws.rst:270
 msgid "ECDSA using secp256k1 curve and SHA-256"
 msgstr ""
 
-#: ../../guide/jws.rst:273
+#: ../../guide/jws.rst:274
 msgid "Algorithm not allowed"
 msgstr ""
 
-#: ../../guide/jws.rst:275
+#: ../../guide/jws.rst:276
 msgid ""
 "The serialization and deserialization methods on ``joserfc.jws`` module "
 "accept an ``algorithms`` parameter for specifying the allowed algorithms."
@@ -1220,7 +1200,7 @@ msgid ""
 "algorithms, you may encounter the below error."
 msgstr ""
 
-#: ../../guide/jws.rst:293
+#: ../../guide/jws.rst:294
 msgid ""
 "``joserfc`` does support ``HS384``, but this algorithm is not recommended"
 " by specifications, developers MUST explict specify the supported "
@@ -1228,52 +1208,52 @@ msgid ""
 "parameter."
 msgstr ""
 
-#: ../../guide/jws.rst:303
+#: ../../guide/jws.rst:304
 msgid ""
 "Developers can also apply the ``registry`` parameter to resolve this "
 "issue. Here is an example of using :ref:`registry`."
 msgstr ""
 
-#: ../../guide/jws.rst:316
+#: ../../guide/jws.rst:317
 msgid "Unencoded Payload Option"
 msgstr ""
 
-#: ../../guide/jws.rst:318
+#: ../../guide/jws.rst:319
 msgid ""
 "The unencoded payload option, defined in RFC7797, allows the payload of a"
 " JWS (JSON Web Signature) to remain unencoded, without using base64 "
 "encoding."
 msgstr ""
 
-#: ../../guide/jws.rst:321
+#: ../../guide/jws.rst:322
 msgid ""
 "To enable this option, you need to set the ``b64`` header parameter to "
 "``false`` in the JWS header."
 msgstr ""
 
-#: ../../guide/jws.rst:324
+#: ../../guide/jws.rst:325
 msgid ""
 "To utilize the unencoded payload option in joserfc, you must import the "
 "serialize and deserialize methods from ``joserfc.rfc7797``."
 msgstr ""
 
-#: ../../guide/jws.rst:327
+#: ../../guide/jws.rst:328
 msgid "Here are examples demonstrating the usage of the ``b64`` option:"
 msgstr ""
 
-#: ../../guide/jws.rst:340
+#: ../../guide/jws.rst:341
 msgid ""
 "The ``crit`` MUST be present with ``\"b64\"`` in its value set when "
 "``b64`` is in the header."
 msgstr ""
 
-#: ../../guide/jws.rst:343
+#: ../../guide/jws.rst:344
 msgid ""
 "Since the payload is not base64 encoded, if the payload contains non "
 "urlsafe characters, the compact serialization will detach the payload:"
 msgstr ""
 
-#: ../../guide/jws.rst:357
+#: ../../guide/jws.rst:358
 msgid ""
 "There are also methods for JSON serialization: ``serialize_json`` and "
 "``deserialize_json``."

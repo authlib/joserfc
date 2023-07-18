@@ -112,14 +112,14 @@ Encryption
 ~~~~~~~~~~
 
 The structure for JSON JWE serialization is a little complex, developers
-SHOULD create an object of :class:`jwe.JSONEncryption` at first:
+SHOULD create an object of :class:`jwe.GeneralJSONEncryption` at first:
 
 .. code-block:: python
 
     from joserfc.jwk import OctKey, RSAKey
-    from joserfc.jwe import JSONEncryption, encrypt_json
+    from joserfc.jwe import GeneralJSONEncryption, encrypt_json
 
-    obj = JSONEncryption({"enc": "A128GCM"}, b"hello")
+    obj = GeneralJSONEncryption({"enc": "A128GCM"}, b"hello")
 
     # add first recipient with alg of A128KW
     key1 = OctKey.generate_key(128)
@@ -192,13 +192,12 @@ The syntax of a JWE using the flattened JWE JSON Serialization is as follows:
     }
 
 It is flattened, it moves all the members out of the ``recipients`` field. To
-``encrypt_json`` into a flattened serialization, you can just mark the
-``JSONEncryption.flattened = True``:
+``encrypt_json`` into a flattened serialization, you can construct a
+:class`jwe.FlattenedJSONEncryption` instead:
 
 .. code-block:: python
 
-    obj = JSONEncryption(protected, plaintext)
-    obj.flattened = True
+    obj = FlattenedJSONEncryption(protected, plaintext)
 
 And make sure only adding one recipient.
 
