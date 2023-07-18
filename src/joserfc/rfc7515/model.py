@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 from .types import SegmentsDict, JSONSignatureDict
 from ..errors import InvalidKeyTypeError
 from ..registry import Header
+from ..rfc7517.models import BaseKey
 
 
 class HeaderMember:
@@ -50,7 +51,7 @@ class FlattenedJSONSignature:
         self.segments: SegmentsDict = {}
 
     @property
-    def members(self):
+    def members(self) -> t.List[HeaderMember]:
         return [self.member]
 
     def headers(self) -> Header:
@@ -79,12 +80,12 @@ class JWSAlgModel(object, metaclass=ABCMeta):
     algorithm_type = "JWS"
     algorithm_location = "sig"
 
-    def check_key_type(self, key):
+    def check_key_type(self, key: BaseKey):
         if key.key_type != self.key_type:
             raise InvalidKeyTypeError(f'Algorithm "{self.name}" requires "{self.key_type}" key')
 
     @abstractmethod
-    def sign(self, msg: bytes, key) -> bytes:
+    def sign(self, msg: bytes, key: t.Any) -> bytes:
         """Sign the text msg with a private/sign key.
 
         :param msg: message bytes to be signed
@@ -94,7 +95,7 @@ class JWSAlgModel(object, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def verify(self, msg: bytes, sig: bytes, key) -> bool:
+    def verify(self, msg: bytes, sig: bytes, key: t.Any) -> bool:
         """Verify the signature of text msg with a public/verify key.
 
         :param msg: message bytes to be signed

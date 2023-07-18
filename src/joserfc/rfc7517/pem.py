@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives.serialization import (
     NoEncryption,
 )
 from cryptography.hazmat.backends import default_backend
-from .models import NativeKeyBinding
+from .models import NativeKeyBinding, BaseKey
 from .types import KeyDict
 from ..util import to_bytes
 
@@ -41,7 +41,11 @@ def load_pem_key(raw: bytes, ssh_type: t.Optional[bytes] = None, password: t.Opt
     return key
 
 
-def dump_pem_key(key, encoding=None, private=False, password=None) -> bytes:
+def dump_pem_key(
+        key: t.Any,
+        encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
+        private: t.Optional[bool] = False,
+        password: t.Optional[t.Any] = None) -> bytes:
     """Export key into PEM/DER format bytes.
 
     :param key: native cryptography key
@@ -52,9 +56,9 @@ def dump_pem_key(key, encoding=None, private=False, password=None) -> bytes:
     """
 
     if encoding is None or encoding == "PEM":
-        encoding = Encoding.PEM
+        encoding_enum = Encoding.PEM
     elif encoding == "DER":
-        encoding = Encoding.DER
+        encoding_enum = Encoding.DER
     else:  # pragma: no cover
         raise ValueError("Invalid encoding: {!r}".format(encoding))
 
@@ -65,12 +69,12 @@ def dump_pem_key(key, encoding=None, private=False, password=None) -> bytes:
         else:
             encryption_algorithm = BestAvailableEncryption(to_bytes(password))
         return key.private_bytes(
-            encoding=encoding,
+            encoding=encoding_enum,
             format=PrivateFormat.PKCS8,
             encryption_algorithm=encryption_algorithm,
         )
     return key.public_bytes(
-        encoding=encoding,
+        encoding=encoding_enum,
         format=PublicFormat.SubjectPublicKeyInfo,
     )
 
@@ -91,13 +95,17 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
         return cls.import_public_key(value)
 
     @classmethod
-    def import_from_bytes(cls, value: bytes, password=None):
+    def import_from_bytes(cls, value: bytes, password: t.Optional[t.Any] = None):
         if password is not None:
             password = to_bytes(password)
         return load_pem_key(value, cls.ssh_type, password)
 
     @staticmethod
-    def as_bytes(key, encoding=None, private=None, password=None) -> bytes:
+    def as_bytes(
+            key: BaseKey,
+            encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
+            private: t.Optional[bool] = False,
+            password: t.Optional[t.Any] = None) -> bytes:
         if private is True:
             return dump_pem_key(key.private_key, encoding, private, password)
         elif private is False:

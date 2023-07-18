@@ -10,7 +10,7 @@ from ..registry import (
 )
 
 
-class JWSRegistry(object):
+class JWSRegistry:
     """A registry for JSON Web Signature to keep all the supported algorithms.
     An instance of ``JWSRegistry`` is usually used together with methods in
     ``joserfc.jws``.

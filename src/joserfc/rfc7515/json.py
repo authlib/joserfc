@@ -1,5 +1,6 @@
 import typing as t
 import binascii
+import copy
 from .model import (
     HeaderMember,
     GeneralJSONSignature,
@@ -164,9 +165,9 @@ def verify_signature(
     return alg.verify(signing_input, sig, key)
 
 
-def detach_json_content(value):
+def detach_json_content(value: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
     # https://www.rfc-editor.org/rfc/rfc7515#appendix-F
-    rv = value.copy()  # don't alter original value
+    rv = copy.deepcopy(value)  # don't alter original value
     if "payload" in rv:
         del rv["payload"]
     return rv
