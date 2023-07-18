@@ -58,16 +58,16 @@ def encode(
     :param registry: a ``JWSRegistry`` or ``JWERegistry`` to use
     """
     # add ``typ`` in header
-    header["typ"] = "JWT"
+    _header = {"typ": "JWT", **header}
     payload = convert_claims(claims)
-    if "enc" in header:
+    if "enc" in _header:
         if registry is not None:
             assert isinstance(registry, JWERegistry)
-        return encrypt_compact(header, payload, key, algorithms, registry)
+        return encrypt_compact(_header, payload, key, algorithms, registry)
     else:
         if registry is not None:
             assert isinstance(registry, JWSRegistry)
-        return serialize_compact(header, payload, key, algorithms, registry)
+        return serialize_compact(_header, payload, key, algorithms, registry)
 
 
 def decode(
