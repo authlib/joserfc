@@ -281,6 +281,7 @@ def deserialize_json(
 
 DetachValue = t.TypeVar("DetachValue", str, t.Dict[str, t.Any])
 
+
 def detach_content(value: DetachValue) -> DetachValue:
     """In some contexts, it is useful to integrity-protect content that is
     not itself contained in a JWS. This method is an implementation of

@@ -9,7 +9,6 @@
     .. _`Section 3`: https://tools.ietf.org/html/rfc7518#section-3
 """
 
-import typing as t
 import hmac
 import hashlib
 import typing as t
