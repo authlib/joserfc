@@ -4,8 +4,8 @@ from .rfc7517 import (
     SymmetricKey,
     AsymmetricKey,
     CurveKey,
-    JWKRegistry,
-    KeySet,
+    JWKRegistry as _JWKRegistry,
+    KeySet as _KeySet,
 )
 from .rfc7517 import types
 from .rfc7518.oct_key import OctKey
@@ -15,10 +15,6 @@ from .rfc8037.okp_key import OKPKey
 from .rfc8812 import register_secp256k1
 from .registry import Header
 
-
-Key = t.Union[OctKey, RSAKey, ECKey, OKPKey]
-KeyCallable = t.Callable[[t.Any], Key]
-KeyFlexible = t.Union[t.AnyStr, Key, KeySet, KeyCallable]
 
 __all__ = [
     "types",
@@ -38,18 +34,41 @@ __all__ = [
     "guess_key",
 ]
 
-
-def __register():
-    JWKRegistry.register(OctKey)
-    JWKRegistry.register(RSAKey)
-    JWKRegistry.register(ECKey)
-    JWKRegistry.register(OKPKey)
-    # add {"crv": "secp256k1"} for ECKey
-    register_secp256k1()
+register_secp256k1()
 
 
-# register all key types
-__register()
+class JWKRegistry(_JWKRegistry):
+    """A registry for JWK to record ``joserfc`` supported key types.
+    Normally, you would use explicit key types like ``OctKey``, ``RSAKey``;
+    This registry provides a way to dynamically import and generate keys.
+    For instance:
+
+    .. code-block:: python
+
+        from joserfc.jwk import JWKRegistry
+
+        # instead of choosing which key type to use yourself,
+        # JWKRegistry can import it automatically
+        data = {"kty": "oct", "k": "..."}
+        key = JWKRegistry.import_key(data)
+    """
+    key_types = {
+        OctKey.key_type: OctKey,
+        RSAKey.key_type: RSAKey,
+        ECKey.key_type: ECKey,
+        OKPKey.key_type: OKPKey,
+    }
+
+
+Key = t.Union[OctKey, RSAKey, ECKey, OKPKey]
+KeyCallable = t.Callable[[t.Any], Key]
+
+
+class KeySet(_KeySet):
+    registry_cls = JWKRegistry
+
+
+KeyFlexible = t.Union[t.AnyStr, Key, KeySet, KeyCallable]
 
 
 class GuestProtocol(t.Protocol):  # pragma: no cover

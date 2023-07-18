@@ -1,8 +1,8 @@
 from unittest import TestCase
-from joserfc.jwk import JWKRegistry, KeySet, RSAKey, ECKey, OctKey
+from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
 from tests.keys import read_key
 
-JWKRegistry.algorithm_key_types["RS256"] = ["RSA"]
+KeySet.algorithm_keys["RS256"] = ["RSA"]
 
 
 class TestKeySet(TestCase):

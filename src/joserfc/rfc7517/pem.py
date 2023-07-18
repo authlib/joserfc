@@ -101,7 +101,11 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
         return load_pem_key(value, cls.ssh_type, password)
 
     @staticmethod
-    def as_bytes(key: BaseKey, encoding: t.Optional[t.Literal["PEM", "DER"]] = None, private: t.Optional[bool] = False, password: t.Optional[t.Any] = None) -> bytes:
+    def as_bytes(
+            key: BaseKey,
+            encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
+            private: t.Optional[bool] = False,
+            password: t.Optional[t.Any] = None) -> bytes:
         if private is True:
             return dump_pem_key(key.private_key, encoding, private, password)
         elif private is False:

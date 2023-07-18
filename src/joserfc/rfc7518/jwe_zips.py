@@ -1,4 +1,5 @@
 import zlib
+from typing import List
 from ..rfc7516.models import JWEZipModel
 
 
@@ -17,4 +18,4 @@ class DeflateZipModel(JWEZipModel):
         return zlib.decompress(s, -zlib.MAX_WBITS)
 
 
-JWE_ZIP_MODELS = [DeflateZipModel()]
+JWE_ZIP_MODELS: List[JWEZipModel] = [DeflateZipModel()]

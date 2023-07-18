@@ -1,5 +1,4 @@
 import typing as t
-from ..rfc7516.registry import JWERegistry
 from ..rfc7516.models import (
     Recipient,
     JWEKeyAgreement,
@@ -7,7 +6,6 @@ from ..rfc7516.models import (
     JWEEncModel
 )
 from ..rfc7517.models import CurveKey
-from ..rfc7517.registry import JWKRegistry
 from ..rfc7518.jwe_algs import (
     A128KW,
     A192KW,
@@ -104,6 +102,9 @@ JWE_ALG_MODELS = [
 
 
 def register_ecdh_1pu():
+    from ..jwe import JWERegistry
+    from ..jwk import KeySet
+
     for model in JWE_ALG_MODELS:
         JWERegistry.register(model)
-        JWKRegistry.algorithm_key_types[model.name] = model.key_types
+        KeySet.algorithm_keys[model.name] = model.key_types

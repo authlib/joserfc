@@ -27,7 +27,7 @@ from .rfc7516.json import (
 from .rfc7518.jwe_algs import JWE_ALG_MODELS
 from .rfc7518.jwe_encs import JWE_ENC_MODELS
 from .rfc7518.jwe_zips import JWE_ZIP_MODELS
-from .jwk import JWKRegistry, KeySet, CurveKey, KeyFlexible, guess_key
+from .jwk import KeySet, CurveKey, KeyFlexible, guess_key
 from .util import to_bytes
 from .registry import Header
 
@@ -50,7 +50,7 @@ __all__ = [
 def __register():
     for _alg in JWE_ALG_MODELS:
         JWERegistry.register(_alg)
-        JWKRegistry.algorithm_key_types[_alg.name] = _alg.key_types
+        KeySet.algorithm_keys[_alg.name] = _alg.key_types
 
     for _enc in JWE_ENC_MODELS:
         JWERegistry.register(_enc)

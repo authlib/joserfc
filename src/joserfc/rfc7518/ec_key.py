@@ -1,4 +1,4 @@
-from typing import Optional, Dict
+import typing as t
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.ec import (
     generate_private_key,
@@ -14,10 +14,16 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
 from cryptography.hazmat.backends import default_backend
 from ..rfc7517.models import CurveKey
 from ..rfc7517.pem import CryptographyBinding
-from ..rfc7517.types import KeyDict, KeyParameters
+from ..rfc7517.types import KeyParameters
 from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
+KeyDict = t.TypedDict("KeyDict", {
+    "crv": str,
+    "x": str,
+    "y": str,
+    "d": str,  # optional
+}, total=False)
 
 DSS_CURVES = {
     "P-256": SECP256R1,
@@ -38,16 +44,16 @@ class ECBinding(CryptographyBinding):
     def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKey:
         curve = DSS_CURVES[obj["crv"]]()  # type: ignore
         public_numbers = EllipticCurvePublicNumbers(
-            base64_to_int(obj["x"]),  # type: ignore
-            base64_to_int(obj["y"]),  # type: ignore
+            base64_to_int(obj["x"]),
+            base64_to_int(obj["y"]),
             curve,
         )
-        d = base64_to_int(obj["d"])  # type: ignore
+        d = base64_to_int(obj["d"])
         private_numbers = EllipticCurvePrivateNumbers(d, public_numbers)
         return private_numbers.private_key(default_backend())
 
     @staticmethod
-    def export_private_key(key: EllipticCurvePrivateKey) -> Dict[str, str]:
+    def export_private_key(key: EllipticCurvePrivateKey) -> t.Dict[str, str]:
         numbers = key.private_numbers()
         return {
             "crv": CURVES_DSS[key.curve.name],  # type: ignore
@@ -60,14 +66,14 @@ class ECBinding(CryptographyBinding):
     def import_public_key(obj: KeyDict) -> EllipticCurvePublicKey:
         curve = DSS_CURVES[obj["crv"]]()  # type: ignore
         public_numbers = EllipticCurvePublicNumbers(
-            base64_to_int(obj["x"]),  # type: ignore
-            base64_to_int(obj["y"]),  # type: ignore
+            base64_to_int(obj["x"]),
+            base64_to_int(obj["y"]),
             curve,
         )
         return public_numbers.public_key(default_backend())
 
     @staticmethod
-    def export_public_key(key: EllipticCurvePublicKey) -> Dict[str, str]:
+    def export_public_key(key: EllipticCurvePublicKey) -> t.Dict[str, str]:
         numbers = key.public_numbers()
         return {
             "crv": CURVES_DSS[numbers.curve.name],  # type: ignore
@@ -99,7 +105,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         return self.raw_value
 
     @property
-    def private_key(self) -> Optional[EllipticCurvePrivateKey]:
+    def private_key(self) -> t.Optional[EllipticCurvePrivateKey]:
         if isinstance(self.raw_value, EllipticCurvePrivateKey):
             return self.raw_value
         return None
@@ -122,7 +128,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
     def generate_key(
             cls,
             crv: str = "P-256",
-            parameters: Optional[KeyParameters] = None,
+            parameters: t.Optional[KeyParameters] = None,
             private: bool = True) -> "ECKey":
         if crv not in DSS_CURVES:
             raise ValueError('Invalid crv value: "{}"'.format(crv))

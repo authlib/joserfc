@@ -1,37 +1,18 @@
 import typing as t
-from .models import BaseKey
+from .models import BaseKey as Key
 from .types import KeyAny, KeyParameters
 from ..util import to_bytes
 
 
 class JWKRegistry:
-    """A registry for JWK to record ``joserfc`` supported key types.
-    Normally, you would use explicit key types like ``OctKey``, ``RSAKey``;
-    This registry provides a way to dynamically import and generate keys.
-    For instance:
-
-    .. code-block:: python
-
-        from joserfc.jwk import JWKRegistry
-
-        # instead of choosing which key type to use yourself,
-        # JWKRegistry can import it automatically
-        data = {"kty": "oct", "k": "..."}
-        key = JWKRegistry.import_key(data)
-    """
-    key_types: t.Dict[str, t.Type[BaseKey]] = {}
-    algorithm_key_types: t.Dict[str, t.List[str]] = {}
-
-    @classmethod
-    def register(cls, model: t.Type[BaseKey]):
-        cls.key_types[model.key_type] = model
+    key_types: t.Dict[str, t.Type[Key]] = {}
 
     @classmethod
     def import_key(
             cls,
             data: KeyAny,
             key_type: t.Optional[str] = None,
-            parameters: t.Optional[KeyParameters] = None) -> BaseKey:
+            parameters: t.Optional[KeyParameters] = None) -> Key:
         """A class method for importing a key from bytes, string, and dict.
         When ``value`` is a dict, this method can tell the key type automatically,
         otherwise, developers SHOULD pass the ``key_type`` themselves.
@@ -62,7 +43,7 @@ class JWKRegistry:
             key_type: str,
             crv_or_size: t.Union[str, int],
             parameters: t.Optional[KeyParameters] = None,
-            private: bool = True) -> BaseKey:
+            private: bool = True) -> Key:
         """A class method for generating key according to the given key type.
         When ``key_type`` is "oct" and "RSA", the second parameter SHOULD be
         a key size in bits. When ``key_type`` is "EC" and "OKP", the second
