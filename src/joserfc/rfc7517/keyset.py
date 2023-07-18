@@ -1,7 +1,7 @@
 import typing as t
 import random
 from .models import BaseKey, SymmetricKey
-from .types import KeySetDict, KeyParameters
+from .types import KeySetDict, KeyParameters, KeyDict, KeySetDict
 from .registry import JWKRegistry
 
 
@@ -12,8 +12,8 @@ class KeySet:
     def __iter__(self) -> t.Iterator[BaseKey]:
         return iter(self.keys)
 
-    def as_dict(self, private=None, **params):
-        keys = []
+    def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> KeySetDict:
+        keys: t.List[KeyDict] = []
 
         for key in self.keys:
             # trigger key to generate kid via thumbprint

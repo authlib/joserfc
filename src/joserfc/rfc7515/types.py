@@ -27,11 +27,13 @@ class JSONSignatureDict(t.TypedDict, total=False):
     signature: str
 
 
+@t.final
 class GeneralJSONSerialization(t.TypedDict):
     payload: str
     signatures: t.List[JSONSignatureDict]
 
 
+@t.final
 class FlattenedJSONSerialization(t.TypedDict, total=False):
     payload: str
     protected: str

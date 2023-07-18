@@ -11,6 +11,7 @@
 
 import hmac
 import hashlib
+import typing as t
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.utils import (
     decode_dss_signature,
@@ -20,6 +21,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
 from ..rfc7515.model import JWSAlgModel
+from ..rfc7517.models import BaseKey
 from .oct_key import OctKey
 from .rsa_key import RSAKey
 from .ec_key import ECKey
@@ -30,10 +32,10 @@ class NoneAlgModel(JWSAlgModel):
     name = "none"
     description = "No digital signature or MAC performed"
 
-    def sign(self, msg, key):
+    def sign(self, msg: bytes, key: BaseKey):
         return b""
 
-    def verify(self, msg, sig, key):
+    def verify(self, msg: bytes, sig: bytes, key: BaseKey):
         return False
 
 
@@ -49,7 +51,7 @@ class HMACAlgModel(JWSAlgModel):
     SHA384 = hashlib.sha384
     SHA512 = hashlib.sha512
 
-    def __init__(self, sha_type: int, recommended: bool = False):
+    def __init__(self, sha_type: t.Literal[256, 384, 512], recommended: bool = False):
         self.name = f"HS{sha_type}"
         self.description = f"HMAC using SHA-{sha_type}"
         self.recommended = recommended
@@ -80,7 +82,7 @@ class RSAAlgModel(JWSAlgModel):
     SHA512 = hashes.SHA512
     padding = padding.PKCS1v15()
 
-    def __init__(self, sha_type: int, recommended: bool = False):
+    def __init__(self, sha_type: t.Literal[256, 384, 512], recommended: bool = False):
         self.name = f"RS{sha_type}"
         self.description = f"RSASSA-PKCS1-v1_5 using SHA-{sha_type}"
         self.recommended = recommended
@@ -112,14 +114,14 @@ class ECAlgModel(JWSAlgModel):
     SHA384 = hashes.SHA384
     SHA512 = hashes.SHA512
 
-    def __init__(self, name: str, curve: str, sha_type: int, recommended: bool = False):
+    def __init__(self, name: str, curve: str, sha_type: t.Literal[256, 384, 512], recommended: bool = False):
         self.name = name
         self.curve = curve
         self.description = f"ECDSA using {self.curve} and SHA-{sha_type}"
         self.recommended = recommended
         self.hash_alg = getattr(self, f"SHA{sha_type}")
 
-    def _check_key(self, key: ECKey):
+    def _check_key(self, key: ECKey) -> ECKey:
         if key.curve_name != self.curve:
             raise ValueError(f'Key for "{self.name}" not supported, only "{self.curve}" allowed')
         return key
@@ -165,7 +167,7 @@ class RSAPSSAlgModel(JWSAlgModel):
     SHA384 = hashes.SHA384
     SHA512 = hashes.SHA512
 
-    def __init__(self, sha_type: int):
+    def __init__(self, sha_type: t.Literal[256, 384, 512]):
         self.name = f"PS{sha_type}"
         self.description = f"RSASSA-PSS using SHA-{sha_type} and MGF1 with SHA-{sha_type}"
         self.hash_alg = getattr(self, f"SHA{sha_type}")

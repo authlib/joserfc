@@ -181,8 +181,7 @@ def validate_registry_header(
         registry: HeaderRegistryDict,
         header: Header,
         check_required: bool = True):
-    for key in registry:
-        reg = registry[key]
+    for key, reg in registry.items():
         if check_required and reg.required and key not in header:
             raise ValueError(f'Required "{key}" is missing in header')
         if key in header:

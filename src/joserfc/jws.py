@@ -268,18 +268,20 @@ def deserialize_json(
 
     find_key = lambda d: guess_key(public_key, d)
     if "signatures" in value:
-        general_obj = extract_general_json(value)  # type: ignore
+        general_obj = extract_general_json(value)
         if not verify_general_json(general_obj, registry, find_key):
             raise BadSignatureError()
         return general_obj
     else:
-        flattened_obj = extract_flattened_json(value)  # type: ignore
+        flattened_obj = extract_flattened_json(value)
         if not verify_flattened_json(flattened_obj, registry, find_key):
             raise BadSignatureError()
         return flattened_obj
 
 
-def detach_content(value: t.Union[str, t.Dict]):
+DetachValue = t.TypeVar("DetachValue", str, t.Dict[str, t.Any])
+
+def detach_content(value: DetachValue) -> DetachValue:
     """In some contexts, it is useful to integrity-protect content that is
     not itself contained in a JWS. This method is an implementation of
     https://www.rfc-editor.org/rfc/rfc7515#appendix-F

@@ -1,4 +1,5 @@
 import binascii
+import typing as t
 from .model import JWSAlgModel, CompactSignature
 from ..errors import DecodeError, MissingAlgorithmError
 from ..util import (
@@ -57,7 +58,7 @@ def detach_compact_content(value: str) -> str:
     return ".".join(parts)
 
 
-def decode_header(header_segment: bytes):
+def decode_header(header_segment: bytes) -> t.Dict[str, t.Any]:
     try:
         protected = json_b64decode(header_segment)
         if "alg" not in protected:
