@@ -45,6 +45,9 @@ version = {attr = "joserfc.__version__"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+joserfc = ["py.typed"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]
 testpaths = ["tests"]
@@ -62,6 +65,7 @@ exclude_lines = [
   "pragma: no cover",
   "raise NotImplementedError",
   "@(abc\\.)?abstractmethod",
+  "@overload",
 ]
 
 [tool.mypy]
