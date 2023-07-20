@@ -78,5 +78,6 @@ Next
 
 .. toctree::
     structure
+    translation
     authors
     sponsors

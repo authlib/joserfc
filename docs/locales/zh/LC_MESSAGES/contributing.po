@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"POT-Creation-Date: 2023-07-20 21:39+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -22,6 +22,18 @@ msgstr ""
 #: ../../contributing/authors.rst:2
 msgid "Authors"
 msgstr "作者列表"
+
+#: ../../contributing/authors.rst:5
+msgid "Owner"
+msgstr "所有者"
+
+#: ../../contributing/authors.rst:8
+msgid "Maintainer"
+msgstr "维护者"
+
+#: ../../contributing/authors.rst:11
+msgid "Contributors"
+msgstr "贡献者"
 
 #: ../../contributing/index.rst:2
 msgid "Contributing"
@@ -100,7 +112,7 @@ msgstr ""
 
 #: ../../contributing/index.rst:42
 msgid "Development"
-msgstr ""
+msgstr "开发"
 
 #: ../../contributing/index.rst:44
 msgid ""
@@ -143,8 +155,8 @@ msgid "Sponsors"
 msgstr "赞助者"
 
 #: ../../contributing/structure.rst:2
-msgid "Understand code structure"
-msgstr "理解代码结构"
+msgid "Code structure"
+msgstr "代码结构"
 
 #: ../../contributing/structure.rst:4
 msgid ""
@@ -240,3 +252,7 @@ msgid ""
 " when relying on draft implementations, as they may undergo significant "
 "changes or be incompatible with the final RFC specification."
 msgstr ""
+
+#: ../../contributing/translation.rst:4
+msgid "Translations"
+msgstr "翻译"

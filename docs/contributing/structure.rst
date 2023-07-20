@@ -1,5 +1,5 @@
-Understand code structure
-=========================
+Code structure
+==============
 
 The code structure of ``joserfc`` follows an organized approach based on RFC specifications.
 It is designed to enhance understanding by grouping the code according to specific RFCs.

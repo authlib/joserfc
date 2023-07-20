@@ -23,13 +23,15 @@ html_show_sourcelink = False
 
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.extlinks",
     "sphinx_copybutton",
     "sphinx_design",
 ]
 
 extlinks = {
-    'issue': ('https://github.com/authlib/joserfc/issues/%s', 'issue #%s'),
+    'user': ('https://github.com/%s', '@%s'),
     'pull': ('https://github.com/authlib/joserfc/pull/%s', 'pull request #%s'),
+    'issue': ('https://github.com/authlib/joserfc/issues/%s', 'issue #%s'),
 }
 
 intersphinx_mapping = {
