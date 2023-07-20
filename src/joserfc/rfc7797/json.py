@@ -13,7 +13,7 @@ from ..jws import (
 from ..jwk import KeyFlexible, guess_key
 from ..util import (
     to_bytes,
-    to_unicode,
+    to_str,
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
@@ -55,11 +55,11 @@ def serialize_json(
     signature = urlsafe_b64encode(alg.sign(signing_input, key))
 
     rv: FlattenedJSONSerialization = {
-        "payload": to_unicode(payload),
-        "signature": to_unicode(signature),
+        "payload": to_str(payload),
+        "signature": to_str(signature),
     }
     if protected_segment:
-        rv["protected"] = to_unicode(protected_segment)
+        rv["protected"] = to_str(protected_segment)
     if _member.header:
         rv["header"] = _member.header
     return rv

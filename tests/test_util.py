@@ -10,8 +10,8 @@ class TestUtil(TestCase):
         self.assertEqual(util.to_bytes([102, 111, 111]), b'foo')
 
     def test_to_unicode(self):
-        self.assertEqual(util.to_unicode(b'foo'), 'foo')
-        self.assertEqual(util.to_unicode('foo'), 'foo')
+        self.assertEqual(util.to_str(b'foo'), 'foo')
+        self.assertEqual(util.to_str('foo'), 'foo')
 
     def test_int_to_base64(self):
         self.assertRaises(

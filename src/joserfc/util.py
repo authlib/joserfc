@@ -14,7 +14,7 @@ def to_bytes(x: t.Any, charset: str = "utf-8", errors: str = "strict") -> bytes:
     return bytes(x)
 
 
-def to_unicode(x, charset: str = "utf-8") -> str:
+def to_str(x: t.Union[bytes, str], charset: str = "utf-8") -> str:
     if isinstance(x, bytes):
         return x.decode(charset)
     return x
@@ -47,11 +47,11 @@ def int_to_base64(num: int) -> str:
     return urlsafe_b64encode(s).decode("utf-8", "strict")
 
 
-def json_b64encode(text, charset: str = "utf-8") -> bytes:
+def json_b64encode(text: t.Any, charset: str = "utf-8") -> bytes:
     if isinstance(text, dict):
         text = json_dumps(text)
     return urlsafe_b64encode(to_bytes(text, charset))
 
 
-def json_b64decode(text, charset="utf-8") -> t.Dict[str, t.Any]:
+def json_b64decode(text: t.Any, charset="utf-8") -> t.Dict[str, t.Any]:
     return json.loads(urlsafe_b64decode(to_bytes(text, charset)))

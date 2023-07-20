@@ -10,7 +10,7 @@ from ..jws import (
 )
 from ..util import (
     to_bytes,
-    to_unicode,
+    to_str,
     json_b64encode,
     urlsafe_b64encode,
     urlsafe_b64decode,
@@ -91,7 +91,7 @@ _re_urlsafe = re.compile("^[a-zA-Z0-9-_~]+$")
 
 
 def __is_urlsafe_characters(s: t.AnyStr) -> bool:
-    return bool(_re_urlsafe.match(to_unicode(s)))
+    return bool(_re_urlsafe.match(to_str(s)))
 
 
 def _extract_compact(value: bytes, payload: t.Optional[t.AnyStr] = None):

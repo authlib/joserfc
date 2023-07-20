@@ -13,7 +13,7 @@ from .types import (
 from ..registry import Header
 from ..util import (
     to_bytes,
-    to_unicode,
+    to_str,
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
@@ -29,7 +29,7 @@ def represent_general_json(obj: GeneralJSONEncryption) -> GeneralJSONSerializati
         if recipient.header:
             item["header"] = recipient.header
         if recipient.encrypted_key:
-            item["encrypted_key"] = to_unicode(urlsafe_b64encode(recipient.encrypted_key))
+            item["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
         recipients.append(item)
     data["recipients"] = recipients
     return data  # type: ignore
@@ -42,19 +42,19 @@ def represent_flattened_json(obj: FlattenedJSONEncryption) -> FlattenedJSONSeria
     if recipient.header:
         data["header"] = recipient.header
     if recipient.encrypted_key:
-        data["encrypted_key"] = to_unicode(urlsafe_b64encode(recipient.encrypted_key))
+        data["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
     return data  # type: ignore
 
 
 def __represent_json_serialization(obj: BaseJSONEncryption):
     data: t.Dict[str, t.Union[str, Header]] = {
-        "protected": to_unicode(json_b64encode(obj.protected)),
-        "iv": to_unicode(obj.base64_segments["iv"]),
-        "ciphertext": to_unicode(obj.base64_segments["ciphertext"]),
-        "tag": to_unicode(obj.base64_segments["tag"]),
+        "protected": to_str(json_b64encode(obj.protected)),
+        "iv": to_str(obj.base64_segments["iv"]),
+        "ciphertext": to_str(obj.base64_segments["ciphertext"]),
+        "tag": to_str(obj.base64_segments["tag"]),
     }
     if obj.aad:
-        data["aad"] = to_unicode(urlsafe_b64encode(obj.aad))
+        data["aad"] = to_str(urlsafe_b64encode(obj.aad))
 
     if obj.unprotected:
         data["unprotected"] = obj.unprotected
