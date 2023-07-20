@@ -1,6 +1,34 @@
 Changelog
 =========
 
+.. rst-class:: lead
+
+    Here is the history of joserfc_ package releases.
+
+.. _joserfc: https://pypi.org/project/joserfc/
+
+----
+
+.. module:: joserfc
+    :noindex:
+
+0.6.0
+-----
+
+**Released on July 20, 2023**
+
+- Huge improvements on type hints, via :user:`Viicos`.
+- Do not mutate the header when ``jwt.encode``, via :issue:`6`.
+- Register algorithms with their matched key types on key set.
+- Improve error handling, raise proper errors.
+
+**Breaking changes**:
+
+- ``jws.JSONSignature`` is replaced by :class:`jws.GeneralJSONSignature`
+  and :class:`jws.FlattenedJSONSignature`.
+- ``jwe.JSONEncryption`` is replaced by :class:`jwe.GeneralJSONEncryption`
+  and :class:`jwe.FlattenedJSONEncryption`.
+
 0.5.0
 -----
 

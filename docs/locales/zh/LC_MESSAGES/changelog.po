@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"POT-Creation-Date: 2023-07-20 21:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -23,124 +23,168 @@ msgstr ""
 msgid "Changelog"
 msgstr "历史记录"
 
-#: ../../changelog.rst:5
+#: ../../changelog.rst:6
+msgid "Here is the history of joserfc_ package releases."
+msgstr "这里记录了 joserfc_ 的发布历史。"
+
+#: ../../changelog.rst:16
+msgid "0.6.0"
+msgstr ""
+
+#: ../../changelog.rst:18
+msgid "**Released on July 20, 2023**"
+msgstr ""
+
+#: ../../changelog.rst:20
+msgid "Huge improvements on type hints, via :user:`Viicos`."
+msgstr ""
+
+#: ../../changelog.rst:21
+msgid "Do not mutate the header when ``jwt.encode``, via :issue:`6`."
+msgstr ""
+
+#: ../../changelog.rst:22
+msgid "Register algorithms with their matched key types on key set."
+msgstr ""
+
+#: ../../changelog.rst:23
+msgid "Improve error handling, raise proper errors."
+msgstr ""
+
+#: ../../changelog.rst:25
+msgid "**Breaking changes**:"
+msgstr ""
+
+#: ../../changelog.rst:27
+msgid ""
+"``jws.JSONSignature`` is replaced by :class:`jws.GeneralJSONSignature` "
+"and :class:`jws.FlattenedJSONSignature`."
+msgstr ""
+
+#: ../../changelog.rst:29
+msgid ""
+"``jwe.JSONEncryption`` is replaced by :class:`jwe.GeneralJSONEncryption` "
+"and :class:`jwe.FlattenedJSONEncryption`."
+msgstr ""
+
+#: ../../changelog.rst:33
 msgid "0.5.0"
 msgstr ""
 
-#: ../../changelog.rst:7
+#: ../../changelog.rst:35
 msgid "**Released on July 12, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:9
+#: ../../changelog.rst:37
 msgid "Add RFC7797 JSON Web Signature (JWS) Unencoded Payload Option"
 msgstr ""
 
-#: ../../changelog.rst:10
+#: ../../changelog.rst:38
 msgid "Fix ``decrypt_json`` when there is no ``encrypted_key``"
 msgstr ""
 
-#: ../../changelog.rst:11
+#: ../../changelog.rst:39
 msgid "Rename JWE CompleteJSONSerialization to GeneralJSONSerialization"
 msgstr ""
 
-#: ../../changelog.rst:12
+#: ../../changelog.rst:40
 msgid "Rename ``JSONEncryption.flatten`` to ``.flattened``"
 msgstr ""
 
-#: ../../changelog.rst:13
+#: ../../changelog.rst:41
 msgid "Load and dump RSA, EC, and OKP key with password"
 msgstr ""
 
-#: ../../changelog.rst:14
+#: ../../changelog.rst:42
 msgid ""
 "Rename Curve key method: ``exchange_shared_key`` to "
 "``exchange_derive_key``"
 msgstr ""
 
-#: ../../changelog.rst:17
+#: ../../changelog.rst:45
 msgid "0.4.0"
 msgstr ""
 
-#: ../../changelog.rst:19
+#: ../../changelog.rst:47
 msgid "**Released on July 6, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:21
+#: ../../changelog.rst:49
 msgid "Change ``options`` to ``parameters`` for JWK methods"
 msgstr ""
 
-#: ../../changelog.rst:22
+#: ../../changelog.rst:50
 msgid "Change ``JWSRegistry`` and ``JWERegistry`` parameters"
 msgstr ""
 
-#: ../../changelog.rst:23
+#: ../../changelog.rst:51
 msgid "Guess ``sender_key`` from JWKs in JWE"
 msgstr ""
 
-#: ../../changelog.rst:24
+#: ../../changelog.rst:52
 msgid "Add importing key from DER encoding bytes"
 msgstr ""
 
-#: ../../changelog.rst:25
+#: ../../changelog.rst:53
 msgid "Fix JWS JSON serialization when members have only unprotected headers"
 msgstr ""
 
-#: ../../changelog.rst:26
+#: ../../changelog.rst:54
 msgid "Check key type before processing algorithms of JWS and JWE"
 msgstr ""
 
-#: ../../changelog.rst:29
+#: ../../changelog.rst:57
 msgid "0.3.0"
 msgstr ""
 
-#: ../../changelog.rst:31
+#: ../../changelog.rst:59
 msgid "**Released on June 29, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:33
+#: ../../changelog.rst:61
 msgid "Return ``str`` instead of ``bytes`` for JWS and JWE serializations"
 msgstr ""
 
-#: ../../changelog.rst:34
+#: ../../changelog.rst:62
 msgid "Add a ``detach_content`` method for JWS"
 msgstr ""
 
-#: ../../changelog.rst:35
+#: ../../changelog.rst:63
 msgid "Remove ``jwt.extract`` method, because ``extract`` won't work for JWE"
 msgstr ""
 
-#: ../../changelog.rst:36
+#: ../../changelog.rst:64
 msgid "Add ``JWKRegistry`` for JWK"
 msgstr ""
 
-#: ../../changelog.rst:37
+#: ../../changelog.rst:65
 msgid "Update ``JSONEncryption.add_recipient`` parameters"
 msgstr ""
 
-#: ../../changelog.rst:38
+#: ../../changelog.rst:66
 msgid "Export register methods for JWE drafts"
 msgstr ""
 
-#: ../../changelog.rst:41
+#: ../../changelog.rst:69
 msgid "0.2.0"
 msgstr ""
 
-#: ../../changelog.rst:43
+#: ../../changelog.rst:71
 msgid "**Released on June 25, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:45
+#: ../../changelog.rst:73
 msgid "A beta release."
 msgstr ""
 
-#: ../../changelog.rst:48
+#: ../../changelog.rst:76
 msgid "0.1.0"
 msgstr ""
 
-#: ../../changelog.rst:50
+#: ../../changelog.rst:78
 msgid "**Released on Mar 5, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:52
+#: ../../changelog.rst:80
 msgid "Initial release."
 msgstr ""
