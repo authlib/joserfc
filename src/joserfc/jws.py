@@ -1,6 +1,5 @@
 import typing as t
 from typing import overload
-from .rfc7515 import types
 from .rfc7515.model import (
     JWSAlgModel,
     HeaderMember,
@@ -41,7 +40,6 @@ from .util import to_bytes
 from .registry import Header
 
 __all__ = [
-    "types",
     "JWSAlgModel",
     "JWSRegistry",
     "HeaderDict",

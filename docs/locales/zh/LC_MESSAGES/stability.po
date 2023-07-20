@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../../stability.rst:2
 msgid "API stability"
-msgstr ""
+msgstr "稳定性"
 
 #: ../../stability.rst:4
 msgid ""
@@ -85,4 +85,3 @@ msgid ""
 "your code when upgrading to a new version of joserfc to ensure a smooth "
 "transition and avoid any potential compatibility issues."
 msgstr ""
-

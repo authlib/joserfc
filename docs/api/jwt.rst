@@ -1,3 +1,5 @@
+.. _jwt_api:
+
 JWT API
 =======
 

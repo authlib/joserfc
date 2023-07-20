@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../../migrations/authlib.rst:2
 msgid "Migrating from Authlib"
-msgstr ""
+msgstr "从 Authlib 迁移到 joserfc"
 
 #: ../../migrations/authlib.rst:4
 msgid ""
@@ -155,7 +155,7 @@ msgstr ""
 
 #: ../../migrations/index.rst:2
 msgid "Migrations"
-msgstr ""
+msgstr "迁移"
 
 #: ../../migrations/index.rst:4
 msgid ""
@@ -165,7 +165,7 @@ msgstr ""
 
 #: ../../migrations/pyjwt.rst:2
 msgid "Migrating from PyJWT"
-msgstr ""
+msgstr "从 PyJWT 迁移到 joserfc"
 
 #: ../../migrations/pyjwt.rst:4
 msgid ""
@@ -254,4 +254,3 @@ msgid ""
 "Requests <ClaimsOption>`_ JSON object. You can learn more from "
 ":ref:`claims`."
 msgstr ""
-

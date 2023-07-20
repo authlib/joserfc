@@ -7,8 +7,13 @@ from ..rfc7517.models import BaseKey
 
 
 class HeaderMember:
+    """A header member of the JSON signature. It is combined with protected header,
+    and unprotected header.
+    """
     def __init__(self, protected: t.Optional[Header] = None, header: t.Optional[Header] = None):
+        #: protected header
         self.protected = protected
+        #: unprotected header
         self.header = header
 
     def headers(self) -> Header:
@@ -42,10 +47,15 @@ class CompactSignature:
 
 
 class FlattenedJSONSignature:
-    flattened = True
+    """"JSON Signature object that represents a flattened JSON serialization."""
+
+    #: mark it as flattened
+    flattened: t.ClassVar[bool] = True
 
     def __init__(self, member: HeaderMember, payload: bytes):
+        #: the only header member
         self.member = member
+        #: payload content
         self.payload = payload
         self.signature: t.Optional[JSONSignatureDict] = None
         self.segments: SegmentsDict = {}
@@ -59,10 +69,15 @@ class FlattenedJSONSignature:
 
 
 class GeneralJSONSignature:
-    flattened = False
+    """"JSON Signature object that represents a general JSON serialization."""
+
+    #: mark it as not flattened (general)
+    flattened: t.ClassVar[bool] = False
 
     def __init__(self, members: t.List[HeaderMember], payload: bytes):
+        #: a list of header members
         self.members = members
+        #: payload content
         self.payload = payload
         self.signatures: t.List[JSONSignatureDict] = []
         self.segments: SegmentsDict = {}
@@ -92,7 +107,6 @@ class JWSAlgModel(object, metaclass=ABCMeta):
         :param key: private key to sign the message
         :return: bytes
         """
-        pass
 
     @abstractmethod
     def verify(self, msg: bytes, sig: bytes, key: t.Any) -> bool:
@@ -103,4 +117,3 @@ class JWSAlgModel(object, metaclass=ABCMeta):
         :param key: public key to verify the signature
         :return: boolean
         """
-        pass

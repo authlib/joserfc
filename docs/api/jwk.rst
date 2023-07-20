@@ -1,3 +1,5 @@
+.. _jwk_api:
+
 JWK API
 =======
 

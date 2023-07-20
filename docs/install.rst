@@ -3,6 +3,12 @@
 Installation
 ============
 
+.. rst-class:: lead
+
+    Get started with **joserfc** from installation.
+
+----
+
 We recommend using the latest version of Python. ``joserfc`` supports Python 3.8 and newer.
 The package has a dependency of cryptography_, if you encountered any issues related with
 cryptography, you can follow the documentation

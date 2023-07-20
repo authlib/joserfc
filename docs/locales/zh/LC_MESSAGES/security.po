@@ -21,7 +21,7 @@ msgstr ""
 
 #: ../../security.rst:2
 msgid "Security"
-msgstr ""
+msgstr "安全"
 
 #: ../../security.rst:4
 msgid ""
@@ -82,4 +82,3 @@ msgstr ""
 #: ../../security.rst:31
 msgid "Waiting..."
 msgstr ""
-

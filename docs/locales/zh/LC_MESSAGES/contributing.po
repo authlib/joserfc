@@ -21,11 +21,11 @@ msgstr ""
 
 #: ../../contributing/authors.rst:2
 msgid "Authors"
-msgstr ""
+msgstr "作者列表"
 
 #: ../../contributing/index.rst:2
 msgid "Contributing"
-msgstr ""
+msgstr "参与贡献"
 
 #: ../../contributing/index.rst:4
 msgid "Contributions are welcome, and they are greatly appreciated!"
@@ -33,15 +33,15 @@ msgstr ""
 
 #: ../../contributing/index.rst:7
 msgid "Types of contributions"
-msgstr ""
+msgstr "贡献类型"
 
 #: ../../contributing/index.rst:9
 msgid "There are many ways you can contribute."
-msgstr ""
+msgstr "您可以通过多种方式做出贡献。"
 
 #: ../../contributing/index.rst:12
 msgid "Report bugs"
-msgstr ""
+msgstr "报告错误"
 
 #: ../../contributing/index.rst:14
 msgid ""
@@ -65,7 +65,7 @@ msgstr ""
 
 #: ../../contributing/index.rst:23
 msgid "Your Python version."
-msgstr ""
+msgstr "你的 Python 版本"
 
 #: ../../contributing/index.rst:24
 msgid "Details to reproduce the bug."
@@ -89,7 +89,7 @@ msgstr ""
 
 #: ../../contributing/index.rst:35
 msgid "Improve documentation"
-msgstr ""
+msgstr "优化文档"
 
 #: ../../contributing/index.rst:37
 msgid ""
@@ -118,7 +118,7 @@ msgstr ""
 
 #: ../../contributing/index.rst:58
 msgid "Install"
-msgstr ""
+msgstr "安装"
 
 #: ../../contributing/index.rst:60
 msgid "Then install the Python requirements for unit tests:"
@@ -140,11 +140,11 @@ msgstr ""
 
 #: ../../contributing/sponsors.rst:2
 msgid "Sponsors"
-msgstr ""
+msgstr "赞助者"
 
 #: ../../contributing/structure.rst:2
 msgid "Understand code structure"
-msgstr ""
+msgstr "理解代码结构"
 
 #: ../../contributing/structure.rst:4
 msgid ""
@@ -240,4 +240,3 @@ msgid ""
 " when relying on draft implementations, as they may undergo significant "
 "changes or be incompatible with the final RFC specification."
 msgstr ""
-

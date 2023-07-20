@@ -236,6 +236,10 @@ The returned value from ``deserialize_json`` is an object of
 :class:`jws.GeneralJSONSignature` or :class:`jws.FlattenedJSONSignature`,
 you can tell if the signature is flattened or general with ``obj.flattened``:
 
+.. versionchanged:: 0.6.0
+
+    ``jws.JSONSignature`` is seperated to ``GeneralJSONSignature`` and ``FlattenedJSONSignature``.
+
 .. code-block:: python
 
     obj = jws.deserialize_json(data, public_key)

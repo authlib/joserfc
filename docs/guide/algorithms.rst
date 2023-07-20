@@ -5,6 +5,12 @@
 Algorithms
 ==========
 
+.. rst-class:: lead
+
+    All available algorithms for JWS, JWE, JWK, and JWT.
+
+-----
+
 This documentation describes the algorithms to be used with
 JSON Web Signature (JWS), JSON Web Encryption (JWE), and
 JSON Web Key (JWK).

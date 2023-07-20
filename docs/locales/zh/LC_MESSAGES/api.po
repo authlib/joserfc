@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-18 21:27+0900\n"
+"POT-Creation-Date: 2023-07-20 21:07+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -21,13 +21,13 @@ msgstr ""
 
 #: ../../api/index.rst:2
 msgid "API References"
-msgstr ""
+msgstr "API 参考"
 
-#: ../../api/jwe.rst:2
+#: ../../api/jwe.rst:4
 msgid "JWE API"
 msgstr ""
 
-#: ../../api/jwe.rst:4
+#: ../../api/jwe.rst:6
 msgid ""
 "This part of the documentation covers all the interfaces of "
 "``joserfc.jwe``."
@@ -66,7 +66,6 @@ msgstr ""
 #: joserfc.rfc7517.models.BaseKey.check_alg
 #: joserfc.rfc7517.models.BaseKey.check_key_op
 #: joserfc.rfc7517.models.BaseKey.check_use
-#: joserfc.rfc7517.registry.JWKRegistry.import_key
 #: joserfc.rfc7518.oct_key.OctKey.generate_key of
 msgid "Parameters"
 msgstr ""
@@ -237,8 +236,7 @@ msgstr ""
 #: joserfc.jwe.encrypt_compact joserfc.jwe.encrypt_json
 #: joserfc.jws.deserialize_compact joserfc.jws.deserialize_json
 #: joserfc.jws.serialize_compact joserfc.rfc7515.model.JWSAlgModel.sign
-#: joserfc.rfc7515.model.JWSAlgModel.verify
-#: joserfc.rfc7517.registry.JWKRegistry.import_key of
+#: joserfc.rfc7515.model.JWSAlgModel.verify of
 msgid "Returns"
 msgstr ""
 
@@ -301,11 +299,11 @@ msgid ""
 "an example::"
 msgstr ""
 
-#: ../../api/jwk.rst:2
+#: ../../api/jwk.rst:4
 msgid "JWK API"
 msgstr ""
 
-#: ../../api/jwk.rst:4
+#: ../../api/jwk.rst:6
 msgid ""
 "This part of the documentation covers all the interfaces of "
 "``joserfc.jwk``."
@@ -390,43 +388,12 @@ msgid ""
 "editor.org/rfc/rfc7518#section-6.2"
 msgstr ""
 
-#: joserfc.rfc7517.registry.JWKRegistry:1 of
+#: joserfc.jwk.JWKRegistry:1 of
 msgid ""
 "A registry for JWK to record ``joserfc`` supported key types. Normally, "
 "you would use explicit key types like ``OctKey``, ``RSAKey``; This "
 "registry provides a way to dynamically import and generate keys. For "
 "instance:"
-msgstr ""
-
-#: joserfc.rfc7517.registry.JWKRegistry.generate_key:1 of
-msgid ""
-"A class method for generating key according to the given key type. When "
-"``key_type`` is \"oct\" and \"RSA\", the second parameter SHOULD be a key"
-" size in bits. When ``key_type`` is \"EC\" and \"OKP\", the second "
-"parameter SHOULD be a \"crv\" string."
-msgstr ""
-
-#: joserfc.rfc7517.registry.JWKRegistry.import_key:1 of
-msgid ""
-"A class method for importing a key from bytes, string, and dict. When "
-"``value`` is a dict, this method can tell the key type automatically, "
-"otherwise, developers SHOULD pass the ``key_type`` themselves."
-msgstr ""
-
-#: joserfc.rfc7517.registry.JWKRegistry.import_key:5 of
-msgid "the key data in bytes, string, or dict."
-msgstr ""
-
-#: joserfc.rfc7517.registry.JWKRegistry.import_key:6 of
-msgid "an optional key type in string."
-msgstr ""
-
-#: joserfc.rfc7517.registry.JWKRegistry.import_key:7 of
-msgid "extra key parameters"
-msgstr ""
-
-#: joserfc.rfc7517.registry.JWKRegistry.import_key:8 of
-msgid "OctKey, RSAKey, ECKey, or OKPKey"
 msgstr ""
 
 #: joserfc.rfc8037.okp_key.OKPKey:1 of
@@ -497,11 +464,11 @@ msgstr ""
 msgid "a protocol that has ``headers`` and ``set_kid`` methods"
 msgstr ""
 
-#: ../../api/jws.rst:2
+#: ../../api/jws.rst:4
 msgid "JWS API"
 msgstr ""
 
-#: ../../api/jws.rst:4
+#: ../../api/jws.rst:6
 msgid ""
 "This part of the documentation covers all the interfaces of "
 "``joserfc.jws``."
@@ -511,6 +478,49 @@ msgstr ""
 msgid ""
 "JSON Web Signature object for compact mode. This object is used to "
 "represent the JWS instance."
+msgstr ""
+
+#: joserfc.rfc7515.model.FlattenedJSONSignature:1 of
+msgid "\"JSON Signature object that represents a flattened JSON serialization."
+msgstr ""
+
+#: ../../docstring joserfc.jws.FlattenedJSONSignature.flattened:1 of
+msgid "mark it as flattened"
+msgstr ""
+
+#: ../../docstring joserfc.jws.FlattenedJSONSignature.member:1 of
+msgid "the only header member"
+msgstr ""
+
+#: ../../docstring joserfc.jws.FlattenedJSONSignature.payload:1
+#: joserfc.jws.GeneralJSONSignature.payload:1 of
+msgid "payload content"
+msgstr ""
+
+#: joserfc.rfc7515.model.GeneralJSONSignature:1 of
+msgid "\"JSON Signature object that represents a general JSON serialization."
+msgstr ""
+
+#: ../../docstring joserfc.jws.GeneralJSONSignature.flattened:1 of
+msgid "mark it as not flattened (general)"
+msgstr ""
+
+#: ../../docstring joserfc.jws.GeneralJSONSignature.members:1 of
+msgid "a list of header members"
+msgstr ""
+
+#: joserfc.rfc7515.model.HeaderMember:1 of
+msgid ""
+"A header member of the JSON signature. It is combined with protected "
+"header, and unprotected header."
+msgstr ""
+
+#: ../../docstring joserfc.jws.HeaderMember.header:1 of
+msgid "unprotected header"
+msgstr ""
+
+#: ../../docstring joserfc.jws.HeaderMember.protected:1 of
+msgid "protected header"
 msgstr ""
 
 #: joserfc.rfc7515.model.JWSAlgModel:1 of
@@ -707,11 +717,11 @@ msgstr ""
 msgid "object of the JWS Compact Serialization"
 msgstr ""
 
-#: ../../api/jwt.rst:2
+#: ../../api/jwt.rst:4
 msgid "JWT API"
 msgstr ""
 
-#: ../../api/jwt.rst:4
+#: ../../api/jwt.rst:6
 msgid ""
 "This part of the documentation covers all the interfaces of "
 "``joserfc.jwt``."

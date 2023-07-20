@@ -1,3 +1,5 @@
+.. _jwe_api:
+
 JWE API
 =======
 

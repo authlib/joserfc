@@ -1,3 +1,5 @@
+.. _jws_api:
+
 JWS API
 =======
 
