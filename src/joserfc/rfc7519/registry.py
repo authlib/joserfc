@@ -128,6 +128,8 @@ class JWTClaimsRegistry(ClaimsRegistry):
         """
         if not _validate_numeric_time(value):
             raise InvalidClaimError("iat")
+        if value > (self.now + self.leeway):
+            raise InvalidTokenError()
         self.check_value("iat", value)
 
 

@@ -64,10 +64,9 @@ class TestJWTClaims(TestCase):
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"nbf": "s"})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"iat": "s"})
 
+        claims_requests.validate({"exp": now + 100, "nbf": now - 100, "iat": now})
         self.assertRaises(ExpiredTokenError, claims_requests.validate, {"exp": now - 100})
         self.assertRaises(InvalidTokenError, claims_requests.validate, {"nbf": now + 100})
-
-        claims_requests.validate({"exp": now + 100, "nbf": now - 100, "iat": now})
 
     def test_validate_aud(self):
         claims_requests = jwt.JWTClaimsRegistry(aud={"essential": True, "value": "a"})
@@ -101,3 +100,15 @@ class TestJWTClaims(TestCase):
 
         claims_requests = jwt.JWTClaimsRegistry(aud={"essential": True})
         claims_requests.validate({"aud": "a"})
+
+    def test_validate_iat(self):
+        now = int(time.time())
+        claims_requests = jwt.JWTClaimsRegistry(now=now, leeway=500)
+        claims_requests.validate({"iat": now})
+        self.assertRaises(InvalidTokenError, claims_requests.validate, {"iat": now + 1000})
+
+    def test_validate_nbf(self):
+        now = int(time.time())
+        claims_requests = jwt.JWTClaimsRegistry(now=now, leeway=500)
+        claims_requests.validate({"nbf": now})
+        self.assertRaises(InvalidTokenError, claims_requests.validate, {"nbf": now + 1000})
