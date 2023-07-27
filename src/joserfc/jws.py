@@ -60,7 +60,7 @@ __all__ = [
 
 
 # register supported alg models
-def __register():
+def __register() -> None:
     # register alg in RFC7518
     for _alg in JWS_ALGORITHMS:
         JWSRegistry.register(_alg)
@@ -193,7 +193,8 @@ def serialize_json(
         payload: t.AnyStr,
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None):
+        registry: t.Optional[JWSRegistry] = None,
+) -> t.Union[GeneralJSONSerialization, FlattenedJSONSerialization]:
     """Generate a JWS JSON Serialization (in dict). The JWS JSON Serialization
     represents digitally signed or MACed content as a JSON object. This representation
     is neither optimized for compactness nor URL-safe.
@@ -251,7 +252,8 @@ def deserialize_json(
         value: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization],
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None):
+        registry: t.Optional[JWSRegistry] = None,
+) -> t.Union[GeneralJSONSignature, FlattenedJSONSignature]:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a dict of the JSON signature

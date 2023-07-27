@@ -60,8 +60,16 @@ class JWKRegistry(_JWKRegistry):
     }
 
 
+class GuestProtocol(t.Protocol):  # pragma: no cover
+    def headers(self) -> Header:
+        ...
+
+    def set_kid(self, kid: str):
+        ...
+
+
 Key = t.Union[OctKey, RSAKey, ECKey, OKPKey]
-KeyCallable = t.Callable[[t.Any], Key]
+KeyCallable = t.Callable[[GuestProtocol], Key]
 
 
 class KeySet(_KeySet):
@@ -69,14 +77,6 @@ class KeySet(_KeySet):
 
 
 KeyFlexible = t.Union[t.AnyStr, Key, KeySet, KeyCallable]
-
-
-class GuestProtocol(t.Protocol):  # pragma: no cover
-    def headers(self) -> Header:
-        ...
-
-    def set_kid(self, kid: str):
-        ...
 
 
 def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:

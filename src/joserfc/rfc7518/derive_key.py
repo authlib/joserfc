@@ -18,7 +18,7 @@ def derive_key_for_concat_kdf(
         header: Header,
         cek_size: int,
         key_size: t.Optional[int],
-        tag: t.Optional[bytes] = None):
+        tag: t.Optional[bytes] = None) -> bytes:
     # PartyUInfo
     apu_info = u32be_len_input(header.get("apu"), True)
     # PartyVInfo
@@ -48,7 +48,7 @@ def derive_key_for_concat_kdf(
     return ckdf.derive(shared_key)
 
 
-def u32be_len_input(s, use_base64=False):
+def u32be_len_input(s, use_base64=False) -> bytes:
     if not s:
         return b"\x00\x00\x00\x00"
     if use_base64:

@@ -47,7 +47,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
             self.key_size = key_wrapping.key_size
         self.key_wrapping = key_wrapping
 
-    def _check_enc(self, enc: JWEEncModel):
+    def _check_enc(self, enc: JWEEncModel) -> None:
         if self.key_wrapping and not isinstance(enc, CBCHS2EncModel):
             description = (
                 'In key agreement with key wrapping mode ECDH-1PU algorithm '
