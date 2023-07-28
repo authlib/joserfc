@@ -85,29 +85,46 @@ def decode(
     :raise: BadSignatureError
     """
     _value = to_bytes(value)
-    _header: Header
+    header: Header
+    payload: bytes
     if _value.count(b".") == 4:
         if registry is not None:
             assert isinstance(registry, JWERegistry)
-        jwe_obj = decrypt_compact(_value, key, algorithms, registry)
-        _header = jwe_obj.headers()
-        payload: bytes = jwe_obj.plaintext  # type: ignore
+        header, payload = _decode_jwe(_value, key, algorithms, registry)
     else:
         if registry is not None:
             assert isinstance(registry, JWSRegistry)
-        jws_obj = deserialize_compact(_value, key, algorithms, registry)
-        _header = jws_obj.headers()
-        payload: bytes = jws_obj.payload  # type: ignore
+        header, payload = _decode_jws(_value, key, algorithms, registry)
 
     try:
         claims: Claims = json.loads(payload)
     except (TypeError, ValueError):
         raise InvalidPayloadError()
 
-    token = Token(_header, claims)
+    token = Token(header, claims)
     typ = token.header.get("typ")
     # https://www.rfc-editor.org/rfc/rfc7519#section-5.1
     # If present, it is RECOMMENDED that its value be "JWT".
     if typ and typ != "JWT":
         raise InvalidTypeError()
     return token
+
+
+def _decode_jwe(
+        value: bytes,
+        key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWERegistry] = None) -> t.Tuple[Header, bytes]:
+    jwe_obj = decrypt_compact(value, key, algorithms, registry)
+    assert jwe_obj.plaintext is not None
+    return jwe_obj.headers(), jwe_obj.plaintext
+
+
+def _decode_jws(
+        value: bytes,
+        key: KeyFlexible,
+        algorithms: t.Optional[t.List[str]] = None,
+        registry: t.Optional[JWSRegistry] = None) -> t.Tuple[Header, bytes]:
+    jws_obj = deserialize_compact(value, key, algorithms, registry)
+    assert jws_obj.payload is not None
+    return jws_obj.headers(), jws_obj.payload

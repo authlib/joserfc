@@ -39,8 +39,9 @@ class DirectAlgModel(JWEDirectEncryption):
     description = "Direct use of a shared symmetric key"
     recommended = True
 
-    def compute_cek(self, size: int, recipient: Recipient):
-        key: OctKey = recipient.recipient_key  # type: ignore
+    def compute_cek(self, size: int, recipient: Recipient[OctKey]):
+        key = recipient.recipient_key
+        assert key is not None
         self.check_key_type(key)
         cek = key.raw_value
         if len(cek) * 8 != size:
@@ -65,16 +66,18 @@ class RSAAlgModel(JWEKeyEncryption):
         self.padding = pad_fn
         self.recommended = recommended
 
-    def encrypt_cek(self, cek: bytes, recipient: Recipient):
-        key: RSAKey = recipient.recipient_key  # type: ignore
+    def encrypt_cek(self, cek: bytes, recipient: Recipient[RSAKey]):
+        key = recipient.recipient_key
+        assert key is not None
         self.check_key_type(key)
         op_key = key.get_op_key("encrypt")
         if op_key.key_size < self.key_size:
             raise InvalidKeyLengthError(f"A key of size {self.key_size} bits or larger MUST be used")
         return op_key.encrypt(cek, self.padding)
 
-    def decrypt_cek(self, recipient: Recipient) -> bytes:
-        key: RSAKey = recipient.recipient_key  # type: ignore
+    def decrypt_cek(self, recipient: Recipient[RSAKey]) -> bytes:
+        key = recipient.recipient_key
+        assert key is not None
         self.check_key_type(key)
         op_key = key.get_op_key("decrypt")
         try:
@@ -104,14 +107,16 @@ class AESAlgModel(JWEKeyWrapping):
             raise DecodeError("Unwrap AES key failed")
         return cek
 
-    def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
-        key: OctKey = recipient.recipient_key  # type: ignore
+    def encrypt_cek(self, cek: bytes, recipient: Recipient[OctKey]) -> bytes:
+        key = recipient.recipient_key
+        assert key is not None
         self.check_key_type(key)
         op_key = key.get_op_key("wrapKey")
         return self.wrap_cek(cek, op_key)
 
-    def decrypt_cek(self, recipient: Recipient) -> bytes:
-        key: OctKey = recipient.recipient_key  # type: ignore
+    def decrypt_cek(self, recipient: Recipient[OctKey]) -> bytes:
+        key = recipient.recipient_key
+        assert key is not None
         self.check_key_type(key)
         op_key = key.get_op_key("unwrapKey")
         assert recipient.encrypted_key is not None
@@ -135,8 +140,9 @@ class AESGCMAlgModel(JWEKeyWrapping):
     def unwrap_cek(self, ek: bytes, key: bytes):  # pragma: no cover
         raise RuntimeError(f"{self.name} can not be used together with Key Agreement")
 
-    def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
-        key: OctKey = recipient.recipient_key  # type: ignore
+    def encrypt_cek(self, cek: bytes, recipient: Recipient[OctKey]) -> bytes:
+        key = recipient.recipient_key
+        assert key is not None
         self.check_key_type(key)
         op_key = key.get_op_key("wrapKey")
         self.check_op_key(op_key)
@@ -155,8 +161,9 @@ class AESGCMAlgModel(JWEKeyWrapping):
         recipient.add_header("tag", urlsafe_b64encode(enc.tag).decode("ascii"))
         return encrypted_key
 
-    def decrypt_cek(self, recipient: Recipient) -> bytes:
-        key: OctKey = recipient.recipient_key  # type: ignore
+    def decrypt_cek(self, recipient: Recipient[OctKey]) -> bytes:
+        key = recipient.recipient_key
+        assert key is not None
         self.check_key_type(key)
         op_key = key.get_op_key("unwrapKey")
         self.check_op_key(op_key)
@@ -199,18 +206,24 @@ class ECDHESAlgModel(JWEKeyAgreement):
             self.recommended = key_wrapping.recommended
         self.key_wrapping = key_wrapping
 
-    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient):
-        recipient_key: CurveKey = recipient.recipient_key  # type: ignore
-        ephemeral_key: CurveKey = recipient.ephemeral_key  # type: ignore
+    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]):
+        recipient_key = recipient.recipient_key
+        assert recipient_key is not None
+
+        ephemeral_key = recipient.ephemeral_key
+        assert ephemeral_key is not None
+
         shared_key = ephemeral_key.exchange_derive_key(recipient_key)
         headers = recipient.headers()
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size)
 
-    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
+    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]) -> bytes:
         headers = recipient.headers()
         assert "epk" in headers
 
-        recipient_key: CurveKey = recipient.recipient_key  # type: ignore
+        recipient_key = recipient.recipient_key
+        assert recipient_key is not None
+
         self.check_key_type(recipient_key)
         ephemeral_key = recipient_key.import_key(headers["epk"])
         shared_key = recipient_key.exchange_derive_key(ephemeral_key)
@@ -248,7 +261,7 @@ class PBES2HSAlgModel(JWEKeyEncryption):
         )
         return kdf.derive(key)
 
-    def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
+    def encrypt_cek(self, cek: bytes, recipient: Recipient[OctKey]) -> bytes:
         headers = recipient.headers()
         if "p2s" not in headers:
             p2s = os.urandom(16)
@@ -263,18 +276,22 @@ class PBES2HSAlgModel(JWEKeyEncryption):
         else:
             p2c = headers["p2c"]
 
-        key: OctKey = recipient.recipient_key  # type: ignore
+        key = recipient.recipient_key
+        assert key is not None
         self.check_key_type(key)
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), p2s, p2c)
         return self.key_wrapping.wrap_cek(cek, kek)
 
-    def decrypt_cek(self, recipient: Recipient) -> bytes:
+    def decrypt_cek(self, recipient: Recipient[OctKey]) -> bytes:
         headers = recipient.headers()
         assert "p2s" in headers
         assert "p2c" in headers
         p2s = urlsafe_b64decode(to_bytes(headers["p2s"]))
         p2c = headers["p2c"]
-        key: OctKey = recipient.recipient_key  # type: ignore
+
+        key = recipient.recipient_key
+        assert key is not None
+
         self.check_key_type(key)
         kek = self.compute_derived_key(key.get_op_key("deriveKey"), p2s, p2c)
         assert recipient.encrypted_key is not None

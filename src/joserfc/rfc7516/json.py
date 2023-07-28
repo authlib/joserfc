@@ -10,6 +10,7 @@ from .types import (
     GeneralJSONSerialization,
     FlattenedJSONSerialization,
 )
+from ..rfc7517.models import BaseKey
 from ..registry import Header
 from ..util import (
     to_bytes,
@@ -32,7 +33,7 @@ def represent_general_json(obj: GeneralJSONEncryption) -> GeneralJSONSerializati
             item["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
         recipients.append(item)
     data["recipients"] = recipients
-    return data  # type: ignore
+    return data  # type: ignore[assignment]
 
 
 def represent_flattened_json(obj: FlattenedJSONEncryption) -> FlattenedJSONSerialization:
@@ -47,7 +48,7 @@ def represent_flattened_json(obj: FlattenedJSONEncryption) -> FlattenedJSONSeria
 
 
 def __represent_json_serialization(obj: BaseJSONEncryption):
-    data: t.Dict[str, t.Union[str, Header]] = {
+    data: t.Dict[str, t.Union[str, Header, t.List[Header]]] = {
         "protected": to_str(json_b64encode(obj.protected)),
         "iv": to_str(obj.base64_segments["iv"]),
         "ciphertext": to_str(obj.base64_segments["ciphertext"]),
@@ -69,7 +70,7 @@ def extract_general_json(data: GeneralJSONSerialization) -> GeneralJSONEncryptio
     obj.base64_segments = base64_segments
     obj.bytes_segments = bytes_segments
     for item in data["recipients"]:
-        recipient = Recipient(obj, item.get("header"))
+        recipient: Recipient[BaseKey] = Recipient(obj, item.get("header"))
         if "encrypted_key" in item:
             recipient.encrypted_key = urlsafe_b64decode(to_bytes(item["encrypted_key"]))
         obj.recipients.append(recipient)
@@ -84,7 +85,7 @@ def extract_flattened_json(data: FlattenedJSONSerialization) -> FlattenedJSONEnc
     obj.base64_segments = base64_segments
     obj.bytes_segments = bytes_segments
 
-    recipient = Recipient(obj, data.get("header"))
+    recipient: Recipient[BaseKey] = Recipient(obj, data.get("header"))
     if "encrypted_key" in data:
         recipient.encrypted_key = urlsafe_b64decode(to_bytes(data["encrypted_key"]))
     obj.recipients.append(recipient)

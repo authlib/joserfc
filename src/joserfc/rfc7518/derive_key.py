@@ -48,11 +48,12 @@ def derive_key_for_concat_kdf(
     return ckdf.derive(shared_key)
 
 
-def u32be_len_input(s, use_base64=False) -> bytes:
+def u32be_len_input(s: t.Optional[t.AnyStr], use_base64=False) -> bytes:
     if not s:
         return b"\x00\x00\x00\x00"
+    sb: bytes
     if use_base64:
-        s = urlsafe_b64decode(to_bytes(s))
+        sb = urlsafe_b64decode(to_bytes(s))
     else:
-        s = to_bytes(s)
-    return struct.pack(">I", len(s)) + s
+        sb = to_bytes(s)
+    return struct.pack(">I", len(sb)) + sb

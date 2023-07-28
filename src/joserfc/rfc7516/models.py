@@ -5,17 +5,19 @@ from ..rfc7517.models import BaseKey, CurveKey
 from ..registry import Header, HeaderRegistryDict
 from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
 
+KeyType = t.TypeVar("KeyType", bound=BaseKey)
 
-class Recipient:
+
+class Recipient(t.Generic[KeyType]):
     def __init__(
             self,
             parent: t.Union["CompactEncryption", "GeneralJSONEncryption", "FlattenedJSONEncryption"],
             header: t.Optional[Header] = None,
-            recipient_key: t.Optional[BaseKey] = None):
+            recipient_key: t.Optional[KeyType] = None):
         self.__parent = parent
         self.header = header
         self.recipient_key = recipient_key
-        self.sender_key: t.Optional[BaseKey] = None
+        self.sender_key: t.Optional[KeyType] = None
         self.encrypted_key: t.Optional[bytes] = None
         self.ephemeral_key: t.Optional[CurveKey] = None
 
@@ -278,8 +280,9 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
     tag_aware: bool = False
     key_wrapping: t.Optional[JWEKeyWrapping]
 
-    def prepare_ephemeral_key(self, recipient: Recipient):
-        recipient_key: CurveKey = recipient.recipient_key  # type: ignore
+    def prepare_ephemeral_key(self, recipient: Recipient[CurveKey]):
+        recipient_key = recipient.recipient_key
+        assert recipient_key is not None
         self.check_key_type(recipient_key)
         if recipient.ephemeral_key is None:
             ephemeral_key: CurveKey = recipient_key.generate_key(
@@ -288,11 +291,11 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
         recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
 
     @abstractmethod
-    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
+    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]) -> bytes:
         pass
 
     @abstractmethod
-    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient) -> bytes:
+    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]) -> bytes:
         pass
 
     def wrap_cek_with_auk(self, cek: bytes, key: bytes) -> bytes:
@@ -303,10 +306,10 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
         assert self.key_wrapping is not None
         return self.key_wrapping.unwrap_cek(ek, key)
 
-    def encrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient, tag: bytes) -> bytes:
+    def encrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient[CurveKey], tag: bytes) -> bytes:
         raise NotImplementedError()
 
-    def decrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient, tag: bytes) -> bytes:
+    def decrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient[CurveKey], tag: bytes) -> bytes:
         raise NotImplementedError()
 
 

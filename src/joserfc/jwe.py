@@ -27,7 +27,7 @@ from .rfc7516.json import (
 from .rfc7518.jwe_algs import JWE_ALG_MODELS
 from .rfc7518.jwe_encs import JWE_ENC_MODELS
 from .rfc7518.jwe_zips import JWE_ZIP_MODELS
-from .jwk import KeySet, CurveKey, KeyFlexible, guess_key
+from .jwk import Key, KeySet, CurveKey, KeyFlexible, guess_key
 from .util import to_bytes
 from .registry import Header
 
@@ -93,7 +93,7 @@ def encrypt_compact(
         registry = default_registry
 
     obj = CompactEncryption(protected, to_bytes(plaintext))
-    recipient = Recipient(obj)
+    recipient: Recipient[Key] = Recipient(obj)
     key = guess_key(public_key, recipient)
     key.check_use("enc")
     recipient.recipient_key = key

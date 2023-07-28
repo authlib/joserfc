@@ -3,28 +3,28 @@ import typing as t
 Header = t.Dict[str, t.Any]
 
 
-def is_str(value: str):
+def is_str(value: str) -> None:
     if not isinstance(value, str):
         raise ValueError("must be a str")
 
 
-def is_url(value: str):
+def is_url(value: str) -> None:
     is_str(value)
     if not value.startswith(("http://", "https://")):
         raise ValueError("must be a URL")
 
 
-def is_int(value: int):
+def is_int(value: int) -> None:
     if not isinstance(value, int):
         raise ValueError("must be an int")
 
 
-def is_bool(value: bool):
+def is_bool(value: bool) -> None:
     if not isinstance(value, bool):
         raise ValueError("must be an bool")
 
 
-def is_list_str(values):
+def is_list_str(values: t.List[str]) -> None:
     if not isinstance(values, list):
         raise ValueError("must be a list[str]")
 
@@ -32,13 +32,13 @@ def is_list_str(values):
         raise ValueError("must be a list[str]")
 
 
-def is_jwk(value):
+def is_jwk(value: t.Dict[str, t.Any]) -> None:
     if not isinstance(value, dict):
         raise ValueError("must be a JWK")
 
 
 def in_choices(choices: t.List[str]):
-    def _is_one_of(value):
+    def _is_one_of(value: t.Union[str, t.List[str]]) -> None:
         if isinstance(value, list):
             if not all(v in choices for v in value):
                 raise ValueError(f"must be one of {choices}")
@@ -49,7 +49,7 @@ def in_choices(choices: t.List[str]):
     return _is_one_of
 
 
-def not_support(_):
+def not_support(_) -> None:
     raise ValueError("is not supported")
 
 
@@ -170,7 +170,7 @@ JWK_OPERATION_REGISTRY = {
 }
 
 
-def check_supported_header(registry: HeaderRegistryDict, header: Header):
+def check_supported_header(registry: HeaderRegistryDict, header: Header) -> None:
     allowed_keys = set(registry.keys())
     unsupported_keys = set(header.keys()) - allowed_keys
     if unsupported_keys:
@@ -180,7 +180,7 @@ def check_supported_header(registry: HeaderRegistryDict, header: Header):
 def validate_registry_header(
         registry: HeaderRegistryDict,
         header: Header,
-        check_required: bool = True):
+        check_required: bool = True) -> None:
     for key, reg in registry.items():
         if check_required and reg.required and key not in header:
             raise ValueError(f'Required "{key}" is missing in header')
@@ -191,7 +191,7 @@ def validate_registry_header(
                 raise ValueError(f'"{key}" in header {error}')
 
 
-def check_crit_header(header: Header):
+def check_crit_header(header: Header) -> None:
     # check crit header
     if "crit" in header:
         for k in header["crit"]:

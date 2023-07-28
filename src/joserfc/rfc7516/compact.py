@@ -1,4 +1,5 @@
 from .models import CompactEncryption, Recipient
+from ..rfc7517.models import BaseKey
 from ..errors import (
     MissingAlgorithmError,
     MissingEncryptionError,
@@ -51,7 +52,7 @@ def extract_compact(value: bytes) -> CompactEncryption:
         "ciphertext": urlsafe_b64decode(ciphertext_segment),
         "tag": urlsafe_b64decode(tag_segment),
     })
-    recipient = Recipient(obj)
+    recipient: Recipient[BaseKey] = Recipient(obj)
     recipient.encrypted_key = urlsafe_b64decode(ek_segment)
     obj.recipient = recipient
     return obj

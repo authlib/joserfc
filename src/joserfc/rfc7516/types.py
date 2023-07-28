@@ -1,6 +1,7 @@
 import typing as t
 
 __all__ = [
+    "JSONRecipientDict",
     "FlattenedJSONSerialization",
     "GeneralJSONSerialization",
 ]

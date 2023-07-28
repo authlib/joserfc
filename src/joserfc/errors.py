@@ -82,7 +82,7 @@ class InvalidCEKLengthError(JoseError):
 class InvalidClaimError(JoseError):
     error = "invalid_claim"
 
-    def __init__(self, claim):
+    def __init__(self, claim: str):
         description = f'Invalid claim: "{claim}"'
         super(InvalidClaimError, self).__init__(description=description)
 
@@ -98,7 +98,7 @@ class MissingClaimError(JoseError):
 class InsecureClaimError(JoseError):
     error = "insecure_claim"
 
-    def __init__(self, claim):
+    def __init__(self, claim: str):
         description = f'Insecure claim "{claim}"'
         super(InsecureClaimError, self).__init__(description=description)
 
