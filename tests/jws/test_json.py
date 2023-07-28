@@ -1,9 +1,7 @@
+from unittest import TestCase
 from joserfc.jws import serialize_json, deserialize_json, detach_content
 from joserfc.jwk import RSAKey, KeySet
-from joserfc.errors import (
-    DecodeError,
-)
-from unittest import TestCase
+from joserfc.errors import DecodeError, BadSignatureError
 from tests.base import load_key
 
 
@@ -75,6 +73,30 @@ class TestJSON(TestCase):
             DecodeError,
             deserialize_json,
             value, key
+        )
+        value = serialize_json([member], b'hello', key)
+        value['payload'] = 'a'
+        self.assertRaises(
+            DecodeError,
+            deserialize_json,
+            value, key
+        )
+
+    def test_bad_signature(self):
+        member = {'protected': {'alg': 'ES256'}}
+        key1 = load_key("ec-p256-alice.json")
+        key2 = load_key("ec-p256-bob.json")
+        value = serialize_json(member, b'hello', key1)
+        self.assertRaises(
+            BadSignatureError,
+            deserialize_json,
+            value, key2
+        )
+        value = serialize_json([member], b'hello', key1)
+        self.assertRaises(
+            BadSignatureError,
+            deserialize_json,
+            value, key2
         )
 
     def test_with_public_header(self):
