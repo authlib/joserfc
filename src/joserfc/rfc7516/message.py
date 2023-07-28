@@ -115,37 +115,12 @@ def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], regi
     cek: bytes = b""
     delayed_tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient]] = []
     for recipient in recipients:
-        # https://www.rfc-editor.org/rfc/rfc7516#section-5
-        headers = recipient.headers()
-        registry.check_header(headers)
-        # 1. Determine the Key Management Mode employed by the algorithm used
-        # to determine the Content Encryption Key value.  (This is the
-        # algorithm recorded in the "alg" (algorithm) Header Parameter of
-        # the resulting JWE.)
-        alg = registry.get_alg(headers["alg"])
-
-        if isinstance(alg, JWEKeyAgreement):
-            alg.prepare_ephemeral_key(recipient)
+        alg = __prepare_recipient_algorithm(recipient, registry)
 
         if alg.direct_mode:
             if len(recipients) > 1:
                 raise ConflictAlgorithmError(f"Algorithm {alg.name} SHOULD have 1 recipient only")
-
-            if isinstance(alg, JWEKeyAgreement):
-                # 3. When Direct Key Agreement is employed,
-                # let the CEK be the agreed upon key.
-                cek = alg.encrypt_agreed_upon_key(enc, recipient)
-                if len(cek) * 8 != enc.cek_size:
-                    raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
-            else:
-                # 6. When Direct Encryption is employed, let the CEK be the shared
-                # symmetric key.
-                assert isinstance(alg, JWEDirectEncryption)
-                cek = alg.compute_cek(enc.cek_size, recipient)
-
-            # 5. When Direct Key Agreement or Direct Encryption are employed, let
-            # the JWE Encrypted Key be the empty octet sequence.
-            recipient.encrypted_key = b""
+            cek = __pre_encrypt_direct_mode(alg, enc, recipient)
         else:
             if not cek:
                 # 2. When Key Wrapping, Key Encryption, or Key Agreement with Key
@@ -163,6 +138,40 @@ def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], regi
                 assert isinstance(alg, (JWEKeyWrapping, JWEKeyEncryption))
                 recipient.encrypted_key = alg.encrypt_cek(cek, recipient)
     return cek, delayed_tasks
+
+
+def __prepare_recipient_algorithm(recipient: Recipient, registry: JWERegistry) -> JWEAlgModel:
+    headers = recipient.headers()
+    registry.check_header(headers)
+    # 1. Determine the Key Management Mode employed by the algorithm used
+    # to determine the Content Encryption Key value.  (This is the
+    # algorithm recorded in the "alg" (algorithm) Header Parameter of
+    # the resulting JWE.)
+    alg = registry.get_alg(headers["alg"])
+
+    if isinstance(alg, JWEKeyAgreement):
+        alg.prepare_ephemeral_key(recipient)
+    return alg
+
+
+def __pre_encrypt_direct_mode(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient) -> bytes:
+    cek: bytes
+    if isinstance(alg, JWEKeyAgreement):
+        # 3. When Direct Key Agreement is employed,
+        # let the CEK be the agreed upon key.
+        cek = alg.encrypt_agreed_upon_key(enc, recipient)
+        if len(cek) * 8 != enc.cek_size:
+            raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
+    else:
+        # 6. When Direct Encryption is employed, let the CEK be the shared
+        # symmetric key.
+        assert isinstance(alg, JWEDirectEncryption)
+        cek = alg.compute_cek(enc.cek_size, recipient)
+
+    # 5. When Direct Key Agreement or Direct Encryption are employed, let
+    # the JWE Encrypted Key be the empty octet sequence.
+    recipient.encrypted_key = b""
+    return cek
 
 
 def post_encrypt_recipients(
