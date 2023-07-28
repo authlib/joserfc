@@ -1,4 +1,3 @@
-import binascii
 import typing as t
 from .model import JWSAlgModel, CompactSignature
 from ..errors import DecodeError, MissingAlgorithmError
@@ -33,7 +32,7 @@ def extract_compact(value: bytes) -> CompactSignature:
 
     try:
         payload = urlsafe_b64decode(payload_segment)
-    except (TypeError, ValueError, binascii.Error):
+    except (TypeError, ValueError):
         raise DecodeError("Invalid payload")
 
     obj = CompactSignature(protected, payload)
@@ -63,6 +62,6 @@ def decode_header(header_segment: bytes) -> t.Dict[str, t.Any]:
         protected = json_b64decode(header_segment)
         if "alg" not in protected:
             raise MissingAlgorithmError()
-    except (TypeError, ValueError, binascii.Error):
+    except (TypeError, ValueError):
         raise DecodeError("Invalid header")
     return protected

@@ -1,4 +1,3 @@
-import binascii
 from .models import CompactEncryption, Recipient
 from ..errors import (
     MissingAlgorithmError,
@@ -37,7 +36,7 @@ def extract_compact(value: bytes) -> CompactEncryption:
             raise MissingAlgorithmError()
         if "enc" not in protected:
             raise MissingEncryptionError()
-    except (TypeError, ValueError, binascii.Error):
+    except (TypeError, ValueError):
         raise DecodeError("Invalid header")
 
     obj = CompactEncryption(protected)

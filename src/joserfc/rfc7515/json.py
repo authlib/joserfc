@@ -1,5 +1,4 @@
 import typing as t
-import binascii
 import copy
 from .model import (
     HeaderMember,
@@ -82,7 +81,7 @@ def extract_general_json(value: GeneralJSONSerialization) -> GeneralJSONSignatur
     payload_segment: bytes = value["payload"].encode("utf-8")
     try:
         payload = urlsafe_b64decode(payload_segment)
-    except (TypeError, ValueError, binascii.Error):
+    except (TypeError, ValueError):
         raise DecodeError("Invalid payload")
 
     signatures: t.List[JSONSignatureDict] = value["signatures"]
@@ -97,7 +96,7 @@ def extract_flattened_json(value: FlattenedJSONSerialization) -> FlattenedJSONSi
     payload_segment: bytes = value["payload"].encode("utf-8")
     try:
         payload = urlsafe_b64decode(payload_segment)
-    except (TypeError, ValueError, binascii.Error):
+    except (TypeError, ValueError):
         raise DecodeError("Invalid payload")
 
     _sig: JSONSignatureDict = {"signature": value["signature"]}

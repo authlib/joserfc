@@ -87,9 +87,8 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
     def exchange_derive_key(self, key: "OKPKey") -> bytes:
         # used in ECDHESAlgorithm
         pubkey: t.Union[X25519PublicKey, X448PublicKey] = key.get_op_key("deriveKey")  # type: ignore
-        if isinstance(self.private_key, X25519PrivateKey) and isinstance(pubkey, X25519PublicKey):
-            return self.private_key.exchange(pubkey)
-        elif isinstance(self.private_key, X448PrivateKey) and isinstance(pubkey, X448PublicKey):
+        if (isinstance(self.private_key, X25519PrivateKey) and isinstance(pubkey, X25519PublicKey)) or \
+                (isinstance(self.private_key, X448PrivateKey) and isinstance(pubkey, X448PublicKey)):
             return self.private_key.exchange(pubkey)
         raise ValueError("Invalid key for exchanging shared key")
 

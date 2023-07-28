@@ -153,6 +153,6 @@ def has_all_prime_factors(obj) -> bool:
         return True
 
     if any(props_found):
-        raise ValueError("RSA key must include all parameters " "if any are present besides d")
+        raise ValueError("RSA key must include all parameters if any are present besides d")
 
     return False
