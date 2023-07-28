@@ -47,10 +47,14 @@ __all__ = [
 ]
 
 
-def __register():
+def register_key_set() -> None:
+    for _alg in JWE_ALG_MODELS:
+        KeySet.algorithm_keys[_alg.name] = _alg.key_types
+
+
+def register_algorithms() -> None:
     for _alg in JWE_ALG_MODELS:
         JWERegistry.register(_alg)
-        KeySet.algorithm_keys[_alg.name] = _alg.key_types
 
     for _enc in JWE_ENC_MODELS:
         JWERegistry.register(_enc)
@@ -59,7 +63,8 @@ def __register():
         JWERegistry.register(_zip)
 
 
-__register()
+register_key_set()
+register_algorithms()
 
 
 def encrypt_compact(

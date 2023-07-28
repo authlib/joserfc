@@ -1,11 +1,14 @@
 from unittest import TestCase
+from joserfc.jws import register_key_set
 from joserfc.jwk import JWKRegistry, guess_key
-from joserfc.jwk import OctKey, RSAKey
+from joserfc.jwk import KeySet, OctKey, RSAKey
 from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyUseError,
     UnsupportedKeyOperationError,
 )
+
+register_key_set()
 
 
 class Guest:
@@ -34,6 +37,22 @@ class TestKeyMethods(TestCase):
 
         key = guess_key(key_func, Guest())
         self.assertIsInstance(key, OctKey)
+
+    def test_guess_key_set(self):
+        key_set = KeySet([OctKey.generate_key(), RSAKey.generate_key()])
+        guest = Guest()
+        guest._headers["alg"] = "HS256"
+        key = guess_key(key_set, guest)
+        self.assertIsInstance(key, OctKey)
+
+        guest = Guest()
+        guest._headers["alg"] = "RS256"
+        key = guess_key(key_set, guest)
+        self.assertIsInstance(key, RSAKey)
+
+        guest = Guest()
+        guest._headers["alg"] = "ES256"
+        self.assertRaises(ValueError, guess_key, key_set, guest)
 
     def test_invalid_key(self):
         self.assertRaises(ValueError, guess_key, {}, Guest())

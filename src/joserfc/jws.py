@@ -59,23 +59,26 @@ __all__ = [
 ]
 
 
-# register supported alg models
-def __register() -> None:
-    # register alg in RFC7518
+def register_key_set() -> None:
     for _alg in JWS_ALGORITHMS:
-        JWSRegistry.register(_alg)
         KeySet.algorithm_keys[_alg.name] = [_alg.key_type]
-
-    # register alg in RFC8037
-    JWSRegistry.register(EdDSA)
     KeySet.algorithm_keys[EdDSA.name] = [EdDSA.key_type]
-
-    # register alg in RFC8812
-    JWSRegistry.register(ES256K)
     KeySet.algorithm_keys[ES256K.name] = [ES256K.key_type]
 
 
-__register()
+# register supported alg models
+def register_algorithms() -> None:
+    # register alg in RFC7518
+    for _alg in JWS_ALGORITHMS:
+        JWSRegistry.register(_alg)
+    # register alg in RFC8037
+    JWSRegistry.register(EdDSA)
+    # register alg in RFC8812
+    JWSRegistry.register(ES256K)
+
+
+register_key_set()
+register_algorithms()
 
 
 def serialize_compact(
