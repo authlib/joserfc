@@ -27,7 +27,7 @@ from .rfc7516.json import (
 from .rfc7518.jwe_algs import JWE_ALG_MODELS
 from .rfc7518.jwe_encs import JWE_ENC_MODELS
 from .rfc7518.jwe_zips import JWE_ZIP_MODELS
-from .jwk import Key, KeySet, CurveKey, KeyFlexible, guess_key
+from .jwk import Key, KeySet, ECKey, OKPKey, KeyFlexible, guess_key
 from .util import to_bytes
 from .registry import Header
 
@@ -73,7 +73,7 @@ def encrypt_compact(
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> str:
+        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None) -> str:
     """Generate a JWE Compact Serialization. The JWE Compact Serialization represents
     encrypted content as a compact, URL-safe string.  This string is::
 
@@ -115,7 +115,7 @@ def decrypt_compact(
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> CompactEncryption:
+        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None) -> CompactEncryption:
     """Extract and validate the JWE Compact Serialization (in string, or bytes)
     with the given key. An JWE Compact Serialization looks like:
 
@@ -159,7 +159,7 @@ def encrypt_json(
         public_key: t.Optional[KeyFlexible],
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> GeneralJSONSerialization:
+        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None) -> GeneralJSONSerialization:
     ...
 
 
@@ -169,7 +169,7 @@ def encrypt_json(
         public_key: t.Optional[KeyFlexible],
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None) -> FlattenedJSONSerialization:
+        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None) -> FlattenedJSONSerialization:
     ...
 
 
@@ -178,7 +178,8 @@ def encrypt_json(
         public_key: t.Optional[KeyFlexible],
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None):
+        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None
+) -> t.Union[GeneralJSONSerialization, FlattenedJSONSerialization]:
     """Generate a JWE JSON Serialization (in dict). The JWE JSON Serialization
     represents encrypted content as a JSON object. This representation is neither
     optimized for compactness nor URL safe.
@@ -231,7 +232,7 @@ def decrypt_json(
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None):
+        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None):
     """Decrypt the JWE JSON Serialization (in dict) to a
     ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption`` object.
 
@@ -262,7 +263,7 @@ def decrypt_json(
 def _attach_recipient_keys(
         recipients: t.List[Recipient],
         private_key: KeyFlexible,
-        sender_key: t.Optional[t.Union[CurveKey, KeySet]] = None):
+        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None) -> None:
     for recipient in recipients:
         key = guess_key(private_key, recipient)
         key.check_use("enc")
@@ -271,15 +272,15 @@ def _attach_recipient_keys(
             recipient.sender_key = _guess_sender_key(recipient, sender_key)
 
 
-def _guess_sender_key(recipient: Recipient, key: t.Union[CurveKey, KeySet]):
+def _guess_sender_key(recipient: Recipient, key: t.Union[ECKey, OKPKey, KeySet]) -> t.Union[ECKey, OKPKey]:
     if isinstance(key, KeySet):
         headers = recipient.headers()
         skid = headers.get('skid')
         if skid:
-            return key.get_by_kid(skid)
+            return key.get_by_kid(skid)  # type: ignore
         skey = key.pick_random_key(headers["alg"])
         if skey is not None:
             recipient.add_header("skid", skey.kid)
-            return skey
+            return skey  # type: ignore
         raise ValueError("Invalid key")
     return key

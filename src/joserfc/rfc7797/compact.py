@@ -80,6 +80,7 @@ def deserialize_compact(
     sig = urlsafe_b64decode(obj.segments["signature"])
     if not alg.verify(signing_input, sig, key):
         raise BadSignatureError()
+    assert isinstance(obj, CompactSignature)
     return obj
 
 

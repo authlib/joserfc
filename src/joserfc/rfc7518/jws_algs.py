@@ -32,10 +32,10 @@ class NoneAlgModel(JWSAlgModel):
     name = "none"
     description = "No digital signature or MAC performed"
 
-    def sign(self, msg: bytes, key: BaseKey):
+    def sign(self, msg: bytes, key: BaseKey) -> bytes:
         return b""
 
-    def verify(self, msg: bytes, sig: bytes, key: BaseKey):
+    def verify(self, msg: bytes, sig: bytes, key: BaseKey) -> bool:
         return False
 
 

@@ -39,7 +39,7 @@ class DirectAlgModel(JWEDirectEncryption):
     description = "Direct use of a shared symmetric key"
     recommended = True
 
-    def compute_cek(self, size: int, recipient: Recipient[OctKey]):
+    def compute_cek(self, size: int, recipient: Recipient[OctKey]) -> bytes:
         key = recipient.recipient_key
         assert key is not None
         self.check_key_type(key)
@@ -66,7 +66,7 @@ class RSAAlgModel(JWEKeyEncryption):
         self.padding = pad_fn
         self.recommended = recommended
 
-    def encrypt_cek(self, cek: bytes, recipient: Recipient[RSAKey]):
+    def encrypt_cek(self, cek: bytes, recipient: Recipient[RSAKey]) -> bytes:
         key = recipient.recipient_key
         assert key is not None
         self.check_key_type(key)
@@ -99,7 +99,7 @@ class AESAlgModel(JWEKeyWrapping):
         self.check_op_key(key)
         return aes_key_wrap(key, cek, default_backend())
 
-    def unwrap_cek(self, ek: bytes, key: bytes):
+    def unwrap_cek(self, ek: bytes, key: bytes) -> bytes:
         self.check_op_key(key)
         try:
             cek = aes_key_unwrap(key, ek, default_backend())
@@ -206,7 +206,7 @@ class ECDHESAlgModel(JWEKeyAgreement):
             self.recommended = key_wrapping.recommended
         self.key_wrapping = key_wrapping
 
-    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]):
+    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]) -> bytes:
         recipient_key = recipient.recipient_key
         assert recipient_key is not None
 

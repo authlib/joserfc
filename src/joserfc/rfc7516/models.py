@@ -55,7 +55,7 @@ class CompactEncryption:
         self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
-    def headers(self):
+    def headers(self) -> Header:
         return self.protected
 
     def attach_recipient(self, key: BaseKey, header: t.Optional[Header] = None):

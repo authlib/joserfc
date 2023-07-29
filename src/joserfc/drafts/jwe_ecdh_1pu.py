@@ -125,7 +125,7 @@ JWE_ALG_MODELS = [
 ]
 
 
-def register_ecdh_1pu():
+def register_ecdh_1pu() -> None:
     from ..jwe import JWERegistry
     from ..jwk import KeySet
 

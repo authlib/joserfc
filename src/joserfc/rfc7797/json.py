@@ -89,7 +89,7 @@ def deserialize_json(
     return obj
 
 
-def _extract_json(value: FlattenedJSONSerialization):
+def _extract_json(value: FlattenedJSONSerialization) -> t.Optional[FlattenedJSONSignature]:
     if "signatures" in value:
         return None
 
@@ -97,7 +97,6 @@ def _extract_json(value: FlattenedJSONSerialization):
         protected_segment = to_bytes(value["protected"])
         protected = json_b64decode(protected_segment)
     else:
-        protected_segment = b""
         protected = None
 
     header = value.get("header")

@@ -31,7 +31,7 @@ def convert_claims(claims: Claims) -> bytes:
     return to_bytes(json_dumps(claims))
 
 
-def check_sensitive_data(claims: Claims):
+def check_sensitive_data(claims: Claims) -> None:
     """Check if claims contains sensitive information."""
     for k in claims:
         # check claims key name

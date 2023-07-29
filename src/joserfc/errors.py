@@ -90,7 +90,7 @@ class InvalidClaimError(JoseError):
 class MissingClaimError(JoseError):
     error = "missing_claim"
 
-    def __init__(self, claim):
+    def __init__(self, claim: str):
         description = f'Missing claim: "{claim}"'
         super(MissingClaimError, self).__init__(description=description)
 
