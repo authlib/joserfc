@@ -215,6 +215,7 @@ def encrypt_json(
         if sender_key and not recipient.sender_key:
             recipient.sender_key = _guess_sender_key(recipient, sender_key)
         if not recipient.recipient_key:
+            assert public_key is not None
             key = guess_key(public_key, recipient)
             key.check_use("enc")
             recipient.recipient_key = key

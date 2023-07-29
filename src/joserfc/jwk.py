@@ -76,7 +76,7 @@ class KeySet(_KeySet):
     registry_cls = JWKRegistry
 
 
-KeyFlexible = t.Union[t.AnyStr, Key, KeySet, KeyCallable]
+KeyFlexible = t.Union[str, bytes, Key, KeySet, KeyCallable]
 
 
 def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
