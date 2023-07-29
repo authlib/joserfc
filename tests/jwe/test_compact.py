@@ -1,5 +1,5 @@
 from unittest import TestCase
-from joserfc.jwe import JWERegistry, encrypt_compact, decrypt_compact
+from joserfc.jwe import JWERegistry, encrypt_compact, decrypt_compact, CompactEncryption
 from joserfc.jwk import RSAKey, ECKey, OctKey, KeySet
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from joserfc.errors import (
@@ -165,3 +165,11 @@ class TestJWECompact(TestCase):
         value = encrypt_compact(protected, b"foo", keys)
         obj = decrypt_compact(value, keys)
         self.assertEqual(obj.plaintext, b"foo")
+
+    def test_compact_encryption(self):
+        key: RSAKey = load_key('rsa-openssl-private.pem')
+        protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256"}
+        obj = CompactEncryption(protected, b"")
+        self.assertEqual(obj.recipients, [])
+        obj.attach_recipient(key, {"kid": "foo"})
+        self.assertEqual(obj.protected["kid"], "foo")
