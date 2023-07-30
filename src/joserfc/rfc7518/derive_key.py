@@ -48,7 +48,7 @@ def derive_key_for_concat_kdf(
     return ckdf.derive(shared_key)
 
 
-def u32be_len_input(s: t.Optional[t.AnyStr], use_base64: bool = False) -> bytes:
+def u32be_len_input(s: t.Optional[t.Union[bytes, str]], use_base64: bool = False) -> bytes:
     if not s:
         return b"\x00\x00\x00\x00"
     sb: bytes

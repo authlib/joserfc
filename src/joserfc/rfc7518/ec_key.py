@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     EllipticCurvePrivateKey,
     EllipticCurvePrivateNumbers,
     EllipticCurvePublicNumbers,
+    EllipticCurve,
     SECP256R1,
     SECP384R1,
     SECP521R1,
@@ -19,18 +20,18 @@ from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
 KeyDict = t.TypedDict("KeyDict", {
-    "crv": str,
+    "crv": t.Literal["P-256", "P-384", "P-521"],
     "x": str,
     "y": str,
     "d": str,  # optional
 }, total=False)
 
-DSS_CURVES = {
+DSS_CURVES: t.Dict[str, t.Type[EllipticCurve]] = {
     "P-256": SECP256R1,
     "P-384": SECP384R1,
     "P-521": SECP521R1,
 }
-CURVES_DSS = {
+CURVES_DSS: t.Dict[str, str] = {
     SECP256R1.name: "P-256",
     SECP384R1.name: "P-384",
     SECP521R1.name: "P-521",
@@ -42,7 +43,7 @@ class ECBinding(CryptographyBinding):
 
     @staticmethod
     def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKey:
-        curve = DSS_CURVES[obj["crv"]]()  # type: ignore
+        curve = DSS_CURVES[obj["crv"]]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),
             base64_to_int(obj["y"]),
@@ -56,7 +57,7 @@ class ECBinding(CryptographyBinding):
     def export_private_key(key: EllipticCurvePrivateKey) -> t.Dict[str, str]:
         numbers = key.private_numbers()
         return {
-            "crv": CURVES_DSS[key.curve.name],  # type: ignore
+            "crv": CURVES_DSS[key.curve.name],
             "x": int_to_base64(numbers.public_numbers.x),
             "y": int_to_base64(numbers.public_numbers.y),
             "d": int_to_base64(numbers.private_value),
@@ -64,7 +65,7 @@ class ECBinding(CryptographyBinding):
 
     @staticmethod
     def import_public_key(obj: KeyDict) -> EllipticCurvePublicKey:
-        curve = DSS_CURVES[obj["crv"]]()  # type: ignore
+        curve = DSS_CURVES[obj["crv"]]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),
             base64_to_int(obj["y"]),
@@ -76,7 +77,7 @@ class ECBinding(CryptographyBinding):
     def export_public_key(key: EllipticCurvePublicKey) -> t.Dict[str, str]:
         numbers = key.public_numbers()
         return {
-            "crv": CURVES_DSS[numbers.curve.name],  # type: ignore
+            "crv": CURVES_DSS[numbers.curve.name],
             "x": int_to_base64(numbers.x),
             "y": int_to_base64(numbers.y),
         }
@@ -118,7 +119,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @property
     def curve_name(self) -> str:
-        return CURVES_DSS[self.raw_value.curve.name]  # type: ignore
+        return CURVES_DSS[self.raw_value.curve.name]
 
     @property
     def curve_key_size(self) -> int:
@@ -133,7 +134,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         if crv not in DSS_CURVES:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
         raw_key = generate_private_key(
-            curve=DSS_CURVES[crv](),  # type: ignore
+            curve=DSS_CURVES[crv](),
             backend=default_backend(),
         )
         if private:

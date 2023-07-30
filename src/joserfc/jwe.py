@@ -69,7 +69,7 @@ register_algorithms()
 
 def encrypt_compact(
         protected: Header,
-        plaintext: t.AnyStr,
+        plaintext: t.Union[bytes, str],
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
@@ -111,7 +111,7 @@ def encrypt_compact(
 
 
 def decrypt_compact(
-        value: t.AnyStr,
+        value: t.Union[bytes, str],
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,

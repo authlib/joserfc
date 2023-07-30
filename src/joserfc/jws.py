@@ -83,7 +83,7 @@ register_algorithms()
 
 def serialize_compact(
         protected: Header,
-        payload: t.AnyStr,
+        payload: t.Union[bytes, str],
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWSRegistry] = None) -> str:
@@ -144,7 +144,7 @@ def validate_compact(
 
 
 def deserialize_compact(
-        value: t.AnyStr,
+        value: t.Union[bytes, str],
         public_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWSRegistry] = None) -> CompactSignature:
@@ -176,7 +176,7 @@ def deserialize_compact(
 @overload
 def serialize_json(
         members: t.List[HeaderDict],
-        payload: t.AnyStr,
+        payload: t.Union[bytes, str],
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWSRegistry] = None) -> GeneralJSONSerialization: ...
@@ -185,7 +185,7 @@ def serialize_json(
 @overload
 def serialize_json(
         members: HeaderDict,
-        payload: t.AnyStr,
+        payload: t.Union[bytes, str],
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWSRegistry] = None) -> FlattenedJSONSerialization: ...
@@ -193,7 +193,7 @@ def serialize_json(
 
 def serialize_json(
         members: t.Union[HeaderDict, t.List[HeaderDict]],
-        payload: t.AnyStr,
+        payload: t.Union[bytes, str],
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWSRegistry] = None,

@@ -5,12 +5,12 @@ from ..rfc7516.models import (
     JWEKeyWrapping,
     JWEEncModel
 )
-from ..rfc7517.models import CurveKey
 from ..rfc7518.jwe_algs import (
     A128KW,
     A192KW,
     A256KW,
 )
+from ..rfc7518.ec_key import ECKey
 from ..rfc7518.derive_key import (
     derive_key_for_concat_kdf,
 )
@@ -55,32 +55,32 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
             )
             raise InvalidEncryptionAlgorithmError(description)
 
-    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]) -> bytes:
+    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[ECKey]) -> bytes:
         self._check_enc(enc)
         return self.__encrypt_agreed_upon_key(enc, recipient, None)
 
     def encrypt_agreed_upon_key_with_tag(
             self,
             enc: JWEEncModel,
-            recipient: Recipient[CurveKey],
+            recipient: Recipient[ECKey],
             tag: bytes) -> bytes:
         self._check_enc(enc)
         return self.__encrypt_agreed_upon_key(enc, recipient, tag)
 
-    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]) -> bytes:
+    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[ECKey]) -> bytes:
         return self.__decrypt_agreed_upon_key(enc, recipient, None)
 
     def decrypt_agreed_upon_key_with_tag(
             self,
             enc: JWEEncModel,
-            recipient: Recipient[CurveKey],
+            recipient: Recipient[ECKey],
             tag: bytes) -> bytes:
         return self.__decrypt_agreed_upon_key(enc, recipient, tag)
 
     def __encrypt_agreed_upon_key(
             self,
             enc: JWEEncModel,
-            recipient: Recipient[CurveKey],
+            recipient: Recipient[ECKey],
             tag: t.Optional[bytes]) -> bytes:
         sender_key = recipient.sender_key
         recipient_key = recipient.recipient_key
@@ -98,7 +98,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
     def __decrypt_agreed_upon_key(
             self,
             enc: JWEEncModel,
-            recipient: Recipient[CurveKey],
+            recipient: Recipient[ECKey],
             tag: t.Optional[bytes]) -> bytes:
 
         self._check_enc(enc)
@@ -110,7 +110,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         assert sender_key is not None
         assert recipient_key is not None
 
-        ephemeral_key: CurveKey = recipient_key.import_key(headers["epk"])  # type: ignore[assignment]
+        ephemeral_key = recipient_key.import_key(headers["epk"])
         sender_shared_key = recipient_key.exchange_derive_key(sender_key)
         ephemeral_shared_key = recipient_key.exchange_derive_key(ephemeral_key)
         shared_key = ephemeral_shared_key + sender_shared_key

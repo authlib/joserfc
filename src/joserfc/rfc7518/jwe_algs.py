@@ -16,7 +16,7 @@ from cryptography.exceptions import InvalidTag
 from .derive_key import derive_key_for_concat_kdf
 from .oct_key import OctKey
 from .rsa_key import RSAKey
-from ..rfc7517.models import CurveKey
+from .ec_key import ECKey
 from ..rfc7516.models import (
     JWEAlgModel,
     JWEDirectEncryption,
@@ -206,7 +206,7 @@ class ECDHESAlgModel(JWEKeyAgreement):
             self.recommended = key_wrapping.recommended
         self.key_wrapping = key_wrapping
 
-    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]) -> bytes:
+    def encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[ECKey]) -> bytes:
         recipient_key = recipient.recipient_key
         assert recipient_key is not None
 
@@ -217,7 +217,7 @@ class ECDHESAlgModel(JWEKeyAgreement):
         headers = recipient.headers()
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size)
 
-    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[CurveKey]) -> bytes:
+    def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[ECKey]) -> bytes:
         headers = recipient.headers()
         assert "epk" in headers
 

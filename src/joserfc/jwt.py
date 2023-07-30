@@ -71,7 +71,7 @@ def encode(
 
 
 def decode(
-        value: t.AnyStr,
+        value: t.Union[bytes, str],
         key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWTRegistry] = None) -> Token:

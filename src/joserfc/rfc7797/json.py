@@ -24,7 +24,7 @@ from .registry import JWSRegistry
 
 def serialize_json(
         member: HeaderDict,
-        payload: t.AnyStr,
+        payload: t.Union[str, bytes],
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[_JWSRegistry] = None) -> FlattenedJSONSerialization:

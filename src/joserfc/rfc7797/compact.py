@@ -22,7 +22,7 @@ from .registry import JWSRegistry
 
 def serialize_compact(
         protected: Header,
-        payload: t.AnyStr,
+        payload: t.Union[bytes, str],
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[_JWSRegistry] = None) -> str:
@@ -55,9 +55,9 @@ def serialize_compact(
 
 
 def deserialize_compact(
-        value: t.AnyStr,
+        value: t.Union[bytes, str],
         public_key: KeyFlexible,
-        payload: t.Optional[t.AnyStr] = None,
+        payload: t.Optional[t.Union[bytes, str]] = None,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWSRegistry] = None) -> CompactSignature:
     obj = _extract_compact(to_bytes(value), payload)
@@ -91,11 +91,11 @@ def deserialize_compact(
 _re_urlsafe = re.compile("^[a-zA-Z0-9-_~]+$")
 
 
-def __is_urlsafe_characters(s: t.AnyStr) -> bool:
+def __is_urlsafe_characters(s: t.Union[bytes, str]) -> bool:
     return bool(_re_urlsafe.match(to_str(s)))
 
 
-def _extract_compact(value: bytes, payload: t.Optional[t.AnyStr] = None):
+def _extract_compact(value: bytes, payload: t.Optional[t.Union[bytes, str]] = None):
     parts = value.split(b".")
     if len(parts) != 3:
         raise ValueError("Invalid JSON Web Signature")

@@ -49,7 +49,8 @@ def sign_flattened_json(
         find_key: FindKey) -> FlattenedJSONSerialization:
     payload_segment = urlsafe_b64encode(payload)
     signature = __sign_member(payload_segment, HeaderMember(**member), registry, find_key)
-    return {"payload": payload_segment.decode("utf-8"), **signature}  # type: ignore
+    data = {"payload": payload_segment.decode("utf-8"), **signature}
+    return data  # type: ignore[return-value]
 
 
 def __sign_member(

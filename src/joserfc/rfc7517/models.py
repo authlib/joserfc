@@ -17,6 +17,7 @@ from ..errors import (
 )
 
 
+GenericKey = t.TypeVar("GenericKey", bound="BaseKey")
 NativePrivateKey = t.TypeVar("NativePrivateKey")
 NativePublicKey = t.TypeVar("NativePublicKey")
 
@@ -43,7 +44,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
         pass
 
     @staticmethod
-    def as_bytes(key: "BaseKey", encoding=None, private=None, password=None) -> bytes:  # pragma: no cover
+    def as_bytes(key: GenericKey, encoding=None, private=None, password=None) -> bytes:  # pragma: no cover
         return key.raw_value
 
     @classmethod
@@ -228,10 +229,10 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
 
     @classmethod
     def import_key(
-            cls,
+            cls: t.Type[GenericKey],
             value: KeyAny,
             parameters: t.Optional[KeyParameters] = None,
-            password: t.Optional[t.Any] = None) -> "BaseKey":
+            password: t.Optional[t.Any] = None) -> GenericKey:
         if isinstance(value, dict):
             cls.validate_dict_key(value)
             raw_key = cls.binding.import_from_dict(value)
@@ -242,10 +243,10 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
 
     @classmethod
     def generate_key(
-            cls,
+            cls: t.Type[GenericKey],
             size_or_crv,
             parameters: t.Optional[KeyParameters] = None,
-            private: bool = True) -> "BaseKey":
+            private: bool = True) -> GenericKey:
         raise NotImplementedError()
 
 

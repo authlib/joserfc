@@ -1,13 +1,6 @@
 import typing as t
-from .rfc7517 import (
-    BaseKey,
-    SymmetricKey,
-    AsymmetricKey,
-    CurveKey,
-    JWKRegistry as _JWKRegistry,
-    KeySet as _KeySet,
-)
-from .rfc7517 import types
+from .rfc7517.registry import JWKRegistry as _JWKRegistry
+from .rfc7517.keyset import KeySet as _KeySet
 from .rfc7518.oct_key import OctKey
 from .rfc7518.rsa_key import RSAKey
 from .rfc7518.ec_key import ECKey
@@ -17,12 +10,7 @@ from .registry import Header
 
 
 __all__ = [
-    "types",
     "JWKRegistry",
-    "BaseKey",
-    "SymmetricKey",
-    "AsymmetricKey",
-    "CurveKey",
     "Key",
     "KeyCallable",
     "KeyFlexible",
@@ -87,11 +75,12 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
     """
     headers = obj.headers()
 
+    rv_key: Key
     if isinstance(key, (str, bytes)):
-        rv_key = OctKey.import_key(key)  # type: ignore
+        rv_key = OctKey.import_key(key)
 
-    elif isinstance(key, BaseKey):
-        rv_key: Key = key  # type: ignore
+    elif isinstance(key, (OctKey, RSAKey, ECKey, OKPKey)):
+        rv_key = key
 
     elif isinstance(key, KeySet):
         kid = headers.get("kid")
