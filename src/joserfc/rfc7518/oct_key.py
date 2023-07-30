@@ -8,7 +8,7 @@ from ..util import (
 )
 from ..registry import KeyParameter
 from ..rfc7517.models import SymmetricKey, NativeKeyBinding
-from ..rfc7517.types import KeyParameters, KeyDict
+from ..rfc7517.types import KeyParameters, DictKey
 
 
 POSSIBLE_UNSAFE_KEYS = (
@@ -21,12 +21,12 @@ POSSIBLE_UNSAFE_KEYS = (
 
 class OctBinding(NativeKeyBinding):
     @classmethod
-    def convert_raw_key_to_dict(cls, value: bytes, private: bool) -> KeyDict:
+    def convert_raw_key_to_dict(cls, value: bytes, private: bool) -> DictKey:
         k = urlsafe_b64encode(value).decode("utf-8")
         return {"k": k}
 
     @classmethod
-    def import_from_dict(cls, value: KeyDict):
+    def import_from_dict(cls, value: DictKey):
         return urlsafe_b64decode(to_bytes(value["k"]))
 
     @classmethod

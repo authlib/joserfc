@@ -16,7 +16,7 @@ from cryptography.hazmat.primitives.serialization import (
 )
 from cryptography.hazmat.backends import default_backend
 from .models import NativeKeyBinding, BaseKey
-from .types import KeyDict
+from .types import DictKey
 from ..util import to_bytes
 
 
@@ -83,13 +83,13 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
     ssh_type: bytes
 
     @classmethod
-    def convert_raw_key_to_dict(cls, raw_key, private: bool) -> KeyDict:
+    def convert_raw_key_to_dict(cls, raw_key, private: bool) -> DictKey:
         if private:
             return cls.export_private_key(raw_key)
         return cls.export_public_key(raw_key)
 
     @classmethod
-    def import_from_dict(cls, value: KeyDict):
+    def import_from_dict(cls, value: DictKey):
         if "d" in value:
             return cls.import_private_key(value)
         return cls.import_public_key(value)

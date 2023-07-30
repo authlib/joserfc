@@ -1,7 +1,7 @@
 import typing as t
 from typing import overload
 from abc import ABCMeta, abstractmethod
-from .types import KeyDict, KeyAny, KeyParameters
+from .types import DictKey, AnyKey, KeyParameters
 from ..registry import (
     KeyParameterRegistryDict,
     JWK_PARAMETER_REGISTRY,
@@ -30,12 +30,12 @@ class NativeKeyBinding(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def convert_raw_key_to_dict(cls, raw_key: t.Any, private: bool) -> KeyDict:
+    def convert_raw_key_to_dict(cls, raw_key: t.Any, private: bool) -> DictKey:
         pass
 
     @classmethod
     @abstractmethod
-    def import_from_dict(cls, value: KeyDict):
+    def import_from_dict(cls, value: DictKey):
         pass
 
     @classmethod
@@ -48,7 +48,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
         return key.raw_value
 
     @classmethod
-    def validate_dict_key_registry(cls, dict_key: KeyDict, registry: KeyParameterRegistryDict):
+    def validate_dict_key_registry(cls, dict_key: DictKey, registry: KeyParameterRegistryDict):
         for k in registry:
             if registry[k].required and k not in dict_key:
                 raise ValueError(f'"{k}" is required')
@@ -60,7 +60,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
                     raise ValueError(f'"{k}" {error}')
 
     @classmethod
-    def validate_dict_key_use_operations(cls, dict_key: KeyDict):
+    def validate_dict_key_use_operations(cls, dict_key: DictKey):
         if "use" in dict_key and "key_ops" in dict_key:
             _use: str = dict_key["use"]  # type: ignore
             operations = cls.use_key_ops_registry[_use]
@@ -84,7 +84,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         self._raw_value = raw_value
         self.original_value = original_value
         self.extra_parameters = parameters
-        self._dict_value: KeyDict = {}
+        self._dict_value: DictKey = {}
         if isinstance(original_value, dict):
             if parameters is not None:
                 data = {**original_value, **parameters, "kty": self.key_type}
@@ -119,7 +119,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         raise NotImplementedError()
 
     @property
-    def dict_value(self) -> KeyDict:
+    def dict_value(self) -> DictKey:
         """Property of the Key in Dict (JSON)."""
         if self._dict_value:
             return self._dict_value
@@ -147,7 +147,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         fields.append("kty")
         return thumbprint(self.dict_value, fields)
 
-    def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> KeyDict:
+    def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> DictKey:
         """Output this key to a JWK format (in dict). By default, it will return
         the ``dict_value`` of this key.
 
@@ -222,7 +222,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
         return self.public_key
 
     @classmethod
-    def validate_dict_key(cls, data: KeyDict):
+    def validate_dict_key(cls, data: DictKey):
         cls.binding.validate_dict_key_registry(data, cls.param_registry)
         cls.binding.validate_dict_key_registry(data, cls.value_registry)
         cls.binding.validate_dict_key_use_operations(data)
@@ -230,7 +230,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
     @classmethod
     def import_key(
             cls: t.Type[GenericKey],
-            value: KeyAny,
+            value: AnyKey,
             parameters: t.Optional[KeyParameters] = None,
             password: t.Optional[t.Any] = None) -> GenericKey:
         if isinstance(value, dict):
