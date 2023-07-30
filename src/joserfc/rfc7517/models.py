@@ -35,12 +35,12 @@ class NativeKeyBinding(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def import_from_dict(cls, value: DictKey):
+    def import_from_dict(cls, value: DictKey) -> t.Any:
         pass
 
     @classmethod
     @abstractmethod
-    def import_from_bytes(cls, value: bytes, password: t.Optional[t.Any] = None):
+    def import_from_bytes(cls, value: bytes, password: t.Optional[t.Any] = None) -> t.Any:
         pass
 
     @staticmethod
@@ -48,7 +48,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
         return key.raw_value
 
     @classmethod
-    def validate_dict_key_registry(cls, dict_key: DictKey, registry: KeyParameterRegistryDict):
+    def validate_dict_key_registry(cls, dict_key: DictKey, registry: KeyParameterRegistryDict) -> None:
         for k in registry:
             if registry[k].required and k not in dict_key:
                 raise ValueError(f'"{k}" is required')
@@ -60,7 +60,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
                     raise ValueError(f'"{k}" {error}')
 
     @classmethod
-    def validate_dict_key_use_operations(cls, dict_key: DictKey):
+    def validate_dict_key_use_operations(cls, dict_key: DictKey) -> None:
         if "use" in dict_key and "key_ops" in dict_key:
             _use: str = dict_key["use"]  # type: ignore
             operations = cls.use_key_ops_registry[_use]
@@ -69,7 +69,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
                     raise ValueError('"use" and "key_ops" does not match')
 
 
-class BaseKey(t.Generic[NativePrivateKey, NativePublicKey]):
+class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     key_type: t.ClassVar[str]
     binding: t.ClassVar[t.Type[NativeKeyBinding]]
     value_registry: t.ClassVar[KeyParameterRegistryDict]

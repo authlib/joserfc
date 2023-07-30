@@ -249,12 +249,12 @@ def decrypt_json(
         registry = default_registry
 
     if "recipients" in data:
-        general_obj = extract_general_json(data)  # type: ignore
+        general_obj = extract_general_json(data)  # type: ignore[arg-type]
         _attach_recipient_keys(general_obj.recipients, private_key, sender_key)
         perform_decrypt(general_obj, registry)
         return general_obj
     else:
-        flattened_obj = extract_flattened_json(data)  # type: ignore
+        flattened_obj = extract_flattened_json(data)  # type: ignore[arg-type]
         _attach_recipient_keys(flattened_obj.recipients, private_key, sender_key)
         perform_decrypt(flattened_obj, registry)
         return flattened_obj
@@ -272,15 +272,17 @@ def _attach_recipient_keys(
             recipient.sender_key = _guess_sender_key(recipient, sender_key)
 
 
-def _guess_sender_key(recipient: Recipient, key: t.Union[ECKey, OKPKey, KeySet]) -> t.Union[ECKey, OKPKey]:
+def _guess_sender_key(
+        recipient: Recipient[Key],
+        key: t.Union[ECKey, OKPKey, KeySet]) -> t.Union[ECKey, OKPKey]:
     if isinstance(key, KeySet):
         headers = recipient.headers()
         skid = headers.get('skid')
         if skid:
-            return key.get_by_kid(skid)  # type: ignore
+            return key.get_by_kid(skid)  # type: ignore[return-value]
         skey = key.pick_random_key(headers["alg"])
         if skey is not None:
             recipient.add_header("skid", skey.kid)
-            return skey  # type: ignore
+            return skey  # type: ignore[return-value]
         raise ValueError("Invalid key")
     return key

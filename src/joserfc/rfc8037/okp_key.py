@@ -18,7 +18,7 @@ from ..registry import KeyParameter
 
 PublicOKPKey = t.Union[Ed25519PublicKey, Ed448PublicKey, X25519PublicKey, X448PublicKey]
 PrivateOKPKey = t.Union[Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448PrivateKey]
-KeyDict = t.TypedDict("KeyDict", {
+OKPDictKey = t.TypedDict("OKPDictKey", {
     "crv": t.Literal["Ed25519", "Ed448", "X25519", "X448"],
     "x": str,
     "d": str,
@@ -42,13 +42,13 @@ class OKPBinding(CryptographyBinding):
     ssh_type = b"ssh-ed25519"
 
     @staticmethod
-    def import_private_key(obj: KeyDict) -> PrivateOKPKey:
+    def import_private_key(obj: OKPDictKey) -> PrivateOKPKey:
         crv_key: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[obj["crv"]]
         d = urlsafe_b64decode(to_bytes(obj["d"]))
         return crv_key.from_private_bytes(d)
 
     @staticmethod
-    def import_public_key(obj: KeyDict) -> PublicOKPKey:
+    def import_public_key(obj: OKPDictKey) -> PublicOKPKey:
         crv_key: t.Type[PublicOKPKey] = PUBLIC_KEYS_MAP[obj["crv"]]
         x_bytes = urlsafe_b64decode(to_bytes(obj["x"]))
         return crv_key.from_public_bytes(x_bytes)

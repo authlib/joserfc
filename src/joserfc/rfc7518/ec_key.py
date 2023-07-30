@@ -19,7 +19,7 @@ from ..rfc7517.types import KeyParameters
 from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
-KeyDict = t.TypedDict("KeyDict", {
+ECDictKey = t.TypedDict("ECDictKey", {
     "crv": t.Literal["P-256", "P-384", "P-521"],
     "x": str,
     "y": str,
@@ -42,7 +42,7 @@ class ECBinding(CryptographyBinding):
     ssh_type = b"ecdsa-sha2-"
 
     @staticmethod
-    def import_private_key(obj: KeyDict) -> EllipticCurvePrivateKey:
+    def import_private_key(obj: ECDictKey) -> EllipticCurvePrivateKey:
         curve = DSS_CURVES[obj["crv"]]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),
@@ -64,7 +64,7 @@ class ECBinding(CryptographyBinding):
         }
 
     @staticmethod
-    def import_public_key(obj: KeyDict) -> EllipticCurvePublicKey:
+    def import_public_key(obj: ECDictKey) -> EllipticCurvePublicKey:
         curve = DSS_CURVES[obj["crv"]]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),

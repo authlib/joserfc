@@ -56,7 +56,7 @@ class JWKRegistry:
         """
         if isinstance(data, dict) and key_type is None:
             if "kty" in data:
-                key_type = data["kty"]  # type: ignore
+                key_type = data["kty"]  # type: ignore[assignment]
             else:
                 raise ValueError("Missing key type")
 
@@ -67,7 +67,7 @@ class JWKRegistry:
             data = to_bytes(data)
 
         key_cls = cls.key_types[key_type]
-        return key_cls.import_key(data, parameters)  # type: ignore
+        return key_cls.import_key(data, parameters)
 
     @classmethod
     def generate_key(

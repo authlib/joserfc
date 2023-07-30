@@ -19,7 +19,7 @@ from ..rfc7517.types import KeyParameters
 from ..util import int_to_base64, base64_to_int
 
 
-KeyDict = t.TypedDict("KeyDict", {
+RSADictKey = t.TypedDict("RSADictKey", {
     "n": str,
     "e": str,
     "d": str,
@@ -35,7 +35,7 @@ class RSABinding(CryptographyBinding):
     ssh_type = b"ssh-rsa"
 
     @staticmethod
-    def import_private_key(obj: KeyDict) -> RSAPrivateKey:
+    def import_private_key(obj: RSADictKey) -> RSAPrivateKey:
         if "oth" in obj:  # pragma: no cover
             # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
             raise ValueError('"oth" is not supported yet')
@@ -68,7 +68,7 @@ class RSABinding(CryptographyBinding):
         return numbers.private_key(default_backend())
 
     @staticmethod
-    def export_private_key(key: RSAPrivateKey) -> KeyDict:
+    def export_private_key(key: RSAPrivateKey) -> RSADictKey:
         numbers = key.private_numbers()
         return {
             "n": int_to_base64(numbers.public_numbers.n),
@@ -82,7 +82,7 @@ class RSABinding(CryptographyBinding):
         }
 
     @staticmethod
-    def import_public_key(obj: KeyDict) -> RSAPublicKey:
+    def import_public_key(obj: RSADictKey) -> RSAPublicKey:
         numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))
         return numbers.public_key(default_backend())
 
