@@ -58,3 +58,10 @@ class TestKeySet(TestCase):
         key_set = KeySet.generate_key_set("oct", 8, count=1)
         k2 = key_set.get_by_kid()
         self.assertIsInstance(k2, OctKey)
+
+    def test_key_set_bool(self):
+        key_set = KeySet([])
+        self.assertFalse(key_set)
+
+        key_set = KeySet([OctKey.generate_key()])
+        self.assertTrue(key_set)

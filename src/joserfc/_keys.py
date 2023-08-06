@@ -112,6 +112,9 @@ class KeySet:
     def __iter__(self) -> t.Iterator[Key]:
         return iter(self.keys)
 
+    def __bool__(self) -> bool:
+        return bool(self.keys)
+
     def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> KeySetSerialization:
         keys: t.List[DictKey] = []
 
