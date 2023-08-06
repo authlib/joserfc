@@ -48,6 +48,11 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         self.key_wrapping = key_wrapping
 
     def _check_enc(self, enc: JWEEncModel) -> None:
+        # https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#section-2.1
+        # The AES_CBC_HMAC_SHA2 algorithms described in section 5.2 of [RFC7518] are compactly
+        # committing and can be used with ECDH-1PU in Key Agreement with Key Wrapping mode.
+        # Other content encryption algorithms MUST be rejected.  In Direct Key Agreement
+        # mode, any JWE content encryption algorithm MAY be used.
         if self.key_wrapping and not isinstance(enc, CBCHS2EncModel):
             description = (
                 'In key agreement with key wrapping mode ECDH-1PU algorithm '

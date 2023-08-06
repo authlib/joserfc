@@ -8,6 +8,7 @@ from joserfc.jwe import (
     decrypt_json,
 )
 from joserfc.jwk import KeySet
+from joserfc.errors import InvalidEncryptionAlgorithmError
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from joserfc.drafts.jwe_ecdh_1pu import JWE_ALG_MODELS, register_ecdh_1pu
 from tests.base import TestFixture, load_key
@@ -87,6 +88,30 @@ class TestECDH1PUCompact(TestFixture):
             for enc in allowed_enc_values:
                 self.run_compact_case(alg, enc, bob_key, alice_key)
 
+    def test_ecdh_1pu_agreement_mode_with_other_encryption_algorithms(self):
+        alice_key = load_key("ec-p256-alice.json")
+        bob_key = load_key("ec-p256-bob.json")
+        alg_values = [
+            'ECDH-1PU+A128KW',
+            'ECDH-1PU+A192KW',
+            'ECDH-1PU+A256KW',
+        ]
+        other_enc_values = [
+            'A128GCM',
+            'A192GCM',
+            'A256GCM',
+        ]
+        for alg in alg_values:
+            for enc in other_enc_values:
+                protected = {"alg": alg, "enc": enc}
+                self.assertRaises(
+                    InvalidEncryptionAlgorithmError,
+                    encrypt_compact, protected, b"hello",
+                    public_key=bob_key,
+                    registry=ecdh_registry,
+                    sender_key=alice_key,
+                )
+
     def test_load_sender_key_via_skid(self):
         alice_key = load_key("ec-p256-alice.json", {"kid": "alice"})
         bob_key = load_key("ec-p256-bob.json", {"kid": "bob"})
@@ -107,6 +132,24 @@ class TestECDH1PUCompact(TestFixture):
             sender_key=key,
         )
         self.assertEqual(obj.plaintext, b'hello')
+
+    def test_sender_key_not_found(self):
+        alice_key = load_key("ec-p256-alice.json", {"kid": "alice"})
+        bob_key = load_key("ec-p256-bob.json", {"kid": "bob"})
+        protected = {"alg": "ECDH-1PU+A128KW", "enc": "A128CBC-HS256"}
+        value = encrypt_compact(
+            protected, b'hello',
+            public_key=bob_key,
+            registry=ecdh_registry,
+            sender_key=alice_key,
+        )
+        key_set = KeySet([alice_key, bob_key])
+        self.assertRaises(
+            ValueError, decrypt_compact, value,
+            private_key=bob_key,
+            registry=ecdh_registry,
+            sender_key=key_set,
+        )
 
 
 TestECDH1PUCompact.load_fixture('jwe_compact_ecdh_1pu.json')
