@@ -13,6 +13,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP521R1,
 )
 from cryptography.hazmat.backends import default_backend
+from ..errors import InvalidExchangeKeyError
 from ..rfc7517.models import CurveKey
 from ..rfc7517.pem import CryptographyBinding
 from ..rfc7517.types import KeyParameters
@@ -115,7 +116,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         pubkey = key.get_op_key("deriveKey")
         if self.private_key and self.curve_name == key.curve_name:
             return self.private_key.exchange(ECDH(), pubkey)
-        raise ValueError("Invalid key for exchanging shared key")
+        raise InvalidExchangeKeyError()
 
     @property
     def curve_name(self) -> str:

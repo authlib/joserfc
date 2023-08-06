@@ -17,6 +17,7 @@ from ..errors import (
     DecodeError,
     InvalidCEKLengthError,
     InvalidEncryptedKeyError,
+    InvalidExchangeKeyError,
     ConflictAlgorithmError,
 )
 from ..util import (
@@ -74,6 +75,13 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry):
 
 
 def perform_decrypt(obj: EncryptionData, registry: JWERegistry):
+    try:
+        _perform_decrypt(obj, registry)
+    except InvalidExchangeKeyError as error:
+        raise DecodeError(error.description)
+
+
+def _perform_decrypt(obj: EncryptionData, registry: JWERegistry):
     enc = registry.get_enc(obj.protected["enc"])
 
     iv = obj.bytes_segments["iv"]
@@ -92,11 +100,11 @@ def perform_decrypt(obj: EncryptionData, registry: JWERegistry):
         cek = decrypt_recipient(alg, enc, recipient, tag)
         cek_set.add(cek)
 
-    if len(cek_set) > 1:
+    if len(cek_set) > 1:  # pragma: no cover
         raise DecodeError('Multiple "cek" found')
 
     cek = cek_set.pop()
-    if len(cek) * 8 != enc.cek_size:
+    if len(cek) * 8 != enc.cek_size:  # pragma: no cover
         raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
 
     aad = json_b64encode(obj.protected, "ascii")
@@ -160,7 +168,7 @@ def __pre_encrypt_direct_mode(alg: JWEAlgModel, enc: JWEEncModel, recipient: Rec
         # 3. When Direct Key Agreement is employed,
         # let the CEK be the agreed upon key.
         cek = alg.encrypt_agreed_upon_key(enc, recipient)
-        if len(cek) * 8 != enc.cek_size:
+        if len(cek) * 8 != enc.cek_size:  # pragma: no cover
             raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
     else:
         # 6. When Direct Encryption is employed, let the CEK be the shared
@@ -195,7 +203,7 @@ def decrypt_recipient(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient, 
         # 10.  When Direct Key Agreement or Direct Encryption are employed,
         # verify that the JWE Encrypted Key value is an empty octet
         # sequence.
-        if recipient.encrypted_key:
+        if recipient.encrypted_key:  # pragma: no cover
             raise InvalidEncryptedKeyError()
 
         if isinstance(alg, JWEKeyAgreement):

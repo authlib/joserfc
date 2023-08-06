@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwe import JWERegistry, encrypt_compact, decrypt_compact, CompactEncryption
-from joserfc.jwk import RSAKey, ECKey, OctKey, KeySet
+from joserfc.jwk import RSAKey, ECKey, OctKey, OKPKey, KeySet
 from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from joserfc.errors import (
     InvalidKeyLengthError,
@@ -48,7 +48,7 @@ class TestJWECompact(TestCase):
             value, key2
         )
 
-    def test_ECDH_ES_alg(self):
+    def test_ECDH_ES_with_EC_key(self):
         algs = ['ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW']
         for size in [256, 384, 512]:
             private_key: ECKey = load_key(f'ec-p{size}-private.pem')
@@ -57,6 +57,7 @@ class TestJWECompact(TestCase):
 
         key1 = ECKey.generate_key("P-256")
         key2 = ECKey.generate_key("P-256")
+        key3 = ECKey.generate_key("P-521")
         for alg in ["ECDH-ES", "ECDH-ES+A128KW"]:
             for enc in ["A128CBC-HS256", "A128GCM"]:
                 protected = {"alg": alg, "enc": enc}
@@ -65,6 +66,35 @@ class TestJWECompact(TestCase):
                     DecodeError,
                     decrypt_compact,
                     value, key2,
+                )
+                self.assertRaises(
+                    DecodeError,
+                    decrypt_compact,
+                    value, key3,
+                )
+
+    def test_ECDH_ES_with_OKP_key(self):
+        key1 = OKPKey.generate_key("X25519")
+        key2 = OKPKey.generate_key("X448")
+        for alg in ['ECDH-ES', 'ECDH-ES+A128KW']:
+            for enc in ["A128CBC-HS256", "A128GCM"]:
+                protected = {"alg": alg, "enc": enc}
+                value = encrypt_compact(protected, "i", key1)
+                obj = decrypt_compact(value, key1)
+                self.assertEqual(obj.protected, protected)
+                self.assertRaises(
+                    DecodeError,
+                    decrypt_compact,
+                    value, key2,
+                )
+
+                value = encrypt_compact(protected, "i", key2)
+                obj = decrypt_compact(value, key2)
+                self.assertEqual(obj.protected, protected)
+                self.assertRaises(
+                    DecodeError,
+                    decrypt_compact,
+                    value, key1,
                 )
 
     def test_dir_alg(self):

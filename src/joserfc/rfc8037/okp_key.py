@@ -13,6 +13,7 @@ from cryptography.hazmat.primitives.serialization import (
 from ..rfc7517.models import CurveKey
 from ..rfc7517.types import KeyParameters
 from ..rfc7517.pem import CryptographyBinding
+from ..errors import InvalidExchangeKeyError
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 from ..registry import KeyParameter
 
@@ -85,13 +86,13 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
     private_only_fields = frozenset(["d"])
 
     def exchange_derive_key(self, key: "OKPKey") -> bytes:
-        # used in ECDHESAlgorithm
+        # used in ECDH-ES Algorithms
         pubkey: t.Union[X25519PublicKey, X448PublicKey] = key.get_op_key("deriveKey")  # type: ignore[assignment]
         if isinstance(self.private_key, X25519PrivateKey) and isinstance(pubkey, X25519PublicKey):
             return self.private_key.exchange(pubkey)
         elif isinstance(self.private_key, X448PrivateKey) and isinstance(pubkey, X448PublicKey):
             return self.private_key.exchange(pubkey)
-        raise ValueError("Invalid key for exchanging shared key")
+        raise InvalidExchangeKeyError()
 
     @property
     def is_private(self) -> bool:

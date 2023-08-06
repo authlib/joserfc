@@ -1,5 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import OKPKey
+from joserfc.errors import InvalidExchangeKeyError
 from tests.keys import read_key
 
 
@@ -8,16 +9,16 @@ class TestOKPKey(TestCase):
         key1 = OKPKey.generate_key("Ed448")
         key2 = OKPKey.generate_key("Ed448")
         # only X25519 and X448 can exchange
-        self.assertRaises(ValueError, key1.exchange_derive_key, key2)
+        self.assertRaises(InvalidExchangeKeyError, key1.exchange_derive_key, key2)
 
         key3 = OKPKey.generate_key("X25519", private=False)
         key4 = OKPKey.generate_key("X25519")
         # key3 must have private key
-        self.assertRaises(ValueError, key3.exchange_derive_key, key4)
+        self.assertRaises(InvalidExchangeKeyError, key3.exchange_derive_key, key4)
 
         key5 = OKPKey.generate_key("X448")
         # curve name doesn't match
-        self.assertRaises(ValueError, key4.exchange_derive_key, key5)
+        self.assertRaises(InvalidExchangeKeyError, key4.exchange_derive_key, key5)
 
     def test_generate_keys(self):
         curves = ["Ed25519", "Ed448", "X25519", "X448"]

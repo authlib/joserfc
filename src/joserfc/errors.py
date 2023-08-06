@@ -5,9 +5,9 @@ class JoseError(Exception):
     """Base Exception for all errors in joserfc."""
 
     #: short-string error code
-    error = ""
+    error: str = ""
     #: long-string to describe this error
-    description = ""
+    description: str = ""
 
     def __init__(self, description: Optional[str] = None):
         if description is not None:
@@ -39,6 +39,11 @@ class InvalidKeyLengthError(JoseError):
 
 class InvalidKeyTypeError(JoseError):
     error = "invalid_key_type"
+
+
+class InvalidExchangeKeyError(JoseError):
+    error = "invalid_exchange_key"
+    description = "Invalid key for exchanging shared key"
 
 
 class InvalidEncryptedKeyError(JoseError):
