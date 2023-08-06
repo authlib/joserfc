@@ -12,6 +12,9 @@ __all__ = [
     "RSAKey",
     "ECKey",
     "OKPKey",
+    "Key",
+    "KeySet",
+    "JWKRegistry",
 ]
 
 Key = t.Union[OctKey, RSAKey, ECKey, OKPKey]

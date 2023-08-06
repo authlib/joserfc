@@ -40,11 +40,12 @@ KeyCallable = t.Callable[[GuestProtocol], Key]
 KeyFlexible = t.Union[str, bytes, Key, KeySet, KeyCallable]
 
 
-def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
+def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) -> Key:
     """Guess key from a various sources.
 
     :param key: a very flexible key
     :param obj: a protocol that has ``headers`` and ``set_kid`` methods
+    :param use_random: pick a random key from key set
     """
     headers = obj.headers()
 
@@ -57,7 +58,7 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol) -> Key:
 
     elif isinstance(key, KeySet):
         kid = headers.get("kid")
-        if not kid:
+        if not kid and use_random:
             # choose one key by random
             rv_key: Key = key.pick_random_key(headers["alg"])  # type: ignore
             if rv_key is None:

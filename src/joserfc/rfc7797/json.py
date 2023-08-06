@@ -42,7 +42,7 @@ def serialize_json(
 
     registry.check_header(headers)
 
-    key = guess_key(private_key, _member)
+    key = guess_key(private_key, _member, True)
     key.check_use("sig")
     alg = registry.get_alg(headers["alg"])
 

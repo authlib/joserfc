@@ -39,7 +39,7 @@ def serialize_compact(
     registry.check_header(protected)
     obj = CompactSignature(protected, to_bytes(payload))
     alg = registry.get_alg(protected["alg"])
-    key = guess_key(private_key, obj)
+    key = guess_key(private_key, obj, True)
     key.check_use("sig")
 
     header_segment = json_b64encode(protected)

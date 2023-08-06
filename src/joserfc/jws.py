@@ -110,7 +110,7 @@ def serialize_compact(
     registry.check_header(protected)
     obj = CompactSignature(protected, to_bytes(payload))
     alg: JWSAlgModel = registry.get_alg(protected["alg"])
-    key: Key = guess_key(private_key, obj)
+    key: Key = guess_key(private_key, obj, True)
     key.check_use("sig")
     alg.check_key_type(key)
     key.check_alg(protected["alg"])
@@ -227,7 +227,7 @@ def serialize_json(
     if registry is None:
         registry = construct_registry(algorithms)
 
-    find_key = lambda d: guess_key(private_key, d)
+    find_key = lambda d: guess_key(private_key, d, True)
     _payload = to_bytes(payload)
     if isinstance(members, list):
         return sign_general_json(members, _payload, registry, find_key)

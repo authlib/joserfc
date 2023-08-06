@@ -42,17 +42,20 @@ class TestKeyMethods(TestCase):
         key_set = KeySet([OctKey.generate_key(), RSAKey.generate_key()])
         guest = Guest()
         guest._headers["alg"] = "HS256"
-        key = guess_key(key_set, guest)
+        self.assertRaises(ValueError, guess_key, key_set, guest)
+        key = guess_key(key_set, guest, True)
         self.assertIsInstance(key, OctKey)
+        key = guess_key(key_set, guest)
 
         guest = Guest()
         guest._headers["alg"] = "RS256"
-        key = guess_key(key_set, guest)
+        self.assertRaises(ValueError, guess_key, key_set, guest)
+        key = guess_key(key_set, guest, True)
         self.assertIsInstance(key, RSAKey)
 
         guest = Guest()
         guest._headers["alg"] = "ES256"
-        self.assertRaises(ValueError, guess_key, key_set, guest)
+        self.assertRaises(ValueError, guess_key, key_set, guest, True)
 
     def test_invalid_key(self):
         self.assertRaises(ValueError, guess_key, {}, Guest())

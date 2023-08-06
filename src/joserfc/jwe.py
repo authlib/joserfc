@@ -99,11 +99,11 @@ def encrypt_compact(
 
     obj = CompactEncryption(protected, to_bytes(plaintext))
     recipient: Recipient[Key] = Recipient(obj)
-    key = guess_key(public_key, recipient)
+    key = guess_key(public_key, recipient, True)
     key.check_use("enc")
     recipient.recipient_key = key
     if sender_key:
-        recipient.sender_key = _guess_sender_key(recipient, sender_key)
+        recipient.sender_key = _guess_sender_key(recipient, sender_key, True)
     obj.recipient = recipient
     perform_encrypt(obj, registry)
     out = represent_compact(obj)
@@ -214,10 +214,10 @@ def encrypt_json(
 
     for recipient in obj.recipients:
         if sender_key and not recipient.sender_key:
-            recipient.sender_key = _guess_sender_key(recipient, sender_key)
+            recipient.sender_key = _guess_sender_key(recipient, sender_key, True)
         if not recipient.recipient_key:
             assert public_key is not None
-            key = guess_key(public_key, recipient)
+            key = guess_key(public_key, recipient, True)
             key.check_use("enc")
             recipient.recipient_key = key
 
@@ -274,15 +274,17 @@ def _attach_recipient_keys(
 
 def _guess_sender_key(
         recipient: Recipient[Key],
-        key: t.Union[ECKey, OKPKey, KeySet]) -> t.Union[ECKey, OKPKey]:
+        key: t.Union[ECKey, OKPKey, KeySet],
+        use_random: bool = False) -> t.Union[ECKey, OKPKey]:
     if isinstance(key, KeySet):
         headers = recipient.headers()
         skid = headers.get('skid')
         if skid:
             return key.get_by_kid(skid)  # type: ignore[return-value]
-        skey = key.pick_random_key(headers["alg"])
-        if skey is not None:
-            recipient.add_header("skid", skey.kid)
-            return skey  # type: ignore[return-value]
+        if use_random:
+            skey = key.pick_random_key(headers["alg"])
+            if skey is not None:
+                recipient.add_header("skid", skey.kid)
+                return skey  # type: ignore[return-value]
         raise ValueError("Invalid key")
     return key
