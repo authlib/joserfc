@@ -65,3 +65,8 @@ class TestKeySet(TestCase):
 
         key_set = KeySet([OctKey.generate_key()])
         self.assertTrue(key_set)
+
+    def test_key_set_iter(self):
+        key_set = KeySet.generate_key_set('RSA', 2048)
+        for k in key_set:
+            self.assertEqual(k.key_type, "RSA")
