@@ -19,10 +19,8 @@ from ..util import (
     urlsafe_b64decode,
 )
 from ..errors import DecodeError
-from ..rfc7517.models import BaseKey
 
-
-FindKey = t.Callable[[HeaderMember], BaseKey]
+FindKey = t.Callable[[HeaderMember], t.Any]
 
 
 def sign_general_json(

@@ -37,7 +37,7 @@ def is_jwk(value: t.Dict[str, t.Any]) -> None:
         raise ValueError("must be a JWK")
 
 
-def in_choices(choices: t.List[str]):
+def in_choices(choices: t.List[str]) -> t.Callable[[t.Union[str, t.List[str]]], None]:
     def _is_one_of(value: t.Union[str, t.List[str]]) -> None:
         if isinstance(value, list):
             if not all(v in choices for v in value):
@@ -49,7 +49,7 @@ def in_choices(choices: t.List[str]):
     return _is_one_of
 
 
-def not_support(_) -> None:
+def not_support(_: t.Any) -> None:
     raise ValueError("is not supported")
 
 

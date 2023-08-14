@@ -37,6 +37,6 @@ XC20P = ChaCha20EncModel("XC20P", "XChaCha20-Poly1305", 192)
 JWE_ENC_MODELS = [C20P, XC20P]
 
 
-def register_chaha20_poly1305():
+def register_chaha20_poly1305() -> None:
     for model in JWE_ENC_MODELS:
         JWERegistry.register(model)

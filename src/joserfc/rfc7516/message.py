@@ -28,7 +28,7 @@ from ..util import (
 EncryptionData = t.Union[CompactEncryption, GeneralJSONEncryption, FlattenedJSONEncryption]
 
 
-def perform_encrypt(obj: EncryptionData, registry: JWERegistry):
+def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> None:
     enc = registry.get_enc(obj.protected["enc"])
     cek, delayed_tasks = pre_encrypt_recipients(enc, obj.recipients, registry)
 
@@ -46,11 +46,13 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry):
     # representing the compressed plaintext; otherwise, let M be the octet
     # sequence representing the plaintext.
     assert obj.plaintext is not None
+
+    plaintext: bytes
     if "zip" in obj.protected:
         zip_ = registry.get_zip(obj.protected["zip"])
-        plaintext: bytes = zip_.compress(obj.plaintext)  # type: ignore
+        plaintext = zip_.compress(obj.plaintext)
     else:
-        plaintext: bytes = obj.plaintext  # type: ignore
+        plaintext = obj.plaintext
 
     # Step 13, Compute the Encoded Protected Header value BASE64URL(UTF8(JWE Protected Header)).
     aad = json_b64encode(obj.protected, "ascii")
@@ -74,14 +76,14 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry):
     obj.base64_segments["tag"] = urlsafe_b64encode(tag)
 
 
-def perform_decrypt(obj: EncryptionData, registry: JWERegistry):
+def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
     try:
         _perform_decrypt(obj, registry)
     except InvalidExchangeKeyError as error:
         raise DecodeError(error.description)
 
 
-def _perform_decrypt(obj: EncryptionData, registry: JWERegistry):
+def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
     enc = registry.get_enc(obj.protected["enc"])
 
     iv = obj.bytes_segments["iv"]
@@ -119,9 +121,12 @@ def _perform_decrypt(obj: EncryptionData, registry: JWERegistry):
         obj.plaintext = msg
 
 
-def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], registry: JWERegistry):
+def pre_encrypt_recipients(
+        enc: JWEEncModel,
+        recipients: t.List[Recipient[t.Any]],
+        registry: JWERegistry) -> t.Tuple[bytes, t.List[t.Tuple[JWEKeyAgreement, Recipient[t.Any]]]]:
     cek: bytes = b""
-    delayed_tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient]] = []
+    delayed_tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient[t.Any]]] = []
     for recipient in recipients:
         alg = __prepare_recipient_algorithm(recipient, registry)
 
@@ -148,7 +153,7 @@ def pre_encrypt_recipients(enc: JWEEncModel, recipients: t.List[Recipient], regi
     return cek, delayed_tasks
 
 
-def __prepare_recipient_algorithm(recipient: Recipient, registry: JWERegistry) -> JWEAlgModel:
+def __prepare_recipient_algorithm(recipient: Recipient[t.Any], registry: JWERegistry) -> JWEAlgModel:
     headers = recipient.headers()
     registry.check_header(headers)
     # 1. Determine the Key Management Mode employed by the algorithm used
@@ -162,7 +167,7 @@ def __prepare_recipient_algorithm(recipient: Recipient, registry: JWERegistry) -
     return alg
 
 
-def __pre_encrypt_direct_mode(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient) -> bytes:
+def __pre_encrypt_direct_mode(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient[t.Any]) -> bytes:
     cek: bytes
     if isinstance(alg, JWEKeyAgreement):
         # 3. When Direct Key Agreement is employed,
@@ -184,9 +189,9 @@ def __pre_encrypt_direct_mode(alg: JWEAlgModel, enc: JWEEncModel, recipient: Rec
 
 def post_encrypt_recipients(
         enc: JWEEncModel,
-        tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient]],
+        tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient[t.Any]]],
         cek: bytes,
-        tag: bytes):
+        tag: bytes) -> None:
     for alg, recipient in tasks:
         if alg.tag_aware:
             agreed_upon_key = alg.encrypt_agreed_upon_key_with_tag(enc, recipient, tag)
@@ -197,7 +202,11 @@ def post_encrypt_recipients(
         recipient.encrypted_key = alg.wrap_cek_with_auk(cek, agreed_upon_key)
 
 
-def decrypt_recipient(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient, tag: bytes):
+def decrypt_recipient(
+        alg: JWEAlgModel,
+        enc: JWEEncModel,
+        recipient: Recipient[t.Any],
+        tag: bytes) -> bytes:
     cek: bytes
     if alg.direct_mode:
         # 10.  When Direct Key Agreement or Direct Encryption are employed,

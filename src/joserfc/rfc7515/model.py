@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 from .types import SegmentsDict, JSONSignatureDict
 from ..errors import InvalidKeyTypeError
 from ..registry import Header
-from ..rfc7517.models import BaseKey
 
 
 class HeaderMember:
@@ -95,7 +94,7 @@ class JWSAlgModel(object, metaclass=ABCMeta):
     algorithm_type = "JWS"
     algorithm_location = "sig"
 
-    def check_key_type(self, key: BaseKey):
+    def check_key_type(self, key: t.Any) -> None:
         if key.key_type != self.key_type:
             raise InvalidKeyTypeError(f'Algorithm "{self.name}" requires "{self.key_type}" key')
 

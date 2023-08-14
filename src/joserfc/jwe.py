@@ -232,7 +232,8 @@ def decrypt_json(
         private_key: KeyFlexible,
         algorithms: t.Optional[t.List[str]] = None,
         registry: t.Optional[JWERegistry] = None,
-        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None):
+        sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None
+) -> t.Union[GeneralJSONEncryption, FlattenedJSONEncryption]:
     """Decrypt the JWE JSON Serialization (in dict) to a
     ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption`` object.
 
@@ -261,7 +262,7 @@ def decrypt_json(
 
 
 def _attach_recipient_keys(
-        recipients: t.List[Recipient],
+        recipients: t.List[Recipient[Key]],
         private_key: KeyFlexible,
         sender_key: t.Optional[t.Union[ECKey, OKPKey, KeySet]] = None) -> None:
     for recipient in recipients:

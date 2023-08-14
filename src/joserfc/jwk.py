@@ -32,7 +32,7 @@ class GuestProtocol(t.Protocol):  # pragma: no cover
     def headers(self) -> Header:
         ...
 
-    def set_kid(self, kid: str):
+    def set_kid(self, kid: str) -> None:
         ...
 
 
@@ -60,18 +60,18 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) ->
         kid = headers.get("kid")
         if not kid and use_random:
             # choose one key by random
-            rv_key: Key = key.pick_random_key(headers["alg"])  # type: ignore
+            rv_key = key.pick_random_key(headers["alg"])  # type: ignore[assignment]
             if rv_key is None:
                 raise ValueError("Invalid key")
             # use side effect to add kid information
             obj.set_kid(rv_key.kid)
         else:
-            rv_key: Key = key.get_by_kid(kid)  # type: ignore
+            rv_key = key.get_by_kid(kid)
 
     elif callable(key):
-        rv_key = key(obj)  # type: ignore
+        rv_key = key(obj)
 
     else:
         raise ValueError("Invalid key")
 
-    return rv_key  # type: ignore
+    return rv_key
