@@ -26,7 +26,7 @@ msgstr "算法"
 
 #: ../../guide/algorithms.rst:10
 msgid "All available algorithms for JWS, JWE, JWK, and JWT."
-msgstr ""
+msgstr "JWS、JWE、JWK 和 JWT 所有可用的算法。"
 
 #: ../../guide/algorithms.rst:14
 msgid ""
@@ -467,7 +467,7 @@ msgstr "接下来，详细学习下面的每个模块。"
 msgid ""
 "Learn how to use ``OctKey``, ``RSAKey``, ``ECKey``, ``OKPKey``, and JSON "
 "Web Key Set."
-msgstr ""
+msgstr "学习如何使用 ``OctKey``、``RSAKey``、``ECKey``、``OKPKey`` 以及 JSON Web Key Set。"
 
 #: ../../guide/index.rst:69 ../../guide/jwt.rst:6
 msgid "JSON Web Token"
@@ -475,11 +475,11 @@ msgstr ""
 
 #: ../../guide/index.rst:73
 msgid "JSON Web Token (JWT) is built on top of :ref:`jws` or :ref:`jwe`."
-msgstr ""
+msgstr "JSON Web Token (JWT) 本质上是一种 :ref:`jws` 或者 :ref:`jwe`。"
 
 #: ../../guide/index.rst:79
 msgid "Most :ref:`jwt` are encoded with JWS in compact serialization."
-msgstr ""
+msgstr "通常我们见到的 :ref:`jwt` 都是基于 :ref:`jws` 的紧凑序列化编码。"
 
 #: ../../guide/index.rst:85
 #, fuzzy
@@ -572,19 +572,19 @@ msgstr "JSON Web Encryption (JWE) 使用基于 JSON 的数据结构表示加密�
 
 #: ../../guide/jwe.rst:17
 msgid "Compact Encryption"
-msgstr ""
+msgstr "紧凑型加密"
 
 #: ../../guide/jwe.rst:19
 msgid ""
 "The JWE Compact Serialization represents encrypted content as a compact, "
 "URL-safe string.  This string is:"
-msgstr "JWE Compact Serialization 将加密内容表示为紧凑的、URL 安全的字符串。该字符串为："
+msgstr "JWE 紧凑型（Compact）序列化将加密内容表示为紧凑的、URL 安全的字符串。该字符串为："
 
 #: ../../guide/jwe.rst:30 ../../guide/jws.rst:29
 msgid ""
 "An example of a compact serialization (line breaks for display purposes "
 "only):"
-msgstr ""
+msgstr "以下是一个紧凑型序列化的例子（换行符仅用于显示目的）："
 
 #: ../../guide/jwe.rst:47 ../../guide/jwe.rst:112
 msgid "Encryption"
@@ -594,7 +594,7 @@ msgstr "加密"
 msgid ""
 "You can call :meth:`jwe.encrypt_compact` to construct a compact JWE "
 "serialization:"
-msgstr ""
+msgstr "你可以调用 :meth:`jwe.encrypt_compact` 来构建一个紧凑型序列化："
 
 #: ../../guide/jwe.rst:60
 msgid ""
@@ -693,7 +693,7 @@ msgstr ""
 
 #: ../../guide/jwe.rst:206
 msgid "And make sure only adding one recipient."
-msgstr ""
+msgstr "同时注意，你只能增加一位成员。"
 
 #: ../../guide/jwe.rst:209 ../../guide/jwt.rst:267
 msgid "Algorithms & Registry"
@@ -738,7 +738,7 @@ msgstr "生成一个 OctKey"
 msgid ""
 "You can generate an ``OctKey`` with the :meth:`OctKey.generate_key` "
 "method:"
-msgstr ""
+msgstr "你可以调用 :meth:`OctKey.generate_key` 来生成一个 ``OctKey``："
 
 #: ../../guide/jwk.rst:37
 msgid "Import an \"oct\" key"
@@ -746,7 +746,7 @@ msgstr "导入一个 OctKey"
 
 #: ../../guide/jwk.rst:39
 msgid "You can import an ``OctKey`` from string, bytes and a JWK (in dict)."
-msgstr ""
+msgstr "您可以从字符串、字节和 JWK（dict）导入一个 ``OctKey``。"
 
 #: ../../guide/jwk.rst:52
 msgid "When importing a key, you can add extra parameters into a key:"
@@ -773,7 +773,7 @@ msgstr "导入一个 RSAKey"
 
 #: ../../guide/jwk.rst:85
 msgid "You can import an ``RSAKey`` from string, bytes and a JWK (in dict)."
-msgstr ""
+msgstr "您可以从字符串、字节和 JWK（dict）导入一个 ``RSAKey``。"
 
 #: ../../guide/jwk.rst:127
 msgid ""
@@ -796,23 +796,23 @@ msgstr ""
 
 #: ../../guide/jwk.rst:144
 msgid "``P-256`` via RFC7518"
-msgstr ""
+msgstr "RFC7518 的 ``P-256``"
 
 #: ../../guide/jwk.rst:145
 msgid "``P-384`` via RFC7518"
-msgstr ""
+msgstr "RFC7518 的 ``P-384``"
 
 #: ../../guide/jwk.rst:146
 msgid "``P-521`` via RFC7518"
-msgstr ""
+msgstr "RFC7518 的 ``P-521``"
 
 #: ../../guide/jwk.rst:147
 msgid "``secp256k1`` via RFC8812"
-msgstr ""
+msgstr "RFC8812 的 ``secp256k1``"
 
 #: ../../guide/jwk.rst:149
 msgid "It is ``P-521``, not ``P-512``, it is not a typo."
-msgstr ""
+msgstr "这里确实是``P-521``，而不是``P-512``，我们没有写错。"
 
 #: ../../guide/jwk.rst:152
 msgid "Import an \"EC\" key"
@@ -820,11 +820,11 @@ msgstr "导入一个 ECKey"
 
 #: ../../guide/jwk.rst:154
 msgid "You can import an ``ECKey`` from string, bytes and a JWK (in dict)."
-msgstr ""
+msgstr "您可以从字符串、字节和 JWK（dict）导入一个 ``ECKey``。"
 
 #: ../../guide/jwk.rst:182
 msgid "An :class:`OKPKey` is an asymmetric key defined in RFC8037_."
-msgstr ""
+msgstr ":class:`OKPKey` 是 RFC8037_ 中定义的一种非对称密钥。"
 
 #: ../../guide/jwk.rst:187
 msgid "Generate an \"OKP\" key"
@@ -846,7 +846,7 @@ msgstr "导入一个 OKPKey"
 
 #: ../../guide/jwk.rst:203
 msgid "You can import an ``OKPKey`` from string, bytes and a JWK (in dict)."
-msgstr ""
+msgstr "您可以从字符串、字节和 JWK（dict）导入一个 ``OKPKey``。"
 
 #: ../../guide/jwk.rst:226
 msgid "Key Set"
@@ -876,7 +876,7 @@ msgstr "导入一个 KeySet"
 
 #: ../../guide/jwk.rst:271
 msgid "An example about importing JWKS from a local file:"
-msgstr ""
+msgstr "以下是一个从本地文件导入 JWKS 的例子："
 
 #: ../../guide/jwk.rst:281
 msgid "An example about importing JWKS from a URL:"

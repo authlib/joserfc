@@ -148,7 +148,7 @@ msgstr ""
 
 #: ../../contributing/index.rst:77
 msgid "Next"
-msgstr ""
+msgstr "下一步"
 
 #: ../../contributing/sponsors.rst:2
 msgid "Sponsors"
@@ -167,7 +167,7 @@ msgstr ""
 
 #: ../../contributing/structure.rst:8
 msgid "Overview"
-msgstr ""
+msgstr "概要"
 
 #: ../../contributing/structure.rst:10
 msgid "The overall structure is organized as follows:"
@@ -192,7 +192,7 @@ msgstr ""
 
 #: ../../contributing/structure.rst:38
 msgid "New RFCs"
-msgstr ""
+msgstr "新增 RFCs"
 
 #: ../../contributing/structure.rst:40
 msgid ""
@@ -233,7 +233,7 @@ msgstr ""
 
 #: ../../contributing/structure.rst:52
 msgid "Draft RFCs"
-msgstr ""
+msgstr "草案"
 
 #: ../../contributing/structure.rst:54
 msgid ""

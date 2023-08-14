@@ -12,6 +12,16 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+0.7.0
+-----
+
+**Released on August 14, 2023**
+
+- Add "iat" claims validation in JWT.
+- Add ``__bool__`` magic method on :class:`jwk.KeySet`.
+- Raise ``InvalidExchangeKeyError`` for ``exchange_derive_key`` on Curve key.
+- Improvements on type hints
+
 0.6.0
 -----
 
@@ -75,6 +85,6 @@ A beta release.
 0.1.0
 -----
 
-**Released on Mar 5, 2023**
+**Released on March 5, 2023**
 
 Initial release.

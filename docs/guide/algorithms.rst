@@ -89,12 +89,12 @@ PBES2-HS512+A256KW   RSAKey      :bdg-danger:`No`
 All algorithms defined in RFC7518 for "enc" value are recommended, which
 including:
 
-- A128CBC-HS256
-- A192CBC-HS384
-- A256CBC-HS512
-- A128GCM
-- A192GCM
-- A256GCM
+- ``A128CBC-HS256``
+- ``A192CBC-HS384``
+- ``A256CBC-HS512``
+- ``A128GCM``
+- ``A192GCM``
+- ``A256GCM``
 
 A ``DEF`` algorithm for the "zip" (compression) header parameter is also defined in
 RFC7518, which is recommended.

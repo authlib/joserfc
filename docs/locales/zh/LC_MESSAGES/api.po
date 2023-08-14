@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-20 21:07+0900\n"
+"POT-Creation-Date: 2023-08-14 22:07+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -45,8 +45,9 @@ msgid ""
 "comply with the given \"alg\" value."
 msgstr ""
 
-#: joserfc.jwe.decrypt_compact joserfc.jwe.decrypt_json
-#: joserfc.jwe.encrypt_compact joserfc.jwe.encrypt_json joserfc.jwk.guess_key
+#: joserfc._keys.JWKRegistry.import_key joserfc.jwe.decrypt_compact
+#: joserfc.jwe.decrypt_json joserfc.jwe.encrypt_compact
+#: joserfc.jwe.encrypt_json joserfc.jwk.guess_key
 #: joserfc.jws.deserialize_compact joserfc.jws.deserialize_json
 #: joserfc.jws.serialize_compact joserfc.jws.validate_compact joserfc.jwt.Token
 #: joserfc.jwt.decode joserfc.jwt.encode
@@ -62,13 +63,9 @@ msgstr ""
 #: joserfc.rfc7516.registry.JWERegistry.get_alg
 #: joserfc.rfc7516.registry.JWERegistry.get_enc
 #: joserfc.rfc7516.registry.JWERegistry.get_zip
-#: joserfc.rfc7517.models.BaseKey.as_dict
-#: joserfc.rfc7517.models.BaseKey.check_alg
-#: joserfc.rfc7517.models.BaseKey.check_key_op
-#: joserfc.rfc7517.models.BaseKey.check_use
 #: joserfc.rfc7518.oct_key.OctKey.generate_key of
 msgid "Parameters"
-msgstr ""
+msgstr "参数"
 
 #: joserfc.rfc7516.models.CompactEncryption.attach_recipient:4
 #: joserfc.rfc7516.models.FlattenedJSONEncryption.add_recipient:5
@@ -232,10 +229,11 @@ msgstr ""
 msgid "only required when using ECDH-1PU"
 msgstr ""
 
-#: joserfc.jwe.decrypt_compact joserfc.jwe.decrypt_json
-#: joserfc.jwe.encrypt_compact joserfc.jwe.encrypt_json
-#: joserfc.jws.deserialize_compact joserfc.jws.deserialize_json
-#: joserfc.jws.serialize_compact joserfc.rfc7515.model.JWSAlgModel.sign
+#: joserfc._keys.JWKRegistry.import_key joserfc.jwe.decrypt_compact
+#: joserfc.jwe.decrypt_json joserfc.jwe.encrypt_compact
+#: joserfc.jwe.encrypt_json joserfc.jws.deserialize_compact
+#: joserfc.jws.deserialize_json joserfc.jws.serialize_compact
+#: joserfc.rfc7515.model.JWSAlgModel.sign
 #: joserfc.rfc7515.model.JWSAlgModel.verify of
 msgid "Returns"
 msgstr ""
@@ -309,91 +307,49 @@ msgid ""
 "``joserfc.jwk``."
 msgstr ""
 
-#: joserfc.rfc7517.models.BaseKey.as_dict:1 of
-msgid ""
-"Output this key to a JWK format (in dict). By default, it will return the"
-" ``dict_value`` of this key."
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.as_dict:4 of
-msgid "determine whether this method should output private key or not"
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.as_dict:5 of
-msgid "other parameters added into this key"
-msgstr ""
-
-#: joserfc.jws.deserialize_json joserfc.jwt.decode
-#: joserfc.rfc7515.compact.extract_compact
-#: joserfc.rfc7517.models.BaseKey.as_dict
-#: joserfc.rfc7517.models.BaseKey.check_alg
-#: joserfc.rfc7517.models.BaseKey.check_key_op
-#: joserfc.rfc7517.models.BaseKey.check_use of
-msgid "raise"
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.as_dict:6 of
-msgid "ValueError"
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_alg:1 of
-msgid "Check if this key supports the given \"alg\"."
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_alg:3 of
-msgid "the algorithm this key is intended to be used, e.g. \"HS256\", \"ECDH-EC\""
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_alg:4 of
-msgid "UnsupportedKeyAlgorithmError"
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_key_op:1 of
-msgid "Check if the given key_op is supported by this key."
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_key_op:3 of
-msgid "key operation value, such as \"sign\", \"encrypt\"."
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_key_op:4 of
-msgid "UnsupportedKeyOperationError"
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_use:1 of
-msgid "Check if this key supports the given \"use\"."
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_use:3 of
-msgid "this key is used for, e.g. \"sig\", \"enc\""
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.check_use:4 of
-msgid "UnsupportedKeyUseError"
-msgstr ""
-
-#: joserfc.jwk.BaseKey.dict_value:1 of
-msgid "Property of the Key in Dict (JSON)."
-msgstr ""
-
-#: joserfc.rfc7517.models.BaseKey.thumbprint:1 of
-msgid ""
-"Call this method will generate the thumbprint with algorithm defined in "
-"RFC7638."
-msgstr ""
-
 #: ../../docstring joserfc.jwk.ECKey.value_registry:1 of
 msgid ""
 "Registry definition for EC Key https://www.rfc-"
 "editor.org/rfc/rfc7518#section-6.2"
 msgstr ""
 
-#: joserfc.jwk.JWKRegistry:1 of
+#: joserfc._keys.JWKRegistry:1 of
 msgid ""
 "A registry for JWK to record ``joserfc`` supported key types. Normally, "
 "you would use explicit key types like ``OctKey``, ``RSAKey``; This "
 "registry provides a way to dynamically import and generate keys. For "
 "instance:"
+msgstr ""
+
+#: joserfc._keys.JWKRegistry.generate_key:1 of
+msgid ""
+"A class method for generating key according to the given key type. When "
+"``key_type`` is \"oct\" and \"RSA\", the second parameter SHOULD be a key"
+" size in bits. When ``key_type`` is \"EC\" and \"OKP\", the second "
+"parameter SHOULD be a \"crv\" string."
+msgstr ""
+
+#: joserfc._keys.JWKRegistry.import_key:1 of
+msgid ""
+"A class method for importing a key from bytes, string, and dict. When "
+"``value`` is a dict, this method can tell the key type automatically, "
+"otherwise, developers SHOULD pass the ``key_type`` themselves."
+msgstr ""
+
+#: joserfc._keys.JWKRegistry.import_key:5 of
+msgid "the key data in bytes, string, or dict."
+msgstr ""
+
+#: joserfc._keys.JWKRegistry.import_key:6 of
+msgid "an optional key type in string."
+msgstr ""
+
+#: joserfc._keys.JWKRegistry.import_key:7 of
+msgid "extra key parameters"
+msgstr ""
+
+#: joserfc._keys.JWKRegistry.import_key:8 of
+msgid "OctKey, RSAKey, ECKey, or OKPKey"
 msgstr ""
 
 #: joserfc.rfc8037.okp_key.OKPKey:1 of
@@ -436,22 +392,6 @@ msgid ""
 "editor.org/rfc/rfc7518#section-6.3"
 msgstr ""
 
-#: joserfc.jwk.SymmetricKey.is_private:1 of
-msgid "A symmetric key will always be private."
-msgstr ""
-
-#: joserfc.jwk.SymmetricKey.private_key:1 of
-msgid "Returns the ``raw_value`` as the private key."
-msgstr ""
-
-#: joserfc.jwk.SymmetricKey.public_key:1 of
-msgid "Returns the ``raw_value`` as the public key."
-msgstr ""
-
-#: joserfc.jwk.SymmetricKey.raw_value:1 of
-msgid "The raw key in bytes."
-msgstr ""
-
 #: joserfc.jwk.guess_key:1 of
 msgid "Guess key from a various sources."
 msgstr ""
@@ -462,6 +402,10 @@ msgstr ""
 
 #: joserfc.jwk.guess_key:4 of
 msgid "a protocol that has ``headers`` and ``set_kid`` methods"
+msgstr ""
+
+#: joserfc.jwk.guess_key:5 of
+msgid "pick a random key from key set"
 msgstr ""
 
 #: ../../api/jws.rst:4
@@ -615,6 +559,11 @@ msgstr ""
 
 #: joserfc.jws.deserialize_json:7 of
 msgid "object of the SignatureData"
+msgstr ""
+
+#: joserfc.jws.deserialize_json joserfc.jwt.decode
+#: joserfc.rfc7515.compact.extract_compact of
+msgid "raise"
 msgstr ""
 
 #: joserfc.jws.deserialize_json:8 of
