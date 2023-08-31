@@ -224,6 +224,7 @@ html.dark {
 </li>
 <li><a class="reference internal" href="#key-methods">Key methods</a><ul>
 <li><a class="reference internal" href="#thumbprint"><code class="docutils literal notranslate"><span class="pre">thumbprint</span></code></a></li>
+<li><a class="reference internal" href="#ensure-kid"><code class="docutils literal notranslate"><span class="pre">ensure_kid</span></code></a></li>
 <li><a class="reference internal" href="#as-dict"><code class="docutils literal notranslate"><span class="pre">as_dict</span></code></a></li>
 <li><a class="reference internal" href="#as-pem"><code class="docutils literal notranslate"><span class="pre">as_pem</span></code></a></li>
 <li><a class="reference internal" href="#as-der"><code class="docutils literal notranslate"><span class="pre">as_der</span></code></a></li>
@@ -538,6 +539,20 @@ of a JWK Set:</p>
 </span><span id="1-2"><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">OctKey</span><span class="o">.</span><span class="n">import_key</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
 </span><span id="1-3"><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">thumbprint</span><span class="p">()</span>
 </span><span id="1-4"><span class="go">&#39;8-e-qGDS2nDpfZzOPtD8Sb7NkifUbw70MeqOKIqyaRw&#39;</span>
+</span></pre></div>
+</div>
+</section>
+<section id="ensure-kid">
+<span id="id6"></span><h3><code class="docutils literal notranslate"><span class="pre">ensure_kid</span></code><a class="headerlink" href="#ensure-kid" title="Permalink to this heading">¶</a></h3>
+<p>Call this method to make sure the key contains a <code class="docutils literal notranslate"><span class="pre">kid</span></code>. If the key has no
+<code class="docutils literal notranslate"><span class="pre">kid</span></code>, generate one with the above <code class="docutils literal notranslate"><span class="pre">.thumbprint</span></code> method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">joserfc.jwk</span> <span class="kn">import</span> <span class="n">OctKey</span>
+</span><span id="1-2"><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="n">OctKey</span><span class="o">.</span><span class="n">import_key</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+</span><span id="1-3"><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">kid</span>
+</span><span id="1-4"><span class="go">None</span>
+</span><span id="1-5"><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">ensure_kid</span><span class="p">()</span>
+</span><span id="1-6"><span class="gp">&gt;&gt;&gt; </span><span class="n">key</span><span class="o">.</span><span class="n">kid</span>
+</span><span id="1-7"><span class="go">&#39;8-e-qGDS2nDpfZzOPtD8Sb7NkifUbw70MeqOKIqyaRw&#39;</span>
 </span></pre></div>
 </div>
 </section>

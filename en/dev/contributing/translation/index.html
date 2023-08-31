@@ -193,7 +193,16 @@ html.dark {
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-icon close"></i>
     </button>
-    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/authlib/joserfc"
+    <div class="sy-scrollbar px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4">
+  <div class="localtoc">
+    <h3>On this page</h3>
+    <ul>
+<li><a class="reference internal" href="#generate-pot-files">Generate .pot files</a></li>
+<li><a class="reference internal" href="#update-languages">Update languages</a></li>
+<li><a class="reference internal" href="#writing-the-translations">Writing the Translations</a></li>
+</ul>
+
+  </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/authlib/joserfc"
   data-type="github" data-user="authlib" data-repo="joserfc">
   <span class="w-8 flex items-center justify-around shrink-0 text-2xl">
     <i class="i-icon github"></i>
@@ -250,6 +259,37 @@ html.dark {
         <article class="yue" role="main">
           <section id="translations">
 <h1>Translations<a class="headerlink" href="#translations" title="Permalink to this heading">¶</a></h1>
+<p>To begin translating this documentation into other languages, please
+start by referring to the <a class="reference internal" href="../#development"><span class="std std-ref">Development</span></a> guide, which will help
+you set up a suitable development environment. Afterward, navigate to
+the docs folder using the following command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="nb">cd</span><span class="w"> </span>docs
+</span></pre></div>
+</div>
+<section id="generate-pot-files">
+<h2>Generate .pot files<a class="headerlink" href="#generate-pot-files" title="Permalink to this heading">¶</a></h2>
+<p>Before creating translations in your desired languages, you need to
+generate the source <code class="docutils literal notranslate"><span class="pre">.pot</span></code> files. This can be accomplished using
+the following command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span id="1-1">sphinx-build<span class="w"> </span>-b<span class="w"> </span>gettext<span class="w"> </span>.<span class="w"> </span>_build/gettext
+</span></pre></div>
+</div>
+</section>
+<section id="update-languages">
+<h2>Update languages<a class="headerlink" href="#update-languages" title="Permalink to this heading">¶</a></h2>
+<p>Next, proceed to generate the <code class="docutils literal notranslate"><span class="pre">.po</span></code> files in your preferred
+languages using the <code class="docutils literal notranslate"><span class="pre">sphinx-intl</span></code> tool:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span id="1-1">sphinx-intl<span class="w"> </span>update<span class="w"> </span>-p<span class="w"> </span>_build/gettext<span class="w"> </span>-l<span class="w"> </span>de
+</span></pre></div>
+</div>
+<p>In this example, we’re using the language code <code class="docutils literal notranslate"><span class="pre">de</span></code> to represent German.</p>
+</section>
+<section id="writing-the-translations">
+<h2>Writing the Translations<a class="headerlink" href="#writing-the-translations" title="Permalink to this heading">¶</a></h2>
+<p>Following the previous command, the <code class="docutils literal notranslate"><span class="pre">.po</span></code> files will be generated within
+the <code class="docutils literal notranslate"><span class="pre">locales/de/LC_MESSAGES</span></code> directory. You can now edit these files to
+add the German translations accordingly.</p>
+</section>
 </section>
 
         </article>
