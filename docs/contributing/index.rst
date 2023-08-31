@@ -38,6 +38,8 @@ Everyone wants a good documentation. There may be mistakes
 or things missing in the documentation, you're welcome to
 help us improving the documentation.
 
+.. _development:
+
 Development
 -----------
 
@@ -57,11 +59,11 @@ I strongly suggest you create a virtual environment with ``venv``:
 Install
 ~~~~~~~
 
-Then install the Python requirements for unit tests:
+Then install the Python requirements for development:
 
 .. code-block:: shell
 
-    pip install -r requirements/tests.txt
+    pip install -r requirements.txt
 
 Run tests
 ~~~~~~~~~~

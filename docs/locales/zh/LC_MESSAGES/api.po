@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-14 22:07+0900\n"
+"POT-Creation-Date: 2023-09-01 08:25+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
 "Language-Team: zh <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../api/index.rst:2
 msgid "API References"
@@ -63,7 +63,10 @@ msgstr ""
 #: joserfc.rfc7516.registry.JWERegistry.get_alg
 #: joserfc.rfc7516.registry.JWERegistry.get_enc
 #: joserfc.rfc7516.registry.JWERegistry.get_zip
-#: joserfc.rfc7518.oct_key.OctKey.generate_key of
+#: joserfc.rfc7518.ec_key.ECKey.generate_key
+#: joserfc.rfc7518.oct_key.OctKey.generate_key
+#: joserfc.rfc7518.rsa_key.RSAKey.generate_key
+#: joserfc.rfc8037.okp_key.OKPKey.generate_key of
 msgid "Parameters"
 msgstr "参数"
 
@@ -307,6 +310,34 @@ msgid ""
 "``joserfc.jwk``."
 msgstr ""
 
+#: joserfc.rfc7518.ec_key.ECKey.generate_key:1 of
+msgid "Generate a ``ECKey`` with the given \"crv\" value."
+msgstr ""
+
+#: joserfc.rfc7518.ec_key.ECKey.generate_key:3 of
+msgid "ECKey curve name"
+msgstr ""
+
+#: joserfc.rfc7518.ec_key.ECKey.generate_key:4
+#: joserfc.rfc7518.oct_key.OctKey.generate_key:4
+#: joserfc.rfc7518.rsa_key.RSAKey.generate_key:4
+#: joserfc.rfc8037.okp_key.OKPKey.generate_key:4 of
+msgid "extra parameter in JWK"
+msgstr ""
+
+#: joserfc.rfc7518.ec_key.ECKey.generate_key:5
+#: joserfc.rfc7518.rsa_key.RSAKey.generate_key:5
+#: joserfc.rfc8037.okp_key.OKPKey.generate_key:5 of
+msgid "generate a private key or public key"
+msgstr ""
+
+#: joserfc.rfc7518.ec_key.ECKey.generate_key:6
+#: joserfc.rfc7518.oct_key.OctKey.generate_key:6
+#: joserfc.rfc7518.rsa_key.RSAKey.generate_key:6
+#: joserfc.rfc8037.okp_key.OKPKey.generate_key:6 of
+msgid "add ``kid`` automatically"
+msgstr ""
+
 #: ../../docstring joserfc.jwk.ECKey.value_registry:1 of
 msgid ""
 "Registry definition for EC Key https://www.rfc-"
@@ -356,6 +387,14 @@ msgstr ""
 msgid "Key class of the ``OKP`` key type."
 msgstr ""
 
+#: joserfc.rfc8037.okp_key.OKPKey.generate_key:1 of
+msgid "Generate a ``OKPKey`` with the given \"crv\" value."
+msgstr ""
+
+#: joserfc.rfc8037.okp_key.OKPKey.generate_key:3 of
+msgid "OKPKey curve name"
+msgstr ""
+
 #: ../../docstring joserfc.jwk.OKPKey.value_registry:1 of
 msgid ""
 "Registry definition for OKP Key https://www.rfc-"
@@ -370,12 +409,9 @@ msgstr ""
 msgid "Generate a ``OctKey`` with the given bit size (not bytes)."
 msgstr ""
 
-#: joserfc.rfc7518.oct_key.OctKey.generate_key:3 of
+#: joserfc.rfc7518.oct_key.OctKey.generate_key:3
+#: joserfc.rfc7518.rsa_key.RSAKey.generate_key:3 of
 msgid "size in bit"
-msgstr ""
-
-#: joserfc.rfc7518.oct_key.OctKey.generate_key:4 of
-msgid "extra parameter in JWK"
 msgstr ""
 
 #: joserfc.rfc7518.oct_key.OctKey.generate_key:5 of
@@ -384,6 +420,10 @@ msgstr ""
 
 #: ../../docstring joserfc.jwk.OctKey.value_registry:1 of
 msgid "https://www.rfc-editor.org/rfc/rfc7518#section-6.4"
+msgstr ""
+
+#: joserfc.rfc7518.rsa_key.RSAKey.generate_key:1 of
+msgid "Generate a ``RSAKey`` with the given bit size (not bytes)."
 msgstr ""
 
 #: ../../docstring joserfc.jwk.RSAKey.value_registry:1 of
@@ -781,3 +821,4 @@ msgstr ""
 #: joserfc.jwt.encode:5 of
 msgid "key used to sign the signature"
 msgstr ""
+

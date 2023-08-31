@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-20 21:07+0900\n"
+"POT-Creation-Date: 2023-09-01 08:26+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
 "Language-Team: zh <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../guide/algorithms.rst:6 ../../guide/jws.rst:252
 #: ../../guide/registry.rst:21
@@ -301,27 +301,27 @@ msgid ""
 msgstr "RFC7518 中定义的所有用于 \"enc\" 值的算法都是推荐使用的，包括："
 
 #: ../../guide/algorithms.rst:92
-msgid "A128CBC-HS256"
+msgid "``A128CBC-HS256``"
 msgstr ""
 
 #: ../../guide/algorithms.rst:93
-msgid "A192CBC-HS384"
+msgid "``A192CBC-HS384``"
 msgstr ""
 
 #: ../../guide/algorithms.rst:94
-msgid "A256CBC-HS512"
+msgid "``A256CBC-HS512``"
 msgstr ""
 
 #: ../../guide/algorithms.rst:95
-msgid "A128GCM"
+msgid "``A128GCM``"
 msgstr ""
 
 #: ../../guide/algorithms.rst:96
-msgid "A192GCM"
+msgid "``A192GCM``"
 msgstr ""
 
 #: ../../guide/algorithms.rst:97
-msgid "A256GCM"
+msgid "``A256GCM``"
 msgstr ""
 
 #: ../../guide/algorithms.rst:99
@@ -896,37 +896,47 @@ msgid ""
 "RFC7638."
 msgstr ""
 
-#: ../../guide/jwk.rst:308
+#: ../../guide/jwk.rst:310
+msgid "``ensure_kid``"
+msgstr ""
+
+#: ../../guide/jwk.rst:312
+msgid ""
+"Call this method to make sure the key contains a ``kid``. If the key has "
+"no ``kid``, generate one with the above ``.thumbprint`` method."
+msgstr ""
+
+#: ../../guide/jwk.rst:326
 msgid "``as_dict``"
 msgstr ""
 
-#: ../../guide/jwk.rst:310
+#: ../../guide/jwk.rst:328
 msgid ""
 "Dump a key or key set into dict format, which can be used to convert to "
 "JSON:"
 msgstr ""
 
-#: ../../guide/jwk.rst:320
+#: ../../guide/jwk.rst:338
 msgid "``as_pem``"
 msgstr ""
 
-#: ../../guide/jwk.rst:322
+#: ../../guide/jwk.rst:340
 msgid "Dump an asymmetric key into PEM format (in bytes):"
 msgstr "将非对称密钥转换为 PEM 格式（数据为字节形式）："
 
-#: ../../guide/jwk.rst:333
+#: ../../guide/jwk.rst:351
 msgid "``as_der``"
 msgstr ""
 
-#: ../../guide/jwk.rst:335
+#: ../../guide/jwk.rst:353
 msgid "Dump an asymmetric key into DER format (in bytes):"
 msgstr ""
 
-#: ../../guide/jwk.rst:346
+#: ../../guide/jwk.rst:364
 msgid "``JWKRegistry``"
 msgstr ""
 
-#: ../../guide/jwk.rst:348
+#: ../../guide/jwk.rst:366
 msgid ""
 "The :class:`JWKRegistry` class serves as a registry for storing all the "
 "supported key types in the ``joserfc`` library. While developers "
@@ -934,42 +944,42 @@ msgid ""
 "registry offers a means to dynamically import and generate keys."
 msgstr ""
 
-#: ../../guide/jwk.rst:354
+#: ../../guide/jwk.rst:372
 msgid "Import keys"
 msgstr ""
 
-#: ../../guide/jwk.rst:356
+#: ../../guide/jwk.rst:374
 msgid ""
 "The :meth:`JWKRegistry.import_key` can choose the correct key type "
 "automatically when importing a JWK in dict:"
 msgstr ""
 
-#: ../../guide/jwk.rst:373
+#: ../../guide/jwk.rst:391
 msgid ""
 "If the key is in bytes or string, not dict, developers SHOULD specify the"
 " key type manually:"
 msgstr ""
 
-#: ../../guide/jwk.rst:382
+#: ../../guide/jwk.rst:400
 msgid "Generate keys"
 msgstr ""
 
-#: ../../guide/jwk.rst:384
+#: ../../guide/jwk.rst:402
 msgid ""
 "The :meth:`JWKRegistry.generate_key` can generate a key with all the "
 "supported key types. For ``oct`` and ``RSA`` the parameters in this "
 "method:"
 msgstr ""
 
-#: ../../guide/jwk.rst:394
+#: ../../guide/jwk.rst:412
 msgid "For ``EC`` and ``OKP`` keys, the parameters are:"
 msgstr ""
 
-#: ../../guide/jwk.rst:403
+#: ../../guide/jwk.rst:421
 msgid "Options"
 msgstr ""
 
-#: ../../guide/jwk.rst:405
+#: ../../guide/jwk.rst:423
 msgid ""
 "The ``import_key`` and ``generate_key`` methods available in ``OctKey``, "
 "``RSAKey``, ``ECKey``, ``OKPKey``, and ``JWKRegistry`` classes have an "
@@ -978,37 +988,37 @@ msgid ""
 "the JWK."
 msgstr ""
 
-#: ../../guide/jwk.rst:410
+#: ../../guide/jwk.rst:428
 msgid "Some of the standard (registered) header fields are:"
 msgstr ""
 
-#: ../../guide/jwk.rst:412
+#: ../../guide/jwk.rst:430
 msgid "``kty``: Key Type, it is automatically added"
 msgstr ""
 
-#: ../../guide/jwk.rst:413
+#: ../../guide/jwk.rst:431
 msgid "``use``: Public Key Use, \"sig\" or \"enc\""
 msgstr ""
 
-#: ../../guide/jwk.rst:414
+#: ../../guide/jwk.rst:432
 msgid "``key_ops``: Key Operations, allowed operations of this key"
 msgstr ""
 
-#: ../../guide/jwk.rst:415
+#: ../../guide/jwk.rst:433
 msgid "``alg``: Algorithm, allowed algorithm of this key"
 msgstr ""
 
-#: ../../guide/jwk.rst:416
+#: ../../guide/jwk.rst:434
 msgid "``kid``: Key ID, a string of the key ID"
 msgstr ""
 
-#: ../../guide/jwk.rst:418
+#: ../../guide/jwk.rst:436
 msgid ""
 "When using ``import_key`` and ``generate_key``, developers can pass the "
 "extra key ``parameters``:"
 msgstr ""
 
-#: ../../guide/jwk.rst:425
+#: ../../guide/jwk.rst:443
 msgid ""
 "The above ``RSAKey`` then can only be used for ``JWS`` with ``alg`` of "
 "``RS256``, and it can only be used for deserialization (``verify``)."
@@ -1700,3 +1710,22 @@ msgid ""
 "Depending on the algorithm of the JWT, you need to decide whether to use "
 "``JWSRegistry`` or ``JWERegistry``."
 msgstr ""
+
+#~ msgid "A128CBC-HS256"
+#~ msgstr ""
+
+#~ msgid "A192CBC-HS384"
+#~ msgstr ""
+
+#~ msgid "A256CBC-HS512"
+#~ msgstr ""
+
+#~ msgid "A128GCM"
+#~ msgstr ""
+
+#~ msgid "A192GCM"
+#~ msgstr ""
+
+#~ msgid "A256GCM"
+#~ msgstr ""
+
