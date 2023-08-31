@@ -130,7 +130,15 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
             cls,
             key_size: int = 2048,
             parameters: t.Optional[KeyParameters] = None,
-            private: bool = True) -> "RSAKey":
+            private: bool = True,
+            auto_kid: bool = False) -> "RSAKey":
+        """Generate a ``RSAKey`` with the given bit size (not bytes).
+
+        :param key_size: size in bit
+        :param parameters: extra parameter in JWK
+        :param private: generate a private key or public key
+        :param auto_kid: add ``kid`` automatically
+        """
         if key_size < 512:
             raise ValueError("key_size must not be less than 512")
         if key_size % 8 != 0:
@@ -141,9 +149,13 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
             backend=default_backend(),
         )
         if private:
-            return cls(raw_key, raw_key, parameters)
-        pub_key = raw_key.public_key()
-        return cls(pub_key, pub_key, parameters)
+            key = cls(raw_key, raw_key, parameters)
+        else:
+            pub_key = raw_key.public_key()
+            key = cls(pub_key, pub_key, parameters)
+        if auto_kid:
+            key.ensure_kid()
+        return key
 
 
 def has_all_prime_factors(obj) -> bool:

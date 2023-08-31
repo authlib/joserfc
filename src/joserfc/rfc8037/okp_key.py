@@ -119,16 +119,28 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
             cls,
             crv: str = "Ed25519",
             parameters: t.Optional[KeyParameters] = None,
-            private: bool = True) -> "OKPKey":
+            private: bool = True,
+            auto_kid: bool = False) -> "OKPKey":
+        """Generate a ``OKPKey`` with the given "crv" value.
+
+        :param crv: OKPKey curve name
+        :param parameters: extra parameter in JWK
+        :param private: generate a private key or public key
+        :param auto_kid: add ``kid`` automatically
+        """
         if crv not in PRIVATE_KEYS_MAP:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
 
         private_key_cls: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
         raw_key = private_key_cls.generate()
         if private:
-            return cls(raw_key, raw_key, parameters)
-        pub_key = raw_key.public_key()
-        return cls(pub_key, pub_key, parameters)
+            key = cls(raw_key, raw_key, parameters)
+        else:
+            pub_key = raw_key.public_key()
+            key = cls(pub_key, pub_key, parameters)
+        if auto_kid:
+            key.ensure_kid()
+        return key
 
 
 def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]):

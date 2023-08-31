@@ -10,6 +10,10 @@ class TestKeySet(TestCase):
         jwks1 = KeySet.generate_key_set('RSA', 2048)
         self.assertEqual(len(jwks1.keys), 4)
 
+        for key in jwks1.keys:
+            # we will ensure kid when generating the key set
+            self.assertIsNotNone(key.kid)
+
         jwks1_data = jwks1.as_dict()
         self.assertEqual(list(jwks1_data.keys()), ['keys'])
         for d1 in jwks1_data['keys']:

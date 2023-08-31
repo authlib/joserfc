@@ -29,7 +29,11 @@ class TestOKPKey(TestCase):
 
         public_key = OKPKey.generate_key("Ed25519", private=False)
         self.assertFalse(public_key.is_private)
+        self.assertIsNone(public_key.kid)
         self.assertRaises(ValueError, OKPKey.generate_key, "invalid")
+
+        key = OKPKey.generate_key(auto_kid=True)
+        self.assertIsNotNone(key.kid)
 
     def test_import_pem_key(self):
         private_pem = read_key("okp-ed448-private.pem")

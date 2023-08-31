@@ -122,6 +122,10 @@ class TestRSAKey(TestCase):
 
         key: RSAKey = RSAKey.generate_key(private=False)
         self.assertFalse(key.is_private)
+        self.assertIsNone(key.kid)
+
+        key = RSAKey.generate_key(auto_kid=True)
+        self.assertIsNotNone(key.kid)
 
     def test_import_from_der_bytes(self):
         origin_key = RSAKey.generate_key()

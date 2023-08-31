@@ -78,7 +78,8 @@ class JWKRegistry:
             key_type: str,
             crv_or_size: t.Union[str, int],
             parameters: t.Optional[KeyParameters] = None,
-            private: bool = True) -> Key:
+            private: bool = True,
+            auto_kid: bool = False) -> Key:
         """A class method for generating key according to the given key type.
         When ``key_type`` is "oct" and "RSA", the second parameter SHOULD be
         a key size in bits. When ``key_type`` is "EC" and "OKP", the second
@@ -93,7 +94,7 @@ class JWKRegistry:
             raise ValueError(f'Invalid key type: "{key_type}"')
 
         key_cls = cls.key_types[key_type]
-        return key_cls.generate_key(crv_or_size, parameters, private)  # type: ignore[arg-type]
+        return key_cls.generate_key(crv_or_size, parameters, private, auto_kid)  # type: ignore[arg-type]
 
 
 KeySetSerialization = t.TypedDict("KeySetSerialization", {"keys": t.List[DictKey]})
@@ -107,6 +108,8 @@ class KeySet:
     algorithm_keys: t.ClassVar[t.Dict[str, t.List[str]]] = {}
 
     def __init__(self, keys: t.List[Key]):
+        for key in keys:
+            key.ensure_kid()
         self.keys = keys
 
     def __iter__(self) -> t.Iterator[Key]:
@@ -120,7 +123,7 @@ class KeySet:
 
         for key in self.keys:
             # trigger key to generate kid via thumbprint
-            assert key.kid is not None
+            key.ensure_kid()
             if isinstance(key, OctKey):
                 keys.append(key.as_dict(**params))
             else:

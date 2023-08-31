@@ -51,12 +51,14 @@ class OctKey(SymmetricKey):
             cls,
             key_size=256,
             parameters: Optional[KeyParameters] = None,
-            private: bool = True) -> "OctKey":
+            private: bool = True,
+            auto_kid: bool = False) -> "OctKey":
         """Generate a ``OctKey`` with the given bit size (not bytes).
 
         :param key_size: size in bit
         :param parameters: extra parameter in JWK
         :param private: must be True
+        :param auto_kid: add ``kid`` automatically
         """
         if not private:
             raise ValueError("oct key can not be generated as public")
@@ -69,4 +71,7 @@ class OctKey(SymmetricKey):
         chars = string.ascii_letters + string.digits
         value = "".join(rand.choice(chars) for _ in range(length))
         raw_key = to_bytes(value)
-        return cls(raw_key, raw_key, parameters)
+        key = cls(raw_key, raw_key, parameters)
+        if auto_kid:
+            key.ensure_kid()
+        return key

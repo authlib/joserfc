@@ -48,10 +48,14 @@ class TestECKey(TestCase):
 
         key = ECKey.generate_key(private=True)
         self.assertTrue(key.is_private)
+        self.assertIsNone(key.kid)
 
         key = ECKey.generate_key(private=False)
         self.assertFalse(key.is_private)
         self.assertIsNone(key.private_key)
+
+        key = ECKey.generate_key(auto_kid=True)
+        self.assertIsNotNone(key.kid)
 
     def test_import_from_der_bytes(self):
         origin_key = ECKey.generate_key()

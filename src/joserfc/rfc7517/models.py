@@ -102,13 +102,16 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     def get(self, k: str, default=None):
         return self.dict_value.get(k, default)
 
+    def ensure_kid(self):
+        """Ensure this key has a ``kid``. If ``kid`` is not provided by default,
+        it will generate the kid with ``.thumbprint`` method, which is defined
+        by RFC7638."""
+        if "kid" not in self.dict_value:
+            self._dict_value["kid"] = self.thumbprint()
+
     @property
-    def kid(self) -> str:
-        kid = self.get("kid")
-        if not kid:
-            kid = self.thumbprint()
-            self._dict_value["kid"] = kid
-        return kid
+    def kid(self) -> t.Optional[str]:
+        return self.get("kid")
 
     @property
     def raw_value(self):
@@ -246,7 +249,8 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
             cls: t.Type[GenericKey],
             size_or_crv,
             parameters: t.Optional[KeyParameters] = None,
-            private: bool = True) -> GenericKey:
+            private: bool = True,
+            auto_kid: bool = False) -> GenericKey:
         raise NotImplementedError()
 
 

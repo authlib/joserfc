@@ -131,7 +131,15 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
             cls,
             crv: str = "P-256",
             parameters: t.Optional[KeyParameters] = None,
-            private: bool = True) -> "ECKey":
+            private: bool = True,
+            auto_kid: bool = False) -> "ECKey":
+        """Generate a ``ECKey`` with the given "crv" value.
+
+        :param crv: ECKey curve name
+        :param parameters: extra parameter in JWK
+        :param private: generate a private key or public key
+        :param auto_kid: add ``kid`` automatically
+        """
         if crv not in DSS_CURVES:
             raise ValueError('Invalid crv value: "{}"'.format(crv))
         raw_key = generate_private_key(
@@ -139,6 +147,10 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
             backend=default_backend(),
         )
         if private:
-            return cls(raw_key, raw_key, parameters)
-        pub_key = raw_key.public_key()
-        return cls(pub_key, pub_key, parameters)
+            key = cls(raw_key, raw_key, parameters)
+        else:
+            pub_key = raw_key.public_key()
+            key = cls(pub_key, pub_key, parameters)
+        if auto_kid:
+            key.ensure_kid()
+        return key

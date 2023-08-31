@@ -47,7 +47,7 @@ class TestCompact(TestCase):
         obj = deserialize_compact(value, keys)
         self.assertEqual(obj.payload, b"foo")
 
-        keys.keys.append(RSAKey.generate_key())
+        keys.keys.append(RSAKey.generate_key(auto_kid=True))
         value = serialize_compact({"alg": "RS256"}, b"foo", keys)
         obj = deserialize_compact(value, keys)
         self.assertEqual(obj.payload, b"foo")
