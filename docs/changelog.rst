@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+0.8.0
+-----
+
+**WIP**
+
+- Add :ref:`ensure_kid` method on key models.
+- Add ``auto_kid`` parameter on key model ``.generate_key`` method.
+
 0.7.0
 -----
 

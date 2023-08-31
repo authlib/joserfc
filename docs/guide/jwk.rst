@@ -304,6 +304,24 @@ Call this method will generate the thumbprint with algorithm defined in RFC7638.
     >>> key.thumbprint()
     '8-e-qGDS2nDpfZzOPtD8Sb7NkifUbw70MeqOKIqyaRw'
 
+.. _ensure_kid:
+
+``ensure_kid``
+~~~~~~~~~~~~~~
+
+Call this method to make sure the key contains a ``kid``. If the key has no
+``kid``, generate one with the above ``.thumbprint`` method.
+
+.. code-block:: python
+
+    >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("foo")
+    >>> key.kid
+    None
+    >>> key.ensure_kid()
+    >>> key.kid
+    '8-e-qGDS2nDpfZzOPtD8Sb7NkifUbw70MeqOKIqyaRw'
+
 ``as_dict``
 ~~~~~~~~~~~
 
