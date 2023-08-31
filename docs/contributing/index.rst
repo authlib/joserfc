@@ -61,7 +61,7 @@ Then install the Python requirements for unit tests:
 
 .. code-block:: shell
 
-    pip install -r tests/requirements.txt
+    pip install -r requirements/tests.txt
 
 Run tests
 ~~~~~~~~~~

@@ -1,5 +1,3 @@
-cryptography
-pycryptodome
 pytest
 coverage
 pytest-cov

@@ -29,7 +29,7 @@ jobs:
           python-version: "3.8"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements/lint.txt
 
       - name: flake8 lint
         run: flake8 src/joserfc
@@ -55,7 +55,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: pip install -r tests/requirements.txt
+        run: |
+          pip install -r requirements/base.txt
+          pip install -r requirements/tests.txt
 
       - name: Report coverage
         run: pytest --cov=joserfc --cov-report=xml
