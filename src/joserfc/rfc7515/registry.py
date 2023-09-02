@@ -36,13 +36,13 @@ class JWSRegistry:
         self.strict_check_header = strict_check_header
 
     @classmethod
-    def register(cls, alg: JWSAlgModel):
+    def register(cls, alg: JWSAlgModel) -> None:
         """Register a given JWS algorithm instance to the registry."""
         cls.algorithms[alg.name] = alg
         if alg.recommended:
             cls.recommended.append(alg.name)
 
-    def get_alg(self, name: str):
+    def get_alg(self, name: str) -> JWSAlgModel:
         """Get the allowed algorithm instance of the given name.
 
         :param name: value of the ``alg``, e.g. ``HS256``, ``RS256``
@@ -58,7 +58,7 @@ class JWSRegistry:
             raise ValueError(f'Algorithm of "{name}" is not allowed')
         return self.algorithms[name]
 
-    def check_header(self, header: Header):
+    def check_header(self, header: Header) -> None:
         """Check and validate the fields in header part of a JWS object."""
         check_crit_header(header)
         validate_registry_header(self.header_registry, header)
@@ -70,7 +70,7 @@ class JWSRegistry:
 default_registry = JWSRegistry()
 
 
-def construct_registry(algorithms: Optional[List[str]] = None):
+def construct_registry(algorithms: Optional[List[str]] = None) -> JWSRegistry:
     if algorithms:
         registry = JWSRegistry(algorithms=algorithms)
     else:

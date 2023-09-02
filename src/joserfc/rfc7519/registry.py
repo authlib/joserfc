@@ -48,7 +48,7 @@ class ClaimsRegistry:
 
 
 class JWTClaimsRegistry(ClaimsRegistry):
-    def __init__(self, now: Optional[int] = None, leeway=0, **kwargs: ClaimsOption):
+    def __init__(self, now: Optional[int] = None, leeway: int = 0, **kwargs: ClaimsOption):
         if now is None:
             now = int(time.time())
         self.now = now

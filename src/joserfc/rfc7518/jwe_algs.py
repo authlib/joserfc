@@ -137,7 +137,7 @@ class AESGCMAlgModel(JWEKeyWrapping):
     def wrap_cek(self, cek: bytes, key: bytes) -> bytes:  # pragma: no cover
         raise RuntimeError(f"{self.name} can not be used together with Key Agreement")
 
-    def unwrap_cek(self, ek: bytes, key: bytes):  # pragma: no cover
+    def unwrap_cek(self, ek: bytes, key: bytes) -> bytes:  # pragma: no cover
         raise RuntimeError(f"{self.name} can not be used together with Key Agreement")
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient[OctKey]) -> bytes:

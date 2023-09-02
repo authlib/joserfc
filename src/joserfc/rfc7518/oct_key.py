@@ -1,6 +1,6 @@
 import random
 import string
-from typing import Optional
+import typing as t
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
@@ -26,11 +26,11 @@ class OctBinding(NativeKeyBinding):
         return {"k": k}
 
     @classmethod
-    def import_from_dict(cls, value: DictKey):
+    def import_from_dict(cls, value: DictKey) -> bytes:
         return urlsafe_b64decode(to_bytes(value["k"]))
 
     @classmethod
-    def import_from_bytes(cls, value: bytes, password=None):
+    def import_from_bytes(cls, value: bytes, password: t.Optional[t.Any] = None) -> bytes:
         # security check
         if value.startswith(POSSIBLE_UNSAFE_KEYS):
             raise ValueError("This key may not be safe to import")
@@ -49,8 +49,8 @@ class OctKey(SymmetricKey):
     @classmethod
     def generate_key(
             cls,
-            key_size=256,
-            parameters: Optional[KeyParameters] = None,
+            key_size: int = 256,
+            parameters: t.Optional[KeyParameters] = None,
             private: bool = True,
             auto_kid: bool = False) -> "OctKey":
         """Generate a ``OctKey`` with the given bit size (not bytes).
@@ -71,7 +71,7 @@ class OctKey(SymmetricKey):
         chars = string.ascii_letters + string.digits
         value = "".join(rand.choice(chars) for _ in range(length))
         raw_key = to_bytes(value)
-        key = cls(raw_key, raw_key, parameters)
+        key: OctKey = cls(raw_key, raw_key, parameters)
         if auto_kid:
             key.ensure_kid()
         return key

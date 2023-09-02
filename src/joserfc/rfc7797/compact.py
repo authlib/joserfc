@@ -95,7 +95,7 @@ def __is_urlsafe_characters(s: t.Union[bytes, str]) -> bool:
     return bool(_re_urlsafe.match(to_str(s)))
 
 
-def _extract_compact(value: bytes, payload: t.Optional[t.Union[bytes, str]] = None):
+def _extract_compact(value: bytes, payload: t.Optional[t.Union[bytes, str]] = None) -> t.Any:
     parts = value.split(b".")
     if len(parts) != 3:
         raise ValueError("Invalid JSON Web Signature")

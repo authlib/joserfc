@@ -143,7 +143,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         return key
 
 
-def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]):
+def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]) -> str:
     if isinstance(key, (Ed25519PublicKey, Ed25519PrivateKey)):
         return "Ed25519"
     elif isinstance(key, (Ed448PublicKey, Ed448PrivateKey)):

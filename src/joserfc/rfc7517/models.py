@@ -102,7 +102,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     def get(self, k: str, default=None):
         return self.dict_value.get(k, default)
 
-    def ensure_kid(self):
+    def ensure_kid(self) -> None:
         """Ensure this key has a ``kid``. If ``kid`` is not provided by default,
         it will generate the kid with ``.thumbprint`` method, which is defined
         by RFC7638."""
@@ -175,7 +175,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         data.update(params)
         return data
 
-    def check_use(self, use: str):
+    def check_use(self, use: str) -> None:
         """Check if this key supports the given "use".
 
         :param use: this key is used for, e.g. "sig", "enc"
@@ -185,7 +185,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         if designed_use and designed_use != use:
             raise UnsupportedKeyUseError(f'This key is designed to be used for "{designed_use}"')
 
-    def check_alg(self, alg: str):
+    def check_alg(self, alg: str) -> None:
         """Check if this key supports the given "alg".
 
         :param alg: the algorithm this key is intended to be used, e.g. "HS256", "ECDH-EC"
@@ -195,7 +195,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         if designed_alg and designed_alg != alg:
             raise UnsupportedKeyAlgorithmError(f'This key is designed for algorithm "{designed_alg}"')
 
-    def check_key_op(self, operation: str):
+    def check_key_op(self, operation: str) -> None:
         """Check if the given key_op is supported by this key.
 
         :param operation: key operation value, such as "sign", "encrypt".

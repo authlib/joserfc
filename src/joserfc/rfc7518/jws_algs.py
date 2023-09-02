@@ -21,7 +21,6 @@ from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
 from ..rfc7515.model import JWSAlgModel
-from ..rfc7517.models import BaseKey
 from .oct_key import OctKey
 from .rsa_key import RSAKey
 from .ec_key import ECKey
@@ -32,10 +31,10 @@ class NoneAlgModel(JWSAlgModel):
     name = "none"
     description = "No digital signature or MAC performed"
 
-    def sign(self, msg: bytes, key: BaseKey) -> bytes:
+    def sign(self, msg: bytes, key: t.Any) -> bytes:
         return b""
 
-    def verify(self, msg: bytes, sig: bytes, key: BaseKey) -> bool:
+    def verify(self, msg: bytes, sig: bytes, key: t.Any) -> bool:
         return False
 
 

@@ -8,13 +8,13 @@ class JWSRegistry(_JWSRegistry):
         **JWS_HEADER_REGISTRY,
     }
 
-    def check_header(self, header: Header):
+    def check_header(self, header: Header) -> None:
         if "b64" in header:
             _safe_b64_header(header)
         super(JWSRegistry, self).check_header(header)
 
 
-def _safe_b64_header(header: Header):
+def _safe_b64_header(header: Header) -> bool:
     # https://datatracker.ietf.org/doc/html/rfc7797#section-6
     crit = header.get("crit")
     if isinstance(crit, list) and "b64" in crit:

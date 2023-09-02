@@ -158,7 +158,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         return key
 
 
-def has_all_prime_factors(obj) -> bool:
+def has_all_prime_factors(obj: RSADictKey) -> bool:
     props = ["p", "q", "dp", "dq", "qi"]
     props_found = [prop in obj for prop in props]
     if all(props_found):

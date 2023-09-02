@@ -23,7 +23,7 @@ class HeaderMember:
             rv.update(self.header)
         return rv
 
-    def set_kid(self, kid: str):
+    def set_kid(self, kid: str) -> None:
         if self.header is None:
             self.header = {}
         self.header["kid"] = kid
@@ -41,7 +41,7 @@ class CompactSignature:
     def headers(self) -> Header:
         return self.protected
 
-    def set_kid(self, kid: str):
+    def set_kid(self, kid: str) -> None:
         self.protected["kid"] = kid
 
 
