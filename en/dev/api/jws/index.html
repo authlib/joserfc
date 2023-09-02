@@ -442,13 +442,13 @@ An instance of <code class="docutils literal notranslate"><span class="pre">JWSR
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="joserfc.jws.JWSRegistry.check_header">
-<span class="sig-name descname"><span class="pre">check_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#joserfc.jws.JWSRegistry.check_header" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">check_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#joserfc.jws.JWSRegistry.check_header" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check and validate the fields in header part of a JWS object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="joserfc.jws.JWSRegistry.get_alg">
-<span class="sig-name descname"><span class="pre">get_alg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#joserfc.jws.JWSRegistry.get_alg" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_alg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#joserfc.jws.JWSAlgModel" title="joserfc.rfc7515.model.JWSAlgModel"><span class="pre">JWSAlgModel</span></a></span></span><a class="headerlink" href="#joserfc.jws.JWSRegistry.get_alg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the allowed algorithm instance of the given name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -459,7 +459,7 @@ An instance of <code class="docutils literal notranslate"><span class="pre">JWSR
 
 <dl class="py method">
 <dt class="sig sig-object py" id="joserfc.jws.JWSRegistry.register">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#joserfc.jws.JWSAlgModel" title="joserfc.rfc7515.model.JWSAlgModel"><span class="pre">JWSAlgModel</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#joserfc.jws.JWSRegistry.register" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#joserfc.jws.JWSAlgModel" title="joserfc.rfc7515.model.JWSAlgModel"><span class="pre">JWSAlgModel</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#joserfc.jws.JWSRegistry.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a given JWS algorithm instance to the registry.</p>
 </dd></dl>
 
