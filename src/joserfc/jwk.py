@@ -63,9 +63,8 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) ->
             rv_key = key.pick_random_key(headers["alg"])  # type: ignore[assignment]
             if rv_key is None:
                 raise ValueError("Invalid key")
-            # use side effect to add kid information
-            if rv_key.kid:
-                obj.set_kid(rv_key.kid)
+            rv_key.ensure_kid()
+            obj.set_kid(rv_key.kid)
         else:
             rv_key = key.get_by_kid(kid)
 
