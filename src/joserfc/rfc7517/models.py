@@ -46,7 +46,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
     @staticmethod
     def as_bytes(
             key: GenericKey,
-            encoding: t.Optional[str] = None,
+            encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
             private: t.Optional[bool] = None,
             password: t.Optional[str] = None) -> bytes:
         raise NotImplementedError()
@@ -287,7 +287,7 @@ class AsymmetricKey(BaseKey[NativePrivateKey, NativePublicKey], metaclass=ABCMet
 
     def as_bytes(
             self,
-            encoding: t.Optional[str] = None,
+            encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
             private: t.Optional[bool] = None,
             password: t.Optional[str] = None) -> bytes:
         return self.binding.as_bytes(self, encoding, private, password)

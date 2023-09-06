@@ -64,6 +64,7 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) ->
             if rv_key is None:
                 raise ValueError("Invalid key")
             rv_key.ensure_kid()
+            assert rv_key.kid is not None  # for mypy
             obj.set_kid(rv_key.kid)
         else:
             rv_key = key.get_by_kid(kid)
