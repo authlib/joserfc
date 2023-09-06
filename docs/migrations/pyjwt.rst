@@ -108,9 +108,9 @@ Verify "exp"
     jwt.decode(encoded_jwt, options={"verify_exp": True})
 
 .. code-block:: python
+    :caption: joserfc
 
     from joserfc import jwt
-    :caption: joserfc
 
     # claims requests has built-in validators for exp, nbf, iat
     claims_requests = jwt.JWTClaimsRegistry()
