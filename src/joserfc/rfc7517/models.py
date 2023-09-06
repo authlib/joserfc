@@ -17,9 +17,9 @@ from ..errors import (
 )
 
 
-GenericKey = t.TypeVar("GenericKey", bound="BaseKey")
 NativePrivateKey = t.TypeVar("NativePrivateKey")
 NativePublicKey = t.TypeVar("NativePublicKey")
+GenericKey = t.TypeVar("GenericKey", bound="BaseKey[t.Any, t.Any]")
 
 
 class NativeKeyBinding(metaclass=ABCMeta):
@@ -44,8 +44,12 @@ class NativeKeyBinding(metaclass=ABCMeta):
         pass
 
     @staticmethod
-    def as_bytes(key: GenericKey, encoding=None, private=None, password=None) -> bytes:  # pragma: no cover
-        return key.raw_value
+    def as_bytes(
+            key: GenericKey,
+            encoding: t.Optional[str] = None,
+            private: t.Optional[bool] = None,
+            password: t.Optional[str] = None) -> bytes:
+        raise NotImplementedError()
 
     @classmethod
     def validate_dict_key_registry(cls, dict_key: DictKey, registry: KeyParameterRegistryDict) -> None:
@@ -288,10 +292,10 @@ class AsymmetricKey(BaseKey[NativePrivateKey, NativePublicKey], metaclass=ABCMet
             password: t.Optional[str] = None) -> bytes:
         return self.binding.as_bytes(self, encoding, private, password)
 
-    def as_pem(self, private=None, password=None) -> bytes:
+    def as_pem(self, private: t.Optional[bool] = None, password: t.Optional[str] = None) -> bytes:
         return self.as_bytes(private=private, password=password)
 
-    def as_der(self, private=None, password=None) -> bytes:
+    def as_der(self, private: t.Optional[bool] = None, password: t.Optional[str] = None) -> bytes:
         return self.as_bytes(encoding="DER", private=private, password=password)
 
 
