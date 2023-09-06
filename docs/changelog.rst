@@ -15,10 +15,11 @@ Changelog
 0.8.0
 -----
 
-**WIP**
+**Released on September 06, 2023**
 
 - Add :ref:`ensure_kid` method on key models.
 - Add ``auto_kid`` parameter on key model ``.generate_key`` method.
+- Improvements on type hints
 
 0.7.0
 -----
