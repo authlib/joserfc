@@ -12,7 +12,7 @@ from ..errors import (
 class ClaimsOption(TypedDict, total=False):
     essential: bool
     value: Union[str, int]
-    values: List[Union[str, int]]
+    values: Union[List[Union[str, int]], List[str], List[int]]
 
 
 class ClaimsRegistry:
