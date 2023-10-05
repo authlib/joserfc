@@ -94,15 +94,36 @@ The Individual Claims Requests JSON object contains:
   OPTIONAL. Requests that the Claim be returned with one of a set of values,
   with the values appearing in order of preference.
 
+And we added one more field:
+
+``allow_blank``
+  OPTIONAL. Allow essential claims to be an empty string.
+
 Missing essential claims
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    claims = {"iss": "https://authlib.org"}
     claims_requests = JWTClaimsRegistry(aud={"essential": True})
 
-    claims_requests.validate(claims)  # this will raise MissingClaimError
+    # this will raise MissingClaimError
+    claims = {"iss": "https://authlib.org"}
+    claims_requests.validate(claims)
+
+    # this will raise MissingClaimError
+    claims = {"iss": ""}
+    claims_requests.validate(claims)
+
+Allow empty essential claims
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    claims_requests = JWTClaimsRegistry(aud={"essential": True, "allow_blank": True})
+
+    # this will NOT raise MissingClaimError
+    claims = {"iss": ""}
+    claims_requests.validate(claims)
 
 Invalid claims values
 ~~~~~~~~~~~~~~~~~~~~~

@@ -11,6 +11,7 @@ from ..errors import (
 #: http://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests
 class ClaimsOption(TypedDict, total=False):
     essential: bool
+    allow_blank: Optional[bool]
     value: Union[str, int]
     values: Union[List[Union[str, int]], List[str], List[int]]
 
@@ -25,8 +26,8 @@ class ClaimsRegistry:
     def check_value(self, claim_name: str, value: Any) -> None:
         option = self.options.get(claim_name)
         if option:
-            option_not_empty = option.get("not_empty")
-            if option_not_empty and not value:
+            allow_blank = option.get("allow_blank")
+            if not allow_blank and not value:
                 raise InvalidClaimError(claim_name)
 
             option_value = option.get("value")
