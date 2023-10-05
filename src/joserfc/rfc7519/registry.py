@@ -25,6 +25,10 @@ class ClaimsRegistry:
     def check_value(self, claim_name: str, value: Any) -> None:
         option = self.options.get(claim_name)
         if option:
+            option_not_empty = option.get("not_empty")
+            if option_not_empty and not value:
+                raise InvalidClaimError(claim_name)
+
             option_value = option.get("value")
             if option_value and value != option_value:
                 raise InvalidClaimError(claim_name)

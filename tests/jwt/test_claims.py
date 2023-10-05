@@ -46,6 +46,12 @@ class TestJWTClaims(TestCase):
 
         claims_requests.validate({"sub": "a", "iss": "a", "name": "joserfc"})
 
+    def test_essential_empty_value(self):
+        claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "not_empty": True})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": ""})
+
+        claims_requests.validate({"sub": "a"})
+
     def test_option_value(self):
         claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "value": "123"})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": "a"})
