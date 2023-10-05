@@ -200,6 +200,7 @@ html.dark {
 <li><a class="reference internal" href="#decode-token">Decode token</a></li>
 <li><a class="reference internal" href="#validate-claims">Validate claims</a><ul>
 <li><a class="reference internal" href="#missing-essential-claims">Missing essential claims</a></li>
+<li><a class="reference internal" href="#allow-empty-essential-claims">Allow empty essential claims</a></li>
 <li><a class="reference internal" href="#invalid-claims-values">Invalid claims values</a></li>
 <li><a class="reference internal" href="#default-validators">Default validators</a></li>
 </ul>
@@ -339,12 +340,32 @@ If the value is true, this indicates that the Claim is an Essential Claim.</p>
 with the values appearing in order of preference.</p>
 </dd>
 </dl>
+<p>And we added one more field:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">allow_blank</span></code></dt><dd><p>OPTIONAL. Allow essential claims to be an empty string.</p>
+</dd>
+</dl>
 <section id="missing-essential-claims">
 <h3>Missing essential claims<a class="headerlink" href="#missing-essential-claims" title="此标题的永久链接">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">claims</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;iss&quot;</span><span class="p">:</span> <span class="s2">&quot;https://authlib.org&quot;</span><span class="p">}</span>
-</span><span id="1-2"><span class="n">claims_requests</span> <span class="o">=</span> <span class="n">JWTClaimsRegistry</span><span class="p">(</span><span class="n">aud</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;essential&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
-</span><span id="1-3">
-</span><span id="1-4"><span class="n">claims_requests</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">claims</span><span class="p">)</span>  <span class="c1"># this will raise MissingClaimError</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">claims_requests</span> <span class="o">=</span> <span class="n">JWTClaimsRegistry</span><span class="p">(</span><span class="n">aud</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;essential&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="c1"># this will raise MissingClaimError</span>
+</span><span id="1-4"><span class="n">claims</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;iss&quot;</span><span class="p">:</span> <span class="s2">&quot;https://authlib.org&quot;</span><span class="p">}</span>
+</span><span id="1-5"><span class="n">claims_requests</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">claims</span><span class="p">)</span>
+</span><span id="1-6">
+</span><span id="1-7"><span class="c1"># this will raise MissingClaimError</span>
+</span><span id="1-8"><span class="n">claims</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;iss&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+</span><span id="1-9"><span class="n">claims_requests</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">claims</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</section>
+<section id="allow-empty-essential-claims">
+<h3>Allow empty essential claims<a class="headerlink" href="#allow-empty-essential-claims" title="此标题的永久链接">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="n">claims_requests</span> <span class="o">=</span> <span class="n">JWTClaimsRegistry</span><span class="p">(</span><span class="n">aud</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;essential&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;allow_blank&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="c1"># this will NOT raise MissingClaimError</span>
+</span><span id="1-4"><span class="n">claims</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;iss&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+</span><span id="1-5"><span class="n">claims_requests</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">claims</span><span class="p">)</span>
 </span></pre></div>
 </div>
 </section>
