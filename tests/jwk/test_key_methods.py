@@ -104,6 +104,13 @@ class TestKeyMethods(TestCase):
             "RS256"
         )
 
+    def test_alg_property(self):
+        key = OctKey.import_key("secret")
+        self.assertIsNone(key.alg)
+
+        key = OctKey.import_key("secret", {"alg": "HS256"})
+        self.assertEqual(key.alg, "HS256")
+
     def test_check_ops(self):
         key = OctKey.import_key("secret", {"key_ops": ["sign", "verify"]})
         key.check_key_op("sign")

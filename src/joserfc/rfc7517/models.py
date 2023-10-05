@@ -115,7 +115,13 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
 
     @property
     def kid(self) -> t.Optional[str]:
+        """The "kid" value of the JSON Web Key."""
         return self.get("kid")
+
+    @property
+    def alg(self) -> t.Optional[str]:
+        """The "alg" value of the JSON Web Key."""
+        return self.get("alg")
 
     @property
     def raw_value(self):
