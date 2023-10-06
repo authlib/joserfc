@@ -39,9 +39,9 @@ class ClaimsRegistry:
                 raise InvalidClaimError(claim_name)
 
     def validate(self, claims: Dict[str, Any]) -> None:
-        missed_key = self.essential_keys - set(claims.keys())
-        if missed_key:
-            raise MissingClaimError(",".join(missed_key))
+        missed_keys = {key for key in self.essential_keys if claims.get(key) is None}
+        if missed_keys:
+            raise MissingClaimError(",".join(sorted(missed_keys)))
 
         for key in claims:
             value = claims[key]
