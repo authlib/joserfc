@@ -194,8 +194,14 @@ html.dark {
   <div class="localtoc">
     <h3>On this page</h3>
     <ul>
-<li><a class="reference internal" href="#use-callable-key">Use callable key</a></li>
-<li><a class="reference internal" href="#step-by-step">Step by step</a></li>
+<li><a class="reference internal" href="#steps-for-decoding">Steps for decoding</a><ul>
+<li><a class="reference internal" href="#openid-configuration-endpoint">OpenID Configuration Endpoint</a></li>
+<li><a class="reference internal" href="#jwk-set-uri">JWK Set URI</a></li>
+<li><a class="reference internal" href="#validating-jwt-tokens">Validating JWT Tokens</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-a-callable-key">Using a Callable Key</a></li>
+<li><a class="reference internal" href="#manual-token-decoding">Manual Token Decoding</a></li>
 </ul>
 
   </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/authlib/joserfc"
@@ -253,11 +259,188 @@ html.dark {
         <article class="yue" role="main">
           <section id="dynamic-keys-for-azure">
 <h1>Dynamic keys for Azure<a class="headerlink" href="#dynamic-keys-for-azure" title="Permalink to this heading">¶</a></h1>
-<section id="use-callable-key">
-<h2>Use callable key<a class="headerlink" href="#use-callable-key" title="Permalink to this heading">¶</a></h2>
+<p>In scenarios where you need to decode a JWT received from Azure (Microsoft), you
+may encounter a situation where you are unaware of the public key required for the
+decoding process until after the token arrives. In such cases, you will typically
+need to retrieve the key set dynamically from the <code class="docutils literal notranslate"><span class="pre">iss</span></code> (issuer) value contained
+within the JWT.</p>
+<p>Let’s illustrate this process using a JWT token extracted from Microsoft’s official
+documentation <a class="reference external" href="ms_doc_url">Access tokens in the Microsoft identity platform</a>:</p>
+<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Imk2bEdrM0ZaenhSY1ViMkMzbkVRN3N5SEpsWSJ9
+</span><span id="1-2">.eyJhdWQiOiI2ZTc0MTcyYi1iZTU2LTQ4NDMtOWZmNC1lNjZhMzliYjEyZTMiLCJpc3MiOiJodHRwczovL2x
+</span><span id="1-3">vZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3Y
+</span><span id="1-4">yLjAiLCJpYXQiOjE1MzcyMzEwNDgsIm5iZiI6MTUzNzIzMTA0OCwiZXhwIjoxNTM3MjM0OTQ4LCJhaW8iOiJ
+</span><span id="1-5">BWFFBaS84SUFBQUF0QWFaTG8zQ2hNaWY2S09udHRSQjdlQnE0L0RjY1F6amNKR3hQWXkvQzNqRGFOR3hYZDZ
+</span><span id="1-6">3TklJVkdSZ2hOUm53SjFsT2NBbk5aY2p2a295ckZ4Q3R0djMzMTQwUmlvT0ZKNGJDQ0dWdW9DYWcxdU9UVDI
+</span><span id="1-7">yMjIyZ0h3TFBZUS91Zjc5UVgrMEtJaWpkcm1wNjlSY3R6bVE9PSIsImF6cCI6IjZlNzQxNzJiLWJlNTYtNDg
+</span><span id="1-8">0My05ZmY0LWU2NmEzOWJiMTJlMyIsImF6cGFjciI6IjAiLCJuYW1lIjoiQWJlIExpbmNvbG4iLCJvaWQiOiI
+</span><span id="1-9">2OTAyMjJiZS1mZjFhLTRkNTYtYWJkMS03ZTRmN2QzOGU0NzQiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhYmV
+</span><span id="1-10">saUBtaWNyb3NvZnQuY29tIiwicmgiOiJJIiwic2NwIjoiYWNjZXNzX2FzX3VzZXIiLCJzdWIiOiJIS1pwZmF
+</span><span id="1-11">IeVdhZGVPb3VZbGl0anJJLUtmZlRtMjIyWDVyclYzeERxZktRIiwidGlkIjoiNzJmOTg4YmYtODZmMS00MWF
+</span><span id="1-12">mLTkxYWItMmQ3Y2QwMTFkYjQ3IiwidXRpIjoiZnFpQnFYTFBqMGVRYTgyUy1JWUZBQSIsInZlciI6IjIuMCJ9
+</span><span id="1-13">.pj4N-w_3Us9DrBLfpCt
+</span></pre></div>
+</div>
+<p>This token, obtained from Microsoft’s official documentation, serves as an example for
+decoding JWTs originating from Azure. The decoded payload might look like:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="p">{</span>
+</span><span id="1-2"><span class="w">  </span><span class="nt">&quot;aud&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6e74172b-be56-4843-9ff4-e66a39bb12e3&quot;</span><span class="p">,</span>
+</span><span id="1-3"><span class="w">  </span><span class="nt">&quot;iss&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0&quot;</span><span class="p">,</span>
+</span><span id="1-4"><span class="w">  </span><span class="nt">&quot;iat&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1537231048</span><span class="p">,</span>
+</span><span id="1-5"><span class="w">  </span><span class="nt">&quot;nbf&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1537231048</span><span class="p">,</span>
+</span><span id="1-6"><span class="w">  </span><span class="nt">&quot;exp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1537234948</span><span class="p">,</span>
+</span><span id="1-7"><span class="w">  </span><span class="nt">&quot;aio&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AXQAi/8IAAAAtAaZLo3ChMif6KOnttRB7eBq4/DccQzjcJGxPYy/C3jDa...&quot;</span><span class="p">,</span>
+</span><span id="1-8"><span class="w">  </span><span class="nt">&quot;azp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6e74172b-be56-4843-9ff4-e66a39bb12e3&quot;</span><span class="p">,</span>
+</span><span id="1-9"><span class="w">  </span><span class="nt">&quot;azpacr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
+</span><span id="1-10"><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Abe Lincoln&quot;</span><span class="p">,</span>
+</span><span id="1-11"><span class="w">  </span><span class="nt">&quot;oid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;690222be-ff1a-4d56-abd1-7e4f7d38e474&quot;</span><span class="p">,</span>
+</span><span id="1-12"><span class="w">  </span><span class="nt">&quot;preferred_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abeli@microsoft.com&quot;</span><span class="p">,</span>
+</span><span id="1-13"><span class="w">  </span><span class="nt">&quot;rh&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;I&quot;</span><span class="p">,</span>
+</span><span id="1-14"><span class="w">  </span><span class="nt">&quot;scp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;access_as_user&quot;</span><span class="p">,</span>
+</span><span id="1-15"><span class="w">  </span><span class="nt">&quot;sub&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HKZpfaHyWadeOouYlitjrI-KffTm222X5rrV3xDqfKQ&quot;</span><span class="p">,</span>
+</span><span id="1-16"><span class="w">  </span><span class="nt">&quot;tid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;72f988bf-86f1-41af-91ab-2d7cd011db47&quot;</span><span class="p">,</span>
+</span><span id="1-17"><span class="w">  </span><span class="nt">&quot;uti&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fqiBqXLPj0eQa82S-IYFAA&quot;</span><span class="p">,</span>
+</span><span id="1-18"><span class="w">  </span><span class="nt">&quot;ver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span>
+</span><span id="1-19"><span class="p">}</span>
+</span></pre></div>
+</div>
+<section id="steps-for-decoding">
+<h2>Steps for decoding<a class="headerlink" href="#steps-for-decoding" title="Permalink to this heading">¶</a></h2>
+<p>In order to decode JWT tokens from Azure, it is essential to retrieve the necessary
+information from Microsoft’s OpenID configuration, including the JSON Web Key Set (JWK Set)
+URI. This information is crucial for verifying the tokens.</p>
+<section id="openid-configuration-endpoint">
+<h3>OpenID Configuration Endpoint<a class="headerlink" href="#openid-configuration-endpoint" title="Permalink to this heading">¶</a></h3>
+<p>You can obtain the OpenID configuration endpoint from Microsoft by forming a URL in
+the following format:</p>
+<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration
+</span></pre></div>
+</div>
+<p>In the example provided, replace {tenant} with your specific Azure tenant ID or
+the tenant’s globally unique identifier (GUID). The resulting URL will lead you
+to the OpenID configuration details. Then, the OpenID configuration endpoint for
+the above example could be:</p>
+<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0/.well-known/openid-configuration
+</span></pre></div>
+</div>
 </section>
-<section id="step-by-step">
-<h2>Step by step<a class="headerlink" href="#step-by-step" title="Permalink to this heading">¶</a></h2>
+<section id="jwk-set-uri">
+<h3>JWK Set URI<a class="headerlink" href="#jwk-set-uri" title="Permalink to this heading">¶</a></h3>
+<p>Within the OpenID configuration details, you will find the JSON Web Key Set (JWK Set) URI.
+This URI is used to access the keys required for verifying JWT tokens. The JWK Set URI
+can typically be found within the configuration as follows:</p>
+<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/{tenant}/discovery/v2.0/keys
+</span></pre></div>
+</div>
+<p>Once again, remember to replace {tenant} with your Azure tenant ID or the appropriate identifier.
+In the above example, the <code class="docutils literal notranslate"><span class="pre">jwks_uri</span></code> could be:</p>
+<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/discovery/v2.0/keys
+</span></pre></div>
+</div>
+</section>
+<section id="validating-jwt-tokens">
+<h3>Validating JWT Tokens<a class="headerlink" href="#validating-jwt-tokens" title="Permalink to this heading">¶</a></h3>
+<p>Once you have retrieved the JSON Web Key Set (JWK Set) from the JWK Set URI provided in the
+OpenID configuration, you can proceed to validate JWT tokens.</p>
+</section>
+</section>
+<section id="using-a-callable-key">
+<h2>Using a Callable Key<a class="headerlink" href="#using-a-callable-key" title="Permalink to this heading">¶</a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">joserfc</span></code>, a callable key is a powerful feature that allows you to dynamically retrieve
+and use the appropriate JSON Web Key (JWK) for token decoding. In the context of Azure tokens,
+you can implement a callable key to fetch the JWKs from the JWK Set URI and select the correct
+key based on the kid (Key ID) in the token’s header.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">import</span> <span class="nn">json</span>
+</span><span id="1-2"><span class="kn">import</span> <span class="nn">requests</span>
+</span><span id="1-3"><span class="kn">from</span> <span class="nn">joserfc.jws</span> <span class="kn">import</span> <span class="n">CompactSignature</span>
+</span><span id="1-4"><span class="kn">from</span> <span class="nn">joserfc.jwk</span> <span class="kn">import</span> <span class="n">KeySet</span>
+</span><span id="1-5"><span class="kn">from</span> <span class="nn">joserfc</span> <span class="kn">import</span> <span class="n">jwt</span>
+</span><span id="1-6">
+</span><span id="1-7"><span class="k">def</span> <span class="nf">load_key</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">CompactSignature</span><span class="p">):</span>
+</span><span id="1-8">    <span class="n">claims</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+</span><span id="1-9">    <span class="n">issuer_url</span> <span class="o">=</span> <span class="n">claims</span><span class="p">[</span><span class="s1">&#39;iss&#39;</span><span class="p">]</span>
+</span><span id="1-10">
+</span><span id="1-11">    <span class="c1"># retrieve OpenID Configuration Endpoint</span>
+</span><span id="1-12">    <span class="n">openid_configuration_endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">issuer_url</span><span class="si">}</span><span class="s1">/.well-known/openid-configuration&#39;</span>
+</span><span id="1-13">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">openid_configuration_endpoint</span><span class="p">)</span>
+</span><span id="1-14">
+</span><span id="1-15">    <span class="c1"># retrieve JWK Set URI</span>
+</span><span id="1-16">    <span class="n">jwks_uri</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;jwks_uri&#39;</span><span class="p">]</span>
+</span><span id="1-17">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">jwks_uri</span><span class="p">)</span>
+</span><span id="1-18">
+</span><span id="1-19">    <span class="c1"># pick the key with kid</span>
+</span><span id="1-20">    <span class="n">key_set</span> <span class="o">=</span> <span class="n">KeySet</span><span class="o">.</span><span class="n">import_key_set</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</span><span id="1-21">    <span class="n">key</span> <span class="o">=</span> <span class="n">key_set</span><span class="o">.</span><span class="n">get_by_kid</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">headers</span><span class="p">()[</span><span class="s1">&#39;kid&#39;</span><span class="p">])</span>
+</span><span id="1-22">    <span class="k">return</span> <span class="n">key</span>
+</span><span id="1-23">
+</span><span id="1-24"><span class="c1"># pass load_key as a callable key to `jwt.decode` method</span>
+</span><span id="1-25"><span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token_string</span><span class="p">,</span> <span class="n">load_key</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>When using the callable key method in <code class="docutils literal notranslate"><span class="pre">joserfc</span></code> to decode the tokens, it retrieves
+the key dynamically on each token decoding request. However, you may encounter performance
+issues due to the repeated retrieval of keys. In such cases, it’s advisable to optimize
+the callable key by implementing key set caching based on the issuer.</p>
+<p>Let’s enhance the callable key method to improve its efficiency.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="1-4"><span class="k">def</span> <span class="nf">fetch_key_set</span><span class="p">(</span><span class="n">issuer</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="1-5">    <span class="n">openid_configuration_endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">issuer</span><span class="si">}</span><span class="s1">/.well-known/openid-configuration&#39;</span>
+</span><span id="1-6">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">openid_configuration_endpoint</span><span class="p">)</span>
+</span><span id="1-7">    <span class="n">jwks_uri</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;jwks_uri&#39;</span><span class="p">]</span>
+</span><span id="1-8">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">jwks_uri</span><span class="p">)</span>
+</span><span id="1-9">    <span class="k">return</span> <span class="n">KeySet</span><span class="o">.</span><span class="n">import_key_set</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</span><span id="1-10">
+</span><span id="1-11"><span class="k">def</span> <span class="nf">load_key</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">CompactSignature</span><span class="p">):</span>
+</span><span id="1-12">    <span class="n">claims</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+</span><span id="1-13">    <span class="n">key_set</span> <span class="o">=</span> <span class="n">fetch_key_set</span><span class="p">(</span><span class="n">claims</span><span class="p">[</span><span class="s1">&#39;iss&#39;</span><span class="p">])</span>
+</span><span id="1-14">    <span class="n">key</span> <span class="o">=</span> <span class="n">key_set</span><span class="o">.</span><span class="n">get_by_kid</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">headers</span><span class="p">()[</span><span class="s1">&#39;kid&#39;</span><span class="p">])</span>
+</span><span id="1-15">    <span class="k">return</span> <span class="n">key</span>
+</span></pre></div>
+</div>
+<p>In this enhanced callable key, an LRU (Least Recently Used) cache is used to store
+JWK Sets for different issuers. When decoding a token, the callable key function first
+checks if the JWK Set for the specific issuer is available in the cache. If it’s not,
+it fetches the JWK Set for the issuer, caches it, and then selects the appropriate JWK
+based on the kid. This caching mechanism significantly reduces the network requests for
+JWK Sets and improves the efficiency of token decoding.</p>
+</section>
+<section id="manual-token-decoding">
+<h2>Manual Token Decoding<a class="headerlink" href="#manual-token-decoding" title="Permalink to this heading">¶</a></h2>
+<p>If you prefer a more hands-on approach and want to decode the token step by step,
+you can opt for a manual decoding process. This method allows you to extract the
+token string and work with it directly. Since the token is a JWT in JWS format,
+you can utilize the <code class="docutils literal notranslate"><span class="pre">extract_compact</span></code> method from the JWS module to obtain the
+necessary information. The result of this extraction is an object of type
+<a class="reference internal" href="../../api/jws/#joserfc.jws.CompactSignature" title="joserfc.jws.CompactSignature"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompactSignature</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">joserfc.jws</span> <span class="kn">import</span> <span class="n">extract_compact</span><span class="p">,</span> <span class="n">CompactSignature</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="n">obj</span><span class="p">:</span> <span class="n">CompactSignature</span> <span class="o">=</span> <span class="n">extract_compact</span><span class="p">(</span><span class="n">token_string</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>Similar to the approach detailed in the “Using a Callable Key” section, you can
+retrieve the key set based on the issuer (<code class="docutils literal notranslate"><span class="pre">iss</span></code>) claim. This method allows you to
+access the necessary keys for token verification.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="1-2"><span class="k">def</span> <span class="nf">fetch_key_set</span><span class="p">(</span><span class="n">issuer</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="1-3">    <span class="n">openid_configuration_endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">issuer</span><span class="si">}</span><span class="s1">/.well-known/openid-configuration&#39;</span>
+</span><span id="1-4">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">openid_configuration_endpoint</span><span class="p">)</span>
+</span><span id="1-5">    <span class="n">jwks_uri</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;jwks_uri&#39;</span><span class="p">]</span>
+</span><span id="1-6">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">jwks_uri</span><span class="p">)</span>
+</span><span id="1-7">    <span class="k">return</span> <span class="n">KeySet</span><span class="o">.</span><span class="n">import_key_set</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</span><span id="1-8">
+</span><span id="1-9"><span class="n">claims</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">payload</span><span class="p">)</span>
+</span><span id="1-10"><span class="n">key_set</span> <span class="o">=</span> <span class="n">fetch_key_set</span><span class="p">(</span><span class="n">claims</span><span class="p">[</span><span class="s1">&#39;iss&#39;</span><span class="p">])</span>
+</span></pre></div>
+</div>
+<p>Once you have obtained the key set based on the issuer (<code class="docutils literal notranslate"><span class="pre">iss</span></code>) claim, you can use this
+set of keys to decode the token.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span id="1-1"><span class="kn">from</span> <span class="nn">joserfc</span> <span class="kn">import</span> <span class="n">jwt</span>
+</span><span id="1-2">
+</span><span id="1-3"><span class="n">token</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token_string</span><span class="p">,</span> <span class="n">key_set</span><span class="p">)</span>
+</span></pre></div>
+</div>
 </section>
 </section>
 
