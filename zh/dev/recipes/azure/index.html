@@ -266,7 +266,7 @@ need to retrieve the key set dynamically from the <code class="docutils literal 
 within the JWT.</p>
 <p>Let's illustrate this process using a JWT token extracted from Microsoft's official
 documentation <a class="reference external" href="ms_doc_url">Access tokens in the Microsoft identity platform</a>:</p>
-<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Imk2bEdrM0ZaenhSY1ViMkMzbkVRN3N5SEpsWSJ9
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span><span id="1-1">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6Imk2bEdrM0ZaenhSY1ViMkMzbkVRN3N5SEpsWSJ9
 </span><span id="1-2">.eyJhdWQiOiI2ZTc0MTcyYi1iZTU2LTQ4NDMtOWZmNC1lNjZhMzliYjEyZTMiLCJpc3MiOiJodHRwczovL2x
 </span><span id="1-3">vZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vNzJmOTg4YmYtODZmMS00MWFmLTkxYWItMmQ3Y2QwMTFkYjQ3L3Y
 </span><span id="1-4">yLjAiLCJpYXQiOjE1MzcyMzEwNDgsIm5iZiI6MTUzNzIzMTA0OCwiZXhwIjoxNTM3MjM0OTQ4LCJhaW8iOiJ
@@ -313,14 +313,14 @@ URI. This information is crucial for verifying the tokens.</p>
 <h3>OpenID Configuration Endpoint<a class="headerlink" href="#openid-configuration-endpoint" title="此标题的永久链接">¶</a></h3>
 <p>You can obtain the OpenID configuration endpoint from Microsoft by forming a URL in
 the following format:</p>
-<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration
 </span></pre></div>
 </div>
 <p>In the example provided, replace {tenant} with your specific Azure tenant ID or
 the tenant's globally unique identifier (GUID). The resulting URL will lead you
 to the OpenID configuration details. Then, the OpenID configuration endpoint for
 the above example could be:</p>
-<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0/.well-known/openid-configuration
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/v2.0/.well-known/openid-configuration
 </span></pre></div>
 </div>
 </section>
@@ -329,12 +329,12 @@ the above example could be:</p>
 <p>Within the OpenID configuration details, you will find the JSON Web Key Set (JWK Set) URI.
 This URI is used to access the keys required for verifying JWT tokens. The JWK Set URI
 can typically be found within the configuration as follows:</p>
-<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/{tenant}/discovery/v2.0/keys
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/{tenant}/discovery/v2.0/keys
 </span></pre></div>
 </div>
 <p>Once again, remember to replace {tenant} with your Azure tenant ID or the appropriate identifier.
 In the above example, the <code class="docutils literal notranslate"><span class="pre">jwks_uri</span></code> could be:</p>
-<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/discovery/v2.0/keys
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span><span id="1-1">https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/discovery/v2.0/keys
 </span></pre></div>
 </div>
 </section>
@@ -367,14 +367,11 @@ key based on the kid (Key ID) in the token's header.</p>
 </span><span id="1-15">    <span class="c1"># retrieve JWK Set URI</span>
 </span><span id="1-16">    <span class="n">jwks_uri</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;jwks_uri&#39;</span><span class="p">]</span>
 </span><span id="1-17">    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">jwks_uri</span><span class="p">)</span>
-</span><span id="1-18">
-</span><span id="1-19">    <span class="c1"># pick the key with kid</span>
-</span><span id="1-20">    <span class="n">key_set</span> <span class="o">=</span> <span class="n">KeySet</span><span class="o">.</span><span class="n">import_key_set</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
-</span><span id="1-21">    <span class="n">key</span> <span class="o">=</span> <span class="n">key_set</span><span class="o">.</span><span class="n">get_by_kid</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">headers</span><span class="p">()[</span><span class="s1">&#39;kid&#39;</span><span class="p">])</span>
-</span><span id="1-22">    <span class="k">return</span> <span class="n">key</span>
-</span><span id="1-23">
-</span><span id="1-24"><span class="c1"># pass load_key as a callable key to `jwt.decode` method</span>
-</span><span id="1-25"><span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token_string</span><span class="p">,</span> <span class="n">load_key</span><span class="p">)</span>
+</span><span id="1-18">    <span class="n">key_set</span> <span class="o">=</span> <span class="n">KeySet</span><span class="o">.</span><span class="n">import_key_set</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</span><span id="1-19">    <span class="k">return</span> <span class="n">key_set</span>
+</span><span id="1-20">
+</span><span id="1-21"><span class="c1"># pass load_key as a callable key to `jwt.decode` method</span>
+</span><span id="1-22"><span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token_string</span><span class="p">,</span> <span class="n">load_key</span><span class="p">)</span>
 </span></pre></div>
 </div>
 <p>When using the callable key method in <code class="docutils literal notranslate"><span class="pre">joserfc</span></code> to decode the tokens, it retrieves
