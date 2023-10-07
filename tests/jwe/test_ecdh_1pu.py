@@ -133,7 +133,7 @@ class TestECDH1PUCompact(TestFixture):
         )
         self.assertEqual(obj.plaintext, b'hello')
 
-    def test_sender_key_not_found(self):
+    def test_sender_key_not_found_via_kid(self):
         alice_key = load_key("ec-p256-alice.json", {"kid": "alice"})
         bob_key = load_key("ec-p256-bob.json", {"kid": "bob"})
         protected = {"alg": "ECDH-1PU+A128KW", "enc": "A128CBC-HS256"}
@@ -147,6 +147,19 @@ class TestECDH1PUCompact(TestFixture):
         self.assertRaises(
             ValueError, decrypt_compact, value,
             private_key=bob_key,
+            registry=ecdh_registry,
+            sender_key=key_set,
+        )
+
+    def test_sender_key_not_found_via_alg(self):
+        alice_key = load_key("ec-p256-alice.json", {"kid": "alice"})
+        protected = {"alg": "ECDH-1PU+A128KW", "enc": "A128CBC-HS256"}
+        bob_key = load_key("RFC7520-RSA-private.json")
+        key_set = KeySet([bob_key])
+        self.assertRaises(
+            ValueError, encrypt_compact,
+            protected, b'hello',
+            public_key=alice_key,
             registry=ecdh_registry,
             sender_key=key_set,
         )

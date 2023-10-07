@@ -52,7 +52,13 @@ class TestJSON(TestCase):
 
         # this will always pick alice key
         member = {'protected': {'alg': 'ES256'}, 'header': {'kid': 'alice'}}
-        serialize_json(member, b'hello', keys)
+        value = serialize_json(member, b'hello', keys)
+        self.assertEqual(value['header'], {'kid': 'alice'})
+
+        # header can also be an empty value
+        member = {'protected': {'alg': 'ES256'}, 'header': {}}
+        value = serialize_json(member, b'hello', keys)
+        self.assertIn('kid', value['header'])
 
     def test_detach_content(self):
         member = {'protected': {'alg': 'ES256'}}
@@ -101,7 +107,7 @@ class TestJSON(TestCase):
 
     def test_with_public_header(self):
         key: RSAKey = load_key('rsa-openssl-private.pem')
-        member = {'protected': {'alg': 'RS256'}, 'header': {'kid': 'abc'}}
+        member = {'header': {'alg': 'RS256', 'kid': 'abc'}}
         value = serialize_json(member, b'hello', key)
         self.assertIn('header', value)
         obj = deserialize_json(value, key)
