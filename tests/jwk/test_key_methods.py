@@ -32,11 +32,28 @@ class TestKeyMethods(TestCase):
         self.assertIsInstance(key, OctKey)
 
     def test_guess_callable_key(self):
-        def key_func(obj):
-            return OctKey.import_key("key")
+        oct_key = OctKey.generate_key(parameters={'kid': '1'})
+        rsa_key = RSAKey.generate_key(parameters={'kid': '2'})
 
-        key = guess_key(key_func, Guest())
+        def key_func1(obj):
+            return "key"
+
+        def key_func2(obj):
+            return rsa_key
+
+        def key_func3(obj):
+            return KeySet([oct_key, rsa_key])
+
+        key = guess_key(key_func1, Guest())
         self.assertIsInstance(key, OctKey)
+
+        key = guess_key(key_func2, Guest())
+        self.assertIsInstance(key, RSAKey)
+
+        guest = Guest()
+        guest.set_kid('2')
+        key = guess_key(key_func3, guest)
+        self.assertIsInstance(key, RSAKey)
 
     def test_guess_key_set(self):
         key_set = KeySet([OctKey.generate_key(), RSAKey.generate_key()])
