@@ -130,11 +130,8 @@ key based on the kid (Key ID) in the token's header.
         # retrieve JWK Set URI
         jwks_uri = resp.json()['jwks_uri']
         resp = requests.get(jwks_uri)
-
-        # pick the key with kid
         key_set = KeySet.import_key_set(resp.json())
-        key = key_set.get_by_kid(obj.headers()['kid'])
-        return key
+        return key_set
 
     # pass load_key as a callable key to `jwt.decode` method
     jwt.decode(token_string, load_key)

@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 08:26+0900\n"
+"POT-Creation-Date: 2023-10-07 09:32+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
 "Language-Team: zh <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../guide/algorithms.rst:6 ../../guide/jws.rst:252
 #: ../../guide/registry.rst:21
@@ -695,7 +695,7 @@ msgstr ""
 msgid "And make sure only adding one recipient."
 msgstr "同时注意，你只能增加一位成员。"
 
-#: ../../guide/jwe.rst:209 ../../guide/jwt.rst:267
+#: ../../guide/jwe.rst:209 ../../guide/jwt.rst:288
 msgid "Algorithms & Registry"
 msgstr "算法和注册表"
 
@@ -1401,65 +1401,81 @@ msgid ""
 "values, with the values appearing in order of preference."
 msgstr ""
 
-#: ../../guide/jwt.rst:98
+#: ../../guide/jwt.rst:97
+msgid "And we added one more field:"
+msgstr ""
+
+#: ../../guide/jwt.rst:100
+msgid "``allow_blank``"
+msgstr ""
+
+#: ../../guide/jwt.rst:100
+msgid "OPTIONAL. Allow essential claims to be an empty string."
+msgstr ""
+
+#: ../../guide/jwt.rst:103
 msgid "Missing essential claims"
 msgstr ""
 
-#: ../../guide/jwt.rst:108
+#: ../../guide/jwt.rst:118
+msgid "Allow empty essential claims"
+msgstr ""
+
+#: ../../guide/jwt.rst:129
 msgid "Invalid claims values"
 msgstr ""
 
-#: ../../guide/jwt.rst:118
+#: ../../guide/jwt.rst:139
 msgid "Default validators"
 msgstr ""
 
-#: ../../guide/jwt.rst:120
+#: ../../guide/jwt.rst:141
 msgid ""
 "The ``JWTClaimsRegistry`` has built-in validators for timing related "
 "fields:"
 msgstr ""
 
-#: ../../guide/jwt.rst:122
+#: ../../guide/jwt.rst:143
 msgid "``exp``: expiration time"
 msgstr ""
 
-#: ../../guide/jwt.rst:123
+#: ../../guide/jwt.rst:144
 msgid "``nbf``: not before"
 msgstr ""
 
-#: ../../guide/jwt.rst:124
+#: ../../guide/jwt.rst:145
 msgid "``iat``: issued at"
 msgstr ""
 
-#: ../../guide/jwt.rst:127
+#: ../../guide/jwt.rst:148
 msgid "JWS & JWE"
 msgstr ""
 
-#: ../../guide/jwt.rst:129
+#: ../../guide/jwt.rst:150
 msgid ""
 "JWT is built on top of JWS and JWE, all of the above examples are in JWS."
 " Here is an example of JWE:"
 msgstr ""
 
-#: ../../guide/jwt.rst:142
+#: ../../guide/jwt.rst:163
 msgid ""
 "The JWE formatted result contains 5 parts, while JWS only contains 3 "
 "parts, a JWE example would be something like this (line breaks for "
 "display only):"
 msgstr ""
 
-#: ../../guide/jwt.rst:153
+#: ../../guide/jwt.rst:174
 msgid "Another difference is the key used for ``encode`` and ``decode``."
 msgstr ""
 
-#: ../../guide/jwt.rst:155
+#: ../../guide/jwt.rst:176
 msgid ""
 "For :ref:`jws`, a private key is used for ``encode``, and a public key is"
 " used for ``decode``. The ``encode`` method will use a private key to "
 "sign, and the ``decode`` method will use a public key to verify."
 msgstr ""
 
-#: ../../guide/jwt.rst:159
+#: ../../guide/jwt.rst:180
 msgid ""
 "For :ref:`jwe`, it is the contrary, a public key is used for ``encode``, "
 "and a private key is used for ``decode``. The ``encode`` method  will use"
@@ -1467,110 +1483,110 @@ msgid ""
 "key to decrypt."
 msgstr ""
 
-#: ../../guide/jwt.rst:164
+#: ../../guide/jwt.rst:185
 msgid "The key parameter"
 msgstr ""
 
-#: ../../guide/jwt.rst:166
+#: ../../guide/jwt.rst:187
 msgid ""
 "In the above example, we're using :ref:`OctKey` only for simplicity. "
 "There are other types of keys in :ref:`jwk`."
 msgstr ""
 
-#: ../../guide/jwt.rst:170
+#: ../../guide/jwt.rst:191
 msgid "Key types"
 msgstr ""
 
-#: ../../guide/jwt.rst:172
+#: ../../guide/jwt.rst:193
 msgid ""
 "Each algorithm (``alg`` in header) requires a certain type of key. For "
 "example:"
 msgstr ""
 
-#: ../../guide/jwt.rst:174
+#: ../../guide/jwt.rst:195
 msgid "``HS256`` requires ``OctKey``"
 msgstr ""
 
-#: ../../guide/jwt.rst:175
+#: ../../guide/jwt.rst:196
 msgid "``RS256`` requires ``RSAKey``"
 msgstr ""
 
-#: ../../guide/jwt.rst:176
+#: ../../guide/jwt.rst:197
 msgid "``ES256`` requires ``ECKey`` or ``OKPKey``"
 msgstr ""
 
-#: ../../guide/jwt.rst:178
+#: ../../guide/jwt.rst:199
 msgid "You can find the correct key type for each algorithm at:"
 msgstr ""
 
-#: ../../guide/jwt.rst:180 ../../guide/jwt.rst:275
+#: ../../guide/jwt.rst:201 ../../guide/jwt.rst:296
 msgid ":ref:`JSON Web Signature Algorithms <jws_algorithms>`"
 msgstr ""
 
-#: ../../guide/jwt.rst:181 ../../guide/jwt.rst:276
+#: ../../guide/jwt.rst:202 ../../guide/jwt.rst:297
 msgid ":ref:`JSON Web Encryption Algorithms <jwe_algorithms>`"
 msgstr ""
 
-#: ../../guide/jwt.rst:183
+#: ../../guide/jwt.rst:204
 msgid "Here is an example of a JWT with \"alg\" of ``RS256`` in JWS type:"
 msgstr ""
 
-#: ../../guide/jwt.rst:202
+#: ../../guide/jwt.rst:223
 msgid ""
 "In production, ``jwt.encode`` is usually used by the *client* side, a "
 "client normally does not have the access to private keys. The server "
 "provider would usually expose the public keys in JWK Set."
 msgstr ""
 
-#: ../../guide/jwt.rst:207
+#: ../../guide/jwt.rst:228
 msgid "Use key set"
 msgstr ""
 
-#: ../../guide/jwt.rst:209
+#: ../../guide/jwt.rst:230
 msgid ""
 "You can also pass a JWK Set to the ``key`` parameter of :meth:`encode` "
 "and :meth:`decode` methods."
 msgstr ""
 
-#: ../../guide/jwt.rst:226
+#: ../../guide/jwt.rst:247
 msgid ""
 "The methods will find the correct key according to the ``kid`` you "
 "specified. If there is no ``kid`` in header, it will pick on randomly and"
 " add the ``kid`` of the key into header."
 msgstr ""
 
-#: ../../guide/jwt.rst:230
+#: ../../guide/jwt.rst:251
 msgid ""
 "A client would usually get the public key set from a public URL, normally"
 " the ``decode`` code would be something like:"
 msgstr ""
 
-#: ../../guide/jwt.rst:246
+#: ../../guide/jwt.rst:267
 msgid "Callable key"
 msgstr ""
 
-#: ../../guide/jwt.rst:248
+#: ../../guide/jwt.rst:269
 msgid "It is also possible to assign a callable function as the ``key``:"
 msgstr ""
 
-#: ../../guide/jwt.rst:269
+#: ../../guide/jwt.rst:290
 msgid ""
 "The :meth:`encode` and :meth:`decode` accept an ``algorithms`` parameter "
 "for specifying the allowed algorithms. By default, it only allows your to"
 " use recommended algorithms."
 msgstr ""
 
-#: ../../guide/jwt.rst:273
+#: ../../guide/jwt.rst:294
 msgid "You can find out the recommended algorithms at:"
 msgstr ""
 
-#: ../../guide/jwt.rst:278
+#: ../../guide/jwt.rst:299
 msgid ""
 "For instance, ``HS386`` is not a recommended algorithm, and you want to "
 "use this algorithm:"
 msgstr ""
 
-#: ../../guide/jwt.rst:289
+#: ../../guide/jwt.rst:310
 msgid ""
 "If not specifying the ``algorithms`` parameter, the ``encode`` method "
 "will raise an error."
