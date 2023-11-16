@@ -194,14 +194,15 @@ html.dark {
   <div class="localtoc">
     <h3>该页内容</h3>
     <ul>
-<li><a class="reference internal" href="#id1">0.8.0</a></li>
-<li><a class="reference internal" href="#id2">0.7.0</a></li>
-<li><a class="reference internal" href="#id3">0.6.0</a></li>
-<li><a class="reference internal" href="#id4">0.5.0</a></li>
-<li><a class="reference internal" href="#id5">0.4.0</a></li>
-<li><a class="reference internal" href="#id6">0.3.0</a></li>
-<li><a class="reference internal" href="#id7">0.2.0</a></li>
-<li><a class="reference internal" href="#id8">0.1.0</a></li>
+<li><a class="reference internal" href="#id1">0.9.0</a></li>
+<li><a class="reference internal" href="#id2">0.8.0</a></li>
+<li><a class="reference internal" href="#id3">0.7.0</a></li>
+<li><a class="reference internal" href="#id4">0.6.0</a></li>
+<li><a class="reference internal" href="#id5">0.5.0</a></li>
+<li><a class="reference internal" href="#id6">0.4.0</a></li>
+<li><a class="reference internal" href="#id7">0.3.0</a></li>
+<li><a class="reference internal" href="#id8">0.2.0</a></li>
+<li><a class="reference internal" href="#id9">0.1.0</a></li>
 </ul>
 
   </div><a class="js-repo-stats repo-stats flex items-center" href="https://github.com/authlib/joserfc"
@@ -262,7 +263,16 @@ html.dark {
 <p class="lead">这里记录了 <a class="reference external" href="https://pypi.org/project/joserfc/">joserfc</a> 的发布历史。</p>
 <hr class="docutils" />
 <section id="id1">
-<h2>0.8.0<a class="headerlink" href="#id1" title="此标题的永久链接">¶</a></h2>
+<h2>0.9.0<a class="headerlink" href="#id1" title="此标题的永久链接">¶</a></h2>
+<p><strong>Released on November 16, 2023</strong></p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">os.urandom</span></code> for <code class="docutils literal notranslate"><span class="pre">OctKey.generate_key</span></code>.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">allow_blank</span></code> for <code class="docutils literal notranslate"><span class="pre">JWTClaimsRegistry</span></code>.</p></li>
+<li><p>Improve callable key for <a class="reference internal" href="../api/jwk/#joserfc.jwk.guess_key" title="joserfc.jwk.guess_key"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_key()</span></code></a>.</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>0.8.0<a class="headerlink" href="#id2" title="此标题的永久链接">¶</a></h2>
 <p><strong>Released on September 06, 2023</strong></p>
 <ul class="simple">
 <li><p>Add <a class="reference internal" href="../guide/jwk/#ensure-kid"><span class="std std-ref">ensure_kid</span></a> method on key models.</p></li>
@@ -270,8 +280,8 @@ html.dark {
 <li><p>Improvements on type hints</p></li>
 </ul>
 </section>
-<section id="id2">
-<h2>0.7.0<a class="headerlink" href="#id2" title="此标题的永久链接">¶</a></h2>
+<section id="id3">
+<h2>0.7.0<a class="headerlink" href="#id3" title="此标题的永久链接">¶</a></h2>
 <p><strong>Released on August 14, 2023</strong></p>
 <ul class="simple">
 <li><p>Add &quot;iat&quot; claims validation in JWT.</p></li>
@@ -280,8 +290,8 @@ html.dark {
 <li><p>Improvements on type hints</p></li>
 </ul>
 </section>
-<section id="id3">
-<h2>0.6.0<a class="headerlink" href="#id3" title="此标题的永久链接">¶</a></h2>
+<section id="id4">
+<h2>0.6.0<a class="headerlink" href="#id4" title="此标题的永久链接">¶</a></h2>
 <p><strong>Released on July 20, 2023</strong></p>
 <ul class="simple">
 <li><p>Huge improvements on type hints, via <a class="reference external" href="https://github.com/Viicos">&#64;Viicos</a>.</p></li>
@@ -297,8 +307,8 @@ and <a class="reference internal" href="../api/jws/#joserfc.jws.FlattenedJSONSig
 and <a class="reference internal" href="../api/jwe/#joserfc.jwe.FlattenedJSONEncryption" title="joserfc.jwe.FlattenedJSONEncryption"><code class="xref py py-class docutils literal notranslate"><span class="pre">jwe.FlattenedJSONEncryption</span></code></a>.</p></li>
 </ul>
 </section>
-<section id="id4">
-<h2>0.5.0<a class="headerlink" href="#id4" title="此标题的永久链接">¶</a></h2>
+<section id="id5">
+<h2>0.5.0<a class="headerlink" href="#id5" title="此标题的永久链接">¶</a></h2>
 <p><strong>Released on July 12, 2023</strong></p>
 <ul class="simple">
 <li><p>Add RFC7797 JSON Web Signature (JWS) Unencoded Payload Option</p></li>
@@ -309,8 +319,8 @@ and <a class="reference internal" href="../api/jwe/#joserfc.jwe.FlattenedJSONEnc
 <li><p>Rename Curve key method: <code class="docutils literal notranslate"><span class="pre">exchange_shared_key</span></code> to <code class="docutils literal notranslate"><span class="pre">exchange_derive_key</span></code></p></li>
 </ul>
 </section>
-<section id="id5">
-<h2>0.4.0<a class="headerlink" href="#id5" title="此标题的永久链接">¶</a></h2>
+<section id="id6">
+<h2>0.4.0<a class="headerlink" href="#id6" title="此标题的永久链接">¶</a></h2>
 <p><strong>Released on July 6, 2023</strong></p>
 <ul class="simple">
 <li><p>Change <code class="docutils literal notranslate"><span class="pre">options</span></code> to <code class="docutils literal notranslate"><span class="pre">parameters</span></code> for JWK methods</p></li>
@@ -321,8 +331,8 @@ and <a class="reference internal" href="../api/jwe/#joserfc.jwe.FlattenedJSONEnc
 <li><p>Check key type before processing algorithms of JWS and JWE</p></li>
 </ul>
 </section>
-<section id="id6">
-<h2>0.3.0<a class="headerlink" href="#id6" title="此标题的永久链接">¶</a></h2>
+<section id="id7">
+<h2>0.3.0<a class="headerlink" href="#id7" title="此标题的永久链接">¶</a></h2>
 <p><strong>Released on June 29, 2023</strong></p>
 <ul class="simple">
 <li><p>Return <code class="docutils literal notranslate"><span class="pre">str</span></code> instead of <code class="docutils literal notranslate"><span class="pre">bytes</span></code> for JWS and JWE serializations</p></li>
@@ -333,13 +343,13 @@ and <a class="reference internal" href="../api/jwe/#joserfc.jwe.FlattenedJSONEnc
 <li><p>Export register methods for JWE drafts</p></li>
 </ul>
 </section>
-<section id="id7">
-<h2>0.2.0<a class="headerlink" href="#id7" title="此标题的永久链接">¶</a></h2>
+<section id="id8">
+<h2>0.2.0<a class="headerlink" href="#id8" title="此标题的永久链接">¶</a></h2>
 <p><strong>Released on June 25, 2023</strong></p>
 <p>A beta release.</p>
 </section>
-<section id="id8">
-<h2>0.1.0<a class="headerlink" href="#id8" title="此标题的永久链接">¶</a></h2>
+<section id="id9">
+<h2>0.1.0<a class="headerlink" href="#id9" title="此标题的永久链接">¶</a></h2>
 <p><strong>Released on March 5, 2023</strong></p>
 <p>Initial release.</p>
 </section>
