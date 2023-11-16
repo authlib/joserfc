@@ -12,6 +12,15 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+0.9.0
+-----
+
+**Released on November 16, 2023**
+
+- Use ``os.urandom`` for ``OctKey.generate_key``.
+- Add ``allow_blank`` for ``JWTClaimsRegistry``.
+- Improve callable key for :meth:`~jwk.guess_key`.
+
 0.8.0
 -----
 
