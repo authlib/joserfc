@@ -1,5 +1,4 @@
-import random
-import string
+import os
 import typing as t
 from ..util import (
     to_bytes,
@@ -66,10 +65,7 @@ class OctKey(SymmetricKey):
         if key_size % 8 != 0:
             raise ValueError("Invalid bit size for oct key")
 
-        length = key_size // 8
-        rand = random.SystemRandom()
-        chars = string.ascii_letters + string.digits
-        value = "".join(rand.choice(chars) for _ in range(length))
+        value = os.urandom(key_size // 8)
         raw_key = to_bytes(value)
         key: OctKey = cls(raw_key, raw_key, parameters)
         if auto_kid:
