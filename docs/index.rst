@@ -29,6 +29,12 @@ A quick and simple JWT encoding and decoding would look something like this:
 
 You would find more details and advanced usage in :ref:`jwt` section.
 
+.. important::
+
+    The string ``"secret"`` employed in the above example is solely intended for demonstration
+    purposes. In a production environment, it is crucial to use a highly secure secret key to
+    ensure robust security measures.
+
 RFCs
 ----
 

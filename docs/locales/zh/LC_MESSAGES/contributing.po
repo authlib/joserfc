@@ -8,32 +8,46 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 08:56+0900\n"
+"POT-Creation-Date: 2023-11-16 16:35+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
 "Language-Team: zh <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: ../../contributing/authors.rst:2
 msgid "Authors"
 msgstr "作者列表"
 
-#: ../../contributing/authors.rst:5
-msgid "Owner"
-msgstr "所有者"
+#: ../../contributing/authors.rst:4
+msgid ""
+"``joserfc`` is written and maintained by `Hsiaoming Yang "
+"<https://lepture.com>`_."
+msgstr ""
 
 #: ../../contributing/authors.rst:8
-msgid "Maintainer"
-msgstr "维护者"
-
-#: ../../contributing/authors.rst:11
 msgid "Contributors"
 msgstr "贡献者"
+
+#: ../../contributing/authors.rst:10
+msgid "Here is the list of the main contributors:"
+msgstr ""
+
+#: ../../contributing/authors.rst:12
+msgid "`Viicos <https://github.com/Viicos>`_"
+msgstr ""
+
+#: ../../contributing/authors.rst:13
+msgid "`Alon Bar-Lev <https://github.com/alonbl>`_"
+msgstr ""
+
+#: ../../contributing/authors.rst:15
+msgid "And more on https://github.com/authlib/joserfc/graphs/contributors"
+msgstr ""
 
 #: ../../contributing/index.rst:2
 msgid "Contributing"
@@ -41,7 +55,7 @@ msgstr "参与贡献"
 
 #: ../../contributing/index.rst:4
 msgid "Contributions are welcome, and they are greatly appreciated!"
-msgstr ""
+msgstr "欢迎贡献，我们非常感激你的参与！"
 
 #: ../../contributing/index.rst:7
 msgid "Types of contributions"
@@ -59,39 +73,40 @@ msgstr "报告错误"
 msgid ""
 "You're welcome to report bugs at `GitHub Issues "
 "<https://github.com/authlib/joserfc/issues>`_."
-msgstr ""
+msgstr "欢迎使用 `GitHub Issues <https://github.com/authlib/joserfc/issues>`_ "
+"来报告错误。"
 
 #: ../../contributing/index.rst:17
 msgid ""
 "Before reporting a bug, please verify your bug against the latest code in"
 " ``main`` branch."
-msgstr ""
+msgstr "在向我们报告错误前，请先使用 ``main`` 分支的最新代码检查一下，也许该错误已修复。"
 
 #: ../../contributing/index.rst:20
 msgid "When reporting a bug, please including:"
-msgstr ""
+msgstr "报告错误时，请包含："
 
 #: ../../contributing/index.rst:22
 msgid "Your operating system name and version."
-msgstr ""
+msgstr "你的操作系统以及操作系统的版本。"
 
 #: ../../contributing/index.rst:23
 msgid "Your Python version."
-msgstr "你的 Python 版本"
+msgstr "你的 Python 版本。"
 
 #: ../../contributing/index.rst:24
 msgid "Details to reproduce the bug."
-msgstr ""
+msgstr "重现错误的步骤。"
 
 #: ../../contributing/index.rst:27
 msgid "Submit fixes"
-msgstr ""
+msgstr "提交修改"
 
 #: ../../contributing/index.rst:29
 msgid ""
 "Once you found a bug that you can fix, you're welcome to submit your pull"
 " request."
-msgstr ""
+msgstr "一旦你发现了一个可以修复的错误，欢迎向我们提交 Pull Request。"
 
 #: ../../contributing/index.rst:32
 msgid ""
@@ -126,7 +141,7 @@ msgstr ""
 
 #: ../../contributing/index.rst:52
 msgid "I strongly suggest you create a virtual environment with ``venv``:"
-msgstr ""
+msgstr "强烈建议你使用 ``venv`` 创建一个虚拟环境："
 
 #: ../../contributing/index.rst:60
 msgid "Install"
@@ -267,7 +282,7 @@ msgstr ""
 
 #: ../../contributing/translation.rst:16
 msgid "Generate .pot files"
-msgstr ""
+msgstr "生成 .pot 文件"
 
 #: ../../contributing/translation.rst:18
 msgid ""
@@ -278,22 +293,21 @@ msgstr ""
 
 #: ../../contributing/translation.rst:27
 msgid "Update languages"
-msgstr ""
+msgstr "更新语言包"
 
 #: ../../contributing/translation.rst:29
 msgid ""
 "Next, proceed to generate the ``.po`` files in your preferred languages "
 "using the ``sphinx-intl`` tool:"
-msgstr ""
+msgstr "下一步，使用 ``sphinx-intl`` 这个工具来生成你需要的语言的 ``.po`` 文件："
 
 #: ../../contributing/translation.rst:36
 msgid "In this example, we're using the language code ``de`` to represent German."
-msgstr ""
+msgstr "在这个例子中，我们使用语言代码 ``de`` 代表德语。"
 
 #: ../../contributing/translation.rst:39
-#, fuzzy
 msgid "Writing the Translations"
-msgstr "翻译"
+msgstr "更新翻译文件"
 
 #: ../../contributing/translation.rst:41
 msgid ""
@@ -301,7 +315,3 @@ msgid ""
 "within the ``locales/de/LC_MESSAGES`` directory. You can now edit these "
 "files to add the German translations accordingly."
 msgstr ""
-
-#~ msgid "Then install the Python requirements for unit tests:"
-#~ msgstr ""
-

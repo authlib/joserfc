@@ -479,7 +479,7 @@ msgstr "JSON Web Token (JWT) 本质上是一种 :ref:`jws` 或者 :ref:`jwe`。"
 
 #: ../../guide/index.rst:79
 msgid "Most :ref:`jwt` are encoded with JWS in compact serialization."
-msgstr "通常我们见到的 :ref:`jwt` 都是基于 :ref:`jws` 的紧凑序列化编码。"
+msgstr "通常我们见到的 :ref:`jwt` 都是基于 JWS 的紧凑序列化编码。"
 
 #: ../../guide/index.rst:85
 #, fuzzy
@@ -1656,7 +1656,7 @@ msgstr ""
 
 #: ../../guide/registry.rst:63
 msgid "Type checking"
-msgstr ""
+msgstr "类型检查"
 
 #: ../../guide/registry.rst:65
 msgid ""
@@ -1726,22 +1726,3 @@ msgid ""
 "Depending on the algorithm of the JWT, you need to decide whether to use "
 "``JWSRegistry`` or ``JWERegistry``."
 msgstr ""
-
-#~ msgid "A128CBC-HS256"
-#~ msgstr ""
-
-#~ msgid "A192CBC-HS384"
-#~ msgstr ""
-
-#~ msgid "A256CBC-HS512"
-#~ msgstr ""
-
-#~ msgid "A128GCM"
-#~ msgstr ""
-
-#~ msgid "A192GCM"
-#~ msgstr ""
-
-#~ msgid "A256GCM"
-#~ msgstr ""
-
