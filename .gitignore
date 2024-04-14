@@ -56,4 +56,5 @@ __pypackages__/
 
 public/en
 public/zh
+public/sitemap.xml
 demo.py

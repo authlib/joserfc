@@ -25,6 +25,7 @@ extensions = [
     "sphinx.ext.extlinks",
     "sphinx_copybutton",
     "sphinx_design",
+    "sphinx_sitemap",
 ]
 
 extlinks = {
@@ -83,11 +84,21 @@ html_context = {
     "source_docs_path": "/docs/",
 }
 
+# sitemap configuration
+site_url = "https://jose.authlib.org/"
+sitemap_url_scheme = "{lang}{link}"
+sitemap_filename = "../sitemap.xml"
+sitemap_locales = []
+
 
 def setup(app):
-    global language, html_baseurl
+    global language, html_baseurl, sitemap_filename, sitemap_locales
 
     language = app.config.language
+    if language != 'en':
+        sitemap_filename = 'sitemap.xml'
+        sitemap_locales = [None]
+
     html_baseurl = f"https://jose.authlib.org/{language}/"
     html_context["languages"] = [
         ("English", f"https://jose.authlib.org/en/%s/", "en"),
