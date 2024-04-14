@@ -1,13 +1,13 @@
 lang=en
 
 dev-docs:
-	sphinx-build docs public/${lang}/dev -D language=${lang} -b dirhtml -a
+	sphinx-build docs public/${lang} -D language=${lang} -b dirhtml -a
 
 
 build-docs:
-	@sphinx-build docs build/${lang} -D language=${lang} -b dirhtml
-	@rm build/${lang}/.buildinfo
-	@rm -r build/${lang}/.doctrees
+	@sphinx-build docs public/${lang} -D language=${lang} -b dirhtml
+	@rm public/${lang}/.buildinfo
+	@rm -r public/${lang}/.doctrees
 
 
 clean-docs:

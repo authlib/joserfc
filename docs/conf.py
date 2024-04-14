@@ -40,14 +40,9 @@ intersphinx_mapping = {
 html_favicon = "_static/icon.svg"
 
 html_theme_options = {
+    "accent_color": "blue",
     "light_logo": "_static/light-logo.svg",
     "dark_logo": "_static/dark-logo.svg",
-    "light_css_variables": {
-        "--sy-rc-theme": "62,127,203",
-    },
-    "dark_css_variables": {
-        "--sy-rc-theme": "102,173,255",
-    },
     "twitter_site": "authlib",
     "twitter_creator": "lepture",
     "twitter_url": "https://twitter.com/authlib",
@@ -80,7 +75,7 @@ html_theme_options = {
     ]
 }
 
-html_baseurl = "https://jose.authlib.org/en/dev/"
+html_baseurl = "https://jose.authlib.org/en/"
 html_context = {
     "source_type": "github",
     "source_user": "authlib",
@@ -88,19 +83,13 @@ html_context = {
     "source_docs_path": "/docs/",
 }
 
+
 def setup(app):
-    import os
     global language, html_baseurl
 
     language = app.config.language
-    ref_name = os.getenv("REF_NAME")
-    if ref_name and ref_name.startswith("1."):
-        version_path = "v1"
-    else:
-        version_path = "dev"
-
-    html_baseurl = f"https://jose.authlib.org/{language}/{version_path}/"
+    html_baseurl = f"https://jose.authlib.org/{language}/"
     html_context["languages"] = [
-        ("English", f"https://jose.authlib.org/en/{version_path}/%s/", "en"),
-        ("简体中文", f"https://jose.authlib.org/zh/{version_path}/%s/", "zh"),
+        ("English", f"https://jose.authlib.org/en/%s/", "en"),
+        ("简体中文", f"https://jose.authlib.org/zh/%s/", "zh"),
     ]

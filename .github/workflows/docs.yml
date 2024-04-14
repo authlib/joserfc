@@ -1,37 +1,31 @@
 name: Publish docs
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 on:
   push:
     branches:
       - main
-    tags:
-      - "1.*"
     paths-ignore:
       - ".github/*"
       - "tests/*"
 
-env:
-  VERSION_PATH: dev
-
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        language: [ "en", "zh" ]
-
     steps:
-      - name: update VERSION_PATH
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        run: echo VERSION_PATH=v$(echo $GITHUB_REF | cut -d / -f 3 | cut -d . -f 1) >> $GITHUB_ENV
-
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -44,14 +38,24 @@ jobs:
         run: pip install .
 
       - name: sphinx build
-        run: make build-docs -e lang=${{ matrix.language }}
-        env:
-          REF_NAME: ${{ github.ref_name }}
-          REF_TYPE: ${{ github.ref_type }}
-          REPOSITORY: ${{ github.repository }}
+        run: |
+          make build-docs -e lang=en
+          make build-docs -e lang=zh
 
-      - name: deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          folder: build/${{ matrix.language }}
-          target-folder: ${{ matrix.language }}/${{ env.VERSION_PATH }}/
+          path: public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
