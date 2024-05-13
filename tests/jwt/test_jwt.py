@@ -32,10 +32,11 @@ class TestJWT(TestCase):
         header = {"alg": "A128KW", "enc": "A128GCM"}
         claims = {"iss": "https://authlib.org"}
         key = OctKey.generate_key(128)
-        result = jwt.encode(header, claims, key)
+        registry = jwe.JWERegistry()
+        result = jwt.encode(header, claims, key, registry=registry)
         self.assertEqual(result.count('.'), 4)
 
-        token = jwt.decode(result, key)
+        token = jwt.decode(result, key, registry=registry)
         self.assertEqual(token.claims, claims)
 
     def test_using_registry(self):
@@ -54,26 +55,26 @@ class TestJWT(TestCase):
         jwt.decode(value2, key, registry=jwe.JWERegistry())
 
         self.assertRaises(
-            AssertionError,
+            KeyError,
             jwt.encode,
             {"alg": "HS256"},
             {"sub": "a"},
             key, registry=jwe.JWERegistry(),
         )
         self.assertRaises(
-            AssertionError,
+            ValueError,
             jwt.encode,
             {"alg": "A128KW", "enc": "A128GCM"},
             {"sub": "a"},
             key, registry=jws.JWSRegistry(),
         )
         self.assertRaises(
-            AssertionError,
+            ValueError,
             jwt.decode,
             value1, key, registry=jwe.JWERegistry(),
         )
         self.assertRaises(
-            AssertionError,
+            ValueError,
             jwt.decode,
             value2, key, registry=jws.JWSRegistry(),
         )

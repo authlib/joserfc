@@ -60,13 +60,9 @@ def encode(
     # add ``typ`` in header
     _header = {"typ": "JWT", **header}
     payload = convert_claims(claims)
-    if "enc" in _header:
-        if registry is not None:
-            assert isinstance(registry, JWERegistry)
+    if isinstance(registry, JWERegistry):
         return encrypt_compact(_header, payload, key, algorithms, registry)
     else:
-        if registry is not None:
-            assert isinstance(registry, JWSRegistry)
         return serialize_compact(_header, payload, key, algorithms, registry)
 
 
@@ -87,13 +83,9 @@ def decode(
     _value = to_bytes(value)
     header: Header
     payload: bytes
-    if _value.count(b".") == 4:
-        if registry is not None:
-            assert isinstance(registry, JWERegistry)
+    if isinstance(registry, JWERegistry):
         header, payload = _decode_jwe(_value, key, algorithms, registry)
     else:
-        if registry is not None:
-            assert isinstance(registry, JWSRegistry)
         header, payload = _decode_jws(_value, key, algorithms, registry)
 
     try:

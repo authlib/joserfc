@@ -147,18 +147,20 @@ The ``JWTClaimsRegistry`` has built-in validators for timing related fields:
 JWS & JWE
 ---------
 
-JWT is built on top of JWS and JWE, all of the above examples are in JWS. Here
-is an example of JWE:
+JWT is built on top of JWS and JWE, all of the above examples are in JWS. By default
+``jwt.encode`` and ``jwt.decode`` work for **JWS**. To use **JWE**, you need to specify
+a ``registry`` parameter with ``JWERegistry``. Here is an example of JWE:
 
 .. code-block:: python
 
-    from joserfc import jwt
+    from joserfc import jwt, jwe
     from joserfc.jwk import OctKey
 
     header = {"alg": "A128KW", "enc": "A128GCM"}
     claims = {"iss": "https://authlib.org"}
     key = OctKey.generate_key(128)  # the algorithm requires key of 128 bit size
-    jwt.encode(header, claims, key)
+    registry = jwe.JWERegistry()  # YOU MUST USE A JWERegistry
+    jwt.encode(header, claims, key, registry=registry)
 
 The JWE formatted result contains 5 parts, while JWS only contains 3 parts,
 a JWE example would be something like this (line breaks for display only):
