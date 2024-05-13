@@ -173,7 +173,7 @@ class JWEEncModel(object, metaclass=ABCMeta):
         return os.urandom(self.iv_size // 8)
 
     def check_iv(self, iv: bytes) -> bytes:
-        if len(iv) * 8 != self.iv_size:
+        if len(iv) * 8 != self.iv_size:  # pragma: no cover
             raise ValueError('Invalid "iv" size')
         return iv
 

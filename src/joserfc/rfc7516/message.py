@@ -14,6 +14,7 @@ from .models import (
 )
 from .registry import JWERegistry
 from ..errors import (
+    JoseError,
     DecodeError,
     InvalidCEKLengthError,
     InvalidEncryptedKeyError,
@@ -99,8 +100,15 @@ def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
         # Step 6, Determine the Key Management Mode employed by the algorithm
         # specified by the "alg" (algorithm) Header Parameter.
         alg = registry.get_alg(headers["alg"])
-        cek = decrypt_recipient(alg, enc, recipient, tag)
-        cek_set.add(cek)
+        try:
+            cek = decrypt_recipient(alg, enc, recipient, tag)
+            cek_set.add(cek)
+        except (AssertionError, JoseError) as error:
+            if registry.verify_all_recipients:
+                raise error
+
+    if not cek_set:
+        raise DecodeError('Invalid recipients')
 
     if len(cek_set) > 1:  # pragma: no cover
         raise DecodeError('Multiple "cek" found')

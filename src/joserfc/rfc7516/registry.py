@@ -38,12 +38,14 @@ class JWERegistry:
             self,
             header_registry: t.Optional[HeaderRegistryDict] = None,
             algorithms: t.Optional[t.List[str]] = None,
+            verify_all_recipients: bool = True,
             strict_check_header: bool = True):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(JWE_HEADER_REGISTRY)
         if header_registry is not None:
             self.header_registry.update(header_registry)
         self.allowed = algorithms
+        self.verify_all_recipients = verify_all_recipients
         self.strict_check_header = strict_check_header
 
     @classmethod

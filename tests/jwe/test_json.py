@@ -2,7 +2,11 @@ from unittest import TestCase
 from joserfc import jwe
 from joserfc.jwe import GeneralJSONEncryption
 from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
-from joserfc.errors import ConflictAlgorithmError
+from joserfc.errors import (
+    DecodeError,
+    ConflictAlgorithmError,
+    InvalidKeyTypeError,
+)
 
 
 class TestJWEJSON(TestCase):
@@ -43,3 +47,27 @@ class TestJWEJSON(TestCase):
         value = jwe.encrypt_json(obj, None)
         obj1 = jwe.decrypt_json(value, key1)
         self.assertEqual(obj1.aad, b"foo")
+
+    def test_decode_multiple_recipients(self):
+        key1 = RSAKey.generate_key()
+        key2 = ECKey.generate_key()
+        obj = GeneralJSONEncryption({"enc": "A128CBC-HS256"}, b"i")
+        obj.add_recipient({"alg": "RSA-OAEP"}, key1)
+        obj.add_recipient({"alg": "ECDH-ES+A128KW"}, key2)
+        value = jwe.encrypt_json(obj, None)
+        self.assertRaises(
+            InvalidKeyTypeError,
+            jwe.decrypt_json,
+            value, key1,
+        )
+        registry = jwe.JWERegistry(verify_all_recipients=False)
+        obj1 = jwe.decrypt_json(value, key1, registry=registry)
+        self.assertEqual(obj1.plaintext, b"i")
+
+        key3 = OctKey.generate_key()
+        self.assertRaises(
+            DecodeError,
+            jwe.decrypt_json,
+            value, key3,
+            registry=registry,
+        )
