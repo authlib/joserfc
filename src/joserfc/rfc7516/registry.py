@@ -25,6 +25,7 @@ class JWERegistry:
 
     :param header_registry: extra header parameters registry
     :param algorithms: allowed algorithms to be used
+    :param verify_all_recipients: validating all recipients in a JSON serialization
     :param strict_check_header: only allow header key in the registry to be used
     """
     algorithms: t.ClassVar[AlgorithmsDict] = {

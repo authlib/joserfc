@@ -174,6 +174,17 @@ example. Most of the time, you would need a JWK Set of private keys for decrypti
         # this data is a dict of JWE JSON Serialization
         jwe.decrypt_json(data, key_set)
 
+By default, ``jwe.decrypt_json`` will validate all the recipients, if one recipient
+validation fails, the method will raise an error.
+
+You can also change the default behavior to bypass the decryption with only one
+recipient get verified:
+
+.. code-block:: python
+
+    registry = JWERegistry(verify_all_recipients=False)
+    jwe.decrypt_json(data, key_set, registry=registry)
+
 General and Flattened
 ~~~~~~~~~~~~~~~~~~~~~
 
