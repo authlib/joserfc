@@ -12,14 +12,18 @@ Encode and decode JWT
 .. code-block:: python
 
     >>> from joserfc import jwt
-    >>> encoded_jwt = jwt.encode({"alg": "HS256"}, {"key": "value"}, "secret")
+    >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("secret")
+    >>> encoded_jwt = jwt.encode({"alg": "HS256"}, {"key": "value"}, key)
     >>> encoded_jwt
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJ2YWx1ZSJ9.FG-8UppwHaFp1LgRYQQeS6EDQF7_6-bMFegNucHjmWg'
-    >>> token = jwt.decode(encoded_jwt, "secret")
+    >>> token = jwt.decode(encoded_jwt, key)
     >>> token.header
     {'alg': 'HS256', 'typ': 'JWT'}
     >>> token.claims
     {'key': 'value'}
+    >>> claims_requests = jwt.JWTClaimsRegistry()
+    >>> claims_requests.validate(token.claims)
 
 Learn the details of :ref:`jwt` in the next chapter.
 

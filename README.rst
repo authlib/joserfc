@@ -29,14 +29,17 @@ A quick and simple JWT encoding and decoding would look something like this:
 .. code-block:: python
 
     >>> from joserfc import jwt
-    >>> encoded = jwt.encode({"alg": "HS256"}, {"k": "value"}, "secret")
+    >>> from joserfc.jwk import OctKey
+    >>> encoded = jwt.encode({"alg": "HS256"}, {"k": "value"}, key)
     >>> encoded
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrIjoidmFsdWUifQ.ni-MJXnZHpFB_8L9P9yllj3RNDfzmD4yBKAyefSctMY'
-    >>> token = jwt.decode(encoded, "secret")
+    >>> token = jwt.decode(encoded, key)
     >>> token.header
     {'alg': 'HS256', 'typ': 'JWT'}
     >>> token.claims
     {'k': 'value'}
+    >>> claims_requests = jwt.JWTClaimsRegistry()
+    >>> claims_requests.validate(token.claims)
 
 Useful Links
 ------------
