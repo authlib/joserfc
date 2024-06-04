@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+0.11.1
+------
+
+**Released on June 4, 2024**
+
+- Remove validating ``typ`` header with ``jwt.decode`` method.
+
 0.11.0
 ------
 
