@@ -13,7 +13,7 @@ from .jwe import (
     decrypt_compact,
 )
 from .jwk import KeyFlexible
-from .errors import InvalidTypeError, InvalidPayloadError
+from .errors import InvalidPayloadError
 from .util import to_bytes
 from .registry import Header
 
@@ -93,13 +93,7 @@ def decode(
     except (TypeError, ValueError):
         raise InvalidPayloadError()
 
-    token = Token(header, claims)
-    typ = token.header.get("typ")
-    # https://www.rfc-editor.org/rfc/rfc7519#section-5.1
-    # If present, it is RECOMMENDED that its value be "JWT".
-    if typ and typ != "JWT":
-        raise InvalidTypeError()
-    return token
+    return Token(header, claims)
 
 
 def _decode_jwe(

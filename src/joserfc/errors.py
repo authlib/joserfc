@@ -118,10 +118,5 @@ class InvalidTokenError(JoseError):
     description = "The token is not valid yet"
 
 
-class InvalidTypeError(JoseError):
-    error = "invalid_type"
-    description = 'The "typ" value in header is invalid'
-
-
 class InvalidPayloadError(JoseError):
     error = "invalid_payload"

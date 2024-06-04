@@ -3,7 +3,6 @@ from joserfc import jws, jwe, jwt
 from joserfc.jwk import OctKey
 from joserfc.errors import (
     InvalidPayloadError,
-    InvalidTypeError,
     MissingClaimError,
 )
 
@@ -13,11 +12,6 @@ class TestJWT(TestCase):
         key = OctKey.import_key("secret")
         data = jws.serialize_compact({"alg": "HS256"}, b"hello", key)
         self.assertRaises(InvalidPayloadError, jwt.decode, data, key)
-
-    def test_invalid_type(self):
-        key = OctKey.import_key("secret")
-        data = jws.serialize_compact({"alg": "HS256", "typ": "JOSE"}, b'{"iss":"a"}', key)
-        self.assertRaises(InvalidTypeError, jwt.decode, data, key)
 
     def test_claims_registry(self):
         key = OctKey.import_key("secret")
