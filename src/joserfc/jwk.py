@@ -1,4 +1,5 @@
 import typing as t
+import warnings
 from ._keys import (
     JWKRegistry,
     KeySet,
@@ -78,5 +79,10 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) ->
 
 def _normalize_key(key: KeyBase) -> t.Union[Key, KeySet]:
     if isinstance(key, (str, bytes)):
+        warnings.warn(
+            "Please use a Key object instead of bytes or string.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return OctKey.import_key(key)
     return key

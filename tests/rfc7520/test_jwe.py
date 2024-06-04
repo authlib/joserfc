@@ -1,6 +1,6 @@
 import json
 from tests.base import TestFixture, load_key
-from joserfc.jwk import ECKey
+from joserfc.jwk import ECKey, OctKey
 from joserfc.jwe import (
     GeneralJSONEncryption,
     FlattenedJSONEncryption,
@@ -121,7 +121,7 @@ class TestJWERFC7520(TestFixture):
                 }
             ]
         }
-        password = b"entrap_o\xe2\x80\x93peter_long\xe2\x80\x93credit_tun"
+        password = OctKey.import_key(b"entrap_o\xe2\x80\x93peter_long\xe2\x80\x93credit_tun")
         protected = {
             "alg": "PBES2-HS512+A256KW",
             "p2s": "8Q1SzinasR3xchYz6ZZcHA",

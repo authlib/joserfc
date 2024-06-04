@@ -24,12 +24,16 @@ class Guest:
 
 class TestKeyMethods(TestCase):
     def test_guess_str_key(self):
-        key = guess_key("key", Guest())
-        self.assertIsInstance(key, OctKey)
+        self.assertRaises(
+            DeprecationWarning,
+            guess_key, "key", Guest(),
+        )
 
     def test_guess_bytes_key(self):
-        key = guess_key(b"key", Guest())
-        self.assertIsInstance(key, OctKey)
+        self.assertRaises(
+            DeprecationWarning,
+            guess_key, b"key", Guest(),
+        )
 
     def test_guess_callable_key(self):
         oct_key = OctKey.generate_key(parameters={'kid': '1'})
@@ -44,31 +48,34 @@ class TestKeyMethods(TestCase):
         def key_func3(obj):
             return KeySet([oct_key, rsa_key])
 
-        key = guess_key(key_func1, Guest())
-        self.assertIsInstance(key, OctKey)
+        self.assertRaises(
+            DeprecationWarning,
+            guess_key, key_func1, Guest(),
+        )
 
-        key = guess_key(key_func2, Guest())
-        self.assertIsInstance(key, RSAKey)
+        key2 = guess_key(key_func2, Guest())
+        self.assertIsInstance(key2, RSAKey)
 
         guest = Guest()
         guest.set_kid('2')
-        key = guess_key(key_func3, guest)
-        self.assertIsInstance(key, RSAKey)
+        key3 = guess_key(key_func3, guest)
+        self.assertIsInstance(key3, RSAKey)
 
     def test_guess_key_set(self):
         key_set = KeySet([OctKey.generate_key(), RSAKey.generate_key()])
         guest = Guest()
         guest._headers["alg"] = "HS256"
+
         self.assertRaises(ValueError, guess_key, key_set, guest)
-        key = guess_key(key_set, guest, True)
-        self.assertIsInstance(key, OctKey)
-        key = guess_key(key_set, guest)
+        key1 = guess_key(key_set, guest, True)
+        self.assertIsInstance(key1, OctKey)
+        guess_key(key_set, guest)
 
         guest = Guest()
         guest._headers["alg"] = "RS256"
         self.assertRaises(ValueError, guess_key, key_set, guest)
-        key = guess_key(key_set, guest, True)
-        self.assertIsInstance(key, RSAKey)
+        key2 = guess_key(key_set, guest, True)
+        self.assertIsInstance(key2, RSAKey)
 
         guest = Guest()
         guest._headers["alg"] = "ES256"

@@ -2,6 +2,7 @@ import time
 import datetime
 from unittest import TestCase
 from joserfc import jwt
+from joserfc.jwk import OctKey
 from joserfc.errors import (
     InsecureClaimError,
     InvalidClaimError,
@@ -32,9 +33,10 @@ class TestJWTClaims(TestCase):
         )
 
     def test_convert_time(self):
+        key = OctKey.import_key("secret")
         now = datetime.datetime.now()
-        encoded_text = jwt.encode({"alg": "HS256"}, {"iat": now}, "secret")
-        decoded_data = jwt.decode(encoded_text, "secret")
+        encoded_text = jwt.encode({"alg": "HS256"}, {"iat": now}, key)
+        decoded_data = jwt.decode(encoded_text, key)
         self.assertIsInstance(decoded_data.claims["iat"], int)
 
     def test_essential_claims(self):

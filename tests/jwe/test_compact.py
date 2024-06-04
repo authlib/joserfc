@@ -98,7 +98,11 @@ class TestJWECompact(TestCase):
                 )
 
     def test_dir_alg(self):
-        self.assertRaises(InvalidKeyLengthError, encrypt_compact, {"alg": "dir", "enc": "A128GCM"}, b"j", "secret")
+        key = OctKey.import_key("secret")
+        self.assertRaises(
+            InvalidKeyLengthError,
+            encrypt_compact, {"alg": "dir", "enc": "A128GCM"}, b"j", key
+        )
         for enc in JWE_ENC_MODELS:
             key = OctKey.generate_key(enc.cek_size)
             self.run_case('dir', enc.name, key, key)

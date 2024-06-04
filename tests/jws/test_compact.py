@@ -6,36 +6,42 @@ from joserfc.errors import BadSignatureError, DecodeError, MissingAlgorithmError
 
 class TestCompact(TestCase):
     def test_registry_is_none(self):
-        value = serialize_compact({"alg": "HS256"}, b"foo", "secret")
+        key = OctKey.import_key("secret")
+        value = serialize_compact({"alg": "HS256"}, b"foo", key)
         expected = 'eyJhbGciOiJIUzI1NiJ9.Zm9v.0pehoi-RMZM1jl-4TP_C4Y6BJ-bcmsuzfDyQpkpJkh0'
         self.assertEqual(value, expected)
 
-        obj = deserialize_compact(value, "secret")
+        obj = deserialize_compact(value, key)
         self.assertEqual(obj.payload, b"foo")
 
     def test_bad_signature_error(self):
+        key = OctKey.import_key("incorrect")
         value = b'eyJhbGciOiJIUzI1NiJ9.Zm9v.0pehoi-RMZM1jl-4TP_C4Y6BJ-bcmsuzfDyQpkpJkh0'
-        self.assertRaises(BadSignatureError, deserialize_compact, value, "incorrect")
+        self.assertRaises(BadSignatureError, deserialize_compact, value, key)
 
     def test_raise_none_supported_alg(self):
-        self.assertRaises(ValueError, serialize_compact, {"alg": "HS512"}, b"foo", "secret")
-        self.assertRaises(ValueError, serialize_compact, {"alg": "NOT"}, b"foo", "secret")
+        key = OctKey.import_key("secret")
+        self.assertRaises(ValueError, serialize_compact, {"alg": "HS512"}, b"foo", key)
+        self.assertRaises(ValueError, serialize_compact, {"alg": "NOT"}, b"foo", key)
 
     def test_invalid_length(self):
-        self.assertRaises(ValueError, deserialize_compact, b'a.b.c.d', "secret")
+        key = OctKey.import_key("secret")
+        self.assertRaises(ValueError, deserialize_compact, b'a.b.c.d', key)
 
     def test_no_invalid_header(self):
         # invalid base64
         value = b'abc.Zm9v.0pehoi'
-        self.assertRaises(DecodeError, deserialize_compact, value, "secret")
+        key = OctKey.import_key("secret")
+        self.assertRaises(DecodeError, deserialize_compact, value, key)
 
         # no alg value
         value = b'eyJhIjoiYiJ9.Zm9v.0pehoi'
-        self.assertRaises(MissingAlgorithmError, deserialize_compact, value, "secret")
+        self.assertRaises(MissingAlgorithmError, deserialize_compact, value, key)
 
     def test_invalid_payload(self):
         value = b'eyJhbGciOiJIUzI1NiJ9.a$b.0pehoi'
-        self.assertRaises(DecodeError, deserialize_compact, value, "secret")
+        key = OctKey.import_key("secret")
+        self.assertRaises(DecodeError, deserialize_compact, value, key)
 
     def test_with_key_set(self):
         keys = KeySet([
@@ -54,7 +60,8 @@ class TestCompact(TestCase):
 
     def test_strict_check_header(self):
         header = {"alg": "HS256", "custom": "hi"}
-        self.assertRaises(ValueError, serialize_compact, header, b"hi", "secret")
+        key = OctKey.import_key("secret")
+        self.assertRaises(ValueError, serialize_compact, header, b"hi", key)
 
         registry = JWSRegistry(strict_check_header=False)
-        serialize_compact(header, b"hi", "secret", registry=registry)
+        serialize_compact(header, b"hi", key, registry=registry)

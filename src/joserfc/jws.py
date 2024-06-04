@@ -295,7 +295,9 @@ def detach_content(value: DetachValue) -> DetachValue:
     .. code-block:: python
 
         >>> from joserfc import jws
-        >>> encoded_text = jws.serialize_compact({"alg": "HS256"}, b"hello", "secret")
+        >>> from joserfc.jwk import OctKey
+        >>> key = OctKey.import_key("secret")
+        >>> encoded_text = jws.serialize_compact({"alg": "HS256"}, b"hello", key)
         >>> jws.detach_content(encoded_text)
         'eyJhbGciOiJIUzI1NiJ9..UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A'
 
@@ -303,7 +305,7 @@ def detach_content(value: DetachValue) -> DetachValue:
 
     .. code-block:: python
 
-        >>> obj = jws.serialize_json({"protected": {"alg": "HS256"}}, b"hello", "secret")
+        >>> obj = jws.serialize_json({"protected": {"alg": "HS256"}}, b"hello", key)
         >>> jws.detach_content(obj)
         {
             'payload': '',

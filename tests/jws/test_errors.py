@@ -15,33 +15,36 @@ from tests.base import load_key
 
 class TestJWSErrors(TestCase):
     def test_without_alg(self):
+        key = OctKey.import_key("secret")
         # missing alg
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
-            {"kid": "123"}, "i", "secret"
+            {"kid": "123"}, "i", key
         )
 
     def test_none_alg(self):
         header = {"alg": "none"}
+        key = OctKey.import_key("secret")
         text = jws.serialize_compact(
-            header, "i", "secret",
+            header, "i", key,
             algorithms=["none"]
         )
         self.assertRaises(
             BadSignatureError,
             jws.deserialize_compact,
-            text, "secret",
+            text, key,
             algorithms=["none"]
         )
 
     def test_header_invalid_type(self):
         # kid should be a string
         header = {"alg": "HS256", "kid": 123}
+        key = OctKey.import_key("secret")
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
-            header, "i", "secret",
+            header, "i", key,
         )
 
         # jwk should be a dict
@@ -49,7 +52,7 @@ class TestJWSErrors(TestCase):
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
-            header, "i", "secret",
+            header, "i", key,
         )
 
         # jku should be a URL
@@ -57,7 +60,7 @@ class TestJWSErrors(TestCase):
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
-            header, "i", "secret",
+            header, "i", key,
         )
 
         # x5c should be a chain of string
@@ -65,42 +68,44 @@ class TestJWSErrors(TestCase):
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
-            header, "i", "secret",
+            header, "i", key,
         )
         header = {"alg": "HS256", "x5c": [1, 2]}
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
-            header, "i", "secret",
+            header, "i", key,
         )
 
     def test_crit_header(self):
         header = {"alg": "HS256", "crit": ["kid"]}
+        key = OctKey.import_key("secret")
         # missing kid header
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
-            header, "i", "secret",
+            header, "i", key,
         )
 
         header = {"alg": "HS256", "kid": "1", "crit": ["kid"]}
-        jws.serialize_compact(header, "i", "secret")
+        jws.serialize_compact(header, "i", key)
 
     def test_extra_header(self):
         header = {"alg": "HS256", "extra": "hi"}
+        key = OctKey.import_key("secret")
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
-            header, "i", "secret",
+            header, "i", key,
         )
         # bypass extra header
         registry = jws.JWSRegistry(strict_check_header=False)
-        jws.serialize_compact(header, "i", "secret", registry=registry)
+        jws.serialize_compact(header, "i", key, registry=registry)
 
         # or use a header registry
         extra_header = {"extra": HeaderParameter("Extra header", "str", False)}
         registry = jws.JWSRegistry(header_registry=extra_header)
-        jws.serialize_compact(header, "i", "secret", registry=registry)
+        jws.serialize_compact(header, "i", key, registry=registry)
 
     def test_rsa_invalid_signature(self):
         key1 = RSAKey.generate_key()
