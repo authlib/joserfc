@@ -8,30 +8,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-16 16:35+0900\n"
+"POT-Creation-Date: 2023-09-01 08:25+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
 "Language-Team: zh <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.12.1\n"
 
-#: ../../index.rst:65
+#: ../../index.rst:59
 msgid "Getting started"
 msgstr "开始上手"
 
-#: ../../index.rst:72
+#: ../../index.rst:66
 msgid "Essentials"
 msgstr "必读文档"
 
-#: ../../index.rst:81
+#: ../../index.rst:75
 msgid "Recipes"
 msgstr "小技巧"
 
-#: ../../index.rst:89
+#: ../../index.rst:83
 msgid "Development"
 msgstr "开发者文档"
 
@@ -71,83 +71,84 @@ msgstr "一个快速而简单的 JWT 编码和解码的示例如下："
 msgid "You would find more details and advanced usage in :ref:`jwt` section."
 msgstr "您可以在 :ref:`jwt` 部分找到更多详细信息和高级用法。"
 
-#: ../../index.rst:34
-msgid ""
-"The string ``\"secret\"`` employed in the above example is solely "
-"intended for demonstration purposes. In a production environment, it is "
-"crucial to use a highly secure secret key to ensure robust security "
-"measures."
-msgstr ""
-
-#: ../../index.rst:39
+#: ../../index.rst:33
 msgid "RFCs"
 msgstr ""
 
-#: ../../index.rst:41
+#: ../../index.rst:35
 msgid "It follows RFCs with extensible API. The module has implementations of:"
 msgstr "它遵循可扩展的 API，并遵循 RFC 标准。该模块包含以下实现："
 
-#: ../../index.rst:43
+#: ../../index.rst:37
 msgid "RFC7515: :ref:`JSON Web Signature <jws>`"
 msgstr ""
 
-#: ../../index.rst:44
+#: ../../index.rst:38
 msgid "RFC7516: :ref:`JSON Web Encryption <jwe>`"
 msgstr ""
 
-#: ../../index.rst:45
+#: ../../index.rst:39
 msgid "RFC7517: :ref:`JSON Web Key <jwk>`"
 msgstr ""
 
-#: ../../index.rst:46
+#: ../../index.rst:40
 msgid "RFC7518: :ref:`JSON Web Algorithms <jwa>`"
 msgstr ""
 
-#: ../../index.rst:47
+#: ../../index.rst:41
 msgid "RFC7519: :ref:`JSON Web Token <jwt>`"
 msgstr ""
 
-#: ../../index.rst:48
+#: ../../index.rst:42
 msgid ""
 "RFC7520: Examples of Protecting Content Using JSON Object Signing and "
 "Encryption"
 msgstr ""
 
-#: ../../index.rst:49
+#: ../../index.rst:43
 msgid "RFC7638: ``thumbprint`` for JWK"
 msgstr ""
 
-#: ../../index.rst:50
+#: ../../index.rst:44
 msgid "RFC8037: ``OKP`` Key and ``EdDSA`` algorithm"
 msgstr ""
 
-#: ../../index.rst:51
+#: ../../index.rst:45
 msgid "RFC8812: ``ES256K`` algorithm"
 msgstr ""
 
-#: ../../index.rst:53
+#: ../../index.rst:47
 msgid "And draft RFCs implementation of:"
 msgstr "同时包含如下 JOSE 草案的实现："
 
-#: ../../index.rst:55
+#: ../../index.rst:49
 msgid ":ref:`chacha20`"
 msgstr ""
 
-#: ../../index.rst:56
+#: ../../index.rst:50
 msgid ":ref:`ecdh1pu`"
 msgstr ""
 
-#: ../../index.rst:58
+#: ../../index.rst:52
 msgid "RFC7520 is implemented as test cases."
 msgstr "RFC7520 是测试案例，详情请参考源码里的 tests 部分。"
 
-#: ../../index.rst:61
+#: ../../index.rst:55
 msgid "Next"
 msgstr "继续阅读"
 
-#: ../../index.rst:63
+#: ../../index.rst:57
 msgid ""
 "Explore the following sections to discover more about ``joserfc`` and its"
 " features."
 msgstr "浏览以下部分，了解更多关于 ``joserfc`` 及其特性的内容。"
+
+#~ msgid ""
+#~ "The string ``\"secret\"`` employed in "
+#~ "the above example is solely intended "
+#~ "for demonstration purposes. In a "
+#~ "production environment, it is crucial to"
+#~ " use a highly secure secret key "
+#~ "to ensure robust security measures."
+#~ msgstr ""
 

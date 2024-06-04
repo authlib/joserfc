@@ -8,166 +8,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-07 09:32+0900\n"
+"POT-Creation-Date: 2023-09-01 08:25+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
 "Language-Team: zh <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../recipes/azure.rst:2
 msgid "Dynamic keys for Azure"
 msgstr ""
 
-#: ../../recipes/azure.rst:4
-msgid ""
-"In scenarios where you need to decode a JWT received from Azure "
-"(Microsoft), you may encounter a situation where you are unaware of the "
-"public key required for the decoding process until after the token "
-"arrives. In such cases, you will typically need to retrieve the key set "
-"dynamically from the ``iss`` (issuer) value contained within the JWT."
+#: ../../recipes/azure.rst:6
+msgid "Use callable key"
 msgstr ""
 
 #: ../../recipes/azure.rst:10
-msgid ""
-"Let's illustrate this process using a JWT token extracted from "
-"Microsoft's official documentation `Access tokens in the Microsoft "
-"identity platform <ms_doc_url>`_:"
-msgstr ""
-
-#: ../../recipes/azure.rst:31
-msgid ""
-"This token, obtained from Microsoft's official documentation, serves as "
-"an example for decoding JWTs originating from Azure. The decoded payload "
-"might look like:"
-msgstr ""
-
-#: ../../recipes/azure.rst:57
-msgid "Steps for decoding"
-msgstr ""
-
-#: ../../recipes/azure.rst:59
-msgid ""
-"In order to decode JWT tokens from Azure, it is essential to retrieve the"
-" necessary information from Microsoft's OpenID configuration, including "
-"the JSON Web Key Set (JWK Set) URI. This information is crucial for "
-"verifying the tokens."
-msgstr ""
-
-#: ../../recipes/azure.rst:64
-msgid "OpenID Configuration Endpoint"
-msgstr ""
-
-#: ../../recipes/azure.rst:66
-msgid ""
-"You can obtain the OpenID configuration endpoint from Microsoft by "
-"forming a URL in the following format:"
-msgstr ""
-
-#: ../../recipes/azure.rst:73
-msgid ""
-"In the example provided, replace {tenant} with your specific Azure tenant"
-" ID or the tenant's globally unique identifier (GUID). The resulting URL "
-"will lead you to the OpenID configuration details. Then, the OpenID "
-"configuration endpoint for the above example could be:"
-msgstr ""
-
-#: ../../recipes/azure.rst:83
-msgid "JWK Set URI"
-msgstr ""
-
-#: ../../recipes/azure.rst:85
-msgid ""
-"Within the OpenID configuration details, you will find the JSON Web Key "
-"Set (JWK Set) URI. This URI is used to access the keys required for "
-"verifying JWT tokens. The JWK Set URI can typically be found within the "
-"configuration as follows:"
-msgstr ""
-
-#: ../../recipes/azure.rst:93
-msgid ""
-"Once again, remember to replace {tenant} with your Azure tenant ID or the"
-" appropriate identifier. In the above example, the ``jwks_uri`` could be:"
-msgstr ""
-
-#: ../../recipes/azure.rst:101
-msgid "Validating JWT Tokens"
-msgstr ""
-
-#: ../../recipes/azure.rst:103
-msgid ""
-"Once you have retrieved the JSON Web Key Set (JWK Set) from the JWK Set "
-"URI provided in the OpenID configuration, you can proceed to validate JWT"
-" tokens."
-msgstr ""
-
-#: ../../recipes/azure.rst:107
-msgid "Using a Callable Key"
-msgstr ""
-
-#: ../../recipes/azure.rst:109
-msgid ""
-"In ``joserfc``, a callable key is a powerful feature that allows you to "
-"dynamically retrieve and use the appropriate JSON Web Key (JWK) for token"
-" decoding. In the context of Azure tokens, you can implement a callable "
-"key to fetch the JWKs from the JWK Set URI and select the correct key "
-"based on the kid (Key ID) in the token's header."
-msgstr ""
-
-#: ../../recipes/azure.rst:139
-msgid ""
-"When using the callable key method in ``joserfc`` to decode the tokens, "
-"it retrieves the key dynamically on each token decoding request. However,"
-" you may encounter performance issues due to the repeated retrieval of "
-"keys. In such cases, it's advisable to optimize the callable key by "
-"implementing key set caching based on the issuer."
-msgstr ""
-
-#: ../../recipes/azure.rst:144
-msgid "Let's enhance the callable key method to improve its efficiency."
-msgstr ""
-
-#: ../../recipes/azure.rst:164
-msgid ""
-"In this enhanced callable key, an LRU (Least Recently Used) cache is used"
-" to store JWK Sets for different issuers. When decoding a token, the "
-"callable key function first checks if the JWK Set for the specific issuer"
-" is available in the cache. If it's not, it fetches the JWK Set for the "
-"issuer, caches it, and then selects the appropriate JWK based on the kid."
-" This caching mechanism significantly reduces the network requests for "
-"JWK Sets and improves the efficiency of token decoding."
-msgstr ""
-
-#: ../../recipes/azure.rst:172
-msgid "Manual Token Decoding"
-msgstr ""
-
-#: ../../recipes/azure.rst:174
-msgid ""
-"If you prefer a more hands-on approach and want to decode the token step "
-"by step, you can opt for a manual decoding process. This method allows "
-"you to extract the token string and work with it directly. Since the "
-"token is a JWT in JWS format, you can utilize the ``extract_compact`` "
-"method from the JWS module to obtain the necessary information. The "
-"result of this extraction is an object of type "
-":class:`~joserfc.jws.CompactSignature`."
-msgstr ""
-
-#: ../../recipes/azure.rst:187
-msgid ""
-"Similar to the approach detailed in the \"Using a Callable Key\" section,"
-" you can retrieve the key set based on the issuer (``iss``) claim. This "
-"method allows you to access the necessary keys for token verification."
-msgstr ""
-
-#: ../../recipes/azure.rst:204
-msgid ""
-"Once you have obtained the key set based on the issuer (``iss``) claim, "
-"you can use this set of keys to decode the token."
+msgid "Step by step"
 msgstr ""
 
 #: ../../recipes/openssl.rst:2
@@ -215,10 +76,3 @@ msgstr ""
 #: ../../recipes/openssl.rst:82
 msgid "EC key with crv secp256k1"
 msgstr ""
-
-#~ msgid "Use callable key"
-#~ msgstr ""
-
-#~ msgid "Step by step"
-#~ msgstr ""
-

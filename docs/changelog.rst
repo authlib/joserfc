@@ -12,12 +12,21 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+0.11.0
+------
+
+**Released on June 4, 2024**
+
+- ``jwe.decrypt_json`` allows to verify only one recipient.
+- Prevent ``OctKey`` to import ``ssh-dss``.
+- Deprecate use of string and bytes as key.
+
 0.10.0
 ------
 
 **Released on May 13, 2024**
 
-- Change ``jwt.encode`` and ``jwt.decode`` to use JWS by default
+- Change ``jwt.encode`` and ``jwt.decode`` to use JWS by default.
 
 0.9.0
 -----

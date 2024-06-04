@@ -84,5 +84,5 @@ def _normalize_key(key: KeyBase) -> t.Union[Key, KeySet]:
             DeprecationWarning,
             stacklevel=2,
         )
-        return OctKey.import_key(key)
+        return OctKey.import_key(key)  # pragma: no cover
     return key
