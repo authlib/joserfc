@@ -68,7 +68,9 @@ the value type.
 .. code-block:: python
 
     >>> from joserfc import jws
-    >>> jws.serialize_compact({"alg": "HS256", "kid": 123}, "hello", "secret")
+    >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("secret")
+    >>> jws.serialize_compact({"alg": "HS256", "kid": 123}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "$/joserfc/jws.py", line 98, in serialize_compact
@@ -92,7 +94,9 @@ indicating that they must be present. For example:
 .. code-block:: python
 
     >>> from joserfc import jws
-    >>> jws.serialize_compact({"alg": "HS256", "crit": ["kid"]}, "hello", "secret")
+    >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("secret")
+    >>> jws.serialize_compact({"alg": "HS256", "crit": ["kid"]}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "$/joserfc/jws.py", line 98, in serialize_compact
@@ -115,7 +119,9 @@ Any additional header beyond those supported by the algorithm will result in an 
 .. code-block:: python
 
     >>> from joserfc import jws
-    >>> jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", "secret")
+    >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("secret")
+    >>> jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "/home/lepture/authlib/joserfc/src/joserfc/jws.py", line 98, in serialize_compact
@@ -135,6 +141,9 @@ to recognize and validate those parameters instead of raising an error.
     from joserfc import jws
     from joserfc.jws import JWSRegistry
     from joserfc.registry import HeaderParameter
+    from joserfc.jwk import OctKey
+
+    key = OctKey.import_key("secret")
 
     additional_header_registry = {
         "custom": HeaderParameter("Custom message", "str", required=True),
@@ -142,10 +151,10 @@ to recognize and validate those parameters instead of raising an error.
     registry = JWSRegistry(additional_header_registry)
 
     # it will not raise any error
-    jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", "secret", registry=registry)
+    jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", key, registry=registry)
 
     # this will raise an error, because we "custom" is defined to be required
-    jws.serialize_compact({"alg": "HS256"}, "hello", "secret", registry=registry)
+    jws.serialize_compact({"alg": "HS256"}, "hello", key, registry=registry)
 
 Alternatively, you can choose to disable the strict header checking altogether.
 By turning off strict header checking, the registry will no longer raise an
@@ -156,7 +165,7 @@ may compromise the security and integrity of the token, so it should be used wit
 
     registry = JWSRegistry(strict_check_header=False)
     # will not raise any error
-    jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", "secret", registry=registry)
+    jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", key, registry=registry)
 
 Registry for JWT
 ----------------

@@ -43,29 +43,16 @@ You can call :meth:`jws.serialize_compact` to construct a compact JWS serializat
 .. code-block:: python
 
     from joserfc import jws
+    from joserfc.jwk import OctKey
 
+    key = OctKey.import_key("secret")
     protected = {"alg": "HS256"}
-    jws.serialize_compact(protected, "hello", "secret")
+    jws.serialize_compact(protected, "hello", key)
     # => 'eyJhbGciOiJIUzI1NiJ9.aGVsbG8.UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A'
 
 A compact JWS is constructed by protected header, payload and a private key. In the above
 example, ``protected`` is the "protected header" part, `"hello"` is the payload part, and
 `"secret"` is a plain private key.
-
-We encourage developers to use a specified key type, the above `"secret"` is actually a
-:class:`jwk.OctKey`. A better example could be:
-
-.. code-block:: python
-
-    from joserfc import jws
-    from joserfc.jwk import OctKey
-
-    protected = {"alg": "HS256"}
-    payload = "hello"
-    key = OctKey.import_key("secret")
-    jws.serialize_compact(protected, payload, key)
-
-You can learn more about :ref:`jwk` in previous section.
 
 Deserialization
 ~~~~~~~~~~~~~~~
@@ -286,7 +273,9 @@ the below error.
 .. code-block:: python
 
     >>> from joserfc import jws
-    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", "secret")
+    >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("secret")
+    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "$/joserfc/jws.py", line 99, in serialize_compact
@@ -302,7 +291,9 @@ either by the ``algorithms`` parameter, or ``registry`` parameter.
 .. code-block:: python
 
     >>> from joserfc import jws
-    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", "secret", algorithms=["HS384"])
+    >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("secret")
+    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key, algorithms=["HS384"])
     'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
 
 Developers can also apply the ``registry`` parameter to resolve this issue. Here is an example
@@ -311,8 +302,10 @@ of using :ref:`registry`.
 .. code-block:: python
 
     >>> from joserfc import jws
+    >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("secret")
     >>> registry = jws.JWSRegistry(algorithms=["HS384"])
-    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", "secret", registry=registry)
+    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key, registry=registry)
     'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
 
 .. _rfc7797:
@@ -334,11 +327,13 @@ Here are examples demonstrating the usage of the ``b64`` option:
 .. code-block:: python
 
     from joserfc.rfc7797 import serialize_compact, deserialize_compact
+    from joserfc.jwk import OctKey
 
+    key = OctKey.import_key("secret")
     protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
-    value = serialize_compact(protected, "hello", "secret")
+    value = serialize_compact(protected, "hello", key)
     # => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19.hello.mdPbZLtc3tqQ6NCV1pKF-qfEx-3jtR6rv109phKAc4I'
-    deserialize_compact(value, "secret")
+    deserialize_compact(value, key)
 
 .. note::
 
@@ -351,13 +346,15 @@ characters, the compact serialization will detach the payload:
 .. code-block:: python
 
     from joserfc.rfc7797 import serialize_compact, deserialize_compact
+    from joserfc.jwk import OctKey
 
+    key = OctKey.import_key("secret")
     protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
-    value = serialize_compact(protected, "$.02", "secret")
+    value = serialize_compact(protected, "$.02", key)
     # => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..GbtzAD3Cwe6snTZnaAxapwQz5QftEz7agx_6aMtZ4w0'
     # since the payload is detached, you need to specify the
     # payload when calling deserialize_compact
-    deserialize_compact(value, "secret", payload="$.02")
+    deserialize_compact(value, key, payload="$.02")
 
 There are also methods for JSON serialization: ``serialize_json`` and
 ``deserialize_json``.

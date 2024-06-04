@@ -31,8 +31,10 @@ In both libraries, you can encode a JWT using the ``jwt.encode(header, payload, 
     :caption: joserfc
 
     from joserfc import jwt
+    from joserfc.jwk import OctKey
 
-    jwt.encode({"alg": "HS256"}, {"iss": "https://jose.authlib.org"}, "secret")
+    key = OctKey.import_key("secret")
+    jwt.encode({"alg": "HS256"}, {"iss": "https://jose.authlib.org"}, key)
 
 jwt.decode
 ~~~~~~~~~~
@@ -91,11 +93,13 @@ follow these steps:
     :caption: joserfc
 
     from joserfc import jws
+    from joserfc.jwk import OctKey
 
+    key = OctKey.import_key("secret")
     protected = {"alg': 'HS256"}
     payload = b"example"
-    value = jws.serialize_compact(protected, payload, "secret")
-    jws.deserialize_compact(value, "secret")
+    value = jws.serialize_compact(protected, payload, key)
+    jws.deserialize_compact(value, key)
 
 Above is a simple example of using the ``HS256`` algorithm for JWS. If you would like
 to explore further and learn more about JWS, we recommend referring to the comprehensive

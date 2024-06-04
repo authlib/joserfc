@@ -24,8 +24,11 @@ differs between the two libraries.
     :caption: joserfc
 
     from joserfc import jwt
+    from joserfc.jwk import OctKey
+
+    key = OctKey.import_key("secret")
     # jwt.encode(header, payload, key)
-    encoded_jwt = jwt.encode({"alg": "HS256"}, {"some": "payload"}, "secret")
+    encoded_jwt = jwt.encode({"alg": "HS256"}, {"some": "payload"}, key)
 
 jwt.decode
 ----------
@@ -42,7 +45,11 @@ but the parameter structure differs.
 .. code-block:: python
     :caption: joserfc
 
-    token = jwt.decode(encoded_jwt, "secret")
+    from joserfc import jwt
+    from joserfc.jwk import OctKey
+
+    key = OctKey.import_key("secret")
+    token = jwt.decode(encoded_jwt, key)
     # => token.header : {"alg": "HS256"}
     # => token.claims : {"some": "payload"}
 
