@@ -12,7 +12,9 @@ from ..rfc7517.types import KeyParameters, DictKey
 
 POSSIBLE_UNSAFE_KEYS = (
     b"-----BEGIN ",
+    b"---- BEGIN ",
     b"ssh-rsa ",
+    b"ssh-dss ",
     b"ssh-ed25519 ",
     b"ecdsa-sha2-",
 )
