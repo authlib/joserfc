@@ -10,8 +10,8 @@ token handling.
 jwt.encode
 ----------
 
-Both PyJWT and joserfc use the .encode method to generate a JWT, but the parameter structure
-differs between the two libraries.
+Both PyJWT and joserfc use the ``.encode`` method to generate a JWT, but the parameter
+structure differs between the two libraries.
 
 .. code-block:: python
     :caption: PyJWT

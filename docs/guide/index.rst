@@ -63,6 +63,8 @@ Dive deep
 Next, learn each module in details.
 
 .. grid:: 2
+    :gutter: 2
+    :padding: 0
 
     .. grid-item-card:: JSON Web Key
         :link-type: ref

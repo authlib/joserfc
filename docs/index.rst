@@ -49,7 +49,7 @@ It follows RFCs with extensible API. The module has implementations of:
 - RFC7519: :ref:`JSON Web Token <jwt>`
 - RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
 - RFC7638: ``thumbprint`` for JWK
-- RFC8037: ``OKP`` Key and ``EdDSA`` algorithm
+- RFC8037: :ref:`OKPKey` and ``EdDSA`` algorithm
 - RFC8812: ``ES256K`` algorithm
 
 And draft RFCs implementation of:

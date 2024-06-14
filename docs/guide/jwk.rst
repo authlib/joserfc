@@ -179,7 +179,9 @@ You can import an ``ECKey`` from string, bytes and a JWK (in dict).
 OKPKey
 ------
 
-An :class:`OKPKey` is an asymmetric key defined in RFC8037_.
+An :class:`OKPKey` is an asymmetric key defined in RFC8037_
+CFRG Elliptic Curve Diffie-Hellman (ECDH) and Signatures in
+JSON Object Signing and Encryption (JOSE).
 
 .. _RFC8037: https://www.rfc-editor.org/rfc/rfc8037#section-2
 
