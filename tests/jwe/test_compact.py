@@ -7,6 +7,7 @@ from joserfc.errors import (
     MissingAlgorithmError,
     MissingEncryptionError,
     DecodeError,
+    ExceededSizeError,
 )
 from joserfc.util import json_b64encode
 from tests.base import load_key
@@ -175,6 +176,25 @@ class TestJWECompact(TestCase):
         result = encrypt_compact(protected, plaintext, public_key)
         obj = decrypt_compact(result, private_key)
         self.assertEqual(obj.plaintext, plaintext)
+
+    def test_decompress_zip_with_gzip_head(self):
+        key = OctKey.import_key({'k': 'pyL42ncDFSYnenl-GiZjRw', 'kty': 'oct'})
+        s = (
+            'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIiwiemlwIjoiREVGIn0..'
+            'YbDfdYa6p-wAEFul.YK7j0MsH-Dko6ifsEg.wES6-QAOEbErZqXiS0JHRw'
+        )
+        result = decrypt_compact(s, key)
+        self.assertEqual(result.plaintext, b'hello')
+        self.assertEqual(result.headers().get('zip'), 'DEF')
+
+    def test_decompress_zip_exceeds_size(self):
+        key = OctKey.import_key({'k': 'pyL42ncDFSYnenl-GiZjRw', 'kty': 'oct'})
+        result = encrypt_compact(
+            {"alg": "dir", "enc": "A128GCM", "zip": "DEF"},
+            b'h' * 300000,
+            key
+        )
+        self.assertRaises(ExceededSizeError, decrypt_compact, result, key)
 
     def test_invalid_compact_data(self):
         private_key: RSAKey = load_key('rsa-openssl-private.pem')

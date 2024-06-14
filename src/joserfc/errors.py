@@ -72,6 +72,12 @@ class BadSignatureError(JoseError):
     error = "bad_signature"
 
 
+class ExceededSizeError(JoseError):
+    """This error is designed for DEF zip algorithm. It raised when the
+    compressed data exceeds the maximum allowed length."""
+    error = "exceeded_size"
+
+
 class InvalidEncryptionAlgorithmError(JoseError):
     """This error is designed for JWE. It is raised when "enc" value
     does not work together with "alg" value.
