@@ -27,15 +27,15 @@ class ClaimsRegistry:
         option = self.options.get(claim_name)
         if option:
             allow_blank = option.get("allow_blank")
-            if not allow_blank and not value:
+            if not allow_blank and value == "":
                 raise InvalidClaimError(claim_name)
 
             option_value = option.get("value")
-            if option_value and value != option_value:
+            if option_value is not None and value != option_value:
                 raise InvalidClaimError(claim_name)
 
             option_values = option.get("values")
-            if option_values and value not in option_values:
+            if option_values is not None and value not in option_values:
                 raise InvalidClaimError(claim_name)
 
     def validate(self, claims: Dict[str, Any]) -> None:

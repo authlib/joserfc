@@ -56,6 +56,11 @@ class TestJWTClaims(TestCase):
         self.assertRaises(MissingClaimError, claims_requests.validate, {"sub": None})
         claims_requests.validate({"sub": ""})
 
+    def test_essential_false_value(self):
+        claims_requests = jwt.JWTClaimsRegistry(foo={"essential": True})
+        claims_requests.validate({"foo": False})
+        claims_requests.validate({"foo": 0})
+
     def test_option_value(self):
         claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "value": "123"})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": "a"})
