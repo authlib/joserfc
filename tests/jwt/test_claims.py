@@ -65,12 +65,20 @@ class TestJWTClaims(TestCase):
         claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "value": "123"})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": "a"})
         claims_requests.validate({"sub": "123"})
+        claims_requests = jwt.JWTClaimsRegistry(sub={"essential":True,"value":True})
+        claims_requests.validate({"sub":True})
+        self.assertRaises(InvalidClaimError,claims_requests.validate,{"sub":False})
+        claims_requests = jwt.JWTClaimsRegistry(sub={"essential":True,"value":False})
+        claims_requests.validate({"sub":False})
+        self.assertRaises(InvalidClaimError,claims_requests.validate,{"sub":True})
 
     def test_option_values(self):
-        claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "values": ["1", "2"]})
+        claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "values": ["1", "2", True, False]})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": "a"})
         claims_requests.validate({"sub": "1"})
         claims_requests.validate({"sub": "2"})
+        claims_requests.validate({"sub":True})
+        claims_requests.validate({"sub":False})
 
     def test_int_claims(self):
         now = int(time.time())
