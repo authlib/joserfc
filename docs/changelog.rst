@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+0.12.0
+------
+
+**Released on June 15, 2024**
+
+- Limit DEF decompress size to 250k bytes.
+- Fix claims validation, , via :issue:`23`.
+
 0.11.1
 ------
 

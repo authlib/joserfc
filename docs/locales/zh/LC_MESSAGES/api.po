@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 08:25+0900\n"
+"POT-Creation-Date: 2024-06-15 13:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -19,12 +19,112 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
+#: ../../api/errors.rst:2
+msgid "Errors"
+msgstr ""
+
+#: ../../api/errors.rst:4
+msgid "All errors are based on ``joserfc.errors.JoseError``."
+msgstr ""
+
+#: joserfc.errors.BadSignatureError:1 of
+msgid ""
+"This error is designed for JWS/JWT. It is raised when signature does not "
+"match."
+msgstr ""
+
+#: ../../docstring joserfc.errors.BadSignatureError.error:1
+#: joserfc.errors.ConflictAlgorithmError.error:1
+#: joserfc.errors.DecodeError.error:1 joserfc.errors.ExceededSizeError.error:1
+#: joserfc.errors.ExpiredTokenError.error:1
+#: joserfc.errors.InsecureClaimError.error:1
+#: joserfc.errors.InvalidCEKLengthError.error:1
+#: joserfc.errors.InvalidClaimError.error:1
+#: joserfc.errors.InvalidEncryptedKeyError.error:1
+#: joserfc.errors.InvalidEncryptionAlgorithmError.error:1
+#: joserfc.errors.InvalidExchangeKeyError.error:1
+#: joserfc.errors.InvalidKeyLengthError.error:1
+#: joserfc.errors.InvalidKeyTypeError.error:1
+#: joserfc.errors.InvalidPayloadError.error:1
+#: joserfc.errors.InvalidTokenError.error:1 joserfc.errors.JoseError.error:1
+#: joserfc.errors.MissingAlgorithmError.error:1
+#: joserfc.errors.MissingClaimError.error:1
+#: joserfc.errors.MissingEncryptionError.error:1
+#: joserfc.errors.UnsupportedKeyAlgorithmError.error:1
+#: joserfc.errors.UnsupportedKeyOperationError.error:1
+#: joserfc.errors.UnsupportedKeyUseError.error:1 of
+msgid "short-string error code"
+msgstr ""
+
+#: joserfc.errors.ExceededSizeError:1 of
+msgid ""
+"This error is designed for DEF zip algorithm. It raised when the "
+"compressed data exceeds the maximum allowed length."
+msgstr ""
+
+#: ../../docstring joserfc.errors.ExpiredTokenError.description:1
+#: joserfc.errors.InvalidCEKLengthError.description:1
+#: joserfc.errors.InvalidEncryptedKeyError.description:1
+#: joserfc.errors.InvalidExchangeKeyError.description:1
+#: joserfc.errors.InvalidTokenError.description:1
+#: joserfc.errors.JoseError.description:1
+#: joserfc.errors.MissingAlgorithmError.description:1
+#: joserfc.errors.MissingEncryptionError.description:1 of
+msgid "long-string to describe this error"
+msgstr ""
+
+#: joserfc.errors.InvalidEncryptionAlgorithmError:1 of
+msgid ""
+"This error is designed for JWE. It is raised when \"enc\" value does not "
+"work together with \"alg\" value."
+msgstr ""
+
+#: joserfc.errors.JoseError:1 of
+msgid "Base Exception for all errors in joserfc."
+msgstr ""
+
 #: ../../api/index.rst:2
 msgid "API References"
 msgstr "API 参考"
 
-#: ../../api/jwe.rst:4
+#: ../../api/index.rst:4
+msgid "Here covers the interfaces of JWS, JWE, JWK, and JWT."
+msgstr ""
+
+#: ../../api/index.rst:10 ../../api/jws.rst:4
+msgid "JWS API"
+msgstr ""
+
+#: ../../api/index.rst:14
+msgid "Most :ref:`jwt` are encoded with JWS in compact serialization."
+msgstr ""
+
+#: ../../api/index.rst:16 ../../api/jwe.rst:4
 msgid "JWE API"
+msgstr ""
+
+#: ../../api/index.rst:20
+msgid ""
+"JSON Web Encryption (JWE) represents encrypted content using JSON-based "
+"data structures."
+msgstr ""
+
+#: ../../api/index.rst:22 ../../api/jwk.rst:4
+msgid "JWK API"
+msgstr ""
+
+#: ../../api/index.rst:26
+msgid ""
+"Learn how to use ``OctKey``, ``RSAKey``, ``ECKey``, ``OKPKey``, and JSON "
+"Web Key Set."
+msgstr ""
+
+#: ../../api/index.rst:28 ../../api/jwt.rst:4
+msgid "JWT API"
+msgstr ""
+
+#: ../../api/index.rst:32
+msgid "JSON Web Token (JWT) is built on top of :ref:`jws` or :ref:`jwe`."
 msgstr ""
 
 #: ../../api/jwe.rst:6
@@ -162,8 +262,12 @@ msgstr ""
 msgid "allowed algorithms to be used"
 msgstr ""
 
-#: joserfc.rfc7515.registry.JWSRegistry:7
 #: joserfc.rfc7516.registry.JWERegistry:7 of
+msgid "validating all recipients in a JSON serialization"
+msgstr ""
+
+#: joserfc.rfc7515.registry.JWSRegistry:7
+#: joserfc.rfc7516.registry.JWERegistry:8 of
 msgid "only allow header key in the registry to be used"
 msgstr ""
 
@@ -298,10 +402,6 @@ msgid ""
 "When calling this method, developers MUST construct an instance of a "
 "``GeneralJSONEncryption`` or ``FlattenedJSONEncryption`` object. Here is "
 "an example::"
-msgstr ""
-
-#: ../../api/jwk.rst:4
-msgid "JWK API"
 msgstr ""
 
 #: ../../api/jwk.rst:6
@@ -446,10 +546,6 @@ msgstr ""
 
 #: joserfc.jwk.guess_key:5 of
 msgid "pick a random key from key set"
-msgstr ""
-
-#: ../../api/jws.rst:4
-msgid "JWS API"
 msgstr ""
 
 #: ../../api/jws.rst:6
@@ -621,7 +717,7 @@ msgstr ""
 msgid "It is used to detach the content of the compact and JSON serialization."
 msgstr ""
 
-#: joserfc.jws.detach_content:14 of
+#: joserfc.jws.detach_content:16 of
 msgid "You can also detach the JSON serialization:"
 msgstr ""
 
@@ -704,10 +800,6 @@ msgstr ""
 
 #: joserfc.jws.validate_compact:4 of
 msgid "object of the JWS Compact Serialization"
-msgstr ""
-
-#: ../../api/jwt.rst:4
-msgid "JWT API"
 msgstr ""
 
 #: ../../api/jwt.rst:6

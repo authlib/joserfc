@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 08:56+0900\n"
+"POT-Creation-Date: 2024-06-15 13:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -23,17 +23,31 @@ msgstr ""
 msgid "Authors"
 msgstr "作者列表"
 
-#: ../../contributing/authors.rst:5
-msgid "Owner"
+#: ../../contributing/authors.rst:4
+msgid ""
+"``joserfc`` is written and maintained by `Hsiaoming Yang "
+"<https://lepture.com>`_."
 msgstr ""
 
 #: ../../contributing/authors.rst:8
-msgid "Maintainer"
-msgstr ""
-
-#: ../../contributing/authors.rst:11
 msgid "Contributors"
 msgstr "贡献者"
+
+#: ../../contributing/authors.rst:10
+msgid "Here is the list of the main contributors:"
+msgstr ""
+
+#: ../../contributing/authors.rst:12
+msgid "`Viicos <https://github.com/Viicos>`_"
+msgstr ""
+
+#: ../../contributing/authors.rst:13
+msgid "`Alon Bar-Lev <https://github.com/alonbl>`_"
+msgstr ""
+
+#: ../../contributing/authors.rst:15
+msgid "And more on https://github.com/authlib/joserfc/graphs/contributors"
+msgstr ""
 
 #: ../../contributing/index.rst:2
 msgid "Contributing"
@@ -300,21 +314,3 @@ msgid ""
 "within the ``locales/de/LC_MESSAGES`` directory. You can now edit these "
 "files to add the German translations accordingly."
 msgstr ""
-
-#~ msgid ""
-#~ "``joserfc`` is written and maintained by"
-#~ " `Hsiaoming Yang <https://lepture.com>`_."
-#~ msgstr ""
-
-#~ msgid "Here is the list of the main contributors:"
-#~ msgstr ""
-
-#~ msgid "`Viicos <https://github.com/Viicos>`_"
-#~ msgstr ""
-
-#~ msgid "`Alon Bar-Lev <https://github.com/alonbl>`_"
-#~ msgstr ""
-
-#~ msgid "And more on https://github.com/authlib/joserfc/graphs/contributors"
-#~ msgstr ""
-

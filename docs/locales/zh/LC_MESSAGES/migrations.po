@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: joserfc 0.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-15 14:44+0900\n"
+"POT-Creation-Date: 2024-06-15 13:31+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
 "Language-Team: zh <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../migrations/authlib.rst:2
 msgid "Migrating from Authlib"
@@ -54,33 +54,34 @@ msgid ""
 "``jwt.encode(header, payload, key)`` method."
 msgstr ""
 
-#: ../../migrations/authlib.rst:22 ../../migrations/authlib.rst:78
+#: ../../migrations/authlib.rst:22 ../../migrations/authlib.rst:80
 msgid "Authlib"
 msgstr ""
 
-#: ../../migrations/authlib.rst:30 ../../migrations/authlib.rst:90
-#: ../../migrations/pyjwt.rst:23 ../../migrations/pyjwt.rst:42
-#: ../../migrations/pyjwt.rst:70 ../../migrations/pyjwt.rst:129
+#: ../../migrations/authlib.rst:30 ../../migrations/authlib.rst:92
+#: ../../migrations/pyjwt.rst:23 ../../migrations/pyjwt.rst:45
+#: ../../migrations/pyjwt.rst:77 ../../migrations/pyjwt.rst:117
+#: ../../migrations/pyjwt.rst:136
 msgid "joserfc"
 msgstr ""
 
-#: ../../migrations/authlib.rst:38 ../../migrations/pyjwt.rst:31
+#: ../../migrations/authlib.rst:40 ../../migrations/pyjwt.rst:34
 msgid "jwt.decode"
 msgstr ""
 
-#: ../../migrations/authlib.rst:40
+#: ../../migrations/authlib.rst:42
 msgid ""
 "The ``jwt.decode`` method in Authlib and ``joserfc`` behaves differently "
 "when it comes to claims validation."
 msgstr ""
 
-#: ../../migrations/authlib.rst:43
+#: ../../migrations/authlib.rst:45
 msgid ""
 "In Authlib, the ``jwt.decode`` method combines the decoding of the JWT "
 "and the validation of its claims into a single step."
 msgstr ""
 
-#: ../../migrations/authlib.rst:54
+#: ../../migrations/authlib.rst:56
 msgid ""
 "In ``joserfc``, the ``jwt.decode`` process is split into two steps: "
 "decoding the token and then separately validating its claims. This "
@@ -88,66 +89,66 @@ msgid ""
 "the validation process."
 msgstr ""
 
-#: ../../migrations/authlib.rst:70
+#: ../../migrations/authlib.rst:72
 msgid ""
 "You can learn more about :ref:`claims validation <claims>` on the "
 ":ref:`jwt` guide."
 msgstr ""
 
-#: ../../migrations/authlib.rst:73
+#: ../../migrations/authlib.rst:75
 msgid "JWS"
 msgstr ""
 
-#: ../../migrations/authlib.rst:75
+#: ../../migrations/authlib.rst:77
 msgid ""
 "When migrating JWS (JSON Web Signature) operations from Authlib to "
 "``joserfc``, follow these steps:"
 msgstr ""
 
-#: ../../migrations/authlib.rst:100
+#: ../../migrations/authlib.rst:104
 msgid ""
 "Above is a simple example of using the ``HS256`` algorithm for JWS. If "
 "you would like to explore further and learn more about JWS, we recommend "
 "referring to the comprehensive :ref:`jws` guide."
 msgstr ""
 
-#: ../../migrations/authlib.rst:105
+#: ../../migrations/authlib.rst:109
 msgid "JWE"
 msgstr ""
 
-#: ../../migrations/authlib.rst:107
+#: ../../migrations/authlib.rst:111
 msgid ""
 "The method names for JWE serialization and deserialization are different "
 "between Authlib and ``joserfc``."
 msgstr ""
 
-#: ../../migrations/authlib.rst:110
+#: ../../migrations/authlib.rst:114
 msgid "In Authlib, the methods for JWE serialization and deserialization are:"
 msgstr ""
 
-#: ../../migrations/authlib.rst:112
+#: ../../migrations/authlib.rst:116
 msgid "``.serialize_compact(header, payload, key)``"
 msgstr ""
 
-#: ../../migrations/authlib.rst:113
+#: ../../migrations/authlib.rst:117
 msgid "``.deserialize_compact(token, key)``"
 msgstr ""
 
-#: ../../migrations/authlib.rst:123
+#: ../../migrations/authlib.rst:127
 msgid ""
 "In ``joserfc``, the equivalent methods for JWE serialization and "
 "deserialization are:"
 msgstr ""
 
-#: ../../migrations/authlib.rst:125
+#: ../../migrations/authlib.rst:129
 msgid "``.encrypt_compact(header, payload, key)``"
 msgstr ""
 
-#: ../../migrations/authlib.rst:126
+#: ../../migrations/authlib.rst:130
 msgid "``.decrypt_compact(token, key)``"
 msgstr ""
 
-#: ../../migrations/authlib.rst:135
+#: ../../migrations/authlib.rst:139
 msgid ""
 "If you would like to explore further and learn more about JWS, we "
 "recommend referring to the comprehensive :ref:`jwe` guide."
@@ -179,27 +180,27 @@ msgstr ""
 
 #: ../../migrations/pyjwt.rst:13
 msgid ""
-"Both PyJWT and joserfc use the .encode method to generate a JWT, but the "
-"parameter structure differs between the two libraries."
+"Both PyJWT and joserfc use the ``.encode`` method to generate a JWT, but "
+"the parameter structure differs between the two libraries."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:16 ../../migrations/pyjwt.rst:36
-#: ../../migrations/pyjwt.rst:58 ../../migrations/pyjwt.rst:104
-#: ../../migrations/pyjwt.rst:123
+#: ../../migrations/pyjwt.rst:16 ../../migrations/pyjwt.rst:39
+#: ../../migrations/pyjwt.rst:65 ../../migrations/pyjwt.rst:111
+#: ../../migrations/pyjwt.rst:130
 msgid "PyJWT"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:33
+#: ../../migrations/pyjwt.rst:36
 msgid ""
 "Similarly, both PyJWT and joserfc use the ``.decode`` method to verify "
 "and decode a JWT, but the parameter structure differs."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:50
+#: ../../migrations/pyjwt.rst:57
 msgid "Non-plain string key"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:52
+#: ../../migrations/pyjwt.rst:59
 msgid ""
 "When using a non-plain string key (equivalent to an \"oct\" key) in "
 "joserfc, such as RSA, EC, or OKP keys, the library provides built-in "
@@ -207,21 +208,21 @@ msgid ""
 "manual key handling, which is required in PyJWT."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:56
+#: ../../migrations/pyjwt.rst:63
 msgid "Let's take an example using an RSA key:"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:86
+#: ../../migrations/pyjwt.rst:93
 msgid "Claims validation"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:88
+#: ../../migrations/pyjwt.rst:95
 msgid ""
 "Both PyJWT and ``joserfc`` provide mechanisms for claims validation, "
 "although they differ in their approach."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:91
+#: ../../migrations/pyjwt.rst:98
 msgid ""
 "In PyJWT, claims validation is performed within the ``.decode`` method "
 "itself. When decoding a token, you can specify options such as "
@@ -231,7 +232,7 @@ msgid ""
 "process."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:96
+#: ../../migrations/pyjwt.rst:103
 msgid ""
 "On the other hand, ``joserfc`` follows a different approach by separating"
 " the decoding and claims validation steps. The .decode method in joserfc "
@@ -240,15 +241,15 @@ msgid ""
 "claims validators."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:102
+#: ../../migrations/pyjwt.rst:109
 msgid "Verify \"exp\""
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:121
+#: ../../migrations/pyjwt.rst:128
 msgid "Required claims"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:142
+#: ../../migrations/pyjwt.rst:149
 msgid ""
 "The ``JWTClaimsRegistry`` accepts each claim as an `Individual Claims "
 "Requests <ClaimsOption>`_ JSON object. You can learn more from "
