@@ -71,3 +71,8 @@ jobs:
           files: ./coverage.xml
           flags: unittests
           name: GitHub
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

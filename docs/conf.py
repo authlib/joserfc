@@ -101,6 +101,6 @@ def setup(app):
 
     html_baseurl = f"https://jose.authlib.org/{language}/"
     html_context["languages"] = [
-        ("English", f"https://jose.authlib.org/en/%s/", "en"),
-        ("简体中文", f"https://jose.authlib.org/zh/%s/", "zh"),
+        ("English", "https://jose.authlib.org/en/%s/", "en"),
+        ("简体中文", "https://jose.authlib.org/zh/%s/", "zh"),
     ]
