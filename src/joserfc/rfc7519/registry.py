@@ -12,8 +12,8 @@ from ..errors import (
 class ClaimsOption(TypedDict, total=False):
     essential: bool
     allow_blank: Optional[bool]
-    value: Union[str, int]
-    values: Union[List[Union[str, int]], List[str], List[int]]
+    value: Union[str, int, bool]
+    values: Union[List[Union[str, int, bool]], List[str], List[int], List[bool]]
 
 
 class ClaimsRegistry:
