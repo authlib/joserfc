@@ -1,5 +1,5 @@
+from __future__ import annotations
 import zlib
-from typing import List
 from ..rfc7516.models import JWEZipModel
 from ..errors import ExceededSizeError
 
@@ -30,4 +30,4 @@ class DeflateZipModel(JWEZipModel):
         return value
 
 
-JWE_ZIP_MODELS: List[JWEZipModel] = [DeflateZipModel()]
+JWE_ZIP_MODELS: list[JWEZipModel] = [DeflateZipModel()]

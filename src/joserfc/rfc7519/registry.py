@@ -1,5 +1,6 @@
+from __future__ import annotations
 import time
-from typing import TypedDict, Optional, Union, List, Dict, Any
+from typing import TypedDict, Any
 from ..errors import (
     MissingClaimError,
     InvalidClaimError,
@@ -11,9 +12,9 @@ from ..errors import (
 #: http://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests
 class ClaimsOption(TypedDict, total=False):
     essential: bool
-    allow_blank: Optional[bool]
-    value: Union[str, int, bool]
-    values: Union[List[Union[str, int, bool]], List[str], List[int], List[bool]]
+    allow_blank: bool | None
+    value: str | int | bool
+    values: list[str | int | bool] | list[str] | list[int] | list[bool]
 
 
 class ClaimsRegistry:
@@ -38,7 +39,7 @@ class ClaimsRegistry:
             if option_values is not None and value not in option_values:
                 raise InvalidClaimError(claim_name)
 
-    def validate(self, claims: Dict[str, Any]) -> None:
+    def validate(self, claims: dict[str, Any]) -> None:
         missed_keys = {key for key in self.essential_keys if claims.get(key) is None}
         if missed_keys:
             raise MissingClaimError(",".join(sorted(missed_keys)))
@@ -53,14 +54,14 @@ class ClaimsRegistry:
 
 
 class JWTClaimsRegistry(ClaimsRegistry):
-    def __init__(self, now: Optional[int] = None, leeway: int = 0, **kwargs: ClaimsOption):
+    def __init__(self, now: int | None = None, leeway: int = 0, **kwargs: ClaimsOption):
         if now is None:
             now = int(time.time())
         self.now = now
         self.leeway = leeway
         super().__init__(**kwargs)
 
-    def validate_aud(self, value: Union[str, List[str]]) -> None:
+    def validate_aud(self, value: str | list[str]) -> None:
         """The "aud" (audience) claim identifies the recipients that the JWT is
         intended for.  Each principal intended to process the JWT MUST
         identify itself with a value in the audience claim.  If the principal

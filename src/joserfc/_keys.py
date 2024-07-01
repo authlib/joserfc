@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing as t
 import random
 from .rfc7517.types import AnyKey, KeyParameters, DictKey
@@ -46,8 +47,8 @@ class JWKRegistry:
     def import_key(
             cls,
             data: AnyKey,
-            key_type: t.Optional[str] = None,
-            parameters: t.Optional[KeyParameters] = None) -> Key:
+            key_type: str | None = None,
+            parameters: KeyParameters | None = None) -> Key:
         """A class method for importing a key from bytes, string, and dict.
         When ``value`` is a dict, this method can tell the key type automatically,
         otherwise, developers SHOULD pass the ``key_type`` themselves.
@@ -76,8 +77,8 @@ class JWKRegistry:
     def generate_key(
             cls,
             key_type: str,
-            crv_or_size: t.Union[str, int],
-            parameters: t.Optional[KeyParameters] = None,
+            crv_or_size: str | int,
+            parameters: KeyParameters | None = None,
             private: bool = True,
             auto_kid: bool = False) -> Key:
         """A class method for generating key according to the given key type.
@@ -102,12 +103,12 @@ KeySetSerialization = t.TypedDict("KeySetSerialization", {"keys": t.List[DictKey
 
 class KeySet:
     #: keys in the key set
-    keys: t.List[Key]
+    keys: list[Key]
 
     registry_cls: t.Type[JWKRegistry] = JWKRegistry
-    algorithm_keys: t.ClassVar[t.Dict[str, t.List[str]]] = {}
+    algorithm_keys: t.ClassVar[t.Dict[str, list[str]]] = {}
 
-    def __init__(self, keys: t.List[Key]):
+    def __init__(self, keys: list[Key]):
         for key in keys:
             key.ensure_kid()
         self.keys = keys
@@ -118,8 +119,8 @@ class KeySet:
     def __bool__(self) -> bool:
         return bool(self.keys)
 
-    def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> KeySetSerialization:
-        keys: t.List[DictKey] = []
+    def as_dict(self, private: bool | None = None, **params: t.Any) -> KeySetSerialization:
+        keys: list[DictKey] = []
 
         for key in self.keys:
             # trigger key to generate kid via thumbprint
@@ -130,7 +131,7 @@ class KeySet:
                 keys.append(key.as_dict(private=private, **params))
         return {"keys": keys}
 
-    def get_by_kid(self, kid: t.Optional[str] = None) -> Key:
+    def get_by_kid(self, kid: str | None = None) -> Key:
         if kid is None and len(self.keys) == 1:
             return self.keys[0]
 
@@ -153,8 +154,8 @@ class KeySet:
     def import_key_set(
             cls,
             value: KeySetSerialization,
-            parameters: t.Optional[KeyParameters] = None) -> "KeySet":
-        keys: t.List[Key] = []
+            parameters: KeyParameters | None = None) -> "KeySet":
+        keys: list[Key] = []
 
         for data in value["keys"]:
             keys.append(cls.registry_cls.import_key(data, parameters=parameters))
@@ -165,12 +166,12 @@ class KeySet:
     def generate_key_set(
             cls,
             key_type: str,
-            crv_or_size: t.Union[str, int],
-            parameters: t.Optional[KeyParameters] = None,
+            crv_or_size: str | int,
+            parameters: KeyParameters | None = None,
             private: bool = True,
             count: int = 4) -> "KeySet":
 
-        keys: t.List[Key] = []
+        keys: list[Key] = []
         for _ in range(count):
             key = cls.registry_cls.generate_key(key_type, crv_or_size, parameters, private)
             keys.append(key)

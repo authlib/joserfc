@@ -1,10 +1,11 @@
-import typing as t
+from __future__ import annotations
+from typing import Any
 import base64
 import struct
 import json
 
 
-def to_bytes(x: t.Any, charset: str = "utf-8", errors: str = "strict") -> bytes:
+def to_bytes(x: Any, charset: str = "utf-8", errors: str = "strict") -> bytes:
     if isinstance(x, bytes):
         return x
     if isinstance(x, str):
@@ -14,13 +15,13 @@ def to_bytes(x: t.Any, charset: str = "utf-8", errors: str = "strict") -> bytes:
     return bytes(x)
 
 
-def to_str(x: t.Union[bytes, str], charset: str = "utf-8") -> str:
+def to_str(x: bytes | str, charset: str = "utf-8") -> str:
     if isinstance(x, bytes):
         return x.decode(charset)
     return x
 
 
-def json_dumps(data: t.Any, ensure_ascii: bool = False) -> str:
+def json_dumps(data: Any, ensure_ascii: bool = False) -> str:
     return json.dumps(data, ensure_ascii=ensure_ascii, separators=(",", ":"))
 
 
@@ -47,11 +48,11 @@ def int_to_base64(num: int) -> str:
     return urlsafe_b64encode(s).decode("utf-8", "strict")
 
 
-def json_b64encode(text: t.Any, charset: str = "utf-8") -> bytes:
+def json_b64encode(text: Any, charset: str = "utf-8") -> bytes:
     if isinstance(text, dict):
         text = json_dumps(text)
     return urlsafe_b64encode(to_bytes(text, charset))
 
 
-def json_b64decode(text: t.Any, charset: str = "utf-8") -> t.Any:
+def json_b64decode(text: Any, charset: str = "utf-8") -> Any:
     return json.loads(urlsafe_b64decode(to_bytes(text, charset)))

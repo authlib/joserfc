@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 
 class JoseError(Exception):
@@ -9,7 +9,7 @@ class JoseError(Exception):
     #: long-string to describe this error
     description: str = ""
 
-    def __init__(self, description: Optional[str] = None):
+    def __init__(self, description: str | None = None):
         if description is not None:
             self.description = description
 

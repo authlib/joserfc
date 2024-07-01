@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing as t
 from .models import JWEAlgModel, JWEEncModel, JWEZipModel
 from ..registry import (
@@ -38,7 +39,7 @@ class JWERegistry:
     def __init__(
             self,
             header_registry: t.Optional[HeaderRegistryDict] = None,
-            algorithms: t.Optional[t.List[str]] = None,
+            algorithms: list[str] | None = None,
             verify_all_recipients: bool = True,
             strict_check_header: bool = True):
         self.header_registry: HeaderRegistryDict = {}

@@ -1,4 +1,5 @@
-import typing as t
+from __future__ import annotations
+from typing import Any, Literal
 from abc import ABCMeta, abstractmethod
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
@@ -22,9 +23,9 @@ from ..util import to_bytes
 
 def load_pem_key(
         raw: bytes,
-        ssh_type: t.Optional[bytes] = None,
-        password: t.Optional[bytes] = None) -> t.Any:
-    key: t.Any
+        ssh_type: bytes | None = None,
+        password: bytes | None = None) -> Any:
+    key: Any
     if ssh_type and raw.startswith(ssh_type):
         key = load_ssh_public_key(raw, backend=default_backend())
 
@@ -46,10 +47,10 @@ def load_pem_key(
 
 
 def dump_pem_key(
-        key: t.Any,
-        encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
-        private: t.Optional[bool] = False,
-        password: t.Optional[t.Any] = None) -> bytes:
+        key: Any,
+        encoding: Literal["PEM", "DER"] | None = None,
+        private: bool | None = False,
+        password: Any | None = None) -> bytes:
     """Export key into PEM/DER format bytes.
 
     :param key: native cryptography key
@@ -87,13 +88,13 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
     ssh_type: bytes
 
     @classmethod
-    def convert_raw_key_to_dict(cls, raw_key: t.Any, private: bool) -> DictKey:
+    def convert_raw_key_to_dict(cls, raw_key: Any, private: bool) -> DictKey:
         if private:
             return cls.export_private_key(raw_key)
         return cls.export_public_key(raw_key)
 
     @classmethod
-    def import_from_dict(cls, value: DictKey) -> t.Any:
+    def import_from_dict(cls, value: DictKey) -> Any:
         if "d" in value:
             return cls.import_private_key(value)
         return cls.import_public_key(value)
@@ -102,7 +103,7 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
     def import_from_bytes(
             cls,
             value: bytes,
-            password: t.Optional[t.Any] = None) -> t.Any:
+            password: Any | None = None) -> Any:
         if password is not None:
             password = to_bytes(password)
         return load_pem_key(value, cls.ssh_type, password)
@@ -110,9 +111,9 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
     @staticmethod
     def as_bytes(
             key: GenericKey,
-            encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
-            private: t.Optional[bool] = False,
-            password: t.Optional[t.Any] = None) -> bytes:
+            encoding: Literal["PEM", "DER"] | None = None,
+            private: bool | None = False,
+            password: Any | None = None) -> bytes:
         if private is True:
             return dump_pem_key(key.private_key, encoding, private, password)
         elif private is False:
@@ -121,20 +122,20 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def import_private_key(value) -> t.Any:
+    def import_private_key(value) -> Any:
         pass
 
     @staticmethod
     @abstractmethod
-    def import_public_key(value) -> t.Any:
+    def import_public_key(value) -> Any:
         pass
 
     @staticmethod
     @abstractmethod
-    def export_private_key(value) -> t.Any:
+    def export_private_key(value) -> Any:
         pass
 
     @staticmethod
     @abstractmethod
-    def export_public_key(value) -> t.Any:
+    def export_public_key(value) -> Any:
         pass

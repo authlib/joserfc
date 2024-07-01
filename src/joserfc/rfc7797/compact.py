@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing as t
 import re
 from ..registry import Header
@@ -22,9 +23,9 @@ from .registry import JWSRegistry
 
 def serialize_compact(
         protected: Header,
-        payload: t.Union[bytes, str],
+        payload: bytes | str,
         private_key: KeyFlexible,
-        algorithms: t.Optional[t.List[str]] = None,
+        algorithms: list[str] | None = None,
         registry: t.Optional[_JWSRegistry] = None) -> str:
 
     if "b64" not in protected:
@@ -55,10 +56,10 @@ def serialize_compact(
 
 
 def deserialize_compact(
-        value: t.Union[bytes, str],
+        value: bytes | str,
         public_key: KeyFlexible,
-        payload: t.Optional[t.Union[bytes, str]] = None,
-        algorithms: t.Optional[t.List[str]] = None,
+        payload: t.Optional[bytes | str] = None,
+        algorithms: list[str] | None = None,
         registry: t.Optional[JWSRegistry] = None) -> CompactSignature:
     obj = _extract_compact(to_bytes(value), payload)
     if obj is None:
@@ -91,11 +92,11 @@ def deserialize_compact(
 _re_urlsafe = re.compile("^[a-zA-Z0-9-_~]+$")
 
 
-def __is_urlsafe_characters(s: t.Union[bytes, str]) -> bool:
+def __is_urlsafe_characters(s: bytes | str) -> bool:
     return bool(_re_urlsafe.match(to_str(s)))
 
 
-def _extract_compact(value: bytes, payload: t.Optional[t.Union[bytes, str]] = None) -> t.Any:
+def _extract_compact(value: bytes, payload: t.Optional[bytes | str] = None) -> t.Any:
     parts = value.split(b".")
     if len(parts) != 3:
         raise ValueError("Invalid JSON Web Signature")

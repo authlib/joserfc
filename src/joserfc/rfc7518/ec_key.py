@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing as t
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -55,7 +56,7 @@ class ECBinding(CryptographyBinding):
         return private_numbers.private_key(default_backend())
 
     @staticmethod
-    def export_private_key(key: EllipticCurvePrivateKey) -> t.Dict[str, str]:
+    def export_private_key(key: EllipticCurvePrivateKey) -> dict[str, str]:
         numbers = key.private_numbers()
         return {
             "crv": CURVES_DSS[key.curve.name],
@@ -75,7 +76,7 @@ class ECBinding(CryptographyBinding):
         return public_numbers.public_key(default_backend())
 
     @staticmethod
-    def export_public_key(key: EllipticCurvePublicKey) -> t.Dict[str, str]:
+    def export_public_key(key: EllipticCurvePublicKey) -> dict[str, str]:
         numbers = key.public_numbers()
         return {
             "crv": CURVES_DSS[numbers.curve.name],
@@ -107,7 +108,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         return self.raw_value
 
     @property
-    def private_key(self) -> t.Optional[EllipticCurvePrivateKey]:
+    def private_key(self) -> EllipticCurvePrivateKey | None:
         if isinstance(self.raw_value, EllipticCurvePrivateKey):
             return self.raw_value
         return None
@@ -130,7 +131,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
     def generate_key(
             cls,
             crv: str = "P-256",
-            parameters: t.Optional[KeyParameters] = None,
+            parameters: KeyParameters | None = None,
             private: bool = True,
             auto_kid: bool = False) -> "ECKey":
         """Generate a ``ECKey`` with the given "crv" value.

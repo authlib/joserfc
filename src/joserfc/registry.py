@@ -1,6 +1,7 @@
-import typing as t
+from __future__ import annotations
+from typing import Any, Dict, Callable, Union
 
-Header = t.Dict[str, t.Any]
+Header = Dict[str, Any]
 
 
 def is_str(value: str) -> None:
@@ -24,7 +25,7 @@ def is_bool(value: bool) -> None:
         raise ValueError("must be an bool")
 
 
-def is_list_str(values: t.List[str]) -> None:
+def is_list_str(values: list[str]) -> None:
     if not isinstance(values, list):
         raise ValueError("must be a list[str]")
 
@@ -32,13 +33,13 @@ def is_list_str(values: t.List[str]) -> None:
         raise ValueError("must be a list[str]")
 
 
-def is_jwk(value: t.Dict[str, t.Any]) -> None:
+def is_jwk(value: Dict[str, Any]) -> None:
     if not isinstance(value, dict):
         raise ValueError("must be a JWK")
 
 
-def in_choices(choices: t.List[str]) -> t.Callable[[t.Union[str, t.List[str]]], None]:
-    def _is_one_of(value: t.Union[str, t.List[str]]) -> None:
+def in_choices(choices: list[str]) -> Callable[[Union[str, list[str]]], None]:
+    def _is_one_of(value: str | list[str]) -> None:
         if isinstance(value, list):
             if not all(v in choices for v in value):
                 raise ValueError(f"must be one of {choices}")
@@ -49,12 +50,12 @@ def in_choices(choices: t.List[str]) -> t.Callable[[t.Union[str, t.List[str]]], 
     return _is_one_of
 
 
-def not_support(_: t.Any) -> None:
+def not_support(_: Any) -> None:
     raise ValueError("is not supported")
 
 
-Validate = t.Callable[[t.Any], None]
-_value_validators: t.Dict[str, Validate] = {
+Validate = Callable[[Any], None]
+_value_validators: Dict[str, Validate] = {
     "str": is_str,
     "list[str]": is_list_str,
     "int": is_int,
@@ -67,7 +68,7 @@ _value_validators: t.Dict[str, Validate] = {
 
 class HeaderParameter:
     """Define the header parameter for JWS and JWE."""
-    def __init__(self, description: str, validate: t.Union[str, Validate], required: bool = False):
+    def __init__(self, description: str, validate: str | Validate, required: bool = False):
         #: a short description of the header parameter
         self.description = description
         #: a function for validating the header parameter's value
@@ -77,7 +78,7 @@ class HeaderParameter:
 
 
 #: Define header parameters for JWS and JWE
-HeaderRegistryDict = t.Dict[str, HeaderParameter]
+HeaderRegistryDict = Dict[str, HeaderParameter]
 
 
 class KeyParameter:
@@ -85,8 +86,8 @@ class KeyParameter:
     def __init__(
             self,
             description: str,
-            validate: t.Union[str, Validate],
-            private: t.Optional[bool] = None,
+            validate: str | Validate,
+            private: bool | None = None,
             required: bool = False):
         #: a short description of the key parameter
         self.description: str = description
@@ -99,15 +100,15 @@ class KeyParameter:
 
 
 class KeyOperation:
-    def __init__(self, description: str, use: str, private: t.Optional[bool]):
+    def __init__(self, description: str, use: str, private: bool | None):
         self.description = description
         self.use = use
         self.private = private
 
 
 #: Define parameters for JWK
-KeyParameterRegistryDict = t.Dict[str, KeyParameter]
-KeyOperationRegistryDict = t.Dict[str, KeyOperation]
+KeyParameterRegistryDict = Dict[str, KeyParameter]
+KeyOperationRegistryDict = Dict[str, KeyOperation]
 
 #: Basic JWS header registry
 JWS_HEADER_REGISTRY: HeaderRegistryDict = {

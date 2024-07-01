@@ -1,5 +1,5 @@
-import os
-import typing as t
+from __future__ import annotations
+from os import urandom
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
@@ -151,7 +151,7 @@ class AESGCMAlgModel(JWEKeyWrapping):
         #: The "iv" (initialization vector) Header Parameter value is the
         #: base64url-encoded representation of the 96-bit IV value
         iv_size = 96
-        iv = os.urandom(iv_size // 8)
+        iv = urandom(iv_size // 8)
 
         cipher = Cipher(AES(op_key), GCM(iv), backend=default_backend())
         enc = cipher.encryptor()
@@ -193,7 +193,7 @@ class ECDHESAlgModel(JWEKeyAgreement):
     }
 
     # https://tools.ietf.org/html/rfc7518#section-4.6
-    def __init__(self, key_wrapping: t.Optional[JWEKeyWrapping] = None):
+    def __init__(self, key_wrapping: JWEKeyWrapping | None = None):
         if key_wrapping is None:
             self.name = "ECDH-ES"
             self.description = "ECDH-ES in the Direct Key Agreement mode"
@@ -264,7 +264,7 @@ class PBES2HSAlgModel(JWEKeyEncryption):
     def encrypt_cek(self, cek: bytes, recipient: Recipient[OctKey]) -> bytes:
         headers = recipient.headers()
         if "p2s" not in headers:
-            p2s = os.urandom(16)
+            p2s = urandom(16)
             recipient.add_header("p2s", urlsafe_b64encode(p2s).decode("ascii"))
         else:
             p2s = urlsafe_b64decode(to_bytes(headers["p2s"]))
@@ -304,7 +304,7 @@ A256KW = AESAlgModel(256, True)  # A256KW, Recommended
 
 
 #: https://www.rfc-editor.org/rfc/rfc7518#section-4.1
-JWE_ALG_MODELS: t.List[JWEAlgModel] = [
+JWE_ALG_MODELS: list[JWEAlgModel] = [
     # Avoid all RSA-PKCS1 v1.5 encryption algorithms ([RFC8017], Section 7.2),
     # preferring RSAES-OAEP ([RFC8017], Section 7.1).
     # https://www.rfc-editor.org/rfc/rfc8725#section-3.2

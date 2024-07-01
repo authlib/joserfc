@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing as t
 from ..rfc7515.json import verify_signature
 from ..rfc7515.types import JSONSignatureDict
@@ -24,9 +25,9 @@ from .registry import JWSRegistry
 
 def serialize_json(
         member: HeaderDict,
-        payload: t.Union[str, bytes],
+        payload: bytes | str,
         private_key: KeyFlexible,
-        algorithms: t.Optional[t.List[str]] = None,
+        algorithms: list[str] | None = None,
         registry: t.Optional[_JWSRegistry] = None) -> FlattenedJSONSerialization:
 
     _member = HeaderMember(**member)
@@ -68,7 +69,7 @@ def serialize_json(
 def deserialize_json(
         value: FlattenedJSONSerialization,
         public_key: KeyFlexible,
-        algorithms: t.Optional[t.List[str]] = None,
+        algorithms: list[str] | None = None,
         registry: t.Optional[_JWSRegistry] = None) -> FlattenedJSONSignature:
     obj = _extract_json(value)
     if obj is None:

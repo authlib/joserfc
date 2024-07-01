@@ -1,4 +1,4 @@
-import typing as t
+from __future__ import annotations
 from ..rfc7516.models import (
     Recipient,
     JWEKeyAgreement,
@@ -36,7 +36,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
     key_types = ["EC", "OKP"]
     tag_aware = True
 
-    def __init__(self, key_wrapping: t.Optional[JWEKeyWrapping]):
+    def __init__(self, key_wrapping: JWEKeyWrapping | None):
         if key_wrapping is None:
             self.name = "ECDH-1PU"
             self.description = "ECDH-1PU using one-pass KDF and CEK in the Direct Key Agreement mode"
@@ -86,7 +86,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
             self,
             enc: JWEEncModel,
             recipient: Recipient[ECKey],
-            tag: t.Optional[bytes]) -> bytes:
+            tag: bytes | None) -> bytes:
         sender_key = recipient.sender_key
         recipient_key = recipient.recipient_key
         ephemeral_key = recipient.ephemeral_key
@@ -104,7 +104,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
             self,
             enc: JWEEncModel,
             recipient: Recipient[ECKey],
-            tag: t.Optional[bytes]) -> bytes:
+            tag: bytes | None) -> bytes:
 
         self._check_enc(enc)
         headers = recipient.headers()

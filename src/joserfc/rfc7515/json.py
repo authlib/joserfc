@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing as t
 import copy
 from .model import (
@@ -24,13 +25,13 @@ FindKey = t.Callable[[HeaderMember], t.Any]
 
 
 def sign_general_json(
-        members: t.List[HeaderDict],
+        members: list[HeaderDict],
         payload: bytes,
         registry: JWSRegistry,
         find_key: FindKey) -> GeneralJSONSerialization:
 
     payload_segment = urlsafe_b64encode(payload)
-    signatures: t.List[JSONSignatureDict] = [
+    signatures: list[JSONSignatureDict] = [
         __sign_member(payload_segment, HeaderMember(**member), registry, find_key)
         for member in members
     ]
@@ -83,7 +84,7 @@ def extract_general_json(value: GeneralJSONSerialization) -> GeneralJSONSignatur
     except (TypeError, ValueError):
         raise DecodeError("Invalid payload")
 
-    signatures: t.List[JSONSignatureDict] = value["signatures"]
+    signatures: list[JSONSignatureDict] = value["signatures"]
     members = [__signature_to_member(sig) for sig in signatures]
     obj = GeneralJSONSignature(members, payload)
     obj.signatures = signatures

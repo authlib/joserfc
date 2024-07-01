@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing as t
 import warnings
 from ._keys import (
@@ -77,12 +78,12 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) ->
     return rv_key
 
 
-def _normalize_key(key: KeyBase) -> t.Union[Key, KeySet]:
-    if isinstance(key, (str, bytes)):
+def _normalize_key(key: KeyBase) -> Key | KeySet:
+    if isinstance(key, (str, bytes)):  # pragma: no cover
         warnings.warn(
             "Please use a Key object instead of bytes or string.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return OctKey.import_key(key)  # pragma: no cover
+        return OctKey.import_key(key)
     return key

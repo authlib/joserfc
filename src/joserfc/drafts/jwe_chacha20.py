@@ -1,4 +1,4 @@
-from typing import Tuple
+from __future__ import annotations
 from Crypto.Cipher import ChaCha20_Poly1305
 from ..rfc7516.registry import JWERegistry
 from ..rfc7516.models import JWEEncModel
@@ -16,7 +16,7 @@ class ChaCha20EncModel(JWEEncModel):
         self.description = description
         self.iv_size = iv_size
 
-    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> Tuple[bytes, bytes]:
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> tuple[bytes, bytes]:
         """Key Encryption with AEAD_CHACHA20_POLY1305
         """
         chacha = ChaCha20_Poly1305.new(key=cek, nonce=iv)

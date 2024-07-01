@@ -1,4 +1,5 @@
-import typing as t
+from __future__ import annotations
+from typing import Any, ClassVar
 from abc import ABCMeta, abstractmethod
 from .types import SegmentsDict, JSONSignatureDict
 from ..errors import InvalidKeyTypeError
@@ -9,7 +10,7 @@ class HeaderMember:
     """A header member of the JSON signature. It is combined with protected header,
     and unprotected header.
     """
-    def __init__(self, protected: t.Optional[Header] = None, header: t.Optional[Header] = None):
+    def __init__(self, protected: Header | None = None, header: Header | None = None):
         #: protected header
         self.protected = protected
         #: unprotected header
@@ -46,21 +47,21 @@ class CompactSignature:
 
 
 class FlattenedJSONSignature:
-    """"JSON Signature object that represents a flattened JSON serialization."""
+    """JSON Signature object that represents a flattened JSON serialization."""
 
     #: mark it as flattened
-    flattened: t.ClassVar[bool] = True
+    flattened: ClassVar[bool] = True
 
     def __init__(self, member: HeaderMember, payload: bytes):
         #: the only header member
         self.member = member
         #: payload content
         self.payload = payload
-        self.signature: t.Optional[JSONSignatureDict] = None
+        self.signature: JSONSignatureDict | None = None
         self.segments: SegmentsDict = {}
 
     @property
-    def members(self) -> t.List[HeaderMember]:
+    def members(self) -> list[HeaderMember]:
         return [self.member]
 
     def headers(self) -> Header:
@@ -68,17 +69,17 @@ class FlattenedJSONSignature:
 
 
 class GeneralJSONSignature:
-    """"JSON Signature object that represents a general JSON serialization."""
+    """JSON Signature object that represents a general JSON serialization."""
 
     #: mark it as not flattened (general)
-    flattened: t.ClassVar[bool] = False
+    flattened: ClassVar[bool] = False
 
-    def __init__(self, members: t.List[HeaderMember], payload: bytes):
+    def __init__(self, members: list[HeaderMember], payload: bytes):
         #: a list of header members
         self.members = members
         #: payload content
         self.payload = payload
-        self.signatures: t.List[JSONSignatureDict] = []
+        self.signatures: list[JSONSignatureDict] = []
         self.segments: SegmentsDict = {}
 
 
@@ -94,12 +95,12 @@ class JWSAlgModel(object, metaclass=ABCMeta):
     algorithm_type = "JWS"
     algorithm_location = "sig"
 
-    def check_key_type(self, key: t.Any) -> None:
+    def check_key_type(self, key: Any) -> None:
         if key.key_type != self.key_type:
             raise InvalidKeyTypeError(f'Algorithm "{self.name}" requires "{self.key_type}" key')
 
     @abstractmethod
-    def sign(self, msg: bytes, key: t.Any) -> bytes:
+    def sign(self, msg: bytes, key: Any) -> bytes:
         """Sign the text msg with a private/sign key.
 
         :param msg: message bytes to be signed
@@ -108,7 +109,7 @@ class JWSAlgModel(object, metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def verify(self, msg: bytes, sig: bytes, key: t.Any) -> bool:
+    def verify(self, msg: bytes, sig: bytes, key: Any) -> bool:
         """Verify the signature of text msg with a public/verify key.
 
         :param msg: message bytes to be signed

@@ -1,5 +1,6 @@
-import os
-import typing as t
+from __future__ import annotations
+from typing import Any
+from os import urandom
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
@@ -31,7 +32,7 @@ class OctBinding(NativeKeyBinding):
         return urlsafe_b64decode(to_bytes(value["k"]))
 
     @classmethod
-    def import_from_bytes(cls, value: bytes, password: t.Optional[t.Any] = None) -> bytes:
+    def import_from_bytes(cls, value: bytes, password: Any | None = None) -> bytes:
         # security check
         if value.startswith(POSSIBLE_UNSAFE_KEYS):
             raise ValueError("This key may not be safe to import")
@@ -51,7 +52,7 @@ class OctKey(SymmetricKey):
     def generate_key(
             cls,
             key_size: int = 256,
-            parameters: t.Optional[KeyParameters] = None,
+            parameters: KeyParameters | None = None,
             private: bool = True,
             auto_kid: bool = False) -> "OctKey":
         """Generate a ``OctKey`` with the given bit size (not bytes).
@@ -67,7 +68,7 @@ class OctKey(SymmetricKey):
         if key_size % 8 != 0:
             raise ValueError("Invalid bit size for oct key")
 
-        value = os.urandom(key_size // 8)
+        value = urandom(key_size // 8)
         raw_key = to_bytes(value)
         key: OctKey = cls(raw_key, raw_key, parameters)
         if auto_kid:

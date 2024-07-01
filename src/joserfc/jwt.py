@@ -1,5 +1,5 @@
+from __future__ import annotations
 import json
-import typing as t
 from .rfc7519.claims import Claims, convert_claims, check_sensitive_data
 from .rfc7519.registry import ClaimsOption, JWTClaimsRegistry
 from .jws import (
@@ -27,8 +27,6 @@ __all__ = [
     "check_sensitive_data",
 ]
 
-JWTRegistry = t.Union[JWSRegistry, JWERegistry]
-
 
 class Token:
     """The extracted token object, which contains ``header`` and ``claims``.
@@ -47,8 +45,8 @@ def encode(
         header: Header,
         claims: Claims,
         key: KeyFlexible,
-        algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWTRegistry] = None) -> str:
+        algorithms: list[str] | None = None,
+        registry: JWSRegistry | JWERegistry | None = None) -> str:
     """Encode a JSON Web Token with the given header, and claims.
 
     :param header: A dict of the JWT header
@@ -67,10 +65,10 @@ def encode(
 
 
 def decode(
-        value: t.Union[bytes, str],
+        value: bytes | str,
         key: KeyFlexible,
-        algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWTRegistry] = None) -> Token:
+        algorithms: list[str] | None = None,
+        registry: JWSRegistry | JWERegistry | None = None) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests.
 
@@ -99,8 +97,8 @@ def decode(
 def _decode_jwe(
         value: bytes,
         key: KeyFlexible,
-        algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWERegistry] = None) -> t.Tuple[Header, bytes]:
+        algorithms: list[str] | None = None,
+        registry: JWERegistry | None = None) -> tuple[Header, bytes]:
     jwe_obj = decrypt_compact(value, key, algorithms, registry)
     assert jwe_obj.plaintext is not None
     return jwe_obj.headers(), jwe_obj.plaintext
@@ -109,8 +107,8 @@ def _decode_jwe(
 def _decode_jws(
         value: bytes,
         key: KeyFlexible,
-        algorithms: t.Optional[t.List[str]] = None,
-        registry: t.Optional[JWSRegistry] = None) -> t.Tuple[Header, bytes]:
+        algorithms: list[str] | None = None,
+        registry: JWSRegistry | None = None) -> tuple[Header, bytes]:
     jws_obj = deserialize_compact(value, key, algorithms, registry)
     assert jws_obj.payload is not None
     return jws_obj.headers(), jws_obj.payload

@@ -1,4 +1,5 @@
-from typing import Dict, List, Optional
+from __future__ import annotations
+from typing import Dict
 from .model import JWSAlgModel
 from ..registry import (
     JWS_HEADER_REGISTRY,
@@ -21,12 +22,12 @@ class JWSRegistry:
     """
     default_header_registry: HeaderRegistryDict = JWS_HEADER_REGISTRY
     algorithms: Dict[str, JWSAlgModel] = {}
-    recommended: List[str] = []
+    recommended: list[str] = []
 
     def __init__(
             self,
-            header_registry: Optional[HeaderRegistryDict] = None,
-            algorithms: Optional[List[str]] = None,
+            header_registry: HeaderRegistryDict | None = None,
+            algorithms: list[str] | None = None,
             strict_check_header: bool = True):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(self.default_header_registry)
@@ -70,7 +71,7 @@ class JWSRegistry:
 default_registry = JWSRegistry()
 
 
-def construct_registry(algorithms: Optional[List[str]] = None) -> JWSRegistry:
+def construct_registry(algorithms: list[str] | None = None) -> JWSRegistry:
     if algorithms:
         registry = JWSRegistry(algorithms=algorithms)
     else:
