@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Literal
+from typing import Any, Literal, cast
 from abc import ABCMeta, abstractmethod
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
@@ -73,15 +73,17 @@ def dump_pem_key(
             encryption_algorithm = NoEncryption()
         else:
             encryption_algorithm = BestAvailableEncryption(to_bytes(password))
-        return key.private_bytes(
+        value = key.private_bytes(
             encoding=encoding_enum,
             format=PrivateFormat.PKCS8,
             encryption_algorithm=encryption_algorithm,
         )
-    return key.public_bytes(
-        encoding=encoding_enum,
-        format=PublicFormat.SubjectPublicKeyInfo,
-    )
+    else:
+        value = key.public_bytes(
+            encoding=encoding_enum,
+            format=PublicFormat.SubjectPublicKeyInfo,
+        )
+    return cast(bytes, value)
 
 
 class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
@@ -90,8 +92,10 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
     @classmethod
     def convert_raw_key_to_dict(cls, raw_key: Any, private: bool) -> DictKey:
         if private:
-            return cls.export_private_key(raw_key)
-        return cls.export_public_key(raw_key)
+            value = cls.export_private_key(raw_key)
+        else:
+            value = cls.export_public_key(raw_key)
+        return cast(DictKey, value)
 
     @classmethod
     def import_from_dict(cls, value: DictKey) -> Any:
@@ -122,20 +126,20 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def import_private_key(value) -> Any:
+    def import_private_key(value: Any) -> Any:
         pass
 
     @staticmethod
     @abstractmethod
-    def import_public_key(value) -> Any:
+    def import_public_key(value: Any) -> Any:
         pass
 
     @staticmethod
     @abstractmethod
-    def export_private_key(value) -> Any:
+    def export_private_key(value: Any) -> Any:
         pass
 
     @staticmethod
     @abstractmethod
-    def export_public_key(value) -> Any:
+    def export_public_key(value: Any) -> Any:
         pass

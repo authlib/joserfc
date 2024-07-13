@@ -227,7 +227,7 @@ def serialize_json(
     if registry is None:
         registry = construct_registry(algorithms)
 
-    def find_key(obj: Any):
+    def find_key(obj: Any) -> Key:
         return guess_key(private_key, obj, True)
 
     _payload = to_bytes(payload)
@@ -271,7 +271,7 @@ def deserialize_json(
     if registry is None:
         registry = construct_registry(algorithms)
 
-    def find_key(obj: Any):
+    def find_key(obj: Any) -> Key:
         return guess_key(public_key, obj)
 
     if "signatures" in value:

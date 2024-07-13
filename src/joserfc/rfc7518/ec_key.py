@@ -22,7 +22,7 @@ from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
 ECDictKey = t.TypedDict("ECDictKey", {
-    "crv": t.Literal["P-256", "P-384", "P-521"],
+    "crv": str,
     "x": str,
     "y": str,
     "d": str,  # optional
@@ -56,7 +56,7 @@ class ECBinding(CryptographyBinding):
         return private_numbers.private_key(default_backend())
 
     @staticmethod
-    def export_private_key(key: EllipticCurvePrivateKey) -> dict[str, str]:
+    def export_private_key(key: EllipticCurvePrivateKey) -> ECDictKey:
         numbers = key.private_numbers()
         return {
             "crv": CURVES_DSS[key.curve.name],
@@ -76,7 +76,7 @@ class ECBinding(CryptographyBinding):
         return public_numbers.public_key(default_backend())
 
     @staticmethod
-    def export_public_key(key: EllipticCurvePublicKey) -> dict[str, str]:
+    def export_public_key(key: EllipticCurvePublicKey) -> ECDictKey:
         numbers = key.public_numbers()
         return {
             "crv": CURVES_DSS[numbers.curve.name],

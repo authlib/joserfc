@@ -93,7 +93,8 @@ def extract_flattened_json(data: FlattenedJSONSerialization) -> FlattenedJSONEnc
 
 
 def __extract_segments(
-        data: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization]):  # type: ignore[no-untyped-def]
+        data: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization]
+) -> t.Tuple[t.Dict[str, bytes], t.Dict[str, bytes], t.Optional[bytes]]:
     base64_segments: t.Dict[str, bytes] = {
         "iv": to_bytes(data["iv"]),
         "ciphertext": to_bytes(data["ciphertext"]),

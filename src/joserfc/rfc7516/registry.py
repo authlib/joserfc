@@ -51,12 +51,12 @@ class JWERegistry:
         self.strict_check_header = strict_check_header
 
     @classmethod
-    def register(cls, model: JWEAlgorithm):
+    def register(cls, model: JWEAlgorithm) -> None:
         cls.algorithms[model.algorithm_location][model.name] = model  # type: ignore
         if model.recommended:
             cls.recommended.append(model.name)
 
-    def check_header(self, header: Header, check_more=False):
+    def check_header(self, header: Header, check_more: bool = False) -> None:
         """Check and validate the fields in header part of a JWS object."""
         check_crit_header(header)
         validate_registry_header(self.header_registry, header)
@@ -77,24 +77,29 @@ class JWERegistry:
 
         :param name: value of the ``alg``, e.g. ``ECDH-ES``, ``A128KW``
         """
-        return self._get_algorithm("alg", name)
+        registry = self.algorithms["alg"]
+        self._check_algorithm(name, registry)
+        return registry[name]
 
     def get_enc(self, name: str) -> JWEEncModel:
         """Get the allowed ("enc") algorithm instance of the given name.
 
         :param name: value of the ``enc``, e.g. ``A128CBC-HS256``, ``A128GCM``
         """
-        return self._get_algorithm("enc", name)
+        registry = self.algorithms["enc"]
+        self._check_algorithm(name, registry)
+        return registry[name]
 
     def get_zip(self, name: str) -> JWEZipModel:
         """Get the allowed ("zip") algorithm instance of the given name.
 
         :param name: value of the ``zip``, e.g. ``DEF``
         """
-        return self._get_algorithm("zip", name)
+        registry = self.algorithms["zip"]
+        self._check_algorithm(name, registry)
+        return registry[name]
 
-    def _get_algorithm(self, location: t.Literal["alg", "enc", "zip"], name: str):
-        registry: t.Dict[str, JWEAlgorithm] = self.algorithms[location]  # type: ignore
+    def _check_algorithm(self, name: str, registry: dict[str, t.Any]) -> None:
         if name not in registry:
             raise ValueError(f'Algorithm of "{name}" is not supported')
 
@@ -105,7 +110,6 @@ class JWERegistry:
 
         if name not in allowed:
             raise ValueError(f'Algorithm of "{name}" is not allowed')
-        return registry[name]
 
 
 default_registry = JWERegistry()

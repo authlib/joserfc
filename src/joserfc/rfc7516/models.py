@@ -1,9 +1,10 @@
+from __future__ import annotations
 import os
 import typing as t
 from abc import ABCMeta, abstractmethod
 from ..registry import Header, HeaderRegistryDict
 from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
-from .._keys import Key, ECKey
+from .._keys import Key, ECKey, OctKey
 
 KeyType = t.TypeVar("KeyType")
 
@@ -12,8 +13,8 @@ class Recipient(t.Generic[KeyType]):
     def __init__(
             self,
             parent: t.Union["CompactEncryption", "GeneralJSONEncryption", "FlattenedJSONEncryption"],
-            header: t.Optional[Header] = None,
-            recipient_key: t.Optional[KeyType] = None):
+            header: Header | None = None,
+            recipient_key: KeyType | None = None):
         self.__parent = parent
         self.header = header
         self.recipient_key = recipient_key
@@ -30,7 +31,7 @@ class Recipient(t.Generic[KeyType]):
             rv.update(self.header)
         return rv
 
-    def add_header(self, k: str, v: t.Any):
+    def add_header(self, k: str, v: t.Any) -> None:
         if isinstance(self.__parent, CompactEncryption):
             self.__parent.protected.update({k: v})
         elif self.header:
@@ -38,7 +39,7 @@ class Recipient(t.Generic[KeyType]):
         else:
             self.header = {k: v}
 
-    def set_kid(self, kid: str):
+    def set_kid(self, kid: str) -> None:
         self.add_header("kid", kid)
 
 
@@ -46,19 +47,19 @@ class CompactEncryption:
     """An object to represent the JWE Compact Serialization. It is usually returned by
     ``decrypt_compact`` method.
     """
-    def __init__(self, protected: Header, plaintext: t.Optional[bytes] = None):
+    def __init__(self, protected: Header, plaintext: bytes | None = None):
         #: protected header in dict
         self.protected = protected
         #: the plaintext in bytes
         self.plaintext = plaintext
-        self.recipient: t.Optional[Recipient] = None
+        self.recipient: Recipient[t.Any] | None = None
         self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
     def headers(self) -> Header:
         return self.protected
 
-    def attach_recipient(self, key: Key, header: t.Optional[Header] = None):
+    def attach_recipient(self, key: Key, header: Header | None = None) -> None:
         """Add a recipient to the JWE Compact Serialization. Please add a key that
         comply with the given "alg" value.
 
@@ -71,7 +72,7 @@ class CompactEncryption:
         self.recipient = recipient
 
     @property
-    def recipients(self) -> t.List[Recipient]:
+    def recipients(self) -> list[Recipient[t.Any]]:
         if self.recipient is not None:
             return [self.recipient]
         return []
@@ -89,14 +90,14 @@ class BaseJSONEncryption(metaclass=ABCMeta):
     #: an optional additional authenticated data
     aad: t.Optional[bytes]
     #: a list of recipients
-    recipients: t.List[Recipient]
+    recipients: t.List[Recipient[t.Any]]
 
     def __init__(
             self,
             protected: Header,
-            plaintext: t.Optional[bytes] = None,
-            unprotected: t.Optional[Header] = None,
-            aad: t.Optional[bytes] = None):
+            plaintext: bytes | None = None,
+            unprotected: Header | None = None,
+            aad: bytes | None = None):
         self.protected = protected
         self.plaintext = plaintext
         self.unprotected = unprotected
@@ -106,7 +107,7 @@ class BaseJSONEncryption(metaclass=ABCMeta):
         self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
 
     @abstractmethod
-    def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[Key] = None):
+    def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:
         """Add a recipient to the JWE JSON Serialization. Please add a key that
         comply with the "alg" to this recipient.
 
@@ -131,7 +132,7 @@ class GeneralJSONEncryption(BaseJSONEncryption):
     """
     flattened = False
 
-    def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[Key] = None):
+    def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:
         recipient = Recipient(self, header, key)
         self.recipients.append(recipient)
 
@@ -152,7 +153,7 @@ class FlattenedJSONEncryption(BaseJSONEncryption):
     """
     flattened = True
 
-    def add_recipient(self, header: t.Optional[Header] = None, key: t.Optional[Key] = None):
+    def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:
         self.recipients = [Recipient(self, header, key)]
 
 
@@ -178,7 +179,7 @@ class JWEEncModel(object, metaclass=ABCMeta):
         return iv
 
     @abstractmethod
-    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> t.Tuple[bytes, bytes]:
+    def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> tuple[bytes, bytes]:
         pass
 
     @abstractmethod
@@ -216,11 +217,11 @@ class KeyManagement:
     def direct_mode(self) -> bool:
         return self.key_size is None
 
-    def check_key_type(self, key: Key):
+    def check_key_type(self, key: Key) -> None:
         if key.key_type not in self.key_types:
             raise InvalidKeyTypeError()
 
-    def prepare_recipient_header(self, recipient: Recipient):
+    def prepare_recipient_header(self, recipient: Recipient[t.Any]) -> None:
         raise NotImplementedError()
 
 
@@ -228,7 +229,7 @@ class JWEDirectEncryption(KeyManagement, metaclass=ABCMeta):
     key_types = ["oct"]
 
     @abstractmethod
-    def compute_cek(self, size: int, recipient: Recipient) -> bytes:
+    def compute_cek(self, size: int, recipient: Recipient[OctKey]) -> bytes:
         pass
 
 
@@ -238,11 +239,11 @@ class JWEKeyEncryption(KeyManagement, metaclass=ABCMeta):
         return False
 
     @abstractmethod
-    def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
+    def encrypt_cek(self, cek: bytes, recipient: Recipient[t.Any]) -> bytes:
         pass
 
     @abstractmethod
-    def decrypt_cek(self, recipient: Recipient) -> bytes:
+    def decrypt_cek(self, recipient: Recipient[t.Any]) -> bytes:
         pass
 
 
@@ -254,7 +255,7 @@ class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
     def direct_mode(self) -> bool:
         return False
 
-    def check_op_key(self, op_key: bytes):
+    def check_op_key(self, op_key: bytes) -> None:
         if len(op_key) * 8 != self.key_size:
             raise InvalidKeyLengthError(f"A key of size {self.key_size} bits MUST be used")
 
@@ -267,11 +268,11 @@ class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def encrypt_cek(self, cek: bytes, recipient: Recipient) -> bytes:
+    def encrypt_cek(self, cek: bytes, recipient: Recipient[OctKey]) -> bytes:
         pass
 
     @abstractmethod
-    def decrypt_cek(self, recipient: Recipient) -> bytes:
+    def decrypt_cek(self, recipient: Recipient[OctKey]) -> bytes:
         pass
 
 
@@ -280,7 +281,7 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
     tag_aware: bool = False
     key_wrapping: t.Optional[JWEKeyWrapping]
 
-    def prepare_ephemeral_key(self, recipient: Recipient[ECKey]):
+    def prepare_ephemeral_key(self, recipient: Recipient[ECKey]) -> None:
         recipient_key = recipient.recipient_key
         assert recipient_key is not None
         self.check_key_type(recipient_key)

@@ -72,6 +72,7 @@ exclude_lines = [
 ]
 
 [tool.mypy]
+strict = true
 python_version = "3.8"
 files = ["src/joserfc"]
 show_error_codes = true

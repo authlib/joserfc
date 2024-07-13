@@ -11,7 +11,7 @@ from ..jws import (
     serialize_json as _serialize_json,
     deserialize_json as _deserialize_json,
 )
-from ..jwk import KeyFlexible, guess_key
+from ..jwk import Key, KeyFlexible, guess_key
 from ..util import (
     to_bytes,
     to_str,
@@ -84,7 +84,7 @@ def deserialize_json(
 
     payload_segment = obj.segments["payload"]
 
-    def find_key(d: t.Any):
+    def find_key(d: t.Any) -> Key:
         return guess_key(public_key, d)
 
     assert obj.signature is not None

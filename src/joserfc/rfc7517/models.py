@@ -1,5 +1,6 @@
+from __future__ import annotations
 import typing as t
-from typing import overload
+from collections.abc import KeysView
 from abc import ABCMeta, abstractmethod
 from .types import DictKey, AnyKey, KeyParameters
 from ..registry import (
@@ -82,7 +83,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
 
     def __init__(
             self,
-            raw_value: t.Union[NativePrivateKey, NativePublicKey],
+            raw_value: NativePrivateKey | NativePublicKey,
             original_value: t.Any,
             parameters: t.Optional[KeyParameters] = None):
         self._raw_value = raw_value
@@ -97,13 +98,13 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
             self.validate_dict_key(data)
             self._dict_value = data
 
-    def keys(self):
+    def keys(self) -> KeysView[str]:
         return self.dict_value.keys()
 
-    def __getitem__(self, k: str):
+    def __getitem__(self, k: str) -> str | list[str]:
         return self.dict_value[k]
 
-    def get(self, k: str, default=None):
+    def get(self, k: str, default: str | None = None) -> str | list[str] | None:
         return self.dict_value.get(k, default)
 
     def ensure_kid(self) -> None:
@@ -114,17 +115,17 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
             self._dict_value["kid"] = self.thumbprint()
 
     @property
-    def kid(self) -> t.Optional[str]:
+    def kid(self) -> str | None:
         """The "kid" value of the JSON Web Key."""
-        return self.get("kid")
+        return t.cast(t.Optional[str], self.get("kid"))
 
     @property
-    def alg(self) -> t.Optional[str]:
+    def alg(self) -> str | None:
         """The "alg" value of the JSON Web Key."""
-        return self.get("alg")
+        return t.cast(t.Optional[str], self.get("alg"))
 
     @property
-    def raw_value(self):
+    def raw_value(self) -> t.Any:
         raise NotImplementedError()
 
     @property
@@ -220,13 +221,13 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         if reg.private and not self.is_private:
             raise UnsupportedKeyOperationError(f'Invalid key_op "{operation}" for public key')
 
-    @overload
+    @t.overload
     def get_op_key(self, operation: t.Literal["verify", "encrypt", "wrapKey", "deriveKey"]) -> NativePublicKey: ...
 
-    @overload
+    @t.overload
     def get_op_key(self, operation: t.Literal["sign", "decrypt", "unwrapKey"]) -> NativePrivateKey: ...
 
-    def get_op_key(self, operation: str) -> t.Union[NativePublicKey, NativePrivateKey]:
+    def get_op_key(self, operation: str) -> NativePublicKey | NativePrivateKey:
         self.check_key_op(operation)
         reg = self.operation_registry[operation]
         if reg.private:
@@ -235,7 +236,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         return self.public_key
 
     @classmethod
-    def validate_dict_key(cls, data: DictKey):
+    def validate_dict_key(cls, data: DictKey) -> None:
         cls.binding.validate_dict_key_registry(data, cls.param_registry)
         cls.binding.validate_dict_key_registry(data, cls.value_registry)
         cls.binding.validate_dict_key_use_operations(data)
@@ -257,7 +258,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     @classmethod
     def generate_key(
             cls: t.Type[GenericKey],
-            size_or_crv,
+            size_or_crv: t.Any,
             parameters: t.Optional[KeyParameters] = None,
             private: bool = True,
             auto_kid: bool = False) -> GenericKey:
@@ -312,5 +313,5 @@ class CurveKey(AsymmetricKey[NativePrivateKey, NativePublicKey]):
         pass
 
     @abstractmethod
-    def exchange_derive_key(self, key) -> bytes:
+    def exchange_derive_key(self, key: t.Any) -> bytes:
         pass
