@@ -33,8 +33,8 @@ jobs:
           pip install -r requirements/base.txt
           pip install -r requirements/lint.txt
 
-      - name: flake8 lint
-        run: flake8 src/joserfc
+      - name: ruff lint
+        run: ruff check
 
       - name: mypy lint
         run: mypy

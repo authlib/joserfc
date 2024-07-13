@@ -1,2 +1,2 @@
 mypy
-flake8
+ruff

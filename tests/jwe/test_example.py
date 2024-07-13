@@ -218,17 +218,10 @@ class TestCompactExamples(TestCase):
         # https://www.rfc-editor.org/rfc/rfc7516#appendix-A.3
         plaintext = b"Live long and prosper."
         protected = {"alg": "A128KW", "enc": "A128CBC-HS256"}
-        cek = bytes([
-            4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106,
-            206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156,
-            44, 207
-        ])
         key = OctKey.import_key({
             "kty": "oct",
             "k": "GawgguFyGrWKav7AX4VKUg"
         })
-
-        iv = bytes([3, 22, 60, 12, 43, 67, 104, 105, 108, 108, 105, 99, 111, 116, 104, 101])
         expected = (
             "eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0."
             "6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ."
@@ -271,13 +264,6 @@ class TestCompactExamples(TestCase):
 
         # A.4.3.  JWE Shared Unprotected Header
         shared_header = {"jku": "https://server.example.com/keys.jwks"}
-
-        # same as A3
-        cek = bytes([
-            4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106,
-            206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156,
-            44, 207
-        ])
 
         # A.4.6.  Content Encryption
         plaintext = b"Live long and prosper."

@@ -83,7 +83,10 @@ def deserialize_json(
         return _deserialize_json(value, public_key, registry=registry)
 
     payload_segment = obj.segments["payload"]
-    find_key = lambda d: guess_key(public_key, d)
+
+    def find_key(d: t.Any):
+        return guess_key(public_key, d)
+
     assert obj.signature is not None
     if not verify_signature(obj.member, obj.signature, payload_segment, registry, find_key):
         raise BadSignatureError()
