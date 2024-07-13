@@ -69,6 +69,7 @@ exclude_lines = [
   "raise NotImplementedError",
   "@(abc\\.)?abstractmethod",
   "@overload",
+  "@t.overload",
 ]
 
 [tool.mypy]
