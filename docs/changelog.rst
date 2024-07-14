@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.0.0
+-----
+
+**Released on July 14, 2024**
+
+- Fix type hints for strict mode.
+
 0.12.0
 ------
 

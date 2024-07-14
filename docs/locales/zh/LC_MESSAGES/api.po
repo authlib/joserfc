@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: joserfc 0.5.0\n"
+"Project-Id-Version: joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-15 13:31+0900\n"
+"POT-Creation-Date: 2024-07-14 18:27+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -21,17 +21,17 @@ msgstr ""
 
 #: ../../api/errors.rst:2
 msgid "Errors"
-msgstr ""
+msgstr "错误类型"
 
 #: ../../api/errors.rst:4
 msgid "All errors are based on ``joserfc.errors.JoseError``."
-msgstr ""
+msgstr "所以的错误类型都是基于``joserfc.errors.JoseError``。"
 
 #: joserfc.errors.BadSignatureError:1 of
 msgid ""
 "This error is designed for JWS/JWT. It is raised when signature does not "
 "match."
-msgstr ""
+msgstr "该错误是为 JWS/JWT 设计的，当签名不匹配时触发。"
 
 #: ../../docstring joserfc.errors.BadSignatureError.error:1
 #: joserfc.errors.ConflictAlgorithmError.error:1
@@ -343,7 +343,7 @@ msgstr ""
 #: joserfc.rfc7515.model.JWSAlgModel.sign
 #: joserfc.rfc7515.model.JWSAlgModel.verify of
 msgid "Returns"
-msgstr ""
+msgstr "返回值"
 
 #: joserfc.jwe.decrypt_compact:19 of
 msgid "object of the ``CompactEncryption``"
@@ -561,7 +561,7 @@ msgid ""
 msgstr ""
 
 #: joserfc.rfc7515.model.FlattenedJSONSignature:1 of
-msgid "\"JSON Signature object that represents a flattened JSON serialization."
+msgid "JSON Signature object that represents a flattened JSON serialization."
 msgstr ""
 
 #: ../../docstring joserfc.jws.FlattenedJSONSignature.flattened:1 of
@@ -578,7 +578,7 @@ msgid "payload content"
 msgstr ""
 
 #: joserfc.rfc7515.model.GeneralJSONSignature:1 of
-msgid "\"JSON Signature object that represents a general JSON serialization."
+msgid "JSON Signature object that represents a general JSON serialization."
 msgstr ""
 
 #: ../../docstring joserfc.jws.GeneralJSONSignature.flattened:1 of
@@ -913,4 +913,3 @@ msgstr ""
 #: joserfc.jwt.encode:5 of
 msgid "key used to sign the signature"
 msgstr ""
-
