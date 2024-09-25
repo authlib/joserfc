@@ -259,7 +259,7 @@ A client would usually get the public key set from a public URL, normally the
     from joserfc import jwt
     from joserfc.jwk import KeySet
 
-    resp = requests.get("https://example.com/.well_known/jwks.json")
+    resp = requests.get("https://example.com/.well-known/jwks.json")
     key_set = KeySet.import_key_set(resp.json())
 
     def parse_token(token_string: str):
