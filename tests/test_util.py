@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc import util
-
+import binascii
 
 class TestUtil(TestCase):
     def test_to_bytes(self):
@@ -22,3 +22,11 @@ class TestUtil(TestCase):
 
     def test_json_b64encode(self):
         self.assertEqual(util.json_b64encode("{}"), b"e30")
+
+    def test_urlsafe_b64decode(self):
+        self.assertEqual(util.urlsafe_b64decode(b'_foo123-'), b'\xfd\xfa(\xd7m\xfe')
+        self.assertRaises(
+            binascii.Error,
+            util.urlsafe_b64decode,
+            b'+foo123/'
+        )

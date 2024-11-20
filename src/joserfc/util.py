@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Any
 import base64
 import struct
+import binascii
 import json
 
 
@@ -26,8 +27,10 @@ def json_dumps(data: Any, ensure_ascii: bool = False) -> str:
 
 
 def urlsafe_b64decode(s: bytes) -> bytes:
+    if b"+" in s or b"/" in s:
+        raise binascii.Error
     s += b"=" * (-len(s) % 4)
-    return base64.urlsafe_b64decode(s)
+    return base64.b64decode(s, b"-_", validate=True)
 
 
 def urlsafe_b64encode(s: bytes) -> bytes:
