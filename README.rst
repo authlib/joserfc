@@ -30,6 +30,7 @@ A quick and simple JWT encoding and decoding would look something like this:
 
     >>> from joserfc import jwt
     >>> from joserfc.jwk import OctKey
+    >>> key = OctKey.import_key("secret")
     >>> encoded = jwt.encode({"alg": "HS256"}, {"k": "value"}, key)
     >>> encoded
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrIjoidmFsdWUifQ.ni-MJXnZHpFB_8L9P9yllj3RNDfzmD4yBKAyefSctMY'
@@ -45,7 +46,7 @@ Useful Links
 ------------
 
 1. GitHub: https://github.com/authlib/joserfc
-2. Docs: https://jose.authlib.org/
+2. Docs: https://jose.authlib.org/en/
 
 License
 -------

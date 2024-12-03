@@ -1,6 +1,7 @@
+import binascii
 from unittest import TestCase
 from joserfc import util
-import binascii
+
 
 class TestUtil(TestCase):
     def test_to_bytes(self):
