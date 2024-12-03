@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.0.1
+-----
+
+**Released on December 3, 2024**
+
+- Throw an error on non-valid base64 strings
+
 1.0.0
 -----
 
