@@ -10,7 +10,7 @@ requires-python = ">=3.8"
 dynamic = ["version"]
 readme = "README.rst"
 classifiers = [
-  "Development Status :: 5 - Stable",
+  "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
   "Environment :: Web Environment",
   "Intended Audience :: Developers",
