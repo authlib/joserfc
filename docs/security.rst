@@ -28,4 +28,4 @@ Here is the process when we have received a security report:
 Previous CVEs
 -------------
 
-Waiting...
+- CVE-2024-37568: fixed in 0.11.0
