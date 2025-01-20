@@ -133,6 +133,12 @@ class TestRSAKey(TestCase):
         key1 = RSAKey.import_key(value1)
         self.assertEqual(value1, key1.as_der())
 
+    def test_import_from_certificate(self):
+        firebase_cert = read_key("firebase-cert.pem")
+        key: RSAKey = RSAKey.import_key(firebase_cert)
+        data = key.as_dict()
+        self.assertEqual(data['kty'], 'RSA')
+
     def test_output_with_password(self):
         private_pem = read_key("rsa-openssl-private.pem")
         key: RSAKey = RSAKey.import_key(private_pem)

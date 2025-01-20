@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Any, Literal, cast
 from abc import ABCMeta, abstractmethod
+from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
     load_pem_public_key,
@@ -37,6 +38,10 @@ def load_pem_key(
 
     elif b"PRIVATE" in raw:
         key = load_pem_private_key(raw, password=password, backend=default_backend())
+
+    elif b"CERTIFICATE" in raw:
+        cert = load_pem_x509_certificate(raw, backend=default_backend())
+        return cert.public_key()
 
     else:
         try:
