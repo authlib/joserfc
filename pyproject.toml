@@ -49,6 +49,16 @@ where = ["src"]
 [tool.setuptools.package-data]
 joserfc = ["py.typed"]
 
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "mypy>=1.14.1",
+    "pytest>=8.3.4",
+    "pytest-cov>=5.0.0",
+    "pycryptodome>=3.21.0",
+    "ruff>=0.9.2",
+]
+
 [tool.ruff]
 line-length = 120
 

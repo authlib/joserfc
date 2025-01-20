@@ -31,11 +31,8 @@ jobs:
 
       - name: install dependencies
         run: |
-          pip install -r requirements/base.txt
-          pip install -r requirements/docs.txt
-
-      - name: install self
-        run: pip install .
+          pip install -r requirements-dev.lock
+          pip install -r requirements-docs.txt
 
       - name: sphinx build
         run: |

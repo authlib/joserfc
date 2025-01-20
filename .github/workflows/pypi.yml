@@ -6,7 +6,6 @@ permissions:
 on:
   push:
     tags:
-    - "0.*"
     - "1.*"
 
 jobs:

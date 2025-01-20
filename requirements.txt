@@ -1,5 +1,0 @@
--r requirements/base.txt
--r requirements/lint.txt
--r requirements/tests.txt
--r requirements/docs.txt
-sphinx-intl

@@ -30,8 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements/base.txt
-          pip install -r requirements/lint.txt
+          pip install -r requirements-dev.lock
 
       - name: ruff lint
         run: ruff check
@@ -58,8 +57,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements/base.txt
-          pip install -r requirements/tests.txt
+          pip install -r requirements-dev.lock
 
       - name: Report coverage
         run: pytest --cov=joserfc --cov-report=xml
