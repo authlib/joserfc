@@ -26,7 +26,7 @@ structure differs between the two libraries.
     from joserfc import jwt
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("secret")  # use an explicit key
     # jwt.encode(header, payload, key)
     encoded_jwt = jwt.encode({"alg": "HS256"}, {"some": "payload"}, key)
 

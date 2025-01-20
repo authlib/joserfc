@@ -8,3 +8,4 @@ to ``joserfc``:
 
    authlib
    pyjwt
+   python-jose
