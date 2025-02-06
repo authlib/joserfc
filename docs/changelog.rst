@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.0.3
+-----
+
+**Released on Feb 6, 2025**
+
+- Allow using sha256, sha384, sha512 hash functions in thumbprint (RFC7638).
+
 1.0.2
 -----
 
