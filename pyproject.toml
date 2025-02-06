@@ -59,6 +59,9 @@ dev-dependencies = [
     "ruff>=0.9.2",
 ]
 
+[tool.rye.scripts]
+test-cov = "pytest --cov --cov-report=html"
+
 [tool.ruff]
 line-length = 120
 
