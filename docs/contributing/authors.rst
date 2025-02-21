@@ -9,7 +9,7 @@ Contributors
 
 Here is the list of the main contributors:
 
-- `Viicos <https://github.com/Viicos>`_
-- `Alon Bar-Lev <https://github.com/alonbl>`_
+.. contributors:: authlib/joserfc
+    :contributions:
 
 And more on https://github.com/authlib/joserfc/graphs/contributors

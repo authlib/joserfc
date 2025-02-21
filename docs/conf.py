@@ -26,6 +26,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_design",
     "sphinx_sitemap",
+    "sphinx_contributors",
 ]
 
 extlinks = {

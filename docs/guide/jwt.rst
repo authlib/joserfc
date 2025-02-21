@@ -66,9 +66,8 @@ base64 string.
 
 You can define claims requests :class:`JWTClaimsRegistry` for validating the
 decoded claims. The ``JWTClaimsRegistry`` accepts each claim as an
-`Individual Claims Requests <ClaimsOption>`_ JSON object.
-
-.. _ClaimsOption: http://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests
+`Individual Claims Requests <http://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests>`_
+JSON object.
 
 .. code-block:: python
 
