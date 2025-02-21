@@ -4,12 +4,12 @@ import warnings
 from ._keys import (
     JWKRegistry,
     KeySet,
-    OctKey,
-    RSAKey,
-    ECKey,
-    OKPKey,
     Key,
 )
+from .rfc7518.oct_key import OctKey
+from .rfc7518.rsa_key import RSAKey
+from .rfc7518.ec_key import ECKey
+from .rfc8037.okp_key import OKPKey
 from .rfc8812 import register_secp256k1
 from .registry import Header
 
