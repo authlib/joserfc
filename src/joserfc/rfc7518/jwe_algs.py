@@ -1,5 +1,5 @@
 from __future__ import annotations
-from os import urandom
+import secrets
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
@@ -151,7 +151,7 @@ class AESGCMAlgModel(JWEKeyWrapping):
         #: The "iv" (initialization vector) Header Parameter value is the
         #: base64url-encoded representation of the 96-bit IV value
         iv_size = 96
-        iv = urandom(iv_size // 8)
+        iv = secrets.token_bytes(iv_size // 8)
 
         cipher = Cipher(AES(op_key), GCM(iv), backend=default_backend())
         enc = cipher.encryptor()
@@ -264,7 +264,7 @@ class PBES2HSAlgModel(JWEKeyEncryption):
     def encrypt_cek(self, cek: bytes, recipient: Recipient[OctKey]) -> bytes:
         headers = recipient.headers()
         if "p2s" not in headers:
-            p2s = urandom(16)
+            p2s = secrets.token_bytes(16)
             recipient.add_header("p2s", urlsafe_b64encode(p2s).decode("ascii"))
         else:
             p2s = urlsafe_b64decode(to_bytes(headers["p2s"]))

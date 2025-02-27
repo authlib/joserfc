@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Any
-from os import urandom
+import secrets
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
@@ -68,8 +68,7 @@ class OctKey(SymmetricKey):
         if key_size % 8 != 0:
             raise ValueError("Invalid bit size for oct key")
 
-        value = urandom(key_size // 8)
-        raw_key = to_bytes(value)
+        raw_key = secrets.token_bytes(key_size // 8)
         key: OctKey = cls(raw_key, raw_key, parameters)
         if auto_kid:
             key.ensure_kid()

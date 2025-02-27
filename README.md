@@ -7,10 +7,9 @@
 
 `joserfc` is a Python library that provides a comprehensive implementation of several essential JSON Object Signing and Encryption (JOSE) standards.
 
-[![GitHub Sponsor](https://badgen.net/badge/support/joserfc/blue?icon=github)](https://github.com/sponsors/lepture)
 [![Build Status](https://github.com/authlib/joserfc/actions/workflows/test.yml/badge.svg)](https://github.com/authlib/joserfc/actions)
 [![PyPI Version](https://badgen.net/pypi/v/joserfc)](https://pypi.org/project/joserfc)
-[![PyPI Downloads](https://static.pepy.tech/personalized-badge/joserfc?period=month&units=international_system&left_color=black&right_color=brightgreen&left_text=downloads/month)](https://pepy.tech/projects/joserfc)
+[![PyPI Downloads](https://badgen.net/pypi/dm/joserfc)](https://pepy.tech/projects/joserfc)
 [![Code Coverage](https://codecov.io/gh/authlib/joserfc/branch/main/graph/badge.svg?token=WCD9X8HKI1)](https://codecov.io/gh/authlib/joserfc)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=authlib_joserfc&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=authlib_joserfc)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=authlib_joserfc&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=authlib_joserfc)

@@ -1,6 +1,6 @@
 from __future__ import annotations
-import os
 import typing as t
+import secrets
 from abc import ABCMeta, abstractmethod
 from ..registry import Header, HeaderRegistryDict
 from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
@@ -168,10 +168,10 @@ class JWEEncModel(object, metaclass=ABCMeta):
     cek_size: int
 
     def generate_cek(self) -> bytes:
-        return os.urandom(self.cek_size // 8)
+        return secrets.token_bytes(self.cek_size // 8)
 
     def generate_iv(self) -> bytes:
-        return os.urandom(self.iv_size // 8)
+        return secrets.token_bytes(self.iv_size // 8)
 
     def check_iv(self, iv: bytes) -> bytes:
         if len(iv) * 8 != self.iv_size:  # pragma: no cover
