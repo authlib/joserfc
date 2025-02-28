@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Any
 import secrets
+import warnings
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
@@ -35,7 +36,7 @@ class OctBinding(NativeKeyBinding):
     def import_from_bytes(cls, value: bytes, password: Any | None = None) -> bytes:
         # security check
         if value.startswith(POSSIBLE_UNSAFE_KEYS):
-            raise ValueError("This key may not be safe to import")
+            warnings.warn("This key may not be safe to import")
         return value
 
 

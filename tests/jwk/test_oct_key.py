@@ -80,7 +80,7 @@ class TestOctKey(TestCase):
 
     def test_import_pem_key(self):
         public_pem = read_key("ec-p256-public.pem")
-        self.assertRaises(ValueError, OctKey.import_key, public_pem)
+        self.assertWarns(UserWarning, OctKey.import_key, public_pem)
 
     def test_generate_key(self):
         key = OctKey.generate_key()
