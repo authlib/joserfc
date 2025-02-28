@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.0.4
+-----
+
+**Released on Feb 28, 2025**
+
+- Use secrets module to generate random bytes.
+- Use warnings for possible unsafe ``OctKey``` instead of raising error, via :issue:`32`.
+
 1.0.3
 -----
 
@@ -46,7 +54,7 @@ Changelog
 **Released on June 15, 2024**
 
 - Limit DEF decompress size to 250k bytes.
-- Fix claims validation, , via :issue:`23`.
+- Fix claims validation, via :issue:`23`.
 
 0.11.1
 ------
