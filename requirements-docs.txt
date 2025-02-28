@@ -1,6 +1,0 @@
-Sphinx
-sphinx-design
-sphinx-copybutton
-sphinx-sitemap
-sphinx-contributors
-shibuya

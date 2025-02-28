@@ -60,18 +60,6 @@ to ``project.dependencies``.
         "joserfc",
     ]
 
-Pipfile
-~~~~~~~
-
-If you prefer **pipenv**, you would like to track dependencies in ``Pipfile``, then
-add ``joserfc`` to ``[packages]`` section.
-
-.. code-block:: ini
-    :caption: Pipfile
-
-    [packages]
-    joserfc = "*"
-
 requirements.txt
 ~~~~~~~~~~~~~~~~
 

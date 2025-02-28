@@ -37,7 +37,7 @@ msgstr "开发者文档"
 
 #: ../../index.rst:2
 msgid "JOSE RFC"
-msgstr ""
+msgstr "JOSE RFC"
 
 #: ../../index.rst:4
 msgid ""
@@ -78,10 +78,12 @@ msgid ""
 "crucial to use a highly secure secret key to ensure robust security "
 "measures."
 msgstr ""
+"上述示例中使用的字符串 ``\"secret\"`` 仅用于演示目的。在生产环境中，"
+"使用高度安全的密钥以确保强大的安全措施是至关重要的。"
 
 #: ../../index.rst:41
 msgid "RFCs"
-msgstr ""
+msgstr "RFCs"
 
 #: ../../index.rst:43
 msgid "It follows RFCs with extensible API. The module has implementations of:"
@@ -89,41 +91,42 @@ msgstr "它遵循可扩展的 API，并遵循 RFC 标准。该模块包含以下
 
 #: ../../index.rst:45
 msgid "RFC7515: :ref:`JSON Web Signature <jws>`"
-msgstr ""
+msgstr "RFC7515: :ref:`JSON Web Signature <jws>`"
 
 #: ../../index.rst:46
 msgid "RFC7516: :ref:`JSON Web Encryption <jwe>`"
-msgstr ""
+msgstr "RFC7516: :ref:`JSON Web Encryption <jwe>`"
 
 #: ../../index.rst:47
 msgid "RFC7517: :ref:`JSON Web Key <jwk>`"
-msgstr ""
+msgstr "RFC7517: :ref:`JSON Web Key <jwk>`"
 
 #: ../../index.rst:48
 msgid "RFC7518: :ref:`JSON Web Algorithms <jwa>`"
-msgstr ""
+msgstr "RFC7518: :ref:`JSON Web Algorithms <jwa>`"
 
 #: ../../index.rst:49
 msgid "RFC7519: :ref:`JSON Web Token <jwt>`"
-msgstr ""
+msgstr "RFC7519: :ref:`JSON Web Token <jwt>`"
 
 #: ../../index.rst:50
 msgid ""
 "RFC7520: Examples of Protecting Content Using JSON Object Signing and "
 "Encryption"
 msgstr ""
+"RFC7520: 使用 JSON 对象签名和加密保护内容的示例"
 
 #: ../../index.rst:51
 msgid "RFC7638: ``thumbprint`` for JWK"
-msgstr ""
+msgstr "RFC7638: JWK 的 ``thumbprint``"
 
 #: ../../index.rst:52
 msgid "RFC8037: :ref:`OKPKey` and ``EdDSA`` algorithm"
-msgstr ""
+msgstr "RFC8037: :ref:`OKPKey` 和 ``EdDSA`` 算法"
 
 #: ../../index.rst:53
 msgid "RFC8812: ``ES256K`` algorithm"
-msgstr ""
+msgstr "RFC8812: ``ES256K`` 算法"
 
 #: ../../index.rst:55
 msgid "And draft RFCs implementation of:"
@@ -131,11 +134,11 @@ msgstr "同时包含如下 JOSE 草案的实现："
 
 #: ../../index.rst:57
 msgid ":ref:`chacha20`"
-msgstr ""
+msgstr ":ref:`chacha20`"
 
 #: ../../index.rst:58
 msgid ":ref:`ecdh1pu`"
-msgstr ""
+msgstr ":ref:`ecdh1pu`"
 
 #: ../../index.rst:60
 msgid "RFC7520 is implemented as test cases."

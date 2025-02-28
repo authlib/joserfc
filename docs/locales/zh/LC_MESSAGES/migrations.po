@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: joserfc\n"
+"Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-15 13:31+0900\n"
+"POT-Creation-Date: 2025-02-28 11:54+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: ../../migrations/authlib.rst:2
 msgid "Migrating from Authlib"
@@ -32,7 +32,7 @@ msgid ""
 " structure and functionality."
 msgstr ""
 
-#: ../../migrations/authlib.rst:11
+#: ../../migrations/authlib.rst:11 ../../migrations/python-jose.rst:85
 msgid "JWT"
 msgstr ""
 
@@ -61,7 +61,9 @@ msgstr ""
 #: ../../migrations/authlib.rst:30 ../../migrations/authlib.rst:92
 #: ../../migrations/pyjwt.rst:23 ../../migrations/pyjwt.rst:45
 #: ../../migrations/pyjwt.rst:77 ../../migrations/pyjwt.rst:117
-#: ../../migrations/pyjwt.rst:136
+#: ../../migrations/pyjwt.rst:136 ../../migrations/python-jose.rst:31
+#: ../../migrations/python-jose.rst:72 ../../migrations/python-jose.rst:101
+#: ../../migrations/python-jose.rst:122
 msgid "joserfc"
 msgstr ""
 
@@ -95,7 +97,7 @@ msgid ""
 ":ref:`jwt` guide."
 msgstr ""
 
-#: ../../migrations/authlib.rst:75
+#: ../../migrations/authlib.rst:75 ../../migrations/python-jose.rst:14
 msgid "JWS"
 msgstr ""
 
@@ -112,7 +114,7 @@ msgid ""
 "referring to the comprehensive :ref:`jws` guide."
 msgstr ""
 
-#: ../../migrations/authlib.rst:109
+#: ../../migrations/authlib.rst:109 ../../migrations/python-jose.rst:55
 msgid "JWE"
 msgstr ""
 
@@ -255,3 +257,92 @@ msgid ""
 "Requests <ClaimsOption>`_ JSON object. You can learn more from "
 ":ref:`claims`."
 msgstr ""
+
+#: ../../migrations/python-jose.rst:2
+#, fuzzy
+msgid "Migrating from python-jose"
+msgstr "从 PyJWT 迁移到 joserfc"
+
+#: ../../migrations/python-jose.rst:4
+msgid ""
+"``python-jose`` supports all JOSE specifications, similar to ``joserfc``."
+" However, there are significant differences in code structure, method "
+"names, and parameter usage. Additionally, ``joserfc`` offers built-in "
+"Python type hints, enhancing code readability and type safety."
+msgstr ""
+
+#: ../../migrations/python-jose.rst:9
+msgid ""
+"Another key difference is that ``python-jose`` only supports compact "
+"serialization and deserialization, whereas ``joserfc`` supports both "
+"compact and JSON serialization formats, offering greater flexibility in "
+"handling JOSE data."
+msgstr ""
+
+#: ../../migrations/python-jose.rst:16
+msgid ""
+"In ``python-jose``, the methods used for serialization and "
+"deserialization are ``jws.sign`` and ``jws.verify``, respectively."
+msgstr ""
+
+#: ../../migrations/python-jose.rst:19
+msgid ""
+"On the other hand, ``joserfc`` uses ``jws.serialize_compact`` for "
+"serialization and ``jws.deserialize_compact`` for deserialization."
+msgstr ""
+
+#: ../../migrations/python-jose.rst:22 ../../migrations/python-jose.rst:63
+#: ../../migrations/python-jose.rst:92
+msgid "python-jose"
+msgstr ""
+
+#: ../../migrations/python-jose.rst:46
+msgid ""
+"``joserfc`` is designed to be highly explicit, requiring the use of "
+"specific key types, payload formats, and other components. For example, "
+"in the previous example, we explicitly use an OctKey instead of a simple "
+"string. Additionally, since JWS in joserfc only supports encoding strings"
+" and bytes, you cannot pass a dictionary directly as the payload. "
+"Instead, the payload must first be converted to a JSON string using "
+"json.dumps. This explicit approach ensures better type safety and clarity"
+" in your code."
+msgstr ""
+
+#: ../../migrations/python-jose.rst:57
+msgid ""
+"In ``python-jose``, the methods used for encryption and decryption are "
+"``jwe.encrypt`` and ``jwe.decrypt``. However, since ``joserfc`` supports "
+"both compact and JSON serialization formats, it provides distinct "
+"methods: ``jwe.encrypt_compact`` and ``jwe.decrypt_compact`` for compact "
+"serialization, ensuring clear differentiation between the formats and "
+"greater flexibility in handling JWE operations."
+msgstr ""
+
+#: ../../migrations/python-jose.rst:87
+msgid ""
+"The ``jwt`` module in ``python-jose`` supports only JWS (JSON Web "
+"Signature) mode, whereas ``joserfc`` provides support for both JWS and "
+"JWE (JSON Web Encryption) modes. Although both libraries utilize the "
+"``encode`` and ``decode`` methods, their parameters differ significantly "
+"in terms of structure and flexibility."
+msgstr ""
+
+#: ../../migrations/python-jose.rst:115
+msgid "get_unverified_header"
+msgstr ""
+
+#: ../../migrations/python-jose.rst:117
+msgid ""
+"The ``jwt`` module in python-jose provides a method called "
+"``get_unverified_header``, which allows extracting the header from a JWT "
+"without verifying its signature."
+msgstr ""
+
+#: ../../migrations/python-jose.rst:120
+msgid "In ``joserfc``, we can get the unverified header with:"
+msgstr ""
+
+#: ../../migrations/python-jose.rst:133
+msgid "JWK"
+msgstr ""
+

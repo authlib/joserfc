@@ -145,9 +145,9 @@ Let's enhance the callable key method to improve its efficiency.
 
 .. code-block:: python
 
-    from functools import lru_cache
+    import functools
 
-    @lru_cache(maxsize=None)
+    @functools.cache
     def fetch_key_set(issuer: str):
         openid_configuration_endpoint = f'{issuer}/.well-known/openid-configuration'
         resp = requests.get(openid_configuration_endpoint)
@@ -190,7 +190,7 @@ access the necessary keys for token verification.
 
 .. code-block:: python
 
-    @lru_cache(maxsize=None)
+    @functools.cache
     def fetch_key_set(issuer: str):
         openid_configuration_endpoint = f'{issuer}/.well-known/openid-configuration'
         resp = requests.get(openid_configuration_endpoint)

@@ -256,13 +256,14 @@ A client would usually get the public key set from a public URL, normally the
 
     import requests
     from joserfc import jwt
+    from joserfc.jwt import Token
     from joserfc.jwk import KeySet
 
     resp = requests.get("https://example.com/.well-known/jwks.json")
     key_set = KeySet.import_key_set(resp.json())
 
-    def parse_token(token_string: str):
-        jwt.decode(token_string, key_set)
+    def parse_token(token_string: str) -> Token:
+        return jwt.decode(token_string, key_set)
 
 Callable key
 ~~~~~~~~~~~~
@@ -272,16 +273,16 @@ It is also possible to assign a callable function as the ``key``:
 .. code-block:: python
 
     import json
-    from joserfc import jwk
+    from joserfc.jwk import KeySet
+    from joserfc.jws import CompactSignature
 
-    def load_key(obj):
+    def load_key(obj: CompactSignature) -> KeySet:
         headers = obj.headers()
         alg = headers["alg"]
-        key_path = f"my-{alg}-key.json"
+        key_path = f"my-{alg}-keys.json"
         with open(key_path) as f:
             data = json.load(f)
-            key = jwk.import_key(data["kty"], data)
-        return key
+            return KeySet.import_key_set(data)
 
     # jwt.encode(header, claims, load_key)
 
