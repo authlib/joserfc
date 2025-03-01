@@ -6,10 +6,10 @@ from ._keys import (
     KeySet,
     Key,
 )
-from .rfc7518.oct_key import OctKey
-from .rfc7518.rsa_key import RSAKey
-from .rfc7518.ec_key import ECKey
-from .rfc8037.okp_key import OKPKey
+from .rfc7518.oct_key import OctKey as OctKey
+from .rfc7518.rsa_key import RSAKey as RSAKey
+from .rfc7518.ec_key import ECKey as ECKey
+from .rfc8037.okp_key import OKPKey as OKPKey
 from .rfc8812 import register_secp256k1
 from .registry import Header
 

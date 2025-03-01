@@ -2,18 +2,18 @@ from __future__ import annotations
 from typing import overload, TypeVar, Any, Dict
 from .rfc7515.model import (
     JWSAlgModel,
-    HeaderMember,
-    CompactSignature,
-    GeneralJSONSignature,
-    FlattenedJSONSignature,
+    HeaderMember as HeaderMember,
+    CompactSignature as CompactSignature,
+    GeneralJSONSignature as GeneralJSONSignature,
+    FlattenedJSONSignature as FlattenedJSONSignature,
 )
 from .rfc7515.registry import (
-    JWSRegistry,
+    JWSRegistry as JWSRegistry,
     construct_registry,
 )
 from .rfc7515.compact import (
+    extract_compact as extract_compact,
     sign_compact,
-    extract_compact,
     verify_compact,
     detach_compact_content,
 )
@@ -27,9 +27,9 @@ from .rfc7515.json import (
     detach_json_content,
 )
 from .rfc7515.types import (
-    HeaderDict,
-    GeneralJSONSerialization,
-    FlattenedJSONSerialization,
+    HeaderDict as HeaderDict,
+    GeneralJSONSerialization as GeneralJSONSerialization,
+    FlattenedJSONSerialization as FlattenedJSONSerialization,
 )
 from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8037.jws_eddsa import EdDSA

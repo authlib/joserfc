@@ -5,15 +5,15 @@ from .rfc7516.types import (
     FlattenedJSONSerialization,
 )
 from .rfc7516.models import (
-    Recipient,
-    CompactEncryption,
-    GeneralJSONEncryption,
-    FlattenedJSONEncryption,
+    Recipient as Recipient,
+    CompactEncryption as CompactEncryption,
+    GeneralJSONEncryption as GeneralJSONEncryption,
+    FlattenedJSONEncryption as FlattenedJSONEncryption,
     JWEEncModel,
     JWEZipModel,
 )
 from .rfc7516.registry import (
-    JWERegistry,
+    JWERegistry as JWERegistry,
     default_registry,
 )
 from .rfc7516.message import perform_encrypt, perform_decrypt
