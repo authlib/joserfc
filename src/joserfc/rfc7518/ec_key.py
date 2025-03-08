@@ -21,6 +21,8 @@ from ..rfc7517.types import KeyParameters
 from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
+__all__ = ['ECKey']
+
 ECDictKey = t.TypedDict("ECDictKey", {
     "crv": str,
     "x": str,
@@ -28,24 +30,33 @@ ECDictKey = t.TypedDict("ECDictKey", {
     "d": str,  # optional
 }, total=False)
 
-DSS_CURVES: t.Dict[str, t.Type[EllipticCurve]] = {
-    "P-256": SECP256R1,
-    "P-384": SECP384R1,
-    "P-521": SECP521R1,
-}
-CURVES_DSS: t.Dict[str, str] = {
-    SECP256R1.name: "P-256",
-    SECP384R1.name: "P-384",
-    SECP521R1.name: "P-521",
-}
-
 
 class ECBinding(CryptographyBinding):
     ssh_type = b"ecdsa-sha2-"
 
-    @staticmethod
-    def import_private_key(obj: ECDictKey) -> EllipticCurvePrivateKey:
-        curve = DSS_CURVES[obj["crv"]]()
+    _dss_curves: t.Dict[str, t.Type[EllipticCurve]] = {}
+    _curves_dss: t.Dict[str, str] = {}
+
+    @classmethod
+    def register_curve(cls, name: str, curve: t.Type[EllipticCurve]) -> None:
+        cls._dss_curves[name] = curve
+        cls._curves_dss[str(curve.name)] = name
+
+    @classmethod
+    def generate_private_key(cls, name: str) -> EllipticCurvePrivateKey:
+        if name not in cls._dss_curves:
+            raise ValueError('Invalid crv value: "{}"'.format(name))
+
+        curve = cls._dss_curves[name]()
+        raw_key = generate_private_key(
+            curve=curve,
+            backend=default_backend(),
+        )
+        return raw_key
+
+    @classmethod
+    def import_private_key(cls, obj: ECDictKey) -> EllipticCurvePrivateKey:
+        curve = cls._dss_curves[obj["crv"]]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),
             base64_to_int(obj["y"]),
@@ -55,19 +66,19 @@ class ECBinding(CryptographyBinding):
         private_numbers = EllipticCurvePrivateNumbers(d, public_numbers)
         return private_numbers.private_key(default_backend())
 
-    @staticmethod
-    def export_private_key(key: EllipticCurvePrivateKey) -> ECDictKey:
+    @classmethod
+    def export_private_key(cls, key: EllipticCurvePrivateKey) -> ECDictKey:
         numbers = key.private_numbers()
         return {
-            "crv": CURVES_DSS[key.curve.name],
+            "crv": cls._curves_dss[key.curve.name],
             "x": int_to_base64(numbers.public_numbers.x),
             "y": int_to_base64(numbers.public_numbers.y),
             "d": int_to_base64(numbers.private_value),
         }
 
-    @staticmethod
-    def import_public_key(obj: ECDictKey) -> EllipticCurvePublicKey:
-        curve = DSS_CURVES[obj["crv"]]()
+    @classmethod
+    def import_public_key(cls, obj: ECDictKey) -> EllipticCurvePublicKey:
+        curve = cls._dss_curves[obj["crv"]]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),
             base64_to_int(obj["y"]),
@@ -75,11 +86,11 @@ class ECBinding(CryptographyBinding):
         )
         return public_numbers.public_key(default_backend())
 
-    @staticmethod
-    def export_public_key(key: EllipticCurvePublicKey) -> ECDictKey:
+    @classmethod
+    def export_public_key(cls, key: EllipticCurvePublicKey) -> ECDictKey:
         numbers = key.public_numbers()
         return {
-            "crv": CURVES_DSS[numbers.curve.name],
+            "crv": cls._curves_dss[numbers.curve.name],
             "x": int_to_base64(numbers.x),
             "y": int_to_base64(numbers.y),
         }
@@ -121,7 +132,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @property
     def curve_name(self) -> str:
-        return CURVES_DSS[self.raw_value.curve.name]
+        return self.binding._curves_dss[self.raw_value.curve.name]
 
     @property
     def curve_key_size(self) -> int:
@@ -141,12 +152,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         :param private: generate a private key or public key
         :param auto_kid: add ``kid`` automatically
         """
-        if crv not in DSS_CURVES:
-            raise ValueError('Invalid crv value: "{}"'.format(crv))
-        raw_key = generate_private_key(
-            curve=DSS_CURVES[crv](),
-            backend=default_backend(),
-        )
+        raw_key = cls.binding.generate_private_key(crv)
         if private:
             key = cls(raw_key, raw_key, parameters)
         else:
@@ -155,3 +161,10 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         if auto_kid:
             key.ensure_kid()
         return key
+
+
+# register default curves with their DSS (Digital Signature Standard) names
+# https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf
+ECBinding.register_curve("P-256", SECP256R1)
+ECBinding.register_curve("P-384", SECP384R1)
+ECBinding.register_curve("P-521", SECP521R1)

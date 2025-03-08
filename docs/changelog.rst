@@ -12,6 +12,15 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+Unreleased
+----------
+
+- Use "import as" to prioritize the modules for editors.
+
+**Breaking changes**:
+
+- Use ``ECKey.binding.register_curve`` to register new supported curves.
+
 1.0.4
 -----
 
