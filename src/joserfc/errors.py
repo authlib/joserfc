@@ -60,6 +60,10 @@ class ConflictAlgorithmError(JoseError):
     error = "conflict_algorithm"
 
 
+class UnsupportedAlgorithmError(JoseError):
+    error = "unsupported_algorithm"
+
+
 class MissingEncryptionError(JoseError):
     error = "missing_encryption"
     description = 'Missing "enc" value in header'

@@ -6,6 +6,7 @@ from joserfc.errors import (
     InvalidKeyTypeError,
     InvalidKeyLengthError,
     DecodeError,
+    UnsupportedAlgorithmError,
 )
 from tests.base import load_key
 
@@ -67,7 +68,7 @@ class TestJWEErrors(TestCase):
         protected = {"alg": "INVALID", "enc": "A128CBC-HS256"}
         key = OctKey.import_key("secret")
         self.assertRaises(
-            ValueError,
+            UnsupportedAlgorithmError,
             jwe.encrypt_compact,
             protected, b"i", key
         )

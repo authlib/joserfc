@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Dict
 from .model import JWSAlgModel
+from ..errors import UnsupportedAlgorithmError
 from ..registry import (
     JWS_HEADER_REGISTRY,
     Header,
@@ -49,14 +50,14 @@ class JWSRegistry:
         :param name: value of the ``alg``, e.g. ``HS256``, ``RS256``
         """
         if name not in self.algorithms:
-            raise ValueError(f'Algorithm of "{name}" is not supported')
-        if self.allowed:
-            allowed = self.allowed
-        else:
-            allowed = self.recommended
+            raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not supported')
 
-        if name not in allowed:
-            raise ValueError(f'Algorithm of "{name}" is not allowed')
+        if self.allowed:
+            if name not in self.allowed:
+                raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not allowed')
+        else:
+            if name not in self.recommended:
+                raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not recommended')
         return self.algorithms[name]
 
     def check_header(self, header: Header) -> None:

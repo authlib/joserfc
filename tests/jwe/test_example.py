@@ -7,6 +7,7 @@ from joserfc.rfc7516.models import CompactEncryption, GeneralJSONEncryption
 from joserfc.rfc7516.message import perform_encrypt
 from joserfc.rfc7516.compact import represent_compact
 from joserfc.rfc7516.json import represent_general_json
+from joserfc.errors import UnsupportedAlgorithmError
 from tests.base import load_key
 
 
@@ -209,7 +210,7 @@ class TestCompactExamples(TestCase):
         self.assertEqual(represent_compact(obj), to_bytes(expected))
 
         # RSA1_5 is not allowed by default
-        self.assertRaises(ValueError, decrypt_compact, expected, key)
+        self.assertRaises(UnsupportedAlgorithmError, decrypt_compact, expected, key)
         _registry = JWERegistry(algorithms=['RSA1_5', 'A128CBC-HS256'])
         jwe_data = decrypt_compact(expected, key, registry=_registry)
         self.assertEqual(jwe_data.plaintext, plaintext)

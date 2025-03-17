@@ -1,6 +1,7 @@
 from __future__ import annotations
 import typing as t
 from .models import JWEAlgModel, JWEEncModel, JWEZipModel
+from ..errors import UnsupportedAlgorithmError
 from ..registry import (
     Header,
     HeaderRegistryDict,
@@ -101,15 +102,14 @@ class JWERegistry:
 
     def _check_algorithm(self, name: str, registry: dict[str, t.Any]) -> None:
         if name not in registry:
-            raise ValueError(f'Algorithm of "{name}" is not supported')
+            raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not supported')
 
         if self.allowed:
-            allowed = self.allowed
+            if name not in self.allowed:
+                raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not allowed')
         else:
-            allowed = self.recommended
-
-        if name not in allowed:
-            raise ValueError(f'Algorithm of "{name}" is not allowed')
+            if name not in self.recommended:
+                raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not recommended')
 
 
 default_registry = JWERegistry()

@@ -1,7 +1,12 @@
 from unittest import TestCase
 from joserfc.jws import JWSRegistry, serialize_compact, deserialize_compact
 from joserfc.jwk import OctKey, RSAKey, KeySet
-from joserfc.errors import BadSignatureError, DecodeError, MissingAlgorithmError
+from joserfc.errors import (
+    BadSignatureError,
+    DecodeError,
+    MissingAlgorithmError,
+    UnsupportedAlgorithmError,
+)
 
 
 class TestCompact(TestCase):
@@ -19,10 +24,10 @@ class TestCompact(TestCase):
         value = b'eyJhbGciOiJIUzI1NiJ9.Zm9v.0pehoi-RMZM1jl-4TP_C4Y6BJ-bcmsuzfDyQpkpJkh0'
         self.assertRaises(BadSignatureError, deserialize_compact, value, key)
 
-    def test_raise_none_supported_alg(self):
+    def test_raise_unsupported_algorithm_error(self):
         key = OctKey.import_key("secret")
-        self.assertRaises(ValueError, serialize_compact, {"alg": "HS512"}, b"foo", key)
-        self.assertRaises(ValueError, serialize_compact, {"alg": "NOT"}, b"foo", key)
+        self.assertRaises(UnsupportedAlgorithmError, serialize_compact, {"alg": "HS512"}, b"foo", key)
+        self.assertRaises(UnsupportedAlgorithmError, serialize_compact, {"alg": "NOT"}, b"foo", key)
 
     def test_invalid_length(self):
         key = OctKey.import_key("secret")
