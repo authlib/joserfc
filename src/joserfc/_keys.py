@@ -6,6 +6,7 @@ from .rfc7518.oct_key import OctKey
 from .rfc7518.rsa_key import RSAKey
 from .rfc7518.ec_key import ECKey
 from .rfc8037.okp_key import OKPKey
+from .errors import InvalidKeyIdError, InvalidKeyTypeError, MissingKeyTypeError
 from .util import to_bytes
 
 __all__ = [
@@ -62,10 +63,10 @@ class JWKRegistry:
             if "kty" in data:
                 key_type = data["kty"]  # type: ignore[assignment]
             else:
-                raise ValueError("Missing key type")
+                raise MissingKeyTypeError("Missing key type")
 
         if key_type not in cls.key_types:
-            raise ValueError(f'Invalid key type: "{key_type}"')
+            raise InvalidKeyTypeError(f'Invalid key type: "{key_type}"')
 
         if isinstance(data, str):
             data = to_bytes(data)
@@ -92,7 +93,7 @@ class JWKRegistry:
             JWKRegistry.generate_key("EC", "P-256")
         """
         if key_type not in cls.key_types:
-            raise ValueError(f'Invalid key type: "{key_type}"')
+            raise InvalidKeyTypeError(f'Invalid key type: "{key_type}"')
 
         key_cls = cls.key_types[key_type]
         return key_cls.generate_key(crv_or_size, parameters, private, auto_kid)  # type: ignore[arg-type]
@@ -138,7 +139,7 @@ class KeySet:
         for key in self.keys:
             if key.kid == kid:
                 return key
-        raise ValueError(f'No key for kid: "{kid}"')
+        raise InvalidKeyIdError(f'No key for kid: "{kid}"')
 
     def pick_random_key(self, algorithm: str) -> t.Optional[Key]:
         key_types = self.algorithm_keys.get(algorithm)

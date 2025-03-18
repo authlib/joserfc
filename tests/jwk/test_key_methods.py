@@ -5,7 +5,7 @@ from joserfc.jwk import KeySet, OctKey, RSAKey
 from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyUseError,
-    UnsupportedKeyOperationError,
+    UnsupportedKeyOperationError, InvalidKeyTypeError, MissingKeyTypeError, InvalidKeyIdError,
 )
 
 register_key_set()
@@ -66,14 +66,14 @@ class TestKeyMethods(TestCase):
         guest = Guest()
         guest._headers["alg"] = "HS256"
 
-        self.assertRaises(ValueError, guess_key, key_set, guest)
+        self.assertRaises(InvalidKeyIdError, guess_key, key_set, guest)
         key1 = guess_key(key_set, guest, True)
         self.assertIsInstance(key1, OctKey)
         guess_key(key_set, guest)
 
         guest = Guest()
         guest._headers["alg"] = "RS256"
-        self.assertRaises(ValueError, guess_key, key_set, guest)
+        self.assertRaises(InvalidKeyIdError, guess_key, key_set, guest)
         key2 = guess_key(key_set, guest, True)
         self.assertIsInstance(key2, RSAKey)
 
@@ -98,12 +98,12 @@ class TestKeyMethods(TestCase):
         key = JWKRegistry.import_key(data)
         self.assertIsInstance(key, OctKey)
 
-        self.assertRaises(ValueError, JWKRegistry.import_key, "secret", "invalid")
+        self.assertRaises(InvalidKeyTypeError, JWKRegistry.import_key, "secret", "invalid")
 
     def test_generate_key(self):
         key = JWKRegistry.generate_key("oct", 8)
         self.assertIsInstance(key, OctKey)
-        self.assertRaises(ValueError, JWKRegistry.generate_key, "invalid", 8)
+        self.assertRaises(InvalidKeyTypeError, JWKRegistry.generate_key, "invalid", 8)
 
     def test_check_use(self):
         key = OctKey.import_key("secret", {"use": "sig"})
@@ -156,4 +156,4 @@ class TestKeyMethods(TestCase):
         )
 
     def test_import_without_kty(self):
-        self.assertRaises(ValueError, JWKRegistry.import_key, {})
+        self.assertRaises(MissingKeyTypeError, JWKRegistry.import_key, {})

@@ -1,4 +1,6 @@
 from unittest import TestCase
+
+from joserfc.errors import InvalidKeyTypeError, InvalidKeyIdError
 from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
 from tests.keys import read_key
 
@@ -26,7 +28,7 @@ class TestKeySet(TestCase):
         self.assertEqual(len(jwks2.keys), 4)
 
     def test_generate_key_set_errors(self):
-        self.assertRaises(ValueError, KeySet.generate_key_set, 'NOT_FOUND', 2048)
+        self.assertRaises(InvalidKeyTypeError, KeySet.generate_key_set, 'NOT_FOUND', 2048)
 
     def test_initialize_key_set(self):
         keys = []
@@ -57,7 +59,7 @@ class TestKeySet(TestCase):
 
         k1 = key_set.get_by_kid(key["kid"])
         self.assertEqual(k1.kid, key["kid"])
-        self.assertRaises(ValueError, key_set.get_by_kid, "invalid")
+        self.assertRaises(InvalidKeyIdError, key_set.get_by_kid, "invalid")
 
         key_set = KeySet.generate_key_set("oct", 8, count=1)
         k2 = key_set.get_by_kid()

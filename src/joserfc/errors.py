@@ -37,8 +37,16 @@ class InvalidKeyLengthError(JoseError):
     error = "invalid_key_length"
 
 
+class MissingKeyTypeError(JoseError):
+    error = "missing_key_type"
+
+
 class InvalidKeyTypeError(JoseError):
     error = "invalid_key_type"
+
+
+class InvalidKeyIdError(JoseError):
+    error = "invalid_key_id"
 
 
 class InvalidExchangeKeyError(JoseError):
