@@ -261,8 +261,8 @@ EdDSA          Edwards-curve Digital Signature                  :bdg-danger:`No`
 ES256K         ECDSA using secp256k1 curve and SHA-256          :bdg-danger:`No`
 ============== ================================================ ==================
 
-Algorithm not allowed
-~~~~~~~~~~~~~~~~~~~~~
+UnsupportedAlgorithmError
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The serialization and deserialization methods on ``joserfc.jws`` module accept
 an ``algorithms`` parameter for specifying the allowed algorithms. By default,
@@ -278,11 +278,12 @@ the below error.
     >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-      File "$/joserfc/jws.py", line 99, in serialize_compact
-        alg: JWSAlgModel = registry.get_alg(header["alg"])
-      File "$/joserfc/rfc7515/registry.py", line 57, in get_alg
-        raise ValueError(f'Algorithm of "{name}" is not allowed')
-    ValueError: Algorithm of "HS384" is not allowed
+      File "/Users/lepture/workspace/joserfc/src/joserfc/jws.py", line 112, in serialize_compact
+        alg: JWSAlgModel = registry.get_alg(protected["alg"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/Users/lepture/workspace/joserfc/src/joserfc/rfc7515/registry.py", line 60, in get_alg
+        raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not recommended')
+    joserfc.errors.UnsupportedAlgorithmError: unsupported_algorithm: Algorithm of "HS384" is not recommended
 
 ``joserfc`` does support ``HS384``, but this algorithm is not recommended by
 specifications, developers MUST explict specify the supported algorithms

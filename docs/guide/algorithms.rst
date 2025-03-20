@@ -56,6 +56,23 @@ ES256K         ECKey       :bdg-danger:`No`
 .. note::
     ``EdDSA`` algorithm only accepts ``OKPKey`` with "crv" of "Ed25519" and "Ed448".
 
+By default, JWS ``serialize`` and ``deserialize`` methods will ONLY allow recommended
+algorithms. To use non-recommended algorithms, developers MUST explict specify the
+algorithms either by the ``algorithms`` parameter, or ``registry`` parameter.
+
+.. code-block:: python
+
+    from joserfc import jws
+    from joserfc.jwk import OctKey
+
+    key = OctKey.import_key("secret")
+    # HS384 is a non-recommended algorithm
+    jws.serialize_compact({"alg": "HS384"}, b"payload", key, algorithms=["HS384"])
+
+    # or with a custom registry
+    registry = jws.JWSRegistry(algorithms=["HS384"])
+    jws.serialize_compact({"alg": "HS384"}, b"payload", key, registry=registry)
+
 .. _jwe_algorithms:
 
 JSON Web Encryption
