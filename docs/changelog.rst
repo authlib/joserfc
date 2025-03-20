@@ -16,10 +16,13 @@ Unreleased
 ----------
 
 - Use "import as" to prioritize the modules for editors.
+- Added parameter ``encoder_cls`` for ``jwt.encode`` and ``decoder_cls`` for ``jwt.decode``.
 
 **Breaking changes**:
 
 - Use ``ECKey.binding.register_curve`` to register new supported curves.
+- Use ``UnsupportedAlgorithmError`` instead of ``ValueError`` in JWS/JWE registry.
+- Use ``MissingKeyTypeError`` and ``InvalidKeyIdError`` for errors in JWK.
 
 1.0.4
 -----

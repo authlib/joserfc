@@ -311,3 +311,65 @@ this algorithm:
 
 If not specifying the ``algorithms`` parameter, the ``encode`` method will
 raise an error.
+
+JSON Encoder and Decoder
+------------------------
+
+.. versionadded:: 1.1.0
+
+    The parameters ``encoder_cls`` for ``jwt.encode`` and ``decoder_cls`` for ``jwt.decode``
+    were introduced in version 1.1.0.
+
+When using ``jwt.encode``` to encode claims that contain data types that ``json``
+module does not natively support, such as ``UUID`` and ``datetime``, an error will
+be raised.
+
+.. code-block:: python
+
+    >>> import uuid
+    >>> from joserfc import jwt, jwk
+    >>>
+    >>> key = jwk.OctKey.import_key("secret")
+    >>> claims = {"sub": uuid.uuid4()}
+    >>> jwt.encode({"alg": "HS256"}, claims, key)
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File ".../joserfc/jwt.py", line 66, in encode
+        payload = convert_claims(claims, encoder_cls)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File ".../joserfc/rfc7519/claims.py", line 36, in convert_claims
+        content = json.dumps(claims, ensure_ascii=False, separators=(",", ":"), cls=encoder_cls)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File ".../lib/python3.12/json/__init__.py", line 238, in dumps
+        **kw).encode(obj)
+              ^^^^^^^^^^^
+      File ".../lib/python3.12/json/encoder.py", line 200, in encode
+        chunks = self.iterencode(o, _one_shot=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File ".../lib/python3.12/json/encoder.py", line 258, in iterencode
+        return _iterencode(o, 0)
+               ^^^^^^^^^^^^^^^^^
+      File ".../lib/python3.12/json/encoder.py", line 180, in default
+        raise TypeError(f'Object of type {o.__class__.__name__} '
+    TypeError: Object of type UUID is not JSON serializable
+
+To resolve this issue, you can pass a custom ``JSONEncoder`` using the ``encoder_cls`` parameter.
+
+.. code-block:: python
+
+    import uuid
+    import json
+    from joserfc import jwt, jwk
+
+    class MyEncoder(json.JSONEncoder):
+        def default(self, o):
+            if isinstance(o, uuid.UUID):
+                return str(o)
+            return super().default(o)
+
+    key = jwk.OctKey.import_key("secret")
+    claims = {"sub": uuid.uuid4()}
+    jwt.encode({"alg": "HS256"}, claims, key, encoder_cls=MyEncoder)
+
+Additionally, ``jwt.decode`` accepts a ``decoder_cls`` parameter. If you need to convert
+the decoded claims into the appropriate data types, you can provide a custom decoder class.
