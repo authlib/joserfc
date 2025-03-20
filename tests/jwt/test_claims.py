@@ -1,5 +1,7 @@
 import time
 import datetime
+import json
+import uuid
 from unittest import TestCase
 from joserfc import jwt
 from joserfc.jwk import OctKey
@@ -10,6 +12,13 @@ from joserfc.errors import (
     ExpiredTokenError,
     InvalidTokenError,
 )
+
+
+class UUIDEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, uuid.UUID):
+            return str(o)
+        return super().default(o)
 
 
 class TestJWTClaims(TestCase):
@@ -135,3 +144,11 @@ class TestJWTClaims(TestCase):
         claims_requests = jwt.JWTClaimsRegistry(now=now, leeway=500)
         claims_requests.validate({"nbf": now})
         self.assertRaises(InvalidTokenError, claims_requests.validate, {"nbf": now + 1000})
+
+    def test_claims_with_uuid_field(self):
+        value = uuid.uuid4()
+        claims = {"uuid": value}
+        key = OctKey.import_key("secret")
+        encoded_text = jwt.encode({"alg": "HS256"}, claims, key)
+        decoded_data = jwt.decode(encoded_text, key)
+        self.assertEqual(decoded_data, {"uuid": str(value)})

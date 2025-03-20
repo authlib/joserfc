@@ -56,7 +56,7 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> None:
         plaintext = obj.plaintext
 
     # Step 13, Compute the Encoded Protected Header value BASE64URL(UTF8(JWE Protected Header)).
-    aad = json_b64encode(obj.protected, "ascii")
+    aad = json_b64encode(obj.protected)
 
     # Step 14, Let the Additional Authenticated Data encryption parameter be
     # ASCII(Encoded Protected Header).  However, if a JWE AAD value is
@@ -117,7 +117,7 @@ def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
     if len(cek) * 8 != enc.cek_size:  # pragma: no cover
         raise InvalidCEKLengthError(f"A key of size {enc.cek_size} bits MUST be used")
 
-    aad = json_b64encode(obj.protected, "ascii")
+    aad = json_b64encode(obj.protected)
     if isinstance(obj, BaseJSONEncryption) and obj.aad:
         aad = aad + b"." + urlsafe_b64encode(obj.aad)
 

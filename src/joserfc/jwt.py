@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json
+from json import JSONEncoder, JSONDecoder
 from .rfc7519.claims import convert_claims
 from .rfc7519.claims import Claims as Claims
 from .rfc7519.claims import check_sensitive_data as check_sensitive_data
@@ -49,7 +50,8 @@ def encode(
         claims: Claims,
         key: KeyFlexible,
         algorithms: list[str] | None = None,
-        registry: JWSRegistry | JWERegistry | None = None) -> str:
+        registry: JWSRegistry | JWERegistry | None = None,
+        encoder_cls: JSONEncoder | None = None) -> str:
     """Encode a JSON Web Token with the given header, and claims.
 
     :param header: A dict of the JWT header
@@ -57,10 +59,11 @@ def encode(
     :param key: key used to sign the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a ``JWSRegistry`` or ``JWERegistry`` to use
+    :param encoder_cls: A JSONEncoder subclass to use
     """
     # add ``typ`` in header
     _header = {"typ": "JWT", **header}
-    payload = convert_claims(claims)
+    payload = convert_claims(claims, encoder_cls)
     if isinstance(registry, JWERegistry):
         return encrypt_compact(_header, payload, key, algorithms, registry)
     else:
@@ -71,7 +74,8 @@ def decode(
         value: bytes | str,
         key: KeyFlexible,
         algorithms: list[str] | None = None,
-        registry: JWSRegistry | JWERegistry | None = None) -> Token:
+        registry: JWSRegistry | JWERegistry | None = None,
+        decoder_cls: JSONDecoder | None = None) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests.
 
@@ -79,6 +83,7 @@ def decode(
     :param key: key used to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a ``JWSRegistry`` or ``JWERegistry`` to use
+    :param decoder_cls: A JSONDecoder subclass to use
     :raise: BadSignatureError
     """
     _value = to_bytes(value)
@@ -90,7 +95,7 @@ def decode(
         header, payload = _decode_jws(_value, key, algorithms, registry)
 
     try:
-        claims: Claims = json.loads(payload)
+        claims: Claims = json.loads(payload, cls=decoder_cls)
     except (TypeError, ValueError):
         raise InvalidPayloadError()
 
