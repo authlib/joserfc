@@ -5,7 +5,7 @@ import json
 import datetime
 import calendar
 from json import JSONEncoder
-from typing import Dict, Any
+from typing import Dict, Any, Type
 from ..util import to_bytes
 from ..errors import InsecureClaimError
 
@@ -26,7 +26,7 @@ SENSITIVE_VALUES = re.compile(
 Claims = Dict[str, Any]
 
 
-def convert_claims(claims: Claims, encoder_cls: JSONEncoder | None = None) -> bytes:
+def convert_claims(claims: Claims, encoder_cls: Type[JSONEncoder] | None = None) -> bytes:
     """Turn claims into bytes payload."""
     for k in ["exp", "iat", "nbf"]:
         claim = claims.get(k)
