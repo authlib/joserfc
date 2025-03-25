@@ -149,6 +149,6 @@ class TestJWTClaims(TestCase):
         value = uuid.uuid4()
         claims = {"uuid": value}
         key = OctKey.import_key("secret")
-        encoded_text = jwt.encode({"alg": "HS256"}, claims, key)
-        decoded_data = jwt.decode(encoded_text, key)
-        self.assertEqual(decoded_data, {"uuid": str(value)})
+        encoded_text = jwt.encode({"alg": "HS256"}, claims, key, encoder_cls=UUIDEncoder)
+        token = jwt.decode(encoded_text, key)
+        self.assertEqual(token.claims, {"uuid": str(value)})
