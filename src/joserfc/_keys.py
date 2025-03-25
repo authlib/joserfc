@@ -120,6 +120,11 @@ class KeySet:
     def __bool__(self) -> bool:
         return bool(self.keys)
 
+    def __eq__(self, other) -> bool:
+        if otherdict := getattr(other, 'as_dict', None):
+            return otherdict() == self.as_dict()
+        return False
+
     def as_dict(self, private: bool | None = None, **params: t.Any) -> KeySetSerialization:
         keys: list[DictKey] = []
 

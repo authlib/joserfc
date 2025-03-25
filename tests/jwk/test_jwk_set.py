@@ -1,4 +1,5 @@
 from unittest import TestCase
+import pytest
 
 from joserfc.errors import InvalidKeyTypeError, InvalidKeyIdError
 from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
@@ -8,8 +9,13 @@ KeySet.algorithm_keys["RS256"] = ["RSA"]
 
 
 class TestKeySet(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.key_set1 = KeySet.generate_key_set("RSA", 1024)
+        cls.key_set2 = KeySet.generate_key_set("RSA", 1024)
+
     def test_generate_and_import_key_set(self):
-        jwks1 = KeySet.generate_key_set('RSA', 2048)
+        jwks1 = self.key_set1
         self.assertEqual(len(jwks1.keys), 4)
 
         for key in jwks1.keys:
@@ -72,7 +78,31 @@ class TestKeySet(TestCase):
         key_set = KeySet([OctKey.generate_key()])
         self.assertTrue(key_set)
 
+    def test_key_set_eq_true(self):
+        """KeySet instances compare equal when they contain the same keys?"""
+        key_set1 = self.key_set1
+        key_set2 = KeySet(key_set1.keys)
+        self.assertIsNot(key_set1, key_set2)
+        self.assertEqual(key_set1, key_set2)
+
+    def test_key_set_eq_other_keyset_false(self):
+        """KeySet instances compare not equal when they contain different keys?"""
+        self.assertNotEqual(self.key_set1, self.key_set2)
+
+    def test_key_set_eq_other_obj_false(self):
+        """KeySet instances compare not equal to other objects?"""
+        self.assertNotEqual(self.key_set1, object())
+
+    def test_key_set_eq_ducktype_true(self):
+        """KeySet instance compares equal to things presenting same interface?"""
+
+        class SpecialKeySet(KeySet):
+            """Extended features"""
+
+        key_set = self.key_set1
+        special_key_set = SpecialKeySet(key_set.keys)
+        self.assertEqual(key_set, special_key_set)
+
     def test_key_set_iter(self):
-        key_set = KeySet.generate_key_set('RSA', 2048)
-        for k in key_set:
+        for k in self.key_set1:
             self.assertEqual(k.key_type, "RSA")
