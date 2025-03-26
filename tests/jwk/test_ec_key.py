@@ -1,5 +1,5 @@
 from unittest import TestCase
-from joserfc.jwk import ECKey
+from joserfc.jwk import ECKey, OctKey
 from joserfc.errors import InvalidExchangeKeyError
 from tests.keys import read_key
 
@@ -78,3 +78,15 @@ class TestECKey(TestCase):
         )
         key2 = ECKey.import_key(pem, password="secret")
         self.assertEqual(key.as_dict(), key2.as_dict())
+
+    def test_key_eq(self):
+        key1 = ECKey.generate_key()
+        key2 = ECKey.import_key(key1.as_dict())
+        self.assertEqual(key1, key2)
+        key3 = ECKey.generate_key()
+        self.assertNotEqual(key1, key3)
+
+    def test_key_eq_with_different_types(self):
+        key1 = ECKey.generate_key()
+        key2 = OctKey.generate_key()
+        self.assertNotEqual(key1, key2)

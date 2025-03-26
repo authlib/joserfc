@@ -150,3 +150,11 @@ class TestRSAKey(TestCase):
         )
         key2 = RSAKey.import_key(pem, password="secret")
         self.assertEqual(key.as_dict(), key2.as_dict())
+
+    def test_key_eq(self):
+        key1 = RSAKey.generate_key()
+        key2 = RSAKey.import_key(key1.as_dict())
+        self.assertIsNot(key1, key2)
+        self.assertEqual(key1, key2)
+        key3 = RSAKey.generate_key()
+        self.assertNotEqual(key1, key3)

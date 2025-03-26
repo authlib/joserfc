@@ -76,3 +76,18 @@ class TestKeySet(TestCase):
         key_set = KeySet.generate_key_set('RSA', 2048)
         for k in key_set:
             self.assertEqual(k.key_type, "RSA")
+
+    def test_key_eq_with_same_keys(self):
+        key_set1 = KeySet.generate_key_set('RSA', 2048)
+        key_set2 = KeySet(key_set1.keys)
+        self.assertIsNot(key_set1, key_set2)
+        self.assertEqual(key_set1, key_set2)
+
+    def test_key_eq_with_new_keys(self):
+        key_set1 = KeySet.generate_key_set('RSA', 2048)
+        key_set2 = KeySet([
+            RSAKey.import_key(k.as_dict())
+            for k in key_set1
+        ])
+        self.assertIsNot(key_set1, key_set2)
+        self.assertEqual(key_set1, key_set2)

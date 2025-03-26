@@ -99,6 +99,11 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
             self.validate_dict_key(data)
             self._dict_value = data
 
+    def __eq__(self, other: t.Any) -> bool:
+        if not isinstance(other, self.__class__):
+            return False
+        return self.dict_value == other.dict_value
+
     def keys(self) -> KeysView[str]:
         return self.dict_value.keys()
 
