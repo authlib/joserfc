@@ -100,3 +100,11 @@ class TestOKPKey(TestCase):
         )
         key2 = OKPKey.import_key(pem, password="secret")
         self.assertEqual(key.as_pem(), key2.as_pem())
+
+    def test_key_eq(self):
+        key1 = OKPKey.generate_key()
+        key2 = OKPKey.import_key(key1.as_dict())
+        self.assertIsNot(key1, key2)
+        self.assertEqual(key1, key2)
+        key3 = OKPKey.generate_key()
+        self.assertNotEqual(key1, key3)

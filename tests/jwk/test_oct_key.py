@@ -92,3 +92,11 @@ class TestOctKey(TestCase):
 
         key = OctKey.generate_key(auto_kid=True)
         self.assertIsNotNone(key.kid)
+
+    def test_key_eq(self):
+        key1 = OctKey.generate_key()
+        key2 = OctKey.import_key(key1.as_dict())
+        self.assertIsNot(key1, key2)
+        self.assertEqual(key1, key2)
+        key3 = OctKey.generate_key()
+        self.assertNotEqual(key1, key3)
