@@ -5,6 +5,8 @@ from tests.keys import read_key
 
 
 class TestECKey(TestCase):
+    default_key = ECKey.generate_key()
+
     def test_exchange_derive_key(self):
         key1 = ECKey.generate_key("P-256")
         key2 = ECKey.generate_key("P-384")
@@ -58,9 +60,8 @@ class TestECKey(TestCase):
         self.assertIsNotNone(key.kid)
 
     def test_import_from_der_bytes(self):
-        origin_key = ECKey.generate_key()
-        value1 = origin_key.as_der()
-        value2 = origin_key.as_der(private=False)
+        value1 = self.default_key.as_der()
+        value2 = self.default_key.as_der(private=False)
 
         key1 = ECKey.import_key(value1)
         key2 = ECKey.import_key(value2)
@@ -80,13 +81,11 @@ class TestECKey(TestCase):
         self.assertEqual(key.as_dict(), key2.as_dict())
 
     def test_key_eq(self):
-        key1 = ECKey.generate_key()
+        key1 = self.default_key
         key2 = ECKey.import_key(key1.as_dict())
         self.assertEqual(key1, key2)
         key3 = ECKey.generate_key()
         self.assertNotEqual(key1, key3)
 
     def test_key_eq_with_different_types(self):
-        key1 = ECKey.generate_key()
-        key2 = OctKey.generate_key()
-        self.assertNotEqual(key1, key2)
+        self.assertNotEqual(self.default_key, OctKey.generate_key())

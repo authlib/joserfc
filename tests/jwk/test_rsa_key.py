@@ -4,6 +4,8 @@ from tests.keys import read_key
 
 
 class TestRSAKey(TestCase):
+    default_key = RSAKey.generate_key()
+
     def test_import_key_from_dict(self):
         # https://www.rfc-editor.org/rfc/rfc7517#appendix-A.1
         data = {
@@ -128,8 +130,7 @@ class TestRSAKey(TestCase):
         self.assertIsNotNone(key.kid)
 
     def test_import_from_der_bytes(self):
-        origin_key = RSAKey.generate_key()
-        value1 = origin_key.as_der()
+        value1 = self.default_key.as_der()
         key1 = RSAKey.import_key(value1)
         self.assertEqual(value1, key1.as_der())
 
@@ -152,7 +153,7 @@ class TestRSAKey(TestCase):
         self.assertEqual(key.as_dict(), key2.as_dict())
 
     def test_key_eq(self):
-        key1 = RSAKey.generate_key()
+        key1 = self.default_key
         key2 = RSAKey.import_key(key1.as_dict())
         self.assertIsNot(key1, key2)
         self.assertEqual(key1, key2)
