@@ -56,13 +56,13 @@ class NativeKeyBinding(metaclass=ABCMeta):
     def validate_dict_key_registry(cls, dict_key: DictKey, registry: KeyParameterRegistryDict) -> None:
         for k in registry:
             if registry[k].required and k not in dict_key:
-                raise ValueError(f'"{k}" is required')
+                raise ValueError(f"'{k}' is required")
 
             if k in dict_key:
                 try:
                     registry[k].validate(dict_key[k])
                 except ValueError as error:
-                    raise ValueError(f'"{k}" {error}')
+                    raise ValueError(f"'{k}' {error}")
 
     @classmethod
     def validate_dict_key_use_operations(cls, dict_key: DictKey) -> None:
@@ -71,7 +71,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
             operations = cls.use_key_ops_registry[_use]
             for op in dict_key["key_ops"]:
                 if op not in operations:
-                    raise ValueError('"use" and "key_ops" does not match')
+                    raise ValueError("'use' and 'key_ops' does not match")
 
 
 class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
@@ -200,7 +200,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         """
         designed_use = self.get("use")
         if designed_use and designed_use != use:
-            raise UnsupportedKeyUseError(f'This key is designed to be used for "{designed_use}"')
+            raise UnsupportedKeyUseError(f"This key is designed to be used for '{designed_use}'")
 
     def check_alg(self, alg: str) -> None:
         """Check if this key supports the given "alg".
@@ -210,7 +210,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         """
         designed_alg = self.get("alg")
         if designed_alg and designed_alg != alg:
-            raise UnsupportedKeyAlgorithmError(f'This key is designed for algorithm "{designed_alg}"')
+            raise UnsupportedKeyAlgorithmError(f"This key is designed for algorithm '{designed_alg}'")
 
     def check_key_op(self, operation: str) -> None:
         """Check if the given key_op is supported by this key.
@@ -220,12 +220,12 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         """
         key_ops = self.get("key_ops")
         if key_ops is not None and operation not in key_ops:
-            raise UnsupportedKeyOperationError(f'Unsupported key_op "{operation}"')
+            raise UnsupportedKeyOperationError(f"Unsupported key_op '{operation}'")
 
         assert operation in self.operation_registry
         reg = self.operation_registry[operation]
         if reg.private and not self.is_private:
-            raise UnsupportedKeyOperationError(f'Invalid key_op "{operation}" for public key')
+            raise UnsupportedKeyOperationError(f"Invalid key_op '{operation}' for public key")
 
     @t.overload
     def get_op_key(self, operation: t.Literal["verify", "encrypt", "wrapKey", "deriveKey"]) -> NativePublicKey: ...

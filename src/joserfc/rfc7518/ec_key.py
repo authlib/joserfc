@@ -45,7 +45,7 @@ class ECBinding(CryptographyBinding):
     @classmethod
     def generate_private_key(cls, name: str) -> EllipticCurvePrivateKey:
         if name not in cls._dss_curves:
-            raise ValueError('Invalid crv value: "{}"'.format(name))
+            raise ValueError("Invalid crv value: '{}'".format(name))
 
         curve = cls._dss_curves[name]()
         raw_key = generate_private_key(

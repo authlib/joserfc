@@ -61,7 +61,7 @@ class InvalidEncryptedKeyError(JoseError):
 
 class MissingAlgorithmError(JoseError):
     error = "missing_algorithm"
-    description = 'Missing "alg" value in header'
+    description = "Missing 'alg' value in header"
 
 
 class ConflictAlgorithmError(JoseError):
@@ -74,7 +74,7 @@ class UnsupportedAlgorithmError(JoseError):
 
 class MissingEncryptionError(JoseError):
     error = "missing_encryption"
-    description = 'Missing "enc" value in header'
+    description = "Missing 'enc' value in header"
 
 
 class BadSignatureError(JoseError):
@@ -99,14 +99,14 @@ class InvalidEncryptionAlgorithmError(JoseError):
 
 class InvalidCEKLengthError(JoseError):
     error = "invalid_cek_length"
-    description = 'Invalid "cek" length'
+    description = "Invalid 'cek' length"
 
 
 class InvalidClaimError(JoseError):
     error = "invalid_claim"
 
     def __init__(self, claim: str):
-        description = f'Invalid claim: "{claim}"'
+        description = f"Invalid claim: '{claim}'"
         super(InvalidClaimError, self).__init__(description=description)
 
 
@@ -114,7 +114,7 @@ class MissingClaimError(JoseError):
     error = "missing_claim"
 
     def __init__(self, claim: str):
-        description = f'Missing claim: "{claim}"'
+        description = f"Missing claim: '{claim}'"
         super(MissingClaimError, self).__init__(description=description)
 
 
@@ -122,7 +122,7 @@ class InsecureClaimError(JoseError):
     error = "insecure_claim"
 
     def __init__(self, claim: str):
-        description = f'Insecure claim "{claim}"'
+        description = f"Insecure claim '{claim}'"
         super(InsecureClaimError, self).__init__(description=description)
 
 

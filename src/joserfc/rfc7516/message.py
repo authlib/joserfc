@@ -111,7 +111,7 @@ def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
         raise DecodeError('Invalid recipients')
 
     if len(cek_set) > 1:  # pragma: no cover
-        raise DecodeError('Multiple "cek" found')
+        raise DecodeError("Multiple 'cek' found")
 
     cek = cek_set.pop()
     if len(cek) * 8 != enc.cek_size:  # pragma: no cover
