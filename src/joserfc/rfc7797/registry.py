@@ -19,4 +19,4 @@ def _safe_b64_header(header: Header) -> bool:
     crit = header.get("crit")
     if isinstance(crit, list) and "b64" in crit:
         return True
-    raise ValueError('The "crit" Header Parameter MUST be included with "b64"')
+    raise ValueError("The 'crit' Header Parameter MUST be included with 'b64'")

@@ -97,7 +97,7 @@ class JWSAlgModel(object, metaclass=ABCMeta):
 
     def check_key_type(self, key: Any) -> None:
         if key.key_type != self.key_type:
-            raise InvalidKeyTypeError(f'Algorithm "{self.name}" requires "{self.key_type}" key')
+            raise InvalidKeyTypeError(f"Algorithm '{self.name}' requires '{self.key_type}' key")
 
     @abstractmethod
     def sign(self, msg: bytes, key: Any) -> bytes:

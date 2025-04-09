@@ -122,7 +122,7 @@ class ECAlgModel(JWSAlgModel):
 
     def _check_key(self, key: ECKey) -> ECKey:
         if key.curve_name != self.curve:
-            raise ValueError(f'Key for "{self.name}" not supported, only "{self.curve}" allowed')
+            raise ValueError(f"Key for '{self.name}' not supported, only '{self.curve}' allowed")
         return key
 
     def sign(self, msg: bytes, key: ECKey) -> bytes:

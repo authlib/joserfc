@@ -129,7 +129,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         :param auto_kid: add ``kid`` automatically
         """
         if crv not in PRIVATE_KEYS_MAP:
-            raise ValueError('Invalid crv value: "{}"'.format(crv))
+            raise ValueError("Invalid crv value: '{}'".format(crv))
 
         private_key_cls: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
         raw_key = private_key_cls.generate()

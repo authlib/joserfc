@@ -175,7 +175,7 @@ class JWEEncModel(object, metaclass=ABCMeta):
 
     def check_iv(self, iv: bytes) -> bytes:
         if len(iv) * 8 != self.iv_size:  # pragma: no cover
-            raise ValueError('Invalid "iv" size')
+            raise ValueError("Invalid 'iv' size")
         return iv
 
     @abstractmethod

@@ -102,14 +102,14 @@ class JWERegistry:
 
     def _check_algorithm(self, name: str, registry: dict[str, t.Any]) -> None:
         if name not in registry:
-            raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not supported')
+            raise UnsupportedAlgorithmError(f"Algorithm of '{name}' is not supported")
 
         if self.allowed:
             if name not in self.allowed:
-                raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not allowed')
+                raise UnsupportedAlgorithmError(f"Algorithm of '{name}' is not allowed")
         else:
             if name not in self.recommended:
-                raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not recommended')
+                raise UnsupportedAlgorithmError(f"Algorithm of '{name}' is not recommended")
 
 
 default_registry = JWERegistry()

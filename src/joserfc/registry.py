@@ -184,12 +184,12 @@ def validate_registry_header(
         check_required: bool = True) -> None:
     for key, reg in registry.items():
         if check_required and reg.required and key not in header:
-            raise ValueError(f'Required "{key}" is missing in header')
+            raise ValueError(f"Required '{key}' is missing in header")
         if key in header:
             try:
                 reg.validate(header[key])
             except ValueError as error:
-                raise ValueError(f'"{key}" in header {error}')
+                raise ValueError(f"'{key}' in header {error}")
 
 
 def check_crit_header(header: Header) -> None:
@@ -197,4 +197,4 @@ def check_crit_header(header: Header) -> None:
     if "crit" in header:
         for k in header["crit"]:
             if k not in header:
-                raise ValueError(f'"{k}" is a critical header')
+                raise ValueError(f"'{k}' is a critical header")

@@ -23,6 +23,7 @@ Unreleased
 - Use ``ECKey.binding.register_curve`` to register new supported curves.
 - Use ``UnsupportedAlgorithmError`` instead of ``ValueError`` in JWS/JWE registry.
 - Use ``MissingKeyTypeError`` and ``InvalidKeyIdError`` for errors in JWK.
+- Respect RFC6749 character set in error descriptions.
 
 1.0.4
 -----

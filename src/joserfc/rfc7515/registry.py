@@ -50,14 +50,14 @@ class JWSRegistry:
         :param name: value of the ``alg``, e.g. ``HS256``, ``RS256``
         """
         if name not in self.algorithms:
-            raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not supported')
+            raise UnsupportedAlgorithmError(f"Algorithm of '{name}' is not supported")
 
         if self.allowed:
             if name not in self.allowed:
-                raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not allowed')
+                raise UnsupportedAlgorithmError(f"Algorithm of '{name}' is not allowed")
         else:
             if name not in self.recommended:
-                raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not recommended')
+                raise UnsupportedAlgorithmError(f"Algorithm of '{name}' is not recommended")
         return self.algorithms[name]
 
     def check_header(self, header: Header) -> None:
