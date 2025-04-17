@@ -17,6 +17,7 @@ Unreleased
 
 - Use "import as" to prioritize the modules for editors.
 - Added parameter ``encoder_cls`` for ``jwt.encode`` and ``decoder_cls`` for ``jwt.decode``.
+- Added ``generate_new_key`` and ``remove_keys`` methods on ``jwk.KeySet``
 
 **Breaking changes**:
 

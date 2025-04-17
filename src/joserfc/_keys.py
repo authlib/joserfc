@@ -155,6 +155,19 @@ class KeySet:
             return random.choice(keys)
         return None
 
+    def generate_new_key(
+            self,
+            key_type: str,
+            crv_or_size: str | int,
+            parameters: KeyParameters | None = None,
+            private: bool = True) -> Key:
+        new_key = self.registry_cls.generate_key(key_type, crv_or_size, parameters, private, auto_kid)
+        self.keys.append(new_key)
+        return new_key
+
+    def remove_keys(self, keys_to_remove: list[Key]):
+        self.keys = [k for k in self.keys if k not in keys_to_remove]
+
     @classmethod
     def import_key_set(
             cls,
