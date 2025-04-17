@@ -160,6 +160,22 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     def private_key(self) -> t.Optional[NativePrivateKey]:
         raise NotImplementedError()
 
+    @property
+    def jrfc_disabled(self) -> t.Optional[bool]:
+        """
+        The "jrfc_disabled" custom value of the JSON Web Key, or ``False``
+        if not present.
+        """
+        return t.cast(t.Optional[str], self.get("jrfc_disabled", False))
+
+    @jrfc_disabled.setter
+    def jrfc_disabled(self, value: bool):
+        self.dict_value["jrfc_disabled"] = value
+
+    @jrfc_disabled.deleter
+    def jrfc_disabled(self):
+        del self.dict_value["jrfc_disabled"]
+
     def thumbprint(self) -> str:
         """Call this method will generate the thumbprint with algorithm
         defined in RFC7638."""

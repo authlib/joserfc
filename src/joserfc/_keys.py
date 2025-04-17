@@ -148,9 +148,9 @@ class KeySet:
     def pick_random_key(self, algorithm: str) -> t.Optional[Key]:
         key_types = self.algorithm_keys.get(algorithm)
         if key_types:
-            keys = [k for k in self.keys if k.key_type in key_types]
+            keys = [k for k in self.keys if k.key_type in key_types and not k.jrfc_disabled]
         else:
-            keys = self.keys
+            keys = [k for k in self.keys if not k.jrfc_disabled]
         if keys:
             return random.choice(keys)
         return None
