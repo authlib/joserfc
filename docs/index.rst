@@ -78,6 +78,7 @@ Explore the following sections to discover more about ``joserfc`` and its featur
    guide/index
    guide/algorithms
    guide/registry
+   guide/key-rotation
    migrations/index
 
 .. toctree::
