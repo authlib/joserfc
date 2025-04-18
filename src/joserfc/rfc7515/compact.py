@@ -36,11 +36,13 @@ def extract_compact(value: bytes) -> CompactSignature:
         raise DecodeError("Invalid payload")
 
     obj = CompactSignature(protected, payload)
-    obj.segments.update({
-        "header": header_segment,
-        "payload": payload_segment,
-        "signature": signature_segment,
-    })
+    obj.segments.update(
+        {
+            "header": header_segment,
+            "payload": payload_segment,
+            "signature": signature_segment,
+        }
+    )
     return obj
 
 

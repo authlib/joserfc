@@ -1,12 +1,13 @@
 """
-    authlib.jose.rfc7518
-    ~~~~~~~~~~~~~~~~~~~~
+authlib.jose.rfc7518
+~~~~~~~~~~~~~~~~~~~~
 
-    Cryptographic Models for Cryptographic Models for Content
-    Encryption per `Section 5`_.
+Cryptographic Models for Cryptographic Models for Content
+Encryption per `Section 5`_.
 
-    .. _`Section 5`: https://tools.ietf.org/html/rfc7518#section-5
+.. _`Section 5`: https://tools.ietf.org/html/rfc7518#section-5
 """
+
 from __future__ import annotations
 import hmac
 import hashlib
@@ -29,9 +30,7 @@ class CBCHS2EncModel(JWEEncModel):
 
     def __init__(self, key_size: int, hash_type: int):
         self.name = f"A{key_size}CBC-HS{hash_type}"
-        self.description = (
-            f"AES_{key_size}_CBC_HMAC_SHA_{hash_type} authenticated encryption algorithm"
-        )
+        self.description = f"AES_{key_size}_CBC_HMAC_SHA_{hash_type} authenticated encryption algorithm"
 
         # key size in bit
         self.key_size = key_size
@@ -49,8 +48,8 @@ class CBCHS2EncModel(JWEEncModel):
 
     def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> tuple[bytes, bytes]:
         """Key Encryption with AES_CBC_HMAC_SHA2."""
-        hkey = cek[:self.key_len]
-        ekey = cek[self.key_len:]
+        hkey = cek[: self.key_len]
+        ekey = cek[self.key_len :]
 
         pad = PKCS7(AES.block_size).padder()
         padded_data = pad.update(plaintext) + pad.finalize()
@@ -63,8 +62,8 @@ class CBCHS2EncModel(JWEEncModel):
 
     def decrypt(self, ciphertext: bytes, tag: bytes, cek: bytes, iv: bytes, aad: bytes) -> bytes:
         """Key Decryption with AES AES_CBC_HMAC_SHA2."""
-        hkey = cek[:self.key_len]
-        dkey = cek[self.key_len:]
+        hkey = cek[: self.key_len]
+        dkey = cek[self.key_len :]
 
         ctag = self._hmac(ciphertext, aad, iv, hkey)
         if not hmac.compare_digest(ctag, tag):

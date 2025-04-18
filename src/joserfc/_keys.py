@@ -37,6 +37,7 @@ class JWKRegistry:
         data = {"kty": "oct", "k": "..."}
         key = JWKRegistry.import_key(data)
     """
+
     key_types: t.Dict[str, t.Type[Key]] = {
         OctKey.key_type: OctKey,
         RSAKey.key_type: RSAKey,
@@ -45,11 +46,7 @@ class JWKRegistry:
     }
 
     @classmethod
-    def import_key(
-            cls,
-            data: AnyKey,
-            key_type: str | None = None,
-            parameters: KeyParameters | None = None) -> Key:
+    def import_key(cls, data: AnyKey, key_type: str | None = None, parameters: KeyParameters | None = None) -> Key:
         """A class method for importing a key from bytes, string, and dict.
         When ``value`` is a dict, this method can tell the key type automatically,
         otherwise, developers SHOULD pass the ``key_type`` themselves.
@@ -76,12 +73,13 @@ class JWKRegistry:
 
     @classmethod
     def generate_key(
-            cls,
-            key_type: str,
-            crv_or_size: str | int,
-            parameters: KeyParameters | None = None,
-            private: bool = True,
-            auto_kid: bool = False) -> Key:
+        cls,
+        key_type: str,
+        crv_or_size: str | int,
+        parameters: KeyParameters | None = None,
+        private: bool = True,
+        auto_kid: bool = False,
+    ) -> Key:
         """A class method for generating key according to the given key type.
         When ``key_type`` is "oct" and "RSA", the second parameter SHOULD be
         a key size in bits. When ``key_type`` is "EC" and "OKP", the second
@@ -156,10 +154,7 @@ class KeySet:
         return None
 
     @classmethod
-    def import_key_set(
-            cls,
-            value: KeySetSerialization,
-            parameters: KeyParameters | None = None) -> "KeySet":
+    def import_key_set(cls, value: KeySetSerialization, parameters: KeyParameters | None = None) -> "KeySet":
         keys: list[Key] = []
 
         for data in value["keys"]:
@@ -169,13 +164,13 @@ class KeySet:
 
     @classmethod
     def generate_key_set(
-            cls,
-            key_type: str,
-            crv_or_size: str | int,
-            parameters: KeyParameters | None = None,
-            private: bool = True,
-            count: int = 4) -> "KeySet":
-
+        cls,
+        key_type: str,
+        crv_or_size: str | int,
+        parameters: KeyParameters | None = None,
+        private: bool = True,
+        count: int = 4,
+    ) -> "KeySet":
         keys: list[Key] = []
         for _ in range(count):
             key = cls.registry_cls.generate_key(key_type, crv_or_size, parameters, private)

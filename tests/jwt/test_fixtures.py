@@ -25,4 +25,4 @@ class TestJWTFixtures(TestFixture):
         self.assertEqual(obj.claims, claims)
 
 
-TestJWTFixtures.load_fixture('jwt_use_jws.json')
+TestJWTFixtures.load_fixture("jwt_use_jws.json")

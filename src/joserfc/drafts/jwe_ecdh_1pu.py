@@ -1,10 +1,5 @@
 from __future__ import annotations
-from ..rfc7516.models import (
-    Recipient,
-    JWEKeyAgreement,
-    JWEKeyWrapping,
-    JWEEncModel
-)
+from ..rfc7516.models import Recipient, JWEKeyAgreement, JWEKeyWrapping, JWEEncModel
 from ..rfc7518.jwe_algs import (
     A128KW,
     A192KW,
@@ -19,7 +14,7 @@ from ..registry import HeaderParameter
 from ..errors import InvalidEncryptionAlgorithmError
 
 
-__all__ = ['ECDH1PUAlgModel', 'register_ecdh_1pu', 'JWE_ALG_MODELS']
+__all__ = ["ECDH1PUAlgModel", "register_ecdh_1pu", "JWE_ALG_MODELS"]
 
 
 class ECDH1PUAlgModel(JWEKeyAgreement):
@@ -27,6 +22,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
 
     https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04
     """
+
     more_header_registry = {
         "epk": HeaderParameter("Ephemeral Public Key", "jwk", True),
         "apu": HeaderParameter("Agreement PartyUInfo", "str"),
@@ -55,8 +51,8 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         # mode, any JWE content encryption algorithm MAY be used.
         if self.key_wrapping and not isinstance(enc, CBCHS2EncModel):
             description = (
-                'In key agreement with key wrapping mode ECDH-1PU algorithm '
-                'only supports AES_CBC_HMAC_SHA2 family encryption algorithms'
+                "In key agreement with key wrapping mode ECDH-1PU algorithm "
+                "only supports AES_CBC_HMAC_SHA2 family encryption algorithms"
             )
             raise InvalidEncryptionAlgorithmError(description)
 
@@ -64,29 +60,17 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         self._check_enc(enc)
         return self.__encrypt_agreed_upon_key(enc, recipient, None)
 
-    def encrypt_agreed_upon_key_with_tag(
-            self,
-            enc: JWEEncModel,
-            recipient: Recipient[ECKey],
-            tag: bytes) -> bytes:
+    def encrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient[ECKey], tag: bytes) -> bytes:
         self._check_enc(enc)
         return self.__encrypt_agreed_upon_key(enc, recipient, tag)
 
     def decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[ECKey]) -> bytes:
         return self.__decrypt_agreed_upon_key(enc, recipient, None)
 
-    def decrypt_agreed_upon_key_with_tag(
-            self,
-            enc: JWEEncModel,
-            recipient: Recipient[ECKey],
-            tag: bytes) -> bytes:
+    def decrypt_agreed_upon_key_with_tag(self, enc: JWEEncModel, recipient: Recipient[ECKey], tag: bytes) -> bytes:
         return self.__decrypt_agreed_upon_key(enc, recipient, tag)
 
-    def __encrypt_agreed_upon_key(
-            self,
-            enc: JWEEncModel,
-            recipient: Recipient[ECKey],
-            tag: bytes | None) -> bytes:
+    def __encrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[ECKey], tag: bytes | None) -> bytes:
         sender_key = recipient.sender_key
         recipient_key = recipient.recipient_key
         ephemeral_key = recipient.ephemeral_key
@@ -100,12 +84,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
         headers = recipient.headers()
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size, tag)
 
-    def __decrypt_agreed_upon_key(
-            self,
-            enc: JWEEncModel,
-            recipient: Recipient[ECKey],
-            tag: bytes | None) -> bytes:
-
+    def __decrypt_agreed_upon_key(self, enc: JWEEncModel, recipient: Recipient[ECKey], tag: bytes | None) -> bytes:
         self._check_enc(enc)
         headers = recipient.headers()
         assert "epk" in headers
@@ -123,7 +102,7 @@ class ECDH1PUAlgModel(JWEKeyAgreement):
 
 
 JWE_ALG_MODELS = [
-    ECDH1PUAlgModel(None),    # ECDH-1PU
+    ECDH1PUAlgModel(None),  # ECDH-1PU
     ECDH1PUAlgModel(A128KW),  # ECDH-1PU+A128KW
     ECDH1PUAlgModel(A192KW),  # ECDH-1PU+A192KW
     ECDH1PUAlgModel(A256KW),  # ECDH-1PU+A256KW

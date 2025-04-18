@@ -5,7 +5,10 @@ from joserfc.jwk import KeySet, OctKey, RSAKey
 from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyUseError,
-    UnsupportedKeyOperationError, InvalidKeyTypeError, MissingKeyTypeError, InvalidKeyIdError,
+    UnsupportedKeyOperationError,
+    InvalidKeyTypeError,
+    MissingKeyTypeError,
+    InvalidKeyIdError,
 )
 
 register_key_set()
@@ -26,18 +29,22 @@ class TestKeyMethods(TestCase):
     def test_guess_str_key(self):
         self.assertRaises(
             DeprecationWarning,
-            guess_key, "key", Guest(),
+            guess_key,
+            "key",
+            Guest(),
         )
 
     def test_guess_bytes_key(self):
         self.assertRaises(
             DeprecationWarning,
-            guess_key, b"key", Guest(),
+            guess_key,
+            b"key",
+            Guest(),
         )
 
     def test_guess_callable_key(self):
-        oct_key = OctKey.generate_key(parameters={'kid': '1'})
-        rsa_key = RSAKey.generate_key(parameters={'kid': '2'})
+        oct_key = OctKey.generate_key(parameters={"kid": "1"})
+        rsa_key = RSAKey.generate_key(parameters={"kid": "2"})
 
         def key_func1(obj):
             return "key"
@@ -50,14 +57,16 @@ class TestKeyMethods(TestCase):
 
         self.assertRaises(
             DeprecationWarning,
-            guess_key, key_func1, Guest(),
+            guess_key,
+            key_func1,
+            Guest(),
         )
 
         key2 = guess_key(key_func2, Guest())
         self.assertIsInstance(key2, RSAKey)
 
         guest = Guest()
-        guest.set_kid('2')
+        guest.set_kid("2")
         key3 = guess_key(key_func3, guest)
         self.assertIsInstance(key3, RSAKey)
 
@@ -108,25 +117,13 @@ class TestKeyMethods(TestCase):
     def test_check_use(self):
         key = OctKey.import_key("secret", {"use": "sig"})
         key.check_use("sig")
-        self.assertRaises(
-            UnsupportedKeyUseError,
-            key.check_use,
-            "enc"
-        )
-        self.assertRaises(
-            UnsupportedKeyUseError,
-            key.check_use,
-            "invalid"
-        )
+        self.assertRaises(UnsupportedKeyUseError, key.check_use, "enc")
+        self.assertRaises(UnsupportedKeyUseError, key.check_use, "invalid")
 
     def test_check_alg(self):
         key = OctKey.import_key("secret", {"alg": "HS256"})
         key.check_alg("HS256")
-        self.assertRaises(
-            UnsupportedKeyAlgorithmError,
-            key.check_alg,
-            "RS256"
-        )
+        self.assertRaises(UnsupportedKeyAlgorithmError, key.check_alg, "RS256")
 
     def test_alg_property(self):
         key = OctKey.import_key("secret")
@@ -138,22 +135,10 @@ class TestKeyMethods(TestCase):
     def test_check_ops(self):
         key = OctKey.import_key("secret", {"key_ops": ["sign", "verify"]})
         key.check_key_op("sign")
-        self.assertRaises(
-            UnsupportedKeyOperationError,
-            key.check_key_op,
-            "wrapKey"
-        )
-        self.assertRaises(
-            UnsupportedKeyOperationError,
-            key.check_key_op,
-            "invalid"
-        )
+        self.assertRaises(UnsupportedKeyOperationError, key.check_key_op, "wrapKey")
+        self.assertRaises(UnsupportedKeyOperationError, key.check_key_op, "invalid")
         key = RSAKey.generate_key(private=False)
-        self.assertRaises(
-            UnsupportedKeyOperationError,
-            key.check_key_op,
-            "sign"
-        )
+        self.assertRaises(UnsupportedKeyOperationError, key.check_key_op, "sign")
 
     def test_import_without_kty(self):
         self.assertRaises(MissingKeyTypeError, JWKRegistry.import_key, {})

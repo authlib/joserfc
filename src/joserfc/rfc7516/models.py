@@ -11,10 +11,11 @@ KeyType = t.TypeVar("KeyType")
 
 class Recipient(t.Generic[KeyType]):
     def __init__(
-            self,
-            parent: t.Union["CompactEncryption", "GeneralJSONEncryption", "FlattenedJSONEncryption"],
-            header: Header | None = None,
-            recipient_key: KeyType | None = None):
+        self,
+        parent: t.Union["CompactEncryption", "GeneralJSONEncryption", "FlattenedJSONEncryption"],
+        header: Header | None = None,
+        recipient_key: KeyType | None = None,
+    ):
         self.__parent = parent
         self.header = header
         self.recipient_key = recipient_key
@@ -47,6 +48,7 @@ class CompactEncryption:
     """An object to represent the JWE Compact Serialization. It is usually returned by
     ``decrypt_compact`` method.
     """
+
     def __init__(self, protected: Header, plaintext: bytes | None = None):
         #: protected header in dict
         self.protected = protected
@@ -93,11 +95,12 @@ class BaseJSONEncryption(metaclass=ABCMeta):
     recipients: t.List[Recipient[t.Any]]
 
     def __init__(
-            self,
-            protected: Header,
-            plaintext: bytes | None = None,
-            unprotected: Header | None = None,
-            aad: bytes | None = None):
+        self,
+        protected: Header,
+        plaintext: bytes | None = None,
+        unprotected: Header | None = None,
+        aad: bytes | None = None,
+    ):
         self.protected = protected
         self.plaintext = plaintext
         self.unprotected = unprotected
@@ -130,6 +133,7 @@ class GeneralJSONEncryption(BaseJSONEncryption):
         # then add each recipient
         obj.add_recipient({"alg": "A128KW"})
     """
+
     flattened = False
 
     def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:
@@ -151,6 +155,7 @@ class FlattenedJSONEncryption(BaseJSONEncryption):
         # then add each recipient
         obj.add_recipient({"alg": "A128KW"})
     """
+
     flattened = True
 
     def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:

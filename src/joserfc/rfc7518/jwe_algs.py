@@ -55,12 +55,7 @@ class RSAAlgModel(JWEKeyEncryption):
     key_size = 2048
     key_types = ["RSA"]
 
-    def __init__(
-            self,
-            name: str,
-            description: str,
-            pad_fn: padding.AsymmetricPadding,
-            recommended: bool = False):
+    def __init__(self, name: str, description: str, pad_fn: padding.AsymmetricPadding, recommended: bool = False):
         self.name = name
         self.description = description
         self.padding = pad_fn

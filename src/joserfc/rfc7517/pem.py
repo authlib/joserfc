@@ -22,10 +22,7 @@ from .types import DictKey
 from ..util import to_bytes
 
 
-def load_pem_key(
-        raw: bytes,
-        ssh_type: bytes | None = None,
-        password: bytes | None = None) -> Any:
+def load_pem_key(raw: bytes, ssh_type: bytes | None = None, password: bytes | None = None) -> Any:
     key: Any
     if ssh_type and raw.startswith(ssh_type):
         key = load_ssh_public_key(raw, backend=default_backend())
@@ -52,10 +49,8 @@ def load_pem_key(
 
 
 def dump_pem_key(
-        key: Any,
-        encoding: Literal["PEM", "DER"] | None = None,
-        private: bool | None = False,
-        password: Any | None = None) -> bytes:
+    key: Any, encoding: Literal["PEM", "DER"] | None = None, private: bool | None = False, password: Any | None = None
+) -> bytes:
     """Export key into PEM/DER format bytes.
 
     :param key: native cryptography key
@@ -109,20 +104,18 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
         return cls.import_public_key(value)
 
     @classmethod
-    def import_from_bytes(
-            cls,
-            value: bytes,
-            password: Any | None = None) -> Any:
+    def import_from_bytes(cls, value: bytes, password: Any | None = None) -> Any:
         if password is not None:
             password = to_bytes(password)
         return load_pem_key(value, cls.ssh_type, password)
 
     @staticmethod
     def as_bytes(
-            key: GenericKey,
-            encoding: Literal["PEM", "DER"] | None = None,
-            private: bool | None = False,
-            password: Any | None = None) -> bytes:
+        key: GenericKey,
+        encoding: Literal["PEM", "DER"] | None = None,
+        private: bool | None = False,
+        password: Any | None = None,
+    ) -> bytes:
         if private is True:
             return dump_pem_key(key.private_key, encoding, private, password)
         elif private is False:

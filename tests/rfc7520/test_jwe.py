@@ -103,22 +103,22 @@ class TestJWERFC7520(TestFixture):
                     "kid": "77c7e2b8-6e13-45cf-8672-617b5b45243a",
                     "use": "enc",
                     "alg": "A128GCM",
-                    "k": "XctOhJAkA-pD9Lh7ZgW_2A"
+                    "k": "XctOhJAkA-pD9Lh7ZgW_2A",
                 },
                 {
                     "kty": "oct",
                     "kid": "81b20965-8332-43d9-a468-82160ad91ac8",
                     "use": "enc",
                     "alg": "A128KW",
-                    "k": "GZy6sIZ6wl9NJOKB-jnmVQ"
+                    "k": "GZy6sIZ6wl9NJOKB-jnmVQ",
                 },
                 {
                     "kty": "oct",
                     "kid": "18ec08e1-bfa9-4d95-b205-2b4dd1d4321d",
                     "use": "enc",
                     "alg": "A256GCMKW",
-                    "k": "qC57l_uxcm7Nm3K-ct4GFjx8tM1U8CZ0NLBvdQstiS8"
-                }
+                    "k": "qC57l_uxcm7Nm3K-ct4GFjx8tM1U8CZ0NLBvdQstiS8",
+                },
             ]
         }
         password = OctKey.import_key(b"entrap_o\xe2\x80\x93peter_long\xe2\x80\x93credit_tun")
@@ -127,7 +127,7 @@ class TestJWERFC7520(TestFixture):
             "p2s": "8Q1SzinasR3xchYz6ZZcHA",
             "p2c": 8192,
             "cty": "jwk-set+json",
-            "enc": "A128CBC-HS256"
+            "enc": "A128CBC-HS256",
         }
         compact_data = """
         eyJhbGciOiJQQkVTMi1IUzUxMitBMjU2S1ciLCJwMnMiOiI4UTFTemluYXNSM3
@@ -157,5 +157,6 @@ class TestJWERFC7520(TestFixture):
         self.assertEqual(json.loads(obj1.plaintext), plaintext)
         compact_obj = decrypt_compact(compact_data, password, algorithms=algorithms)
         self.assertEqual(json.loads(compact_obj.plaintext), plaintext)
+
 
 TestJWERFC7520.load_fixture("jwe_rfc7520.json")

@@ -55,10 +55,7 @@ class TestJWSRFC7520(TestFixture):
 
     def test_signature_with_detached_content(self):
         # https://datatracker.ietf.org/doc/html/rfc7520#section-4.5
-        protected = {
-            "alg": "HS256",
-            "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
-        }
+        protected = {"alg": "HS256", "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"}
         key = load_key("RFC7520-oct-sig.json")
         value1 = jws.serialize_compact(protected, payload, key)
         compact_result = (
@@ -74,22 +71,16 @@ class TestJWSRFC7520(TestFixture):
         general_json = {
             "signatures": [
                 {
-                    "protected": (
-                        "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcx"
-                        "Yi1iZmQ2LWVlZjMxNGJjNzAzNyJ9"
-                    ),
-                    "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+                    "protected": ("eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9"),
+                    "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0",
                 }
             ]
         }
         self.assertEqual(jws.detach_content(value2), general_json)
 
         flattened_json = {
-            "protected": (
-                "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcx"
-                "Yi1iZmQ2LWVlZjMxNGJjNzAzNyJ9"
-            ),
-            "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+            "protected": ("eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9"),
+            "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0",
         }
         value3 = jws.serialize_json(member, payload, key)
         self.assertEqual(jws.detach_content(value3), flattened_json)
@@ -108,9 +99,9 @@ class TestJWSRFC7520(TestFixture):
                 {
                     "protected": "eyJhbGciOiJIUzI1NiJ9",
                     "header": {"kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"},
-                    "signature": "bWUSVaxorn7bEF1djytBd0kHv70Ly5pvbomzMWSOr20"
+                    "signature": "bWUSVaxorn7bEF1djytBd0kHv70Ly5pvbomzMWSOr20",
                 }
-            ]
+            ],
         }
         self.assertEqual(value1, general_json)
 
@@ -119,16 +110,13 @@ class TestJWSRFC7520(TestFixture):
             "payload": b64_payload,
             "protected": "eyJhbGciOiJIUzI1NiJ9",
             "header": {"kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"},
-            "signature": "bWUSVaxorn7bEF1djytBd0kHv70Ly5pvbomzMWSOr20"
+            "signature": "bWUSVaxorn7bEF1djytBd0kHv70Ly5pvbomzMWSOr20",
         }
         self.assertEqual(value2, flattened_json)
 
     def test_protecting_content_only(self):
         # https://datatracker.ietf.org/doc/html/rfc7520#section-4.7
-        unprotected = {
-            "alg": "HS256",
-            "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
-        }
+        unprotected = {"alg": "HS256", "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"}
         key = load_key("RFC7520-oct-sig.json")
         member = {"header": unprotected}
         value1 = jws.serialize_json([member], payload, key)
@@ -136,24 +124,18 @@ class TestJWSRFC7520(TestFixture):
             "payload": b64_payload,
             "signatures": [
                 {
-                    "header": {
-                        "alg": "HS256",
-                        "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
-                    },
-                    "signature": "xuLifqLGiblpv9zBpuZczWhNj1gARaLV3UxvxhJxZuk"
+                    "header": {"alg": "HS256", "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"},
+                    "signature": "xuLifqLGiblpv9zBpuZczWhNj1gARaLV3UxvxhJxZuk",
                 }
-            ]
+            ],
         }
         self.assertEqual(value1, general_json)
 
         value2 = jws.serialize_json(member, payload, key)
         flattened_json = {
             "payload": b64_payload,
-            "header": {
-                "alg": "HS256",
-                "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
-            },
-            "signature": "xuLifqLGiblpv9zBpuZczWhNj1gARaLV3UxvxhJxZuk"
+            "header": {"alg": "HS256", "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037"},
+            "signature": "xuLifqLGiblpv9zBpuZczWhNj1gARaLV3UxvxhJxZuk",
         }
         self.assertEqual(value2, flattened_json)
 
@@ -169,9 +151,7 @@ class TestJWSRFC7520(TestFixture):
             "signatures": [
                 {
                     "protected": "eyJhbGciOiJSUzI1NiJ9",
-                    "header": {
-                        "kid": "bilbo.baggins@hobbiton.example"
-                    },
+                    "header": {"kid": "bilbo.baggins@hobbiton.example"},
                     "signature": (
                         "MIsjqtVlOpa71KE-Mss8_Nq2YH4FGhiocsqrgi5NvyG53uoimic1tc"
                         "MdSg-qptrzZc7CG6Svw2Y13TDIqHzTUrL_lR2ZFcryNFiHkSw129Egh"
@@ -179,24 +159,21 @@ class TestJWSRFC7520(TestFixture):
                         "7BSe0_evZKdjvvKSgsIqjytKSeAMbhMBdMma622_BG5t4sdbuCHtFjp"
                         "9iJmkio47AIwqkZV1aIZsv33uPUqBBCXbYoQJwt7mxPftHmNlGoOSMx"
                         "R_3thmXTCm4US-xiNOyhbm8afKK64jU6_TPtQHiJeQJxz9G3Tx-083B745_AfYOnlC9w"
-                    )
+                    ),
                 },
                 {
-                    "header": {
-                        "alg": "ES512",
-                        "kid": "bilbo.baggins@hobbiton.example"
-                    },
+                    "header": {"alg": "ES512", "kid": "bilbo.baggins@hobbiton.example"},
                     "signature": (
                         "ARcVLnaJJaUWG8fG-8t5BREVAuTY8n8YHjwDO1muhcdCoFZFFjfISu0"
                         "Cdkn9Ybdlmi54ho0x924DUz8sK7ZXkhc7AFM8ObLfTvNCrqcI3Jkl2U"
                         "5IX3utNhODH6v7xgy1Qahsn0fyb4zSAkje8bAWz4vIfj5pCMYxxm4fgV3q7ZYhm5eD"
-                    )
+                    ),
                 },
                 {
                     "protected": "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9",
-                    "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
-                }
-            ]
+                    "signature": "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0",
+                },
+            ],
         }
 
         def resolve_key(recipient):

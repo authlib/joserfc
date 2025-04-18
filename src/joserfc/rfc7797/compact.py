@@ -22,12 +22,12 @@ from .registry import JWSRegistry
 
 
 def serialize_compact(
-        protected: Header,
-        payload: bytes | str,
-        private_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: t.Optional[_JWSRegistry] = None) -> str:
-
+    protected: Header,
+    payload: bytes | str,
+    private_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: t.Optional[_JWSRegistry] = None,
+) -> str:
     if "b64" not in protected:
         return _serialize_compact(protected, payload, private_key, algorithms, registry)
 
@@ -56,11 +56,12 @@ def serialize_compact(
 
 
 def deserialize_compact(
-        value: bytes | str,
-        public_key: KeyFlexible,
-        payload: t.Optional[bytes | str] = None,
-        algorithms: list[str] | None = None,
-        registry: t.Optional[JWSRegistry] = None) -> CompactSignature:
+    value: bytes | str,
+    public_key: KeyFlexible,
+    payload: t.Optional[bytes | str] = None,
+    algorithms: list[str] | None = None,
+    registry: t.Optional[JWSRegistry] = None,
+) -> CompactSignature:
     obj = _extract_compact(to_bytes(value), payload)
     if obj is None:
         return _deserialize_compact(value, public_key, algorithms, registry)
@@ -114,9 +115,11 @@ def _extract_compact(value: bytes, payload: t.Optional[bytes | str] = None) -> t
         obj = CompactSignature(protected, to_bytes(payload))
     else:
         obj = CompactSignature(protected, payload_segment)
-    obj.segments.update({
-        "header": header_segment,
-        "payload": payload_segment,
-        "signature": signature_segment,
-    })
+    obj.segments.update(
+        {
+            "header": header_segment,
+            "payload": payload_segment,
+            "signature": signature_segment,
+        }
+    )
     return obj

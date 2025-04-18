@@ -177,7 +177,7 @@ General and Flattened
 
 There are two types of JSON JWS serializations, "general" and "flattened".
 The above example is a General JSON Serialization. A Flattened JSON Serialization
-contains only one member. Compair the bellow examples:
+contains only one member. Compare the below examples:
 
 .. code-block:: json
     :caption: Flattened JSON Serialization
@@ -225,7 +225,7 @@ you can tell if the signature is flattened or general with ``obj.flattened``:
 
 .. versionchanged:: 0.6.0
 
-    ``jws.JSONSignature`` is seperated to ``GeneralJSONSignature`` and ``FlattenedJSONSignature``.
+    ``jws.JSONSignature`` is separated to ``GeneralJSONSignature`` and ``FlattenedJSONSignature``.
 
 .. code-block:: python
 
@@ -291,7 +291,7 @@ the below error.
     joserfc.errors.UnsupportedAlgorithmError: unsupported_algorithm: Algorithm of "HS384" is not recommended
 
 ``joserfc`` does support ``HS384``, but this algorithm is not recommended by
-specifications, developers MUST explict specify the supported algorithms
+specifications, developers MUST explicitly specify the supported algorithms
 either by the ``algorithms`` parameter, or ``registry`` parameter.
 
 .. code-block:: python

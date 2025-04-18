@@ -68,6 +68,7 @@ _value_validators: Dict[str, Validate] = {
 
 class HeaderParameter:
     """Define the header parameter for JWS and JWE."""
+
     def __init__(self, description: str, validate: str | Validate, required: bool = False):
         #: a short description of the header parameter
         self.description = description
@@ -83,12 +84,8 @@ HeaderRegistryDict = Dict[str, HeaderParameter]
 
 class KeyParameter:
     """Define the key parameter for JWK."""
-    def __init__(
-            self,
-            description: str,
-            validate: str | Validate,
-            private: bool | None = None,
-            required: bool = False):
+
+    def __init__(self, description: str, validate: str | Validate, private: bool | None = None, required: bool = False):
         #: a short description of the key parameter
         self.description: str = description
         #: a function for validating the key parameter's value
@@ -138,16 +135,18 @@ JWK_PARAMETER_REGISTRY = {
     "use": KeyParameter("Public Key Use", in_choices(["sig", "enc"])),
     "key_ops": KeyParameter(
         "Key Operations",
-        in_choices([
-            "sign",
-            "verify",
-            "encrypt",
-            "decrypt",
-            "wrapKey",
-            "unwrapKey",
-            "deriveKey",
-            "deriveBits",
-        ]),
+        in_choices(
+            [
+                "sign",
+                "verify",
+                "encrypt",
+                "decrypt",
+                "wrapKey",
+                "unwrapKey",
+                "deriveKey",
+                "deriveBits",
+            ]
+        ),
     ),
     "alg": KeyParameter("Algorithm", is_str),
     "kid": KeyParameter("Key ID", is_str),
@@ -175,13 +174,10 @@ def check_supported_header(registry: HeaderRegistryDict, header: Header) -> None
     allowed_keys = set(registry.keys())
     unsupported_keys = set(header.keys()) - allowed_keys
     if unsupported_keys:
-        raise ValueError(f'Unsupported {unsupported_keys} in header')
+        raise ValueError(f"Unsupported {unsupported_keys} in header")
 
 
-def validate_registry_header(
-        registry: HeaderRegistryDict,
-        header: Header,
-        check_required: bool = True) -> None:
+def validate_registry_header(registry: HeaderRegistryDict, header: Header, check_required: bool = True) -> None:
     for key, reg in registry.items():
         if check_required and reg.required and key not in header:
             raise ValueError(f"Required '{key}' is missing in header")

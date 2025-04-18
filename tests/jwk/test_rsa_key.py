@@ -39,12 +39,9 @@ class TestRSAKey(TestCase):
                 "4-csFCur-kEgU8awapJzKnqDKgw"
             ),
             "e": "AQAB",
-            "oth": "invalid information"
+            "oth": "invalid information",
         }
-        self.assertRaises(
-            ValueError,
-            RSAKey.import_key, data
-        )
+        self.assertRaises(ValueError, RSAKey.import_key, data)
 
     def test_import_only_from_d(self):
         data = {
@@ -100,11 +97,11 @@ class TestRSAKey(TestCase):
 
         # as_dict
         data = key.as_dict()
-        self.assertIn('d', data)
+        self.assertIn("d", data)
         data = key.as_dict(private=True)
-        self.assertIn('d', data)
+        self.assertIn("d", data)
         data = key.as_dict(private=False)
-        self.assertNotIn('d', data)
+        self.assertNotIn("d", data)
 
         # as_pem
         data = key.as_pem()
@@ -138,17 +135,13 @@ class TestRSAKey(TestCase):
         firebase_cert = read_key("firebase-cert.pem")
         key: RSAKey = RSAKey.import_key(firebase_cert)
         data = key.as_dict()
-        self.assertEqual(data['kty'], 'RSA')
+        self.assertEqual(data["kty"], "RSA")
 
     def test_output_with_password(self):
         private_pem = read_key("rsa-openssl-private.pem")
         key: RSAKey = RSAKey.import_key(private_pem)
         pem = key.as_pem(password="secret")
-        self.assertRaises(
-            TypeError,
-            RSAKey.import_key,
-            pem
-        )
+        self.assertRaises(TypeError, RSAKey.import_key, pem)
         key2 = RSAKey.import_key(pem, password="secret")
         self.assertEqual(key.as_dict(), key2.as_dict())
 

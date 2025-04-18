@@ -21,14 +21,18 @@ from ..rfc7517.types import KeyParameters
 from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
-__all__ = ['ECKey']
+__all__ = ["ECKey"]
 
-ECDictKey = t.TypedDict("ECDictKey", {
-    "crv": str,
-    "x": str,
-    "y": str,
-    "d": str,  # optional
-}, total=False)
+ECDictKey = t.TypedDict(
+    "ECDictKey",
+    {
+        "crv": str,
+        "x": str,
+        "y": str,
+        "d": str,  # optional
+    },
+    total=False,
+)
 
 
 class ECBinding(CryptographyBinding):
@@ -140,11 +144,8 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @classmethod
     def generate_key(
-            cls,
-            crv: str = "P-256",
-            parameters: KeyParameters | None = None,
-            private: bool = True,
-            auto_kid: bool = False) -> "ECKey":
+        cls, crv: str = "P-256", parameters: KeyParameters | None = None, private: bool = True, auto_kid: bool = False
+    ) -> "ECKey":
         """Generate a ``ECKey`` with the given "crv" value.
 
         :param crv: ECKey curve name
