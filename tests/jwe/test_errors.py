@@ -7,6 +7,7 @@ from joserfc.errors import (
     InvalidKeyLengthError,
     DecodeError,
     UnsupportedAlgorithmError,
+    UnsupportedHeaderError,
 )
 from tests.base import load_key
 
@@ -88,7 +89,7 @@ class TestJWEErrors(TestCase):
     def test_extra_header(self):
         key = OctKey.generate_key(256)
         protected = {"alg": "dir", "enc": "A128CBC-HS256", "custom": "hi"}
-        self.assertRaises(ValueError, jwe.encrypt_compact, protected, b"i", key)
+        self.assertRaises(UnsupportedHeaderError, jwe.encrypt_compact, protected, b"i", key)
 
         registry = jwe.JWERegistry(strict_check_header=False)
         jwe.encrypt_compact(protected, b"i", key, registry=registry)
@@ -99,6 +100,6 @@ class TestJWEErrors(TestCase):
     def test_strict_check_header_with_more_header_registry(self):
         key = load_key("ec-p256-private.pem")
         protected = {"alg": "ECDH-ES", "enc": "A128CBC-HS256", "custom": "hi"}
-        self.assertRaises(ValueError, jwe.encrypt_compact, protected, b"i", key)
+        self.assertRaises(UnsupportedHeaderError, jwe.encrypt_compact, protected, b"i", key)
         registry = jwe.JWERegistry(strict_check_header=False)
         jwe.encrypt_compact(protected, b"i", key, registry=registry)
