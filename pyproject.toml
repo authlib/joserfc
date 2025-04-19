@@ -57,6 +57,7 @@ dev = [
     "pytest-cov>=5.0.0",
     "pycryptodome>=3.21.0",
     "ruff>=0.9.2",
+    "pre-commit>=3.5.0",
 ]
 docs = [
     "shibuya>=2025.2.20",
@@ -98,3 +99,38 @@ python_version = "3.8"
 files = ["src/joserfc"]
 show_error_codes = true
 pretty = true
+
+[tool.tox]
+requires = ["tox>=4.19"]
+env_list = [
+    "style",
+    "py310",
+    "py311",
+    "py312",
+    "py313",
+    "docs",
+    "coverage",
+]
+
+[tool.tox.env_run_base]
+dependency_groups = ["dev"]
+commands = [
+    ["pytest", "--showlocals", "--full-trace", "{posargs}"],
+]
+
+[tool.tox.env.style]
+skip_install = true
+commands = [
+    ["pre-commit", "run", "--all-files", "--show-diff-on-failure"],
+]
+
+[tool.tox.env.docs]
+dependency_groups = ["docs"]
+commands = [
+    ["sphinx-build", "--builder", "html", "--fail-on-warning", "docs", "build/sphinx/html"],
+]
+
+[tool.tox.env.coverage]
+commands = [
+    ["pytest", "--cov", "--cov-report", "term:skip-covered", "--cov-report", "html", "{posargs}"],
+]
