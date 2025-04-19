@@ -19,16 +19,20 @@ from ..rfc7517.types import KeyParameters
 from ..util import int_to_base64, base64_to_int
 
 
-RSADictKey = t.TypedDict("RSADictKey", {
-    "n": str,
-    "e": str,
-    "d": str,
-    "p": str,
-    "q": str,
-    "dp": str,
-    "dq": str,
-    "qi": str,
-}, total=False)
+RSADictKey = t.TypedDict(
+    "RSADictKey",
+    {
+        "n": str,
+        "e": str,
+        "d": str,
+        "p": str,
+        "q": str,
+        "dp": str,
+        "dq": str,
+        "qi": str,
+    },
+    total=False,
+)
 
 
 class RSABinding(CryptographyBinding):
@@ -127,11 +131,12 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
 
     @classmethod
     def generate_key(
-            cls,
-            key_size: int = 2048,
-            parameters: t.Optional[KeyParameters] = None,
-            private: bool = True,
-            auto_kid: bool = False) -> "RSAKey":
+        cls,
+        key_size: int = 2048,
+        parameters: t.Optional[KeyParameters] = None,
+        private: bool = True,
+        auto_kid: bool = False,
+    ) -> "RSAKey":
         """Generate a ``RSAKey`` with the given bit size (not bytes).
 
         :param key_size: size in bit

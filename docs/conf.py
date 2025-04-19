@@ -13,7 +13,7 @@ html_title = "joserfc"
 
 html_static_path = ["_static"]
 html_css_files = [
-  'custom.css',
+    "custom.css",
 ]
 html_theme = "shibuya"
 
@@ -30,9 +30,9 @@ extensions = [
 ]
 
 extlinks = {
-    'user': ('https://github.com/%s', '@%s'),
-    'pull': ('https://github.com/authlib/joserfc/pull/%s', 'pull request #%s'),
-    'issue': ('https://github.com/authlib/joserfc/issues/%s', 'issue #%s'),
+    "user": ("https://github.com/%s", "@%s"),
+    "pull": ("https://github.com/authlib/joserfc/pull/%s", "pull request #%s"),
+    "issue": ("https://github.com/authlib/joserfc/issues/%s", "issue #%s"),
 }
 
 intersphinx_mapping = {
@@ -56,25 +56,17 @@ html_theme_options = {
         {
             "title": "Projects",
             "children": [
-                {
-                    "title": "Authlib",
-                    "url": "https://authlib.org/",
-                    "summary": "OAuth, JOSE, OpenID, etc."
-                },
-                {
-                    "title": "JOSE RFC",
-                    "url": "https://jose.authlib.org/",
-                    "summary": "JWS, JWE, JWK, and JWT."
-                },
+                {"title": "Authlib", "url": "https://authlib.org/", "summary": "OAuth, JOSE, OpenID, etc."},
+                {"title": "JOSE RFC", "url": "https://jose.authlib.org/", "summary": "JWS, JWE, JWK, and JWT."},
                 {
                     "title": "OTP Auth",
                     "url": "https://otp.authlib.org/",
                     "summary": "One time password, HOTP/TOTP.",
                 },
-            ]
+            ],
         },
         {"title": "Sponsor me", "url": "https://github.com/sponsors/authlib"},
-    ]
+    ],
 }
 
 html_baseurl = "https://jose.authlib.org/en/"
@@ -96,8 +88,8 @@ def setup(app):
     global language, html_baseurl, sitemap_filename, sitemap_locales
 
     language = app.config.language
-    if language != 'en':
-        sitemap_filename = 'sitemap.xml'
+    if language != "en":
+        sitemap_filename = "sitemap.xml"
         sitemap_locales = [None]
 
     html_baseurl = f"https://jose.authlib.org/{language}/"

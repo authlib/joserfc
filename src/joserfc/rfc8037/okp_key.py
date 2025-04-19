@@ -19,11 +19,15 @@ from ..registry import KeyParameter
 
 PublicOKPKey = t.Union[Ed25519PublicKey, Ed448PublicKey, X25519PublicKey, X448PublicKey]
 PrivateOKPKey = t.Union[Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448PrivateKey]
-OKPDictKey = t.TypedDict("OKPDictKey", {
-    "crv": t.Literal["Ed25519", "Ed448", "X25519", "X448"],
-    "x": str,
-    "d": str,
-}, total=False)
+OKPDictKey = t.TypedDict(
+    "OKPDictKey",
+    {
+        "crv": t.Literal["Ed25519", "Ed448", "X25519", "X448"],
+        "x": str,
+        "d": str,
+    },
+    total=False,
+)
 PUBLIC_KEYS_MAP: t.Dict[str, t.Type[PublicOKPKey]] = {
     "Ed25519": Ed25519PublicKey,
     "Ed448": Ed448PublicKey,
@@ -116,11 +120,12 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     @classmethod
     def generate_key(
-            cls,
-            crv: str = "Ed25519",
-            parameters: t.Optional[KeyParameters] = None,
-            private: bool = True,
-            auto_kid: bool = False) -> "OKPKey":
+        cls,
+        crv: str = "Ed25519",
+        parameters: t.Optional[KeyParameters] = None,
+        private: bool = True,
+        auto_kid: bool = False,
+    ) -> "OKPKey":
         """Generate a ``OKPKey`` with the given "crv" value.
 
         :param crv: OKPKey curve name

@@ -14,11 +14,8 @@ __all__ = [
 
 
 def derive_key_for_concat_kdf(
-        shared_key: bytes,
-        header: Header,
-        cek_size: int,
-        key_size: int | None,
-        tag: bytes | None = None) -> bytes:
+    shared_key: bytes, header: Header, cek_size: int, key_size: int | None, tag: bytes | None = None
+) -> bytes:
     # PartyUInfo
     apu_info = u32be_len_input(header.get("apu"), True)
     # PartyVInfo

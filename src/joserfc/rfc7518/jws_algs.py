@@ -1,12 +1,12 @@
 """
-    joserfc.rfc7518.jws_algs
-    ~~~~~~~~~~~~~~~~~~~~~~~~
+joserfc.rfc7518.jws_algs
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Originally designed in ``authlib.jose.rfc7518``.
+Originally designed in ``authlib.jose.rfc7518``.
 
-    "alg" (Algorithm) Header Parameter Values for JWS per `Section 3`_.
+"alg" (Algorithm) Header Parameter Values for JWS per `Section 3`_.
 
-    .. _`Section 3`: https://tools.ietf.org/html/rfc7518#section-3
+.. _`Section 3`: https://tools.ietf.org/html/rfc7518#section-3
 """
 
 import hmac
@@ -74,6 +74,7 @@ class RSAAlgModel(JWSAlgModel):
     - RS384: RSASSA-PKCS1-v1_5 using SHA-384
     - RS512: RSASSA-PKCS1-v1_5 using SHA-512
     """
+
     key_type = "RSA"
 
     SHA256 = hashes.SHA256
@@ -107,6 +108,7 @@ class ECAlgModel(JWSAlgModel):
     - ES384: ECDSA using P-384 and SHA-384
     - ES512: ECDSA using P-521 and SHA-512
     """
+
     key_type = "EC"
 
     SHA256 = hashes.SHA256
@@ -160,6 +162,7 @@ class RSAPSSAlgModel(JWSAlgModel):
     - PS384: RSASSA-PSS using SHA-384 and MGF1 with SHA-384
     - PS512: RSASSA-PSS using SHA-512 and MGF1 with SHA-512
     """
+
     key_type = "RSA"
 
     SHA256 = hashes.SHA256

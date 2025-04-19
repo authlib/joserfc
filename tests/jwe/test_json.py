@@ -38,7 +38,8 @@ class TestJWEJSON(TestCase):
         self.assertRaises(
             ConflictAlgorithmError,
             jwe.encrypt_json,
-            obj, None,
+            obj,
+            None,
         )
 
     def test_with_aad(self):
@@ -56,7 +57,8 @@ class TestJWEJSON(TestCase):
         self.assertRaises(
             InvalidKeyTypeError,
             jwe.decrypt_json,
-            value, self.rsa_key,
+            value,
+            self.rsa_key,
         )
         registry = jwe.JWERegistry(verify_all_recipients=False)
         obj1 = jwe.decrypt_json(value, self.rsa_key, registry=registry)
@@ -66,6 +68,7 @@ class TestJWEJSON(TestCase):
         self.assertRaises(
             DecodeError,
             jwe.decrypt_json,
-            value, key3,
+            value,
+            key3,
             registry=registry,
         )

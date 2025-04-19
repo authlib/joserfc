@@ -14,9 +14,7 @@ from joserfc.drafts.jwe_ecdh_1pu import JWE_ALG_MODELS, register_ecdh_1pu
 from tests.base import TestFixture, load_key
 
 register_ecdh_1pu()
-ecdh_registry = JWERegistry(
-    algorithms=[m.name for m in JWE_ALG_MODELS] + [enc.name for enc in JWE_ENC_MODELS]
-)
+ecdh_registry = JWERegistry(algorithms=[m.name for m in JWE_ALG_MODELS] + [enc.name for enc in JWE_ENC_MODELS])
 
 
 class TestECDH1PUCompact(TestFixture):
@@ -38,7 +36,8 @@ class TestECDH1PUCompact(TestFixture):
     def run_compact_case(self, alg: str, enc: str, recipient_key, sender_key):
         protected = {"alg": alg, "enc": enc}
         value = encrypt_compact(
-            protected, b'hello',
+            protected,
+            b"hello",
             public_key=recipient_key,
             registry=ecdh_registry,
             sender_key=sender_key,
@@ -50,7 +49,7 @@ class TestECDH1PUCompact(TestFixture):
             registry=ecdh_registry,
             sender_key=sender_key,
         )
-        self.assertEqual(obj.plaintext, b'hello')
+        self.assertEqual(obj.plaintext, b"hello")
 
     def test_ecdh_1pu_compact_direct_mode(self):
         alice_key = load_key("ec-p256-alice.json")
@@ -66,14 +65,14 @@ class TestECDH1PUCompact(TestFixture):
 
     def test_ecdh_1pu_compact_agreement_mode(self):
         allowed_alg_values = [
-            'ECDH-1PU+A128KW',
-            'ECDH-1PU+A192KW',
-            'ECDH-1PU+A256KW',
+            "ECDH-1PU+A128KW",
+            "ECDH-1PU+A192KW",
+            "ECDH-1PU+A256KW",
         ]
         allowed_enc_values = [
-            'A128CBC-HS256',
-            'A192CBC-HS384',
-            'A256CBC-HS512',
+            "A128CBC-HS256",
+            "A192CBC-HS384",
+            "A256CBC-HS512",
         ]
 
         alice_key = load_key("ec-p256-alice.json")
@@ -92,21 +91,23 @@ class TestECDH1PUCompact(TestFixture):
         alice_key = load_key("ec-p256-alice.json")
         bob_key = load_key("ec-p256-bob.json")
         alg_values = [
-            'ECDH-1PU+A128KW',
-            'ECDH-1PU+A192KW',
-            'ECDH-1PU+A256KW',
+            "ECDH-1PU+A128KW",
+            "ECDH-1PU+A192KW",
+            "ECDH-1PU+A256KW",
         ]
         other_enc_values = [
-            'A128GCM',
-            'A192GCM',
-            'A256GCM',
+            "A128GCM",
+            "A192GCM",
+            "A256GCM",
         ]
         for alg in alg_values:
             for enc in other_enc_values:
                 protected = {"alg": alg, "enc": enc}
                 self.assertRaises(
                     InvalidEncryptionAlgorithmError,
-                    encrypt_compact, protected, b"hello",
+                    encrypt_compact,
+                    protected,
+                    b"hello",
                     public_key=bob_key,
                     registry=ecdh_registry,
                     sender_key=alice_key,
@@ -119,7 +120,8 @@ class TestECDH1PUCompact(TestFixture):
 
         protected = {"alg": "ECDH-1PU+A128KW", "enc": "A128CBC-HS256", "kid": "bob", "skid": "alice"}
         value = encrypt_compact(
-            protected, b'hello',
+            protected,
+            b"hello",
             public_key=key,
             registry=ecdh_registry,
             sender_key=key,
@@ -131,21 +133,24 @@ class TestECDH1PUCompact(TestFixture):
             registry=ecdh_registry,
             sender_key=key,
         )
-        self.assertEqual(obj.plaintext, b'hello')
+        self.assertEqual(obj.plaintext, b"hello")
 
     def test_sender_key_not_found_via_kid(self):
         alice_key = load_key("ec-p256-alice.json", {"kid": "alice"})
         bob_key = load_key("ec-p256-bob.json", {"kid": "bob"})
         protected = {"alg": "ECDH-1PU+A128KW", "enc": "A128CBC-HS256"}
         value = encrypt_compact(
-            protected, b'hello',
+            protected,
+            b"hello",
             public_key=bob_key,
             registry=ecdh_registry,
             sender_key=alice_key,
         )
         key_set = KeySet([alice_key, bob_key])
         self.assertRaises(
-            ValueError, decrypt_compact, value,
+            ValueError,
+            decrypt_compact,
+            value,
             private_key=bob_key,
             registry=ecdh_registry,
             sender_key=key_set,
@@ -157,15 +162,17 @@ class TestECDH1PUCompact(TestFixture):
         bob_key = load_key("RFC7520-RSA-private.json")
         key_set = KeySet([bob_key])
         self.assertRaises(
-            ValueError, encrypt_compact,
-            protected, b'hello',
+            ValueError,
+            encrypt_compact,
+            protected,
+            b"hello",
             public_key=alice_key,
             registry=ecdh_registry,
             sender_key=key_set,
         )
 
 
-TestECDH1PUCompact.load_fixture('jwe_compact_ecdh_1pu.json')
+TestECDH1PUCompact.load_fixture("jwe_compact_ecdh_1pu.json")
 
 
 class TestECDH1PUJSON(TestCase):
@@ -185,19 +192,19 @@ class TestECDH1PUJSON(TestCase):
                     "encrypted_key": (
                         "pOMVA9_PtoRe7xXW1139NzzN1UhiFoio8lGto9cf0t8PyU-sjNXH8-LIRLycq8CH"
                         "JQbDwvQeU1cSl55cQ0hGezJu2N9IY0QN"
-                    )
+                    ),
                 },
                 {
                     "header": {"kid": "2021-05-06"},
                     "encrypted_key": (
                         "56GVudgRLIMEElQ7DpXsijJVRSWUSDNdbWkdV3g0GUNq6hcT_GkxwnxlPIWrTXCq"
                         "RpVKQC8fe4z3PQ2YH2afvjQ28aiCTWFE"
-                    )
-                }
+                    ),
+                },
             ],
             "iv": "AAECAwQFBgcICQoLDA0ODw",
             "ciphertext": "Az2IWsISEMDJvyc5XRL-3-d-RgNBOGolCsxFFoUXFYw",
-            "tag": "HLb4fTlm8spGmij3RyOs2gJ4DpHM4hhVRwdF_hGb3WQ"
+            "tag": "HLb4fTlm8spGmij3RyOs2gJ4DpHM4hhVRwdF_hGb3WQ",
         }
         alice_key = load_key("okp-x25519-alice.json")
         bob_key = load_key("okp-x25519-bob.json", {"kid": "bob-key-2"})
@@ -207,11 +214,7 @@ class TestECDH1PUJSON(TestCase):
             "enc": "A256CBC-HS512",
             "apu": "QWxpY2U",
             "apv": "Qm9iIGFuZCBDaGFybGll",
-            "epk": {
-                "kty": "OKP",
-                "crv": "X25519",
-                "x": "k9of_cpAajy0poW5gaixXGs9nHkwg1AFqUAFa39dyBc"
-            }
+            "epk": {"kty": "OKP", "crv": "X25519", "x": "k9of_cpAajy0poW5gaixXGs9nHkwg1AFqUAFa39dyBc"},
         }
         obj = decrypt_json(
             result,
@@ -220,12 +223,7 @@ class TestECDH1PUJSON(TestCase):
             sender_key=alice_key,
         )
         self.assertEqual(obj.protected, protected)
-        value1 = encrypt_json(
-            obj,
-            KeySet([bob_key, charlie_key]),
-            registry=ecdh_registry,
-            sender_key=alice_key
-        )
+        value1 = encrypt_json(obj, KeySet([bob_key, charlie_key]), registry=ecdh_registry, sender_key=alice_key)
         self.assertEqual(value1["protected"], result["protected"])
 
     def test_with_key_set(self):

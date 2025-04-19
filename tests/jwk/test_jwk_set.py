@@ -9,7 +9,7 @@ KeySet.algorithm_keys["RS256"] = ["RSA"]
 
 class TestKeySet(TestCase):
     def test_generate_and_import_key_set(self):
-        jwks1 = KeySet.generate_key_set('RSA', 2048)
+        jwks1 = KeySet.generate_key_set("RSA", 2048)
         self.assertEqual(len(jwks1.keys), 4)
 
         for key in jwks1.keys:
@@ -17,18 +17,18 @@ class TestKeySet(TestCase):
             self.assertIsNotNone(key.kid)
 
         jwks1_data = jwks1.as_dict()
-        self.assertEqual(list(jwks1_data.keys()), ['keys'])
-        for d1 in jwks1_data['keys']:
-            self.assertIn('d', d1)
+        self.assertEqual(list(jwks1_data.keys()), ["keys"])
+        for d1 in jwks1_data["keys"]:
+            self.assertIn("d", d1)
 
-        for d1 in jwks1.as_dict(private=False)['keys']:
-            self.assertNotIn('d', d1)
+        for d1 in jwks1.as_dict(private=False)["keys"]:
+            self.assertNotIn("d", d1)
 
         jwks2 = KeySet.import_key_set(jwks1_data)
         self.assertEqual(len(jwks2.keys), 4)
 
     def test_generate_key_set_errors(self):
-        self.assertRaises(InvalidKeyTypeError, KeySet.generate_key_set, 'NOT_FOUND', 2048)
+        self.assertRaises(InvalidKeyTypeError, KeySet.generate_key_set, "NOT_FOUND", 2048)
 
     def test_initialize_key_set(self):
         keys = []
@@ -38,8 +38,8 @@ class TestKeySet(TestCase):
         keys.append(ECKey.import_key(pem2))
 
         jwks = KeySet(keys)
-        for d1 in jwks.as_dict(private=False)['keys']:
-            self.assertNotIn('d', d1)
+        for d1 in jwks.as_dict(private=False)["keys"]:
+            self.assertNotIn("d", d1)
 
         self.assertRaises(ValueError, jwks.as_dict, private=True)
 
@@ -73,21 +73,18 @@ class TestKeySet(TestCase):
         self.assertTrue(key_set)
 
     def test_key_set_iter(self):
-        key_set = KeySet.generate_key_set('RSA', 2048)
+        key_set = KeySet.generate_key_set("RSA", 2048)
         for k in key_set:
             self.assertEqual(k.key_type, "RSA")
 
     def test_key_eq_with_same_keys(self):
-        key_set1 = KeySet.generate_key_set('RSA', 2048)
+        key_set1 = KeySet.generate_key_set("RSA", 2048)
         key_set2 = KeySet(key_set1.keys)
         self.assertIsNot(key_set1, key_set2)
         self.assertEqual(key_set1, key_set2)
 
     def test_key_eq_with_new_keys(self):
-        key_set1 = KeySet.generate_key_set('RSA', 2048)
-        key_set2 = KeySet([
-            RSAKey.import_key(k.as_dict())
-            for k in key_set1
-        ])
+        key_set1 = KeySet.generate_key_set("RSA", 2048)
+        key_set2 = KeySet([RSAKey.import_key(k.as_dict()) for k in key_set1])
         self.assertIsNot(key_set1, key_set2)
         self.assertEqual(key_set1, key_set2)

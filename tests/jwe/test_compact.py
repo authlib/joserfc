@@ -16,15 +16,18 @@ from tests.base import load_key
 class TestJWECompact(TestCase):
     def run_case(self, alg: str, enc: str, private_key, public_key):
         protected = {"alg": alg, "enc": enc}
-        payload = b'hello'
+        payload = b"hello"
         result = encrypt_compact(
-            protected, payload, public_key,
+            protected,
+            payload,
+            public_key,
             algorithms=[alg, enc],
         )
-        self.assertEqual(result.count('.'), 4)
+        self.assertEqual(result.count("."), 4)
 
         obj = decrypt_compact(
-            result, private_key,
+            result,
+            private_key,
             algorithms=[alg, enc],
         )
         self.assertEqual(obj.plaintext, payload)
@@ -35,25 +38,21 @@ class TestJWECompact(TestCase):
                 self.run_case(alg, enc.name, private_key, public_key)
 
     def test_RSA_alg(self):
-        private_key: RSAKey = load_key('rsa-openssl-private.pem')
-        public_key: RSAKey = load_key('rsa-openssl-public.pem')
-        algs = ['RSA1_5', 'RSA-OAEP', 'RSA-OAEP-256']
+        private_key: RSAKey = load_key("rsa-openssl-private.pem")
+        public_key: RSAKey = load_key("rsa-openssl-public.pem")
+        algs = ["RSA1_5", "RSA-OAEP", "RSA-OAEP-256"]
         self.run_cases(algs, private_key, public_key)
 
         protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256"}
         value = encrypt_compact(protected, "i", private_key)
         key2 = RSAKey.generate_key()
-        self.assertRaises(
-            DecodeError,
-            decrypt_compact,
-            value, key2
-        )
+        self.assertRaises(DecodeError, decrypt_compact, value, key2)
 
     def test_ECDH_ES_with_EC_key(self):
-        algs = ['ECDH-ES', 'ECDH-ES+A128KW', 'ECDH-ES+A192KW', 'ECDH-ES+A256KW']
+        algs = ["ECDH-ES", "ECDH-ES+A128KW", "ECDH-ES+A192KW", "ECDH-ES+A256KW"]
         for size in [256, 384, 512]:
-            private_key: ECKey = load_key(f'ec-p{size}-private.pem')
-            public_key: ECKey = load_key(f'ec-p{size}-public.pem')
+            private_key: ECKey = load_key(f"ec-p{size}-private.pem")
+            public_key: ECKey = load_key(f"ec-p{size}-public.pem")
             self.run_cases(algs, private_key, public_key)
 
         key1 = ECKey.generate_key("P-256")
@@ -66,18 +65,20 @@ class TestJWECompact(TestCase):
                 self.assertRaises(
                     DecodeError,
                     decrypt_compact,
-                    value, key2,
+                    value,
+                    key2,
                 )
                 self.assertRaises(
                     DecodeError,
                     decrypt_compact,
-                    value, key3,
+                    value,
+                    key3,
                 )
 
     def test_ECDH_ES_with_OKP_key(self):
         key1 = OKPKey.generate_key("X25519")
         key2 = OKPKey.generate_key("X448")
-        for alg in ['ECDH-ES', 'ECDH-ES+A128KW']:
+        for alg in ["ECDH-ES", "ECDH-ES+A128KW"]:
             for enc in ["A128CBC-HS256", "A128GCM"]:
                 protected = {"alg": alg, "enc": enc}
                 value = encrypt_compact(protected, "i", key1)
@@ -86,7 +87,8 @@ class TestJWECompact(TestCase):
                 self.assertRaises(
                     DecodeError,
                     decrypt_compact,
-                    value, key2,
+                    value,
+                    key2,
                 )
 
                 value = encrypt_compact(protected, "i", key2)
@@ -95,18 +97,16 @@ class TestJWECompact(TestCase):
                 self.assertRaises(
                     DecodeError,
                     decrypt_compact,
-                    value, key1,
+                    value,
+                    key1,
                 )
 
     def test_dir_alg(self):
         key = OctKey.import_key("secret")
-        self.assertRaises(
-            InvalidKeyLengthError,
-            encrypt_compact, {"alg": "dir", "enc": "A128GCM"}, b"j", key
-        )
+        self.assertRaises(InvalidKeyLengthError, encrypt_compact, {"alg": "dir", "enc": "A128GCM"}, b"j", key)
         for enc in JWE_ENC_MODELS:
             key = OctKey.generate_key(enc.cek_size)
-            self.run_case('dir', enc.name, key, key)
+            self.run_case("dir", enc.name, key, key)
 
     def test_AESGCM_alg(self):
         for size in [128, 192, 256]:
@@ -121,7 +121,9 @@ class TestJWECompact(TestCase):
         self.assertRaises(
             DecodeError,
             decrypt_compact,
-            value, key2, algorithms=algorithms,
+            value,
+            key2,
+            algorithms=algorithms,
         )
 
     def test_PBES2HS_alg(self):
@@ -142,7 +144,9 @@ class TestJWECompact(TestCase):
         self.assertRaises(
             DecodeError,
             decrypt_compact,
-            value, key2, algorithms=algorithms,
+            value,
+            key2,
+            algorithms=algorithms,
         )
 
     def test_PBES2HS_with_header(self):
@@ -164,13 +168,15 @@ class TestJWECompact(TestCase):
         self.assertRaises(
             ValueError,
             encrypt_compact,
-            protected, b"i", key,
+            protected,
+            b"i",
+            key,
             registry=registry,
         )
 
     def test_with_zip_header(self):
-        private_key: RSAKey = load_key('rsa-openssl-private.pem')
-        public_key: RSAKey = load_key('rsa-openssl-public.pem')
+        private_key: RSAKey = load_key("rsa-openssl-private.pem")
+        public_key: RSAKey = load_key("rsa-openssl-public.pem")
         protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256", "zip": "DEF"}
         plaintext = b"hello"
         result = encrypt_compact(protected, plaintext, public_key)
@@ -178,26 +184,22 @@ class TestJWECompact(TestCase):
         self.assertEqual(obj.plaintext, plaintext)
 
     def test_decompress_zip_with_gzip_head(self):
-        key = OctKey.import_key({'k': 'pyL42ncDFSYnenl-GiZjRw', 'kty': 'oct'})
+        key = OctKey.import_key({"k": "pyL42ncDFSYnenl-GiZjRw", "kty": "oct"})
         s = (
-            'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIiwiemlwIjoiREVGIn0..'
-            'YbDfdYa6p-wAEFul.YK7j0MsH-Dko6ifsEg.wES6-QAOEbErZqXiS0JHRw'
+            "eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIiwiemlwIjoiREVGIn0.."
+            "YbDfdYa6p-wAEFul.YK7j0MsH-Dko6ifsEg.wES6-QAOEbErZqXiS0JHRw"
         )
         result = decrypt_compact(s, key)
-        self.assertEqual(result.plaintext, b'hello')
-        self.assertEqual(result.headers().get('zip'), 'DEF')
+        self.assertEqual(result.plaintext, b"hello")
+        self.assertEqual(result.headers().get("zip"), "DEF")
 
     def test_decompress_zip_exceeds_size(self):
-        key = OctKey.import_key({'k': 'pyL42ncDFSYnenl-GiZjRw', 'kty': 'oct'})
-        result = encrypt_compact(
-            {"alg": "dir", "enc": "A128GCM", "zip": "DEF"},
-            b'h' * 300000,
-            key
-        )
+        key = OctKey.import_key({"k": "pyL42ncDFSYnenl-GiZjRw", "kty": "oct"})
+        result = encrypt_compact({"alg": "dir", "enc": "A128GCM", "zip": "DEF"}, b"h" * 300000, key)
         self.assertRaises(ExceededSizeError, decrypt_compact, result, key)
 
     def test_invalid_compact_data(self):
-        private_key: RSAKey = load_key('rsa-openssl-private.pem')
+        private_key: RSAKey = load_key("rsa-openssl-private.pem")
         value = b"a.b.c.d.e.f.g"
         self.assertRaises(ValueError, decrypt_compact, value, private_key)
         value = b"a.b.c.d.e"
@@ -210,18 +212,20 @@ class TestJWECompact(TestCase):
         self.assertRaises(MissingEncryptionError, decrypt_compact, value, private_key)
 
     def test_with_key_set(self):
-        keys = KeySet([
-            OctKey.generate_key(),
-            OctKey.generate_key(),
-            RSAKey.generate_key(),
-        ])
+        keys = KeySet(
+            [
+                OctKey.generate_key(),
+                OctKey.generate_key(),
+                RSAKey.generate_key(),
+            ]
+        )
         protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256"}
         value = encrypt_compact(protected, b"foo", keys)
         obj = decrypt_compact(value, keys)
         self.assertEqual(obj.plaintext, b"foo")
 
     def test_compact_encryption(self):
-        key: RSAKey = load_key('rsa-openssl-private.pem')
+        key: RSAKey = load_key("rsa-openssl-private.pem")
         protected = {"alg": "RSA-OAEP", "enc": "A128CBC-HS256"}
         obj = CompactEncryption(protected, b"")
         self.assertEqual(obj.recipients, [])

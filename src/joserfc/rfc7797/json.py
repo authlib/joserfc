@@ -24,12 +24,12 @@ from .registry import JWSRegistry
 
 
 def serialize_json(
-        member: HeaderDict,
-        payload: bytes | str,
-        private_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: t.Optional[_JWSRegistry] = None) -> FlattenedJSONSerialization:
-
+    member: HeaderDict,
+    payload: bytes | str,
+    private_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: t.Optional[_JWSRegistry] = None,
+) -> FlattenedJSONSerialization:
     _member = HeaderMember(**member)
     headers = _member.headers()
     if "b64" not in headers:
@@ -67,10 +67,11 @@ def serialize_json(
 
 
 def deserialize_json(
-        value: FlattenedJSONSerialization,
-        public_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: t.Optional[_JWSRegistry] = None) -> FlattenedJSONSignature:
+    value: FlattenedJSONSerialization,
+    public_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: t.Optional[_JWSRegistry] = None,
+) -> FlattenedJSONSignature:
     obj = _extract_json(value)
     if obj is None:
         return _deserialize_json(value, public_key, algorithms, registry)

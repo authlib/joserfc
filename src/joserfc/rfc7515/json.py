@@ -25,15 +25,11 @@ FindKey = t.Callable[[HeaderMember], t.Any]
 
 
 def sign_general_json(
-        members: list[HeaderDict],
-        payload: bytes,
-        registry: JWSRegistry,
-        find_key: FindKey) -> GeneralJSONSerialization:
-
+    members: list[HeaderDict], payload: bytes, registry: JWSRegistry, find_key: FindKey
+) -> GeneralJSONSerialization:
     payload_segment = urlsafe_b64encode(payload)
     signatures: list[JSONSignatureDict] = [
-        __sign_member(payload_segment, HeaderMember(**member), registry, find_key)
-        for member in members
+        __sign_member(payload_segment, HeaderMember(**member), registry, find_key) for member in members
     ]
     return {
         "payload": payload_segment.decode("utf-8"),
@@ -42,10 +38,8 @@ def sign_general_json(
 
 
 def sign_flattened_json(
-        member: HeaderDict,
-        payload: bytes,
-        registry: JWSRegistry,
-        find_key: FindKey) -> FlattenedJSONSerialization:
+    member: HeaderDict, payload: bytes, registry: JWSRegistry, find_key: FindKey
+) -> FlattenedJSONSerialization:
     payload_segment = urlsafe_b64encode(payload)
     signature = __sign_member(payload_segment, HeaderMember(**member), registry, find_key)
     data = {"payload": payload_segment.decode("utf-8"), **signature}
@@ -53,10 +47,8 @@ def sign_flattened_json(
 
 
 def __sign_member(
-        payload_segment: bytes,
-        member: HeaderMember,
-        registry: JWSRegistry,
-        find_key: FindKey) -> JSONSignatureDict:
+    payload_segment: bytes, member: HeaderMember, registry: JWSRegistry, find_key: FindKey
+) -> JSONSignatureDict:
     headers = member.headers()
     registry.check_header(headers)
     alg = registry.get_alg(headers["alg"])
@@ -122,10 +114,7 @@ def __signature_to_member(sig: JSONSignatureDict) -> HeaderMember:
     return member
 
 
-def verify_general_json(
-        obj: GeneralJSONSignature,
-        registry: JWSRegistry,
-        find_key: FindKey) -> bool:
+def verify_general_json(obj: GeneralJSONSignature, registry: JWSRegistry, find_key: FindKey) -> bool:
     payload_segment = obj.segments["payload"]
     for index, signature in enumerate(obj.signatures):
         member = obj.members[index]
@@ -134,21 +123,15 @@ def verify_general_json(
     return True
 
 
-def verify_flattened_json(
-        obj: FlattenedJSONSignature,
-        registry: JWSRegistry,
-        find_key: FindKey) -> bool:
+def verify_flattened_json(obj: FlattenedJSONSignature, registry: JWSRegistry, find_key: FindKey) -> bool:
     payload_segment = obj.segments["payload"]
     assert obj.signature is not None
     return verify_signature(obj.member, obj.signature, payload_segment, registry, find_key)
 
 
 def verify_signature(
-        member: HeaderMember,
-        signature: JSONSignatureDict,
-        payload_segment: bytes,
-        registry: JWSRegistry,
-        find_key: FindKey) -> bool:
+    member: HeaderMember, signature: JSONSignatureDict, payload_segment: bytes, registry: JWSRegistry, find_key: FindKey
+) -> bool:
     headers = member.headers()
     registry.check_header(headers)
     alg = registry.get_alg(headers["alg"])

@@ -33,11 +33,9 @@ register_secp256k1()
 
 
 class GuestProtocol(t.Protocol):  # pragma: no cover
-    def headers(self) -> Header:
-        ...
+    def headers(self) -> Header: ...
 
-    def set_kid(self, kid: str) -> None:
-        ...
+    def set_kid(self, kid: str) -> None: ...
 
 
 KeyBase = t.Union[str, bytes, Key, KeySet]

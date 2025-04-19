@@ -17,8 +17,7 @@ class ChaCha20EncModel(JWEEncModel):
         self.iv_size = iv_size
 
     def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> tuple[bytes, bytes]:
-        """Key Encryption with AEAD_CHACHA20_POLY1305
-        """
+        """Key Encryption with AEAD_CHACHA20_POLY1305"""
         chacha = ChaCha20_Poly1305.new(key=cek, nonce=iv)
         chacha.update(aad)
         ciphertext, tag = chacha.encrypt_and_digest(plaintext)

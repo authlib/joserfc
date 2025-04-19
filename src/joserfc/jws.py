@@ -82,11 +82,12 @@ register_algorithms()
 
 
 def serialize_compact(
-        protected: Header,
-        payload: bytes | str,
-        private_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None) -> str:
+    protected: Header,
+    payload: bytes | str,
+    private_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
+) -> str:
     """Generate a JWS Compact Serialization. The JWS Compact Serialization
     represents digitally signed or MACed content as a compact, URL-safe
     string, per Section 7.1.
@@ -119,10 +120,11 @@ def serialize_compact(
 
 
 def validate_compact(
-        obj: CompactSignature,
-        public_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None) -> bool:
+    obj: CompactSignature,
+    public_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
+) -> bool:
     """Validate the JWS Compact Serialization with the given key.
     This method is usually used together with ``extract_compact``.
 
@@ -144,10 +146,11 @@ def validate_compact(
 
 
 def deserialize_compact(
-        value: bytes | str,
-        public_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None) -> CompactSignature:
+    value: bytes | str,
+    public_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
+) -> CompactSignature:
     """Extract and validate the JWS Compact Serialization (in string, or bytes)
     with the given key. An JWE Compact Serialization looks like:
 
@@ -175,28 +178,30 @@ def deserialize_compact(
 
 @overload
 def serialize_json(
-        members: list[HeaderDict],
-        payload: bytes | str,
-        private_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None) -> GeneralJSONSerialization: ...
+    members: list[HeaderDict],
+    payload: bytes | str,
+    private_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
+) -> GeneralJSONSerialization: ...
 
 
 @overload
 def serialize_json(
-        members: HeaderDict,
-        payload: bytes | str,
-        private_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None) -> FlattenedJSONSerialization: ...
+    members: HeaderDict,
+    payload: bytes | str,
+    private_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
+) -> FlattenedJSONSerialization: ...
 
 
 def serialize_json(
-        members: HeaderDict | list[HeaderDict],
-        payload: bytes | str,
-        private_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None,
+    members: HeaderDict | list[HeaderDict],
+    payload: bytes | str,
+    private_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
 ) -> GeneralJSONSerialization | FlattenedJSONSerialization:
     """Generate a JWS JSON Serialization (in dict). The JWS JSON Serialization
     represents digitally signed or MACed content as a JSON object. This representation
@@ -239,25 +244,27 @@ def serialize_json(
 
 @overload
 def deserialize_json(
-        value: GeneralJSONSerialization,
-        public_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None) -> GeneralJSONSignature: ...
+    value: GeneralJSONSerialization,
+    public_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
+) -> GeneralJSONSignature: ...
 
 
 @overload
 def deserialize_json(
-        value: FlattenedJSONSerialization,
-        public_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None) -> FlattenedJSONSignature: ...
+    value: FlattenedJSONSerialization,
+    public_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
+) -> FlattenedJSONSignature: ...
 
 
 def deserialize_json(
-        value: GeneralJSONSerialization | FlattenedJSONSerialization,
-        public_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None,
+    value: GeneralJSONSerialization | FlattenedJSONSerialization,
+    public_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | None = None,
 ) -> GeneralJSONSignature | FlattenedJSONSignature:
     """Extract and validate the JWS (in string) with the given key.
 

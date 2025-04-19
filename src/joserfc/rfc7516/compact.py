@@ -16,13 +16,15 @@ def represent_compact(obj: CompactEncryption) -> bytes:
     assert obj.recipient is not None
     encrypted_key = obj.recipient.encrypted_key
     assert encrypted_key is not None
-    return b".".join([
-        obj.base64_segments["aad"],
-        urlsafe_b64encode(encrypted_key),
-        obj.base64_segments["iv"],
-        obj.base64_segments["ciphertext"],
-        obj.base64_segments["tag"],
-    ])
+    return b".".join(
+        [
+            obj.base64_segments["aad"],
+            urlsafe_b64encode(encrypted_key),
+            obj.base64_segments["iv"],
+            obj.base64_segments["ciphertext"],
+            obj.base64_segments["tag"],
+        ]
+    )
 
 
 def extract_compact(value: bytes) -> CompactEncryption:
@@ -41,17 +43,21 @@ def extract_compact(value: bytes) -> CompactEncryption:
         raise DecodeError("Invalid header")
 
     obj = CompactEncryption(protected)
-    obj.base64_segments.update({
-        "aad": header_segment,
-        "iv": iv_segment,
-        "ciphertext": ciphertext_segment,
-        "tag": tag_segment,
-    })
-    obj.bytes_segments.update({
-        "iv": urlsafe_b64decode(iv_segment),
-        "ciphertext": urlsafe_b64decode(ciphertext_segment),
-        "tag": urlsafe_b64decode(tag_segment),
-    })
+    obj.base64_segments.update(
+        {
+            "aad": header_segment,
+            "iv": iv_segment,
+            "ciphertext": ciphertext_segment,
+            "tag": tag_segment,
+        }
+    )
+    obj.bytes_segments.update(
+        {
+            "iv": urlsafe_b64decode(iv_segment),
+            "ciphertext": urlsafe_b64decode(ciphertext_segment),
+            "tag": urlsafe_b64decode(tag_segment),
+        }
+    )
     recipient: Recipient[Key] = Recipient(obj)
     recipient.encrypted_key = urlsafe_b64decode(ek_segment)
     obj.recipient = recipient

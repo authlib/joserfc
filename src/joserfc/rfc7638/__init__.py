@@ -8,7 +8,7 @@ from ..util import to_bytes, urlsafe_b64encode
 def thumbprint(
     dict_value: t.Dict[str, t.Any],
     fields: t.List[str],
-    digest_method: t.Literal['sha256', 'sha384', 'sha512'] = 'sha256',
+    digest_method: t.Literal["sha256", "sha384", "sha512"] = "sha256",
 ) -> str:
     sorted_fields = sorted(fields)
 

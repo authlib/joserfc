@@ -5,29 +5,21 @@ from joserfc import util
 
 class TestUtil(TestCase):
     def test_to_bytes(self):
-        self.assertEqual(util.to_bytes(b'foo'), b'foo')
-        self.assertEqual(util.to_bytes('foo'), b'foo')
-        self.assertEqual(util.to_bytes(123), b'123')
-        self.assertEqual(util.to_bytes([102, 111, 111]), b'foo')
+        self.assertEqual(util.to_bytes(b"foo"), b"foo")
+        self.assertEqual(util.to_bytes("foo"), b"foo")
+        self.assertEqual(util.to_bytes(123), b"123")
+        self.assertEqual(util.to_bytes([102, 111, 111]), b"foo")
 
     def test_to_unicode(self):
-        self.assertEqual(util.to_str(b'foo'), 'foo')
-        self.assertEqual(util.to_str('foo'), 'foo')
+        self.assertEqual(util.to_str(b"foo"), "foo")
+        self.assertEqual(util.to_str("foo"), "foo")
 
     def test_int_to_base64(self):
-        self.assertRaises(
-            ValueError,
-            util.int_to_base64,
-            -1
-        )
+        self.assertRaises(ValueError, util.int_to_base64, -1)
 
     def test_json_b64encode(self):
         self.assertEqual(util.json_b64encode("{}"), b"e30")
 
     def test_urlsafe_b64decode(self):
-        self.assertEqual(util.urlsafe_b64decode(b'_foo123-'), b'\xfd\xfa(\xd7m\xfe')
-        self.assertRaises(
-            binascii.Error,
-            util.urlsafe_b64decode,
-            b'+foo123/'
-        )
+        self.assertEqual(util.urlsafe_b64decode(b"_foo123-"), b"\xfd\xfa(\xd7m\xfe")
+        self.assertRaises(binascii.Error, util.urlsafe_b64decode, b"+foo123/")

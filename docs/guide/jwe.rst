@@ -113,7 +113,7 @@ Encryption
 
 .. versionchanged:: 0.6.0
 
-    ``jwe.JSONEncryption`` is seperated to ``GeneralJSONEncryption`` and ``FlattenedJSONEncryption``.
+    ``jwe.JSONEncryption`` is separated to ``GeneralJSONEncryption`` and ``FlattenedJSONEncryption``.
 
 The structure for JSON JWE serialization is a little complex, developers
 SHOULD create an object of :class:`jwe.GeneralJSONEncryption` at first:

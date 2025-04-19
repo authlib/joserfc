@@ -39,6 +39,7 @@ class Token:
     :param header: the header part of the JWT
     :param claims: the payload part of the JWT
     """
+
     def __init__(self, header: Header, claims: Claims):
         #: header in dict
         self.header = header
@@ -47,12 +48,13 @@ class Token:
 
 
 def encode(
-        header: Header,
-        claims: Claims,
-        key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | JWERegistry | None = None,
-        encoder_cls: Type[JSONEncoder] | None = None) -> str:
+    header: Header,
+    claims: Claims,
+    key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | JWERegistry | None = None,
+    encoder_cls: Type[JSONEncoder] | None = None,
+) -> str:
     """Encode a JSON Web Token with the given header, and claims.
 
     :param header: A dict of the JWT header
@@ -72,11 +74,12 @@ def encode(
 
 
 def decode(
-        value: bytes | str,
-        key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | JWERegistry | None = None,
-        decoder_cls: Type[JSONDecoder] | None = None) -> Token:
+    value: bytes | str,
+    key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWSRegistry | JWERegistry | None = None,
+    decoder_cls: Type[JSONDecoder] | None = None,
+) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests.
 
@@ -104,20 +107,16 @@ def decode(
 
 
 def _decode_jwe(
-        value: bytes,
-        key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWERegistry | None = None) -> tuple[Header, bytes]:
+    value: bytes, key: KeyFlexible, algorithms: list[str] | None = None, registry: JWERegistry | None = None
+) -> tuple[Header, bytes]:
     jwe_obj = decrypt_compact(value, key, algorithms, registry)
     assert jwe_obj.plaintext is not None
     return jwe_obj.headers(), jwe_obj.plaintext
 
 
 def _decode_jws(
-        value: bytes,
-        key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWSRegistry | None = None) -> tuple[Header, bytes]:
+    value: bytes, key: KeyFlexible, algorithms: list[str] | None = None, registry: JWSRegistry | None = None
+) -> tuple[Header, bytes]:
     jws_obj = deserialize_compact(value, key, algorithms, registry)
     assert jws_obj.payload is not None
     return jws_obj.headers(), jws_obj.payload

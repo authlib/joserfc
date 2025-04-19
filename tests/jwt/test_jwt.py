@@ -31,24 +31,16 @@ class TestJWT(TestCase):
         key = OctKey.generate_key(128)
         registry = jwe.JWERegistry()
         result = jwt.encode(header, claims, key, registry=registry)
-        self.assertEqual(result.count('.'), 4)
+        self.assertEqual(result.count("."), 4)
 
         token = jwt.decode(result, key, registry=registry)
         self.assertEqual(token.claims, claims)
 
     def test_using_registry(self):
         key = OctKey.generate_key(128)
-        value1 = jwt.encode(
-            {"alg": "HS256"},
-            {"sub": "a"},
-            key, registry=jws.JWSRegistry()
-        )
+        value1 = jwt.encode({"alg": "HS256"}, {"sub": "a"}, key, registry=jws.JWSRegistry())
         jwt.decode(value1, key, registry=jws.JWSRegistry())
-        value2 = jwt.encode(
-            {"alg": "A128KW", "enc": "A128GCM"},
-            {"sub": "a"},
-            key, registry=jwe.JWERegistry()
-        )
+        value2 = jwt.encode({"alg": "A128KW", "enc": "A128GCM"}, {"sub": "a"}, key, registry=jwe.JWERegistry())
         jwt.decode(value2, key, registry=jwe.JWERegistry())
 
         self.assertRaises(
@@ -56,22 +48,28 @@ class TestJWT(TestCase):
             jwt.encode,
             {"alg": "HS256"},
             {"sub": "a"},
-            key, registry=jwe.JWERegistry(),
+            key,
+            registry=jwe.JWERegistry(),
         )
         self.assertRaises(
             ValueError,
             jwt.encode,
             {"alg": "A128KW", "enc": "A128GCM"},
             {"sub": "a"},
-            key, registry=jws.JWSRegistry(),
+            key,
+            registry=jws.JWSRegistry(),
         )
         self.assertRaises(
             ValueError,
             jwt.decode,
-            value1, key, registry=jwe.JWERegistry(),
+            value1,
+            key,
+            registry=jwe.JWERegistry(),
         )
         self.assertRaises(
             ValueError,
             jwt.decode,
-            value2, key, registry=jws.JWSRegistry(),
+            value2,
+            key,
+            registry=jws.JWSRegistry(),
         )

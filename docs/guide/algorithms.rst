@@ -57,7 +57,7 @@ ES256K         ECKey       :bdg-danger:`No`
     ``EdDSA`` algorithm only accepts ``OKPKey`` with "crv" of "Ed25519" and "Ed448".
 
 By default, JWS ``serialize`` and ``deserialize`` methods will ONLY allow recommended
-algorithms. To use non-recommended algorithms, developers MUST explict specify the
+algorithms. To use non-recommended algorithms, developers MUST explicitly specify the
 algorithms either by the ``algorithms`` parameter, or ``registry`` parameter.
 
 .. code-block:: python

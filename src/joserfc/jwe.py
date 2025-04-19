@@ -68,12 +68,13 @@ register_algorithms()
 
 
 def encrypt_compact(
-        protected: Header,
-        plaintext: bytes | str,
-        public_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWERegistry | None = None,
-        sender_key: ECKey | OKPKey | KeySet | None = None) -> str:
+    protected: Header,
+    plaintext: bytes | str,
+    public_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWERegistry | None = None,
+    sender_key: ECKey | OKPKey | KeySet | None = None,
+) -> str:
     """Generate a JWE Compact Serialization. The JWE Compact Serialization represents
     encrypted content as a compact, URL-safe string.  This string is::
 
@@ -111,11 +112,12 @@ def encrypt_compact(
 
 
 def decrypt_compact(
-        value: bytes | str,
-        private_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWERegistry | None = None,
-        sender_key: ECKey | OKPKey | KeySet | None = None) -> CompactEncryption:
+    value: bytes | str,
+    private_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWERegistry | None = None,
+    sender_key: ECKey | OKPKey | KeySet | None = None,
+) -> CompactEncryption:
     """Extract and validate the JWE Compact Serialization (in string, or bytes)
     with the given key. An JWE Compact Serialization looks like:
 
@@ -155,30 +157,30 @@ def decrypt_compact(
 
 @overload
 def encrypt_json(
-        obj: GeneralJSONEncryption,
-        public_key: KeyFlexible | None,
-        algorithms: list[str] | None = None,
-        registry: JWERegistry | None = None,
-        sender_key: ECKey | OKPKey | KeySet | None = None) -> GeneralJSONSerialization:
-    ...
+    obj: GeneralJSONEncryption,
+    public_key: KeyFlexible | None,
+    algorithms: list[str] | None = None,
+    registry: JWERegistry | None = None,
+    sender_key: ECKey | OKPKey | KeySet | None = None,
+) -> GeneralJSONSerialization: ...
 
 
 @overload
 def encrypt_json(
-        obj: FlattenedJSONEncryption,
-        public_key: KeyFlexible | None,
-        algorithms: list[str] | None = None,
-        registry: JWERegistry | None = None,
-        sender_key: ECKey | OKPKey | KeySet | None = None) -> FlattenedJSONSerialization:
-    ...
+    obj: FlattenedJSONEncryption,
+    public_key: KeyFlexible | None,
+    algorithms: list[str] | None = None,
+    registry: JWERegistry | None = None,
+    sender_key: ECKey | OKPKey | KeySet | None = None,
+) -> FlattenedJSONSerialization: ...
 
 
 def encrypt_json(
-        obj: GeneralJSONEncryption | FlattenedJSONEncryption,
-        public_key: KeyFlexible | None,
-        algorithms: list[str] | None = None,
-        registry: JWERegistry | None = None,
-        sender_key: ECKey | OKPKey | KeySet | None = None
+    obj: GeneralJSONEncryption | FlattenedJSONEncryption,
+    public_key: KeyFlexible | None,
+    algorithms: list[str] | None = None,
+    registry: JWERegistry | None = None,
+    sender_key: ECKey | OKPKey | KeySet | None = None,
 ) -> GeneralJSONSerialization | FlattenedJSONSerialization:
     """Generate a JWE JSON Serialization (in dict). The JWE JSON Serialization
     represents encrypted content as a JSON object. This representation is neither
@@ -228,11 +230,11 @@ def encrypt_json(
 
 
 def decrypt_json(
-        data: GeneralJSONSerialization | FlattenedJSONSerialization,
-        private_key: KeyFlexible,
-        algorithms: list[str] | None = None,
-        registry: JWERegistry | None = None,
-        sender_key: ECKey | OKPKey | KeySet | None = None
+    data: GeneralJSONSerialization | FlattenedJSONSerialization,
+    private_key: KeyFlexible,
+    algorithms: list[str] | None = None,
+    registry: JWERegistry | None = None,
+    sender_key: ECKey | OKPKey | KeySet | None = None,
 ) -> GeneralJSONEncryption | FlattenedJSONEncryption:
     """Decrypt the JWE JSON Serialization (in dict) to a
     ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption`` object.
@@ -262,9 +264,8 @@ def decrypt_json(
 
 
 def _attach_recipient_keys(
-        recipients: list[Recipient[Key]],
-        private_key: KeyFlexible,
-        sender_key: ECKey | OKPKey | KeySet | None = None) -> None:
+    recipients: list[Recipient[Key]], private_key: KeyFlexible, sender_key: ECKey | OKPKey | KeySet | None = None
+) -> None:
     for recipient in recipients:
         key = guess_key(private_key, recipient)
         key.check_use("enc")
@@ -274,12 +275,11 @@ def _attach_recipient_keys(
 
 
 def _guess_sender_key(
-        recipient: Recipient[Key],
-        key: ECKey | OKPKey | KeySet,
-        use_random: bool = False) -> ECKey | OKPKey:
+    recipient: Recipient[Key], key: ECKey | OKPKey | KeySet, use_random: bool = False
+) -> ECKey | OKPKey:
     if isinstance(key, KeySet):
         headers = recipient.headers()
-        skid = headers.get('skid')
+        skid = headers.get("skid")
         if skid:
             return key.get_by_kid(skid)  # type: ignore[return-value]
         if use_random:
