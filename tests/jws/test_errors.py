@@ -8,6 +8,9 @@ from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyOperationError,
     InvalidKeyTypeError,
+    MissingHeaderError,
+    MissingCritHeaderError,
+    UnsupportedHeaderError,
 )
 from joserfc.util import urlsafe_b64encode
 from tests.base import load_key
@@ -17,7 +20,7 @@ class TestJWSErrors(TestCase):
     def test_without_alg(self):
         key = OctKey.import_key("secret")
         # missing alg
-        self.assertRaises(ValueError, jws.serialize_compact, {"kid": "123"}, "i", key)
+        self.assertRaises(MissingHeaderError, jws.serialize_compact, {"kid": "123"}, "i", key)
 
     def test_none_alg(self):
         header = {"alg": "none"}
@@ -80,7 +83,7 @@ class TestJWSErrors(TestCase):
         key = OctKey.import_key("secret")
         # missing kid header
         self.assertRaises(
-            ValueError,
+            MissingCritHeaderError,
             jws.serialize_compact,
             header,
             "i",
@@ -94,7 +97,7 @@ class TestJWSErrors(TestCase):
         header = {"alg": "HS256", "extra": "hi"}
         key = OctKey.import_key("secret")
         self.assertRaises(
-            ValueError,
+            UnsupportedHeaderError,
             jws.serialize_compact,
             header,
             "i",

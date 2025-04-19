@@ -6,6 +6,7 @@ from joserfc.errors import (
     DecodeError,
     MissingAlgorithmError,
     UnsupportedAlgorithmError,
+    UnsupportedHeaderError,
 )
 
 
@@ -68,7 +69,7 @@ class TestCompact(TestCase):
     def test_strict_check_header(self):
         header = {"alg": "HS256", "custom": "hi"}
         key = OctKey.import_key("secret")
-        self.assertRaises(ValueError, serialize_compact, header, b"hi", key)
+        self.assertRaises(UnsupportedHeaderError, serialize_compact, header, b"hi", key)
 
         registry = JWSRegistry(strict_check_header=False)
         serialize_compact(header, b"hi", key, registry=registry)

@@ -72,6 +72,30 @@ class UnsupportedAlgorithmError(JoseError):
     error = "unsupported_algorithm"
 
 
+class UnsupportedHeaderError(JoseError):
+    error = "unsupported_header"
+
+
+class MissingHeaderError(JoseError):
+    """This error happens when the required header does not exist."""
+
+    error = "missing_header"
+
+    def __init__(self, key: str):
+        description = f"Missing '{key}' value in header"
+        super(MissingHeaderError, self).__init__(description=description)
+
+
+class MissingCritHeaderError(JoseError):
+    """This error happens when the critical header does not exist."""
+
+    error = "missing_crit_header"
+
+    def __init__(self, key: str):
+        description = f"Missing critical '{key}' value in header"
+        super(MissingCritHeaderError, self).__init__(description=description)
+
+
 class MissingEncryptionError(JoseError):
     error = "missing_encryption"
     description = "Missing 'enc' value in header"
@@ -103,6 +127,10 @@ class InvalidEncryptionAlgorithmError(JoseError):
 class InvalidCEKLengthError(JoseError):
     error = "invalid_cek_length"
     description = "Invalid 'cek' length"
+
+    def __init__(self, cek_size: int):
+        description = f"A key of size {cek_size} bits MUST be used"
+        super(InvalidCEKLengthError, self).__init__(description=description)
 
 
 class InvalidClaimError(JoseError):
