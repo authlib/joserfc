@@ -1,5 +1,10 @@
 from __future__ import annotations
 from typing import Any, Dict, Callable, Union
+from .errors import (
+    MissingHeaderError,
+    MissingCritHeaderError,
+    UnsupportedHeaderError,
+)
 
 Header = Dict[str, Any]
 
@@ -174,13 +179,13 @@ def check_supported_header(registry: HeaderRegistryDict, header: Header) -> None
     allowed_keys = set(registry.keys())
     unsupported_keys = set(header.keys()) - allowed_keys
     if unsupported_keys:
-        raise ValueError(f"Unsupported {unsupported_keys} in header")
+        raise UnsupportedHeaderError(f"Unsupported {unsupported_keys} in header")
 
 
 def validate_registry_header(registry: HeaderRegistryDict, header: Header, check_required: bool = True) -> None:
     for key, reg in registry.items():
         if check_required and reg.required and key not in header:
-            raise ValueError(f"Required '{key}' is missing in header")
+            raise MissingHeaderError(key)
         if key in header:
             try:
                 reg.validate(header[key])
@@ -193,4 +198,4 @@ def check_crit_header(header: Header) -> None:
     if "crit" in header:
         for k in header["crit"]:
             if k not in header:
-                raise ValueError(f"'{k}' is a critical header")
+                raise MissingCritHeaderError(k)

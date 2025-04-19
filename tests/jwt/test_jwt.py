@@ -4,6 +4,7 @@ from joserfc.jwk import OctKey
 from joserfc.errors import (
     InvalidPayloadError,
     MissingClaimError,
+    UnsupportedHeaderError,
 )
 
 
@@ -52,7 +53,7 @@ class TestJWT(TestCase):
             registry=jwe.JWERegistry(),
         )
         self.assertRaises(
-            ValueError,
+            UnsupportedHeaderError,
             jwt.encode,
             {"alg": "A128KW", "enc": "A128GCM"},
             {"sub": "a"},
