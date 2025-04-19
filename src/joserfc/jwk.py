@@ -24,6 +24,8 @@ __all__ = [
     "ECKey",
     "OKPKey",
     "KeySet",
+    "KeyBase",
+    "GuestProtocol",
     "guess_key",
 ]
 
