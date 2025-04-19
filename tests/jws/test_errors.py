@@ -4,6 +4,7 @@ from joserfc.jwk import RSAKey, OctKey
 from joserfc.registry import HeaderParameter
 from joserfc.errors import (
     BadSignatureError,
+    MissingKeyError,
     UnsupportedKeyUseError,
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyOperationError,
@@ -14,27 +15,33 @@ from tests.base import load_key
 
 
 class TestJWSErrors(TestCase):
+    key = OctKey.import_key("secret")
+
     def test_without_alg(self):
-        key = OctKey.import_key("secret")
         # missing alg
-        self.assertRaises(ValueError, jws.serialize_compact, {"kid": "123"}, "i", key)
+        self.assertRaises(ValueError, jws.serialize_compact, {"kid": "123"}, "i", self.key)
+
+    def test_without_key(self):
+        self.assertRaises(MissingKeyError, jws.serialize_compact, {"alg": "HS256"}, "i", None)
 
     def test_none_alg(self):
         header = {"alg": "none"}
-        key = OctKey.import_key("secret")
-        text = jws.serialize_compact(header, "i", key, algorithms=["none"])
-        self.assertRaises(BadSignatureError, jws.deserialize_compact, text, key, algorithms=["none"])
+        text = jws.serialize_compact(header, "i", None, algorithms=["none"])
+        obj = jws.deserialize_compact(text, None, algorithms=["none"])
+        self.assertEqual(obj.payload, b"i")
+        # none alg has no signature
+        text += 'aQ'
+        self.assertRaises(BadSignatureError, jws.deserialize_compact, text, None, algorithms=["none"])
 
     def test_header_invalid_type(self):
         # kid should be a string
         header = {"alg": "HS256", "kid": 123}
-        key = OctKey.import_key("secret")
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
             header,
             "i",
-            key,
+            self.key,
         )
 
         # jwk should be a dict
@@ -44,7 +51,7 @@ class TestJWSErrors(TestCase):
             jws.serialize_compact,
             header,
             "i",
-            key,
+            self.key,
         )
 
         # jku should be a URL
@@ -54,7 +61,7 @@ class TestJWSErrors(TestCase):
             jws.serialize_compact,
             header,
             "i",
-            key,
+            self.key,
         )
 
         # x5c should be a chain of string
@@ -64,7 +71,7 @@ class TestJWSErrors(TestCase):
             jws.serialize_compact,
             header,
             "i",
-            key,
+            self.key,
         )
         header = {"alg": "HS256", "x5c": [1, 2]}
         self.assertRaises(
@@ -72,42 +79,40 @@ class TestJWSErrors(TestCase):
             jws.serialize_compact,
             header,
             "i",
-            key,
+            self.key,
         )
 
     def test_crit_header(self):
         header = {"alg": "HS256", "crit": ["kid"]}
-        key = OctKey.import_key("secret")
         # missing kid header
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
             header,
             "i",
-            key,
+            self.key,
         )
 
         header = {"alg": "HS256", "kid": "1", "crit": ["kid"]}
-        jws.serialize_compact(header, "i", key)
+        jws.serialize_compact(header, "i", self.key)
 
     def test_extra_header(self):
         header = {"alg": "HS256", "extra": "hi"}
-        key = OctKey.import_key("secret")
         self.assertRaises(
             ValueError,
             jws.serialize_compact,
             header,
             "i",
-            key,
+            self.key,
         )
         # bypass extra header
         registry = jws.JWSRegistry(strict_check_header=False)
-        jws.serialize_compact(header, "i", key, registry=registry)
+        jws.serialize_compact(header, "i", self.key, registry=registry)
 
         # or use a header registry
         extra_header = {"extra": HeaderParameter("Extra header", "str", False)}
         registry = jws.JWSRegistry(header_registry=extra_header)
-        jws.serialize_compact(header, "i", key, registry=registry)
+        jws.serialize_compact(header, "i", self.key, registry=registry)
 
     def test_rsa_invalid_signature(self):
         key1 = RSAKey.generate_key()

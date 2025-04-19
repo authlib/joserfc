@@ -35,7 +35,7 @@ class NoneAlgModel(JWSAlgModel):
         return b""
 
     def verify(self, msg: bytes, sig: bytes, key: t.Any) -> bool:
-        return False
+        return sig == b""
 
 
 class HMACAlgModel(JWSAlgModel):

@@ -34,7 +34,7 @@ from .rfc7515.types import (
 from .rfc7518.jws_algs import JWS_ALGORITHMS
 from .rfc8037.jws_eddsa import EdDSA
 from .rfc8812 import ES256K
-from .errors import BadSignatureError
+from .errors import BadSignatureError, MissingKeyError
 from .jwk import Key, KeyFlexible, KeySet, guess_key
 from .util import to_bytes
 from .registry import Header
@@ -84,7 +84,7 @@ register_algorithms()
 def serialize_compact(
     protected: Header,
     payload: bytes | str,
-    private_key: KeyFlexible,
+    private_key: KeyFlexible | None,
     algorithms: list[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> str:
@@ -111,6 +111,15 @@ def serialize_compact(
     registry.check_header(protected)
     obj = CompactSignature(protected, to_bytes(payload))
     alg: JWSAlgModel = registry.get_alg(protected["alg"])
+
+    # "none" algorithm requires no key
+    if alg.name == "none":
+        out = sign_compact(obj, alg, None)
+        return out.decode("utf-8")
+
+    if private_key is None:
+        raise MissingKeyError()
+
     key: Key = guess_key(private_key, obj, True)
     key.check_use("sig")
     alg.check_key_type(key)
@@ -121,7 +130,7 @@ def serialize_compact(
 
 def validate_compact(
     obj: CompactSignature,
-    public_key: KeyFlexible,
+    public_key: KeyFlexible | None,
     algorithms: list[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> bool:
@@ -138,16 +147,24 @@ def validate_compact(
 
     headers = obj.headers()
     registry.check_header(headers)
+    alg: JWSAlgModel = registry.get_alg(headers["alg"])
+
+    # "none" algorithm requires no key
+    if headers["alg"] == "none":
+        return verify_compact(obj, alg, None)
+
+    if public_key is None:
+        raise MissingKeyError()
+
     key: Key = guess_key(public_key, obj)
     key.check_use("sig")
-    alg: JWSAlgModel = registry.get_alg(headers["alg"])
     alg.check_key_type(key)
     return verify_compact(obj, alg, key)
 
 
 def deserialize_compact(
     value: bytes | str,
-    public_key: KeyFlexible,
+    public_key: KeyFlexible | None,
     algorithms: list[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> CompactSignature:

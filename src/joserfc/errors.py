@@ -72,6 +72,10 @@ class UnsupportedAlgorithmError(JoseError):
     error = "unsupported_algorithm"
 
 
+class MissingKeyError(JoseError):
+    error = "missing_key"
+
+
 class MissingEncryptionError(JoseError):
     error = "missing_encryption"
     description = "Missing 'enc' value in header"
