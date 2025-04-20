@@ -99,13 +99,13 @@ indicating that they must be present. For example:
     >>> jws.serialize_compact({"alg": "HS256", "crit": ["kid"]}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-      File "$/joserfc/jws.py", line 98, in serialize_compact
+      File ".../joserfc/jws.py", line 111, in serialize_compact
         registry.check_header(protected)
-      File "$/joserfc/rfc7515/registry.py", line 62, in check_header
+      File ".../joserfc/rfc7515/registry.py", line 67, in check_header
         check_crit_header(header)
-      File "$/joserfc/registry.py", line 195, in check_crit_header
-        raise ValueError(f'"{k}" is a critical header')
-    ValueError: "kid" is a critical header
+      File ".../joserfc/registry.py", line 202, in check_crit_header
+        raise MissingCritHeaderError(k)
+    joserfc.errors.MissingCritHeaderError: missing_crit_header: Missing critical 'kid' value in header
 
 Since "kid" is listed as a critical (``crit``) header parameter, it is mandatory
 and must be included in the header.
@@ -124,13 +124,13 @@ Any additional header beyond those supported by the algorithm will result in an 
     >>> jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-      File "/home/lepture/authlib/joserfc/src/joserfc/jws.py", line 98, in serialize_compact
+      File ".../joserfc/jws.py", line 111, in serialize_compact
         registry.check_header(protected)
-      File "/home/lepture/authlib/joserfc/src/joserfc/rfc7515/registry.py", line 65, in check_header
+      File ".../joserfc/rfc7515/registry.py", line 70, in check_header
         check_supported_header(self.header_registry, header)
-      File "/home/lepture/authlib/joserfc/src/joserfc/registry.py", line 175, in check_supported_header
-        raise ValueError(f'Unsupported "{unsupported_keys} in header')
-    ValueError: Unsupported {'custom'} in header
+      File ".../joserfc/registry.py", line 183, in check_supported_header
+        raise UnsupportedHeaderError(f"Unsupported {unsupported_keys} in header")
+    joserfc.errors.UnsupportedHeaderError: unsupported_header: Unsupported {'custom'} in header
 
 To resolve this error, you have two options. First, you can register the
 additional header parameters with the registry. This allows the registry
