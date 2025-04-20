@@ -27,6 +27,10 @@ class TestJWSErrors(TestCase):
     def test_without_key(self):
         self.assertRaises(MissingKeyError, jws.serialize_compact, {"alg": "HS256"}, "i", None)
 
+        header = {"alg": "HS256"}
+        text = jws.serialize_compact(header, "i", self.key)
+        self.assertRaises(MissingKeyError, jws.deserialize_compact, text, None)
+
     def test_none_alg(self):
         header = {"alg": "none"}
         text = jws.serialize_compact(header, "i", None, algorithms=["none"])
