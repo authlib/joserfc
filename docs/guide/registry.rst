@@ -73,13 +73,13 @@ the value type.
     >>> jws.serialize_compact({"alg": "HS256", "kid": 123}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-      File "$/joserfc/jws.py", line 98, in serialize_compact
+      File ".../joserfc/jws.py", line 111, in serialize_compact
         registry.check_header(protected)
-      File "$/joserfc/rfc7515/registry.py", line 63, in check_header
+      File ".../joserfc/rfc7515/registry.py", line 68, in check_header
         validate_registry_header(self.header_registry, header)
-      File "$/joserfc/registry.py", line 193, in validate_registry_header
-        raise ValueError(f'"{key}" in header {error}')
-    ValueError: "kid" in header must be a str
+      File ".../joserfc/registry.py", line 194, in validate_registry_header
+        raise InvalidHeaderValueError(f"'{key}' in header {error}")
+    joserfc.errors.InvalidHeaderValueError: invalid_header_value: 'kid' in header must be a str
 
 In the above example, ``kid`` MUST be a string instead of an integer. The default
 registry validates the ``kid`` before processing the serialization.

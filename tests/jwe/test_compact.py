@@ -8,6 +8,7 @@ from joserfc.errors import (
     MissingEncryptionError,
     DecodeError,
     ExceededSizeError,
+    InvalidHeaderValueError,
 )
 from joserfc.util import json_b64encode
 from tests.base import load_key
@@ -166,7 +167,7 @@ class TestJWECompact(TestCase):
         # invalid type
         protected["p2c"] = "1024"
         self.assertRaises(
-            ValueError,
+            InvalidHeaderValueError,
             encrypt_compact,
             protected,
             b"i",

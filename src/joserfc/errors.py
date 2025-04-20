@@ -76,6 +76,10 @@ class MissingKeyError(JoseError):
     error = "missing_key"
 
 
+class InvalidHeaderValueError(JoseError):
+    error = "invalid_header_value"
+
+
 class UnsupportedHeaderError(JoseError):
     error = "unsupported_header"
 

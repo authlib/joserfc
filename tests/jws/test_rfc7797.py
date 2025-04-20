@@ -10,6 +10,7 @@ from joserfc.errors import (
     DecodeError,
     MissingAlgorithmError,
     BadSignatureError,
+    InvalidHeaderValueError,
 )
 from joserfc.util import to_bytes
 from joserfc import jws
@@ -43,7 +44,7 @@ class TestRFC7797(TestFixture):
 
     def test_invalid_b64_value(self):
         protected = {"alg": "HS256", "b64": "true", "crit": ["b64"]}
-        self.assertRaises(ValueError, serialize_compact, protected, "i", default_key)
+        self.assertRaises(InvalidHeaderValueError, serialize_compact, protected, "i", default_key)
 
     def test_compact_invalid_value_length(self):
         self.assertRaises(ValueError, deserialize_compact, b"a.b.c.d.e", default_key)

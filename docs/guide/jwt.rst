@@ -291,7 +291,7 @@ Algorithms & Registry
 
 The :meth:`encode` and :meth:`decode` accept an ``algorithms`` parameter for
 specifying the allowed algorithms. By default, it only allows your to use
-recommended algorithms.
+**recommended** algorithms.
 
 You can find out the recommended algorithms at:
 
