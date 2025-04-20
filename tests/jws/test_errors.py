@@ -12,6 +12,7 @@ from joserfc.errors import (
     MissingHeaderError,
     MissingCritHeaderError,
     UnsupportedHeaderError,
+    InvalidHeaderValueError,
 )
 from joserfc.util import urlsafe_b64encode
 from tests.base import load_key
@@ -26,20 +27,24 @@ class TestJWSErrors(TestCase):
     def test_without_key(self):
         self.assertRaises(MissingKeyError, jws.serialize_compact, {"alg": "HS256"}, "i", None)
 
+        header = {"alg": "HS256"}
+        text = jws.serialize_compact(header, "i", self.key)
+        self.assertRaises(MissingKeyError, jws.deserialize_compact, text, None)
+
     def test_none_alg(self):
         header = {"alg": "none"}
         text = jws.serialize_compact(header, "i", None, algorithms=["none"])
         obj = jws.deserialize_compact(text, None, algorithms=["none"])
         self.assertEqual(obj.payload, b"i")
         # none alg has no signature
-        text += 'aQ'
+        text += "aQ"
         self.assertRaises(BadSignatureError, jws.deserialize_compact, text, None, algorithms=["none"])
 
     def test_header_invalid_type(self):
         # kid should be a string
         header = {"alg": "HS256", "kid": 123}
         self.assertRaises(
-            ValueError,
+            InvalidHeaderValueError,
             jws.serialize_compact,
             header,
             "i",
@@ -49,7 +54,7 @@ class TestJWSErrors(TestCase):
         # jwk should be a dict
         header = {"alg": "HS256", "jwk": "dict"}
         self.assertRaises(
-            ValueError,
+            InvalidHeaderValueError,
             jws.serialize_compact,
             header,
             "i",
@@ -59,7 +64,7 @@ class TestJWSErrors(TestCase):
         # jku should be a URL
         header = {"alg": "HS256", "jku": "url"}
         self.assertRaises(
-            ValueError,
+            InvalidHeaderValueError,
             jws.serialize_compact,
             header,
             "i",
@@ -69,7 +74,7 @@ class TestJWSErrors(TestCase):
         # x5c should be a chain of string
         header = {"alg": "HS256", "x5c": "url"}
         self.assertRaises(
-            ValueError,
+            InvalidHeaderValueError,
             jws.serialize_compact,
             header,
             "i",
@@ -77,7 +82,7 @@ class TestJWSErrors(TestCase):
         )
         header = {"alg": "HS256", "x5c": [1, 2]}
         self.assertRaises(
-            ValueError,
+            InvalidHeaderValueError,
             jws.serialize_compact,
             header,
             "i",

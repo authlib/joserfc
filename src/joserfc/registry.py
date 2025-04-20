@@ -4,6 +4,7 @@ from .errors import (
     MissingHeaderError,
     MissingCritHeaderError,
     UnsupportedHeaderError,
+    InvalidHeaderValueError,
 )
 
 Header = Dict[str, Any]
@@ -190,7 +191,7 @@ def validate_registry_header(registry: HeaderRegistryDict, header: Header, check
             try:
                 reg.validate(header[key])
             except ValueError as error:
-                raise ValueError(f"'{key}' in header {error}")
+                raise InvalidHeaderValueError(f"'{key}' in header {error}")
 
 
 def check_crit_header(header: Header) -> None:

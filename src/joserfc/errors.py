@@ -18,7 +18,15 @@ class JoseError(Exception):
 
 
 class DecodeError(JoseError):
+    """This error is designed for JWS/JWE. It is raised when deserialization
+    and decryption fails.
+    """
+
     error = "decode_error"
+
+
+class MissingKeyError(JoseError):
+    error = "missing_key"
 
 
 class UnsupportedKeyUseError(JoseError):
@@ -72,8 +80,8 @@ class UnsupportedAlgorithmError(JoseError):
     error = "unsupported_algorithm"
 
 
-class MissingKeyError(JoseError):
-    error = "missing_key"
+class InvalidHeaderValueError(JoseError):
+    error = "invalid_header_value"
 
 
 class UnsupportedHeaderError(JoseError):
@@ -101,6 +109,9 @@ class MissingCritHeaderError(JoseError):
 
 
 class MissingEncryptionError(JoseError):
+    """This error is designed for JWE. It is raised when the 'enc' value
+    in header is missing."""
+
     error = "missing_encryption"
     description = "Missing 'enc' value in header"
 
@@ -138,6 +149,9 @@ class InvalidCEKLengthError(JoseError):
 
 
 class InvalidClaimError(JoseError):
+    """This error is designed for JWT. It raised when the claim contains
+    invalid values or types."""
+
     error = "invalid_claim"
 
     def __init__(self, claim: str):
@@ -146,6 +160,9 @@ class InvalidClaimError(JoseError):
 
 
 class MissingClaimError(JoseError):
+    """This error is designed for JWT. It raised when the required
+    claims are missing."""
+
     error = "missing_claim"
 
     def __init__(self, claim: str):
@@ -154,6 +171,9 @@ class MissingClaimError(JoseError):
 
 
 class InsecureClaimError(JoseError):
+    """This error is designed for JWT. It raised when the claim
+    contains sensitive information."""
+
     error = "insecure_claim"
 
     def __init__(self, claim: str):
@@ -162,14 +182,21 @@ class InsecureClaimError(JoseError):
 
 
 class ExpiredTokenError(JoseError):
+    """This error is designed for JWT. It raised when the token is expired."""
+
     error = "expired_token"
     description = "The token is expired"
 
 
 class InvalidTokenError(JoseError):
+    """This error is designed for JWT. It raised when the token is not valid yet."""
+
     error = "invalid_token"
     description = "The token is not valid yet"
 
 
 class InvalidPayloadError(JoseError):
+    """This error is designed for JWT. It raised when the payload is
+    not a valid JSON object."""
+
     error = "invalid_payload"
