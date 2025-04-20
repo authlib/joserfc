@@ -72,6 +72,10 @@ class UnsupportedAlgorithmError(JoseError):
     error = "unsupported_algorithm"
 
 
+class MissingKeyError(JoseError):
+    error = "missing_key"
+
+
 class UnsupportedHeaderError(JoseError):
     error = "unsupported_header"
 
