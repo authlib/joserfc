@@ -4,7 +4,7 @@ import base64
 import struct
 import binascii
 import json
-
+from .errors import DecodeError
 
 def to_bytes(x: Any, charset: str = "utf-8", errors: str = "strict") -> bytes:
     if isinstance(x, bytes):
@@ -21,10 +21,23 @@ def to_str(x: bytes | str, charset: str = "utf-8") -> str:
         return x.decode(charset)
     return x
 
+def __is_urlsafe_b64_encoding_non_canonical(s: bytes) -> bool:
+    # https://github.com/FrancoisCapon/Base64SteganographyTools/blob/main/tools/b64_print_regular_characters.sh
+    p = len(s) % 4 # padding?
+    if p == 0:
+        return False
+    p = 4 - p # number of padding characters
+    if p == 2 and s[-1] in b"AQgw":
+        return False
+    if p == 1 and s[-1] in b"AEIMQUYcgkosw048":
+        return False
+    return True
 
 def urlsafe_b64decode(s: bytes) -> bytes:
     if b"+" in s or b"/" in s:
         raise binascii.Error
+    if __is_urlsafe_b64_encoding_non_canonical(s):
+        raise DecodeError
     s += b"=" * (-len(s) % 4)
     return base64.b64decode(s, b"-_", validate=True)
 
