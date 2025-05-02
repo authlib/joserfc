@@ -1,7 +1,7 @@
 import binascii
 from unittest import TestCase
 from joserfc import util
-
+from joserfc import errors
 
 class TestUtil(TestCase):
     def test_to_bytes(self):
@@ -23,3 +23,7 @@ class TestUtil(TestCase):
     def test_urlsafe_b64decode(self):
         self.assertEqual(util.urlsafe_b64decode(b"_foo123-"), b"\xfd\xfa(\xd7m\xfe")
         self.assertRaises(binascii.Error, util.urlsafe_b64decode, b"+foo123/")
+        for c in "RSTUVWXYZabdef": # A -> QQ==
+            self.assertRaises(errors.DecodeError, util.urlsafe_b64decode, b"Q" + c.encode())
+        for c in "FGH": # AAAAAAAAAAAAAA -> QUFBQUFBQUFBQUFBQUE=
+            self.assertRaises(errors.DecodeError, util.urlsafe_b64decode, b"QUFBQUFBQUFBQUFBQU" + c.encode())
