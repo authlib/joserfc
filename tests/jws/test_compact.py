@@ -78,7 +78,7 @@ class TestCompact(TestCase):
         text = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4ifQ.VI29GgHzuh2xfF0bkRYvZIsSuQnbTXSIvuRyt7RDrwo"[:-1] + "p"
         self.assertRaises(
             DecodeError,
-            jws.deserialize_compact,
+            deserialize_compact,
             text,
-            self.key # no matter
+            OctKey.import_key("secret")
         )
