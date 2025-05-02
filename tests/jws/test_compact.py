@@ -73,3 +73,12 @@ class TestCompact(TestCase):
 
         registry = JWSRegistry(strict_check_header=False)
         serialize_compact(header, b"hi", key, registry=registry)
+
+    def test_non_canonical_signature_encoding(self):
+        text = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4ifQ.VI29GgHzuh2xfF0bkRYvZIsSuQnbTXSIvuRyt7RDrwo"[:-1] + "p"
+        self.assertRaises(
+            DecodeError,
+            jws.deserialize_compact,
+            text,
+            self.key # no matter
+        )
