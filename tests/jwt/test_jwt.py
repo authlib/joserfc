@@ -5,6 +5,7 @@ from joserfc.errors import (
     InvalidPayloadError,
     MissingClaimError,
     UnsupportedHeaderError,
+    DecodeError,
 )
 
 
@@ -68,7 +69,7 @@ class TestJWT(TestCase):
             registry=jwe.JWERegistry(),
         )
         self.assertRaises(
-            ValueError,
+            DecodeError,
             jwt.decode,
             value2,
             key,

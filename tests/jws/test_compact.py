@@ -32,7 +32,7 @@ class TestCompact(TestCase):
 
     def test_invalid_length(self):
         key = OctKey.import_key("secret")
-        self.assertRaises(ValueError, deserialize_compact, b"a.b.c.d", key)
+        self.assertRaises(DecodeError, deserialize_compact, b"a.b.c.d", key)
 
     def test_no_invalid_header(self):
         # invalid base64
@@ -77,7 +77,7 @@ class TestCompact(TestCase):
     def test_non_canonical_signature_encoding(self):
         text = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4ifQ.VI29GgHzuh2xfF0bkRYvZIsSuQnbTXSIvuRyt7RDrwo"[:-1] + "p"
         self.assertRaises(
-            DecodeError,
+            BadSignatureError,
             deserialize_compact,
             text,
             OctKey.import_key("secret")

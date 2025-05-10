@@ -1,6 +1,10 @@
+import binascii
 import typing as t
 from .model import JWSAlgModel, CompactSignature
-from ..errors import DecodeError, MissingAlgorithmError
+from ..errors import (
+    DecodeError,
+    MissingAlgorithmError,
+)
 from ..util import (
     json_b64encode,
     json_b64decode,
@@ -25,14 +29,14 @@ def extract_compact(value: bytes) -> CompactSignature:
     """
     parts = value.split(b".")
     if len(parts) != 3:
-        raise ValueError("Invalid JSON Web Signature")
+        raise DecodeError("Invalid JSON Web Signature")
 
     header_segment, payload_segment, signature_segment = parts
     protected = decode_header(header_segment)
 
     try:
         payload = urlsafe_b64decode(payload_segment)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, binascii.Error):
         raise DecodeError("Invalid payload")
 
     obj = CompactSignature(protected, payload)
@@ -48,7 +52,10 @@ def extract_compact(value: bytes) -> CompactSignature:
 
 def verify_compact(obj: CompactSignature, alg: JWSAlgModel, key: t.Any) -> bool:
     signing_input = obj.segments["header"] + b"." + obj.segments["payload"]
-    sig = urlsafe_b64decode(obj.segments["signature"])
+    try:
+        sig = urlsafe_b64decode(obj.segments["signature"])
+    except (TypeError, ValueError, binascii.Error):
+        return False
     return alg.verify(signing_input, sig, key)
 
 

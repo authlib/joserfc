@@ -22,7 +22,6 @@ def to_str(x: bytes | str, charset: str = "utf-8") -> str:
     return x
 
 def __is_urlsafe_b64_encoding_non_canonical(s: bytes) -> bool:
-    # https://github.com/FrancoisCapon/Base64SteganographyTools/blob/main/tools/b64_print_regular_characters.sh
     p = len(s) % 4 # padding?
     if p == 0:
         return False
@@ -36,9 +35,18 @@ def __is_urlsafe_b64_encoding_non_canonical(s: bytes) -> bool:
 def urlsafe_b64decode(s: bytes) -> bytes:
     if b"+" in s or b"/" in s:
         raise binascii.Error
-    if __is_urlsafe_b64_encoding_non_canonical(s):
-        raise DecodeError
-    s += b"=" * (-len(s) % 4)
+
+    pad = -len(s) % 4
+    if pad == 3:
+        raise binascii.Error
+
+    safe_ending = (b"AEIMQUYcgkosw048", b"AQgw")
+    if pad and s[-1] not in safe_ending[pad - 1]:
+        raise binascii.Error
+    if pad == 2 and s[-1] not in b"AQgw":
+        raise binascii.Error
+
+    s += b"=" * pad
     return base64.b64decode(s, b"-_", validate=True)
 
 
