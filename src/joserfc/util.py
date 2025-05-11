@@ -33,8 +33,6 @@ def urlsafe_b64decode(s: bytes) -> bytes:
     safe_ending = (b"AEIMQUYcgkosw048", b"AQgw")
     if pad and s[-1] not in safe_ending[pad - 1]:
         raise binascii.Error
-    if pad == 2 and s[-1] not in b"AQgw":
-        raise binascii.Error
 
     s += b"=" * pad
     return base64.b64decode(s, b"-_", validate=True)
