@@ -7,6 +7,7 @@ from ._keys import (
     Key,
     KeySetSerialization,
 )
+from .rfc7517.types import AnyKey, KeyParameters
 from .rfc7518.oct_key import OctKey as OctKey
 from .rfc7518.rsa_key import RSAKey as RSAKey
 from .rfc7518.ec_key import ECKey as ECKey
@@ -29,6 +30,8 @@ __all__ = [
     "KeyBase",
     "GuestProtocol",
     "guess_key",
+    "import_key",
+    "generate_key",
 ]
 
 register_secp256k1()
@@ -89,3 +92,35 @@ def _normalize_key(key: KeyBase) -> Key | KeySet:
         )
         return OctKey.import_key(key)
     return key
+
+
+def import_key(
+    data: AnyKey,
+    key_type: str | None = None,
+    parameters: KeyParameters | None = None
+) -> Key:
+    """Importing a key from bytes, string, and dict. When ``value`` is a dict,
+    this method can tell the key type automatically, otherwise, developers
+    SHOULD pass the ``key_type`` themselves.
+
+    :param data: the key data in bytes, string, or dict.
+    :param key_type: an optional key type in string.
+    :param parameters: extra key parameters
+    :return: OctKey, RSAKey, ECKey, or OKPKey
+    """
+    return JWKRegistry.import_key(data, key_type, parameters)
+
+
+def generate_key(
+    key_type: str,
+    crv_or_size: str | int | None = None,
+    parameters: KeyParameters | None = None,
+    private: bool = True,
+    auto_kid: bool = False,
+) -> Key:
+    """Generating key according to the given key type. When ``key_type`` is
+    "oct" and "RSA", the second parameter SHOULD be a key size in bits.
+    When ``key_type`` is "EC" and "OKP", the second
+    parameter SHOULD be a "crv" string.
+    """
+    return JWKRegistry.generate_key(key_type, crv_or_size, parameters, private, auto_kid)
