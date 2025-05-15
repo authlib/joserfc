@@ -5,6 +5,7 @@ from ._keys import (
     JWKRegistry,
     KeySet,
     Key,
+    KeySetSerialization,
 )
 from .rfc7518.oct_key import OctKey as OctKey
 from .rfc7518.rsa_key import RSAKey as RSAKey
@@ -19,6 +20,7 @@ __all__ = [
     "Key",
     "KeyCallable",
     "KeyFlexible",
+    "KeySetSerialization",
     "OctKey",
     "RSAKey",
     "ECKey",

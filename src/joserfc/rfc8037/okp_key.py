@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey, Ed25519PrivateKey
@@ -109,7 +111,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         return self.raw_value
 
     @property
-    def private_key(self) -> t.Optional[PrivateOKPKey]:
+    def private_key(self) -> PrivateOKPKey | None:
         if isinstance(self.raw_value, PrivateKeyTypes):
             return self.raw_value
         return None
@@ -121,8 +123,8 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
     @classmethod
     def generate_key(
         cls,
-        crv: str = "Ed25519",
-        parameters: t.Optional[KeyParameters] = None,
+        crv: str | None = "Ed25519",
+        parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
     ) -> "OKPKey":
@@ -133,6 +135,9 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         :param private: generate a private key or public key
         :param auto_kid: add ``kid`` automatically
         """
+        if crv is None:
+            crv = "Ed25519"
+
         if crv not in PRIVATE_KEYS_MAP:
             raise ValueError("Invalid crv value: '{}'".format(crv))
 

@@ -119,7 +119,7 @@ class TestRSAKey(TestCase):
         self.assertRaises(ValueError, RSAKey.generate_key, 8)
         self.assertRaises(ValueError, RSAKey.generate_key, 601)
 
-        key: RSAKey = RSAKey.generate_key(private=False)
+        key = RSAKey.generate_key(private=False)
         self.assertFalse(key.is_private)
         self.assertIsNone(key.kid)
 

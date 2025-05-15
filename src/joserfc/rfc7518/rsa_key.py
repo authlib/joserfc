@@ -1,4 +1,5 @@
-import typing as t
+from __future__ import annotations
+from typing import TypedDict
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.rsa import (
     generate_private_key,
@@ -19,7 +20,7 @@ from ..rfc7517.types import KeyParameters
 from ..util import int_to_base64, base64_to_int
 
 
-RSADictKey = t.TypedDict(
+RSADictKey = TypedDict(
     "RSADictKey",
     {
         "n": str,
@@ -91,7 +92,7 @@ class RSABinding(CryptographyBinding):
         return numbers.public_key(default_backend())
 
     @staticmethod
-    def export_public_key(key: RSAPublicKey) -> t.Dict[str, str]:
+    def export_public_key(key: RSAPublicKey) -> dict[str, str]:
         numbers = key.public_numbers()
         return {"n": int_to_base64(numbers.n), "e": int_to_base64(numbers.e)}
 
@@ -124,7 +125,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         return self.raw_value
 
     @property
-    def private_key(self) -> t.Optional[RSAPrivateKey]:
+    def private_key(self) -> RSAPrivateKey | None:
         if isinstance(self.raw_value, RSAPrivateKey):
             return self.raw_value
         return None
@@ -132,8 +133,8 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
     @classmethod
     def generate_key(
         cls,
-        key_size: int = 2048,
-        parameters: t.Optional[KeyParameters] = None,
+        key_size: int | None = 2048,
+        parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
     ) -> "RSAKey":
@@ -144,10 +145,15 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         :param private: generate a private key or public key
         :param auto_kid: add ``kid`` automatically
         """
+        if key_size is None:
+            key_size = 2048
+
         if key_size < 512:
             raise ValueError("key_size must not be less than 512")
+
         if key_size % 8 != 0:
             raise ValueError("Invalid key_size for RSAKey")
+
         raw_key = generate_private_key(
             public_exponent=65537,
             key_size=key_size,
