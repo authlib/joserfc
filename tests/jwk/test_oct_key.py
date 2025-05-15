@@ -81,6 +81,10 @@ class TestOctKey(TestCase):
         self.assertEqual(len(key.raw_value), 32)
         self.assertIsNone(key.kid)
 
+        key = OctKey.generate_key(None)
+        self.assertEqual(len(key.raw_value), 32)
+        self.assertIsNone(key.kid)
+
         self.assertRaises(ValueError, OctKey.generate_key, private=False)
         self.assertRaises(ValueError, OctKey.generate_key, 251)
 

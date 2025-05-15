@@ -144,7 +144,11 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @classmethod
     def generate_key(
-        cls, crv: str = "P-256", parameters: KeyParameters | None = None, private: bool = True, auto_kid: bool = False
+        cls,
+        crv: str | None = "P-256",
+        parameters: KeyParameters | None = None,
+        private: bool = True,
+        auto_kid: bool = False,
     ) -> "ECKey":
         """Generate a ``ECKey`` with the given "crv" value.
 
@@ -153,6 +157,9 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         :param private: generate a private key or public key
         :param auto_kid: add ``kid`` automatically
         """
+        if crv is None:
+            crv = "P-256"
+
         raw_key = cls.binding.generate_private_key(crv)
         if private:
             key = cls(raw_key, raw_key, parameters)

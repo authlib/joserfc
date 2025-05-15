@@ -1,7 +1,7 @@
 from unittest import TestCase
 from joserfc.jws import register_key_set
-from joserfc.jwk import JWKRegistry, guess_key
-from joserfc.jwk import KeySet, OctKey, RSAKey
+from joserfc.jwk import guess_key, import_key, generate_key
+from joserfc.jwk import KeySet, OctKey, RSAKey, ECKey, OKPKey
 from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyUseError,
@@ -95,24 +95,34 @@ class TestKeyMethods(TestCase):
 
     def test_import_key(self):
         # test bytes
-        key = JWKRegistry.import_key(b"secret", "oct")
+        key = import_key(b"secret", "oct")
         self.assertIsInstance(key, OctKey)
 
         # test string
-        key = JWKRegistry.import_key("secret", "oct")
+        key = import_key("secret", "oct")
         self.assertIsInstance(key, OctKey)
 
         # test dict
         data = key.as_dict()
-        key = JWKRegistry.import_key(data)
+        key = import_key(data)
         self.assertIsInstance(key, OctKey)
 
-        self.assertRaises(InvalidKeyTypeError, JWKRegistry.import_key, "secret", "invalid")
+        self.assertRaises(InvalidKeyTypeError, import_key, "secret", "invalid")
 
     def test_generate_key(self):
-        key = JWKRegistry.generate_key("oct", 8)
+        key = generate_key("oct")
         self.assertIsInstance(key, OctKey)
-        self.assertRaises(InvalidKeyTypeError, JWKRegistry.generate_key, "invalid", 8)
+
+        key = generate_key("RSA")
+        self.assertIsInstance(key, RSAKey)
+
+        key = generate_key("EC")
+        self.assertIsInstance(key, ECKey)
+
+        key = generate_key("OKP")
+        self.assertIsInstance(key, OKPKey)
+
+        self.assertRaises(InvalidKeyTypeError, generate_key, "invalid", 8)
 
     def test_check_use(self):
         key = OctKey.import_key("secret", {"use": "sig"})
@@ -141,4 +151,4 @@ class TestKeyMethods(TestCase):
         self.assertRaises(UnsupportedKeyOperationError, key.check_key_op, "sign")
 
     def test_import_without_kty(self):
-        self.assertRaises(MissingKeyTypeError, JWKRegistry.import_key, {})
+        self.assertRaises(MissingKeyTypeError, import_key, {})

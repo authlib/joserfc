@@ -1,6 +1,6 @@
 import json
 import typing as t
-from joserfc.jwk import JWKRegistry
+from joserfc.jwk import import_key
 from unittest import TestCase
 from pathlib import Path
 
@@ -18,10 +18,10 @@ def load_key(filename: str, parameters=None):
 
     if filename.endswith(".json"):
         data = json.loads(content)
-        return JWKRegistry.import_key(data, parameters=parameters)
+        return import_key(data, parameters=parameters)
 
     kty = filename.split("-", 1)[0]
-    return JWKRegistry.import_key(content, kty.upper(), parameters)
+    return import_key(content, kty.upper(), parameters)
 
 
 class TestFixture(TestCase):

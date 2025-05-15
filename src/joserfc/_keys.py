@@ -17,6 +17,7 @@ __all__ = [
     "Key",
     "KeySet",
     "JWKRegistry",
+    "KeySetSerialization",
 ]
 
 Key = t.Union[OctKey, RSAKey, ECKey, OKPKey]
@@ -75,7 +76,7 @@ class JWKRegistry:
     def generate_key(
         cls,
         key_type: str,
-        crv_or_size: str | int,
+        crv_or_size: str | int | None = None,
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
