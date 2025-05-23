@@ -112,7 +112,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     def __getitem__(self, k: str) -> str | list[str]:
         return self.dict_value[k]
 
-    def get(self, k: str, default: str | None = None) -> str | list[str] | None:
+    def get(self, k: str, default: str | list[str] | None = None) -> str | list[str] | None:
         return self.dict_value.get(k, default)
 
     def ensure_kid(self) -> None:
