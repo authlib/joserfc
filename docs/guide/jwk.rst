@@ -398,6 +398,14 @@ the key type manually:
     data = b"---- BEGIN RSA PRIVATE KEY ----\n..."
     key = JWKRegistry.import_key(data, "RSA")
 
+.. versionadded:: v1.1.0
+
+    You can use ``jwk.import_key`` directly. For example::
+
+        from joserfc.jwk import import_key
+        data = {"kty": "oct", "k": "..."}
+        key = import_key(data)
+
 Generate keys
 ~~~~~~~~~~~~~
 
@@ -418,6 +426,13 @@ For ``EC`` and ``OKP`` keys, the parameters are:
     # (key_type: str, crv: str, parameters: Optional[dict], private: bool=True)
     key = JWKRegistry.generate_key("EC", "P-256")
     key = JWKRegistry.generate_key("OKP", "Ed25519")
+
+.. versionadded:: v1.1.0
+
+    You can use ``jwk.generate_key`` directly. For example::
+
+        from joserfc.jwk import generate_key
+        key = generate_key("oct", 256)
 
 Options
 -------

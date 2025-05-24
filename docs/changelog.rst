@@ -12,12 +12,15 @@ Changelog
 .. module:: joserfc
     :noindex:
 
-Unreleased
-----------
+1.1.0
+-----
+
+**Released on May 24, 2025**
 
 - Use "import as" to prioritize the modules for editors.
 - Added parameter ``encoder_cls`` for ``jwt.encode`` and ``decoder_cls`` for ``jwt.decode``.
 - Added ``none`` algorithm for JWS.
+- Added ``jwk.import_key`` and ``jwk.generate_key`` aliases.
 
 **Breaking changes**:
 

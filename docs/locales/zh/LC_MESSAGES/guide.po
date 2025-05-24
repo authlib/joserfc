@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-20 18:35+0900\n"
+"POT-Creation-Date: 2025-05-24 13:25+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -987,26 +987,34 @@ msgid ""
 " key type manually:"
 msgstr ""
 
-#: ../../guide/jwk.rst:402
+#: ../../guide/jwk.rst:403
+msgid "You can use ``jwk.import_key`` directly. For example::"
+msgstr ""
+
+#: ../../guide/jwk.rst:410
 msgid "Generate keys"
 msgstr ""
 
-#: ../../guide/jwk.rst:404
+#: ../../guide/jwk.rst:412
 msgid ""
 "The :meth:`JWKRegistry.generate_key` can generate a key with all the "
 "supported key types. For ``oct`` and ``RSA`` the parameters in this "
 "method:"
 msgstr ""
 
-#: ../../guide/jwk.rst:414
+#: ../../guide/jwk.rst:422
 msgid "For ``EC`` and ``OKP`` keys, the parameters are:"
 msgstr ""
 
-#: ../../guide/jwk.rst:423
+#: ../../guide/jwk.rst:432
+msgid "You can use ``jwk.generate_key`` directly. For example::"
+msgstr ""
+
+#: ../../guide/jwk.rst:438
 msgid "Options"
 msgstr ""
 
-#: ../../guide/jwk.rst:425
+#: ../../guide/jwk.rst:440
 msgid ""
 "The ``import_key`` and ``generate_key`` methods available in ``OctKey``, "
 "``RSAKey``, ``ECKey``, ``OKPKey``, and ``JWKRegistry`` classes have an "
@@ -1015,37 +1023,37 @@ msgid ""
 "the JWK."
 msgstr ""
 
-#: ../../guide/jwk.rst:430
+#: ../../guide/jwk.rst:445
 msgid "Some of the standard (registered) header fields are:"
 msgstr ""
 
-#: ../../guide/jwk.rst:432
+#: ../../guide/jwk.rst:447
 msgid "``kty``: Key Type, it is automatically added"
 msgstr ""
 
-#: ../../guide/jwk.rst:433
+#: ../../guide/jwk.rst:448
 msgid "``use``: Public Key Use, \"sig\" or \"enc\""
 msgstr ""
 
-#: ../../guide/jwk.rst:434
+#: ../../guide/jwk.rst:449
 msgid "``key_ops``: Key Operations, allowed operations of this key"
 msgstr ""
 
-#: ../../guide/jwk.rst:435
+#: ../../guide/jwk.rst:450
 msgid "``alg``: Algorithm, allowed algorithm of this key"
 msgstr ""
 
-#: ../../guide/jwk.rst:436
+#: ../../guide/jwk.rst:451
 msgid "``kid``: Key ID, a string of the key ID"
 msgstr ""
 
-#: ../../guide/jwk.rst:438
+#: ../../guide/jwk.rst:453
 msgid ""
 "When using ``import_key`` and ``generate_key``, developers can pass the "
 "extra key ``parameters``:"
 msgstr ""
 
-#: ../../guide/jwk.rst:445
+#: ../../guide/jwk.rst:460
 msgid ""
 "The above ``RSAKey`` then can only be used for ``JWS`` with ``alg`` of "
 "``RS256``, and it can only be used for deserialization (``verify``)."
@@ -1783,3 +1791,4 @@ msgid ""
 "Depending on the algorithm of the JWT, you need to decide whether to use "
 "``JWSRegistry`` or ``JWERegistry``."
 msgstr ""
+
