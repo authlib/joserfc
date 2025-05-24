@@ -6,7 +6,12 @@ from .rfc7518.oct_key import OctKey
 from .rfc7518.rsa_key import RSAKey
 from .rfc7518.ec_key import ECKey
 from .rfc8037.okp_key import OKPKey
-from .errors import InvalidKeyIdError, InvalidKeyTypeError, MissingKeyTypeError
+from .errors import (
+    MissingKeyError,
+    InvalidKeyIdError,
+    InvalidKeyTypeError,
+    MissingKeyTypeError,
+)
 from .util import to_bytes
 
 __all__ = [
@@ -160,6 +165,9 @@ class KeySet:
 
         for data in value["keys"]:
             keys.append(cls.registry_cls.import_key(data, parameters=parameters))
+
+        if not keys:
+            raise MissingKeyError("No keys to import")
 
         return cls(keys)
 

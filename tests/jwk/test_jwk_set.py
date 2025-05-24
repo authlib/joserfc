@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from joserfc.errors import InvalidKeyTypeError, InvalidKeyIdError
+from joserfc.errors import InvalidKeyTypeError, InvalidKeyIdError, MissingKeyError
 from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
 from tests.keys import read_key
 
@@ -8,6 +8,9 @@ KeySet.algorithm_keys["RS256"] = ["RSA"]
 
 
 class TestKeySet(TestCase):
+    def test_import_empty_key_set(self):
+        self.assertRaises(MissingKeyError, KeySet.import_key_set, {"keys": []})
+
     def test_generate_and_import_key_set(self):
         jwks1 = KeySet.generate_key_set("RSA", 2048)
         self.assertEqual(len(jwks1.keys), 4)
