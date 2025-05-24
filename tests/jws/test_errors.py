@@ -5,6 +5,7 @@ from joserfc.registry import HeaderParameter
 from joserfc.errors import (
     BadSignatureError,
     MissingKeyError,
+    UnsupportedAlgorithmError,
     UnsupportedKeyUseError,
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyOperationError,
@@ -23,6 +24,14 @@ class TestJWSErrors(TestCase):
 
     def test_without_alg(self):
         self.assertRaises(MissingHeaderError, jws.serialize_compact, {"kid": "123"}, "i", self.key)
+
+    def test_raise_unsupported_algorithm_error(self):
+        registry = jws.JWSRegistry(algorithms=["HS256", "HS384", "HS512"])
+        header = {"alg": "HS256"}
+        jws.serialize_compact(header, "i", self.key, registry=registry)
+        # raise error
+        registry = jws.JWSRegistry(algorithms=["HS512"])
+        self.assertRaises(UnsupportedAlgorithmError, jws.serialize_compact, header, "i", self.key, registry=registry)
 
     def test_without_key(self):
         self.assertRaises(MissingKeyError, jws.serialize_compact, {"alg": "HS256"}, "i", None)

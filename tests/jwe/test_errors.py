@@ -71,10 +71,13 @@ class TestJWEErrors(TestCase):
         value = jwe.encrypt_compact(protected, b"i", key1)
         self.assertRaises(DecodeError, jwe.decrypt_compact, value, key2)
 
-    def test_invalid_alg(self):
+    def test_unsupported_algorithm(self):
+        key = OctKey.generate_key(128)
         protected = {"alg": "INVALID", "enc": "A128CBC-HS256"}
-        key = OctKey.import_key("secret")
         self.assertRaises(UnsupportedAlgorithmError, jwe.encrypt_compact, protected, b"i", key)
+
+        registry = jwe.JWERegistry(algorithms=["A128GCMKW"])
+        self.assertRaises(UnsupportedAlgorithmError, jwe.encrypt_compact, protected, b"i", key, registry=registry)
 
     def test_invalid_key_length(self):
         protected = {"alg": "dir", "enc": "A128CBC-HS256"}
