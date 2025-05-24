@@ -36,7 +36,7 @@ def extract_compact(value: bytes) -> CompactSignature:
 
     try:
         payload = urlsafe_b64decode(payload_segment)
-    except (TypeError, ValueError, binascii.Error):
+    except (TypeError, ValueError):
         raise DecodeError("Invalid payload")
 
     obj = CompactSignature(protected, payload)
@@ -54,7 +54,7 @@ def verify_compact(obj: CompactSignature, alg: JWSAlgModel, key: t.Any) -> bool:
     signing_input = obj.segments["header"] + b"." + obj.segments["payload"]
     try:
         sig = urlsafe_b64decode(obj.segments["signature"])
-    except (TypeError, ValueError, binascii.Error):
+    except (TypeError, ValueError):
         return False
     return alg.verify(signing_input, sig, key)
 
