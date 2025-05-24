@@ -8,9 +8,7 @@ need to retrieve the key set dynamically from the ``iss`` (issuer) value contain
 within the JWT.
 
 Let's illustrate this process using a JWT token extracted from Microsoft's official
-documentation `Access tokens in the Microsoft identity platform <ms_doc_url>`_:
-
-.. _ms_doc_url: https://learn.microsoft.com/en-us/azure/active-directory/develop/access-tokens
+documentation https://learn.microsoft.com/en-us/azure/active-directory/develop/access-tokens:
 
 .. code-block:: none
 
