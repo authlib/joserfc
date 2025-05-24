@@ -1,4 +1,3 @@
-import binascii
 import typing as t
 from .model import JWSAlgModel, CompactSignature
 from ..errors import (
