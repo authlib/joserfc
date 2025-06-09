@@ -290,7 +290,7 @@ Algorithms & Registry
 ---------------------
 
 The :meth:`encode` and :meth:`decode` accept an ``algorithms`` parameter for
-specifying the allowed algorithms. By default, it only allows your to use
+specifying the allowed algorithms. By default, it only allows you to use the
 **recommended** algorithms.
 
 You can find out the recommended algorithms at:
@@ -320,7 +320,7 @@ JSON Encoder and Decoder
     The parameters ``encoder_cls`` for ``jwt.encode`` and ``decoder_cls`` for ``jwt.decode``
     were introduced in version 1.1.0.
 
-When using ``jwt.encode``` to encode claims that contain data types that ``json``
+When using ``jwt.encode`` to encode claims that contain data types that ``json``
 module does not natively support, such as ``UUID`` and ``datetime``, an error will
 be raised.
 

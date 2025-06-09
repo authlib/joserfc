@@ -37,11 +37,14 @@ class CompactSignature:
     """
 
     def __init__(self, protected: Header, payload: bytes):
+        #: protected header
         self.protected = protected
+        #: payload content in bytes
         self.payload = payload
         self.segments: SegmentsDict = {}
 
     def headers(self) -> Header:
+        """Returns protected header values in dict."""
         return self.protected
 
     def set_kid(self, kid: str) -> None:
@@ -56,17 +59,20 @@ class FlattenedJSONSignature:
 
     def __init__(self, member: HeaderMember, payload: bytes):
         #: the only header member
-        self.member = member
-        #: payload content
-        self.payload = payload
+        self.member: HeaderMember = member
+        #: payload content in bytes
+        self.payload: bytes = payload
         self.signature: JSONSignatureDict | None = None
         self.segments: SegmentsDict = {}
 
     @property
     def members(self) -> list[HeaderMember]:
+        """A list of header members. For flattened JSON serialization, there will
+        be only one header member."""
         return [self.member]
 
     def headers(self) -> Header:
+        """Header values in dict."""
         return self.member.headers()
 
 
@@ -78,9 +84,9 @@ class GeneralJSONSignature:
 
     def __init__(self, members: list[HeaderMember], payload: bytes):
         #: a list of header members
-        self.members = members
-        #: payload content
-        self.payload = payload
+        self.members: list[HeaderMember] = members
+        #: payload content in bytes
+        self.payload: bytes = payload
         self.signatures: list[JSONSignatureDict] = []
         self.segments: SegmentsDict = {}
 
