@@ -1,7 +1,7 @@
 JOSE RFC
 ========
 
-`·joserfc·` is a Python library that provides a comprehensive implementation of several
+``joserfc`` is a Python library that provides a comprehensive implementation of several
 essential JSON Object Signing and Encryption (JOSE) standards.
 
 This package contains implementation of:

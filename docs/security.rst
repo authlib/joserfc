@@ -29,3 +29,8 @@ Previous CVEs
 -------------
 
 - CVE-2024-37568: fixed in 0.11.0
+
+CWE fixes
+----------
+
+- CWE-290: fixed in 1.1.0
