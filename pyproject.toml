@@ -25,6 +25,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Security",
   "Topic :: Security :: Cryptography",
 ]
@@ -35,6 +36,7 @@ drafts = ["pycryptodome"]
 [project.urls]
 Documentation = "https://jose.authlib.org/"
 Source = "https://github.com/authlib/joserfc"
+Funding = "https://github.com/sponsors/authlib"
 Blog = "https://blog.authlib.org/"
 
 [build-system]
