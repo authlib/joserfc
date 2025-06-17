@@ -12,6 +12,15 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.2.0
+-----
+
+**Unreleased**
+
+**Breaking changes**:
+
+- Enable "RFC7797" by default, use the ``joserfc.jws`` module directly.
+
 1.1.0
 -----
 
