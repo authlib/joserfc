@@ -218,7 +218,7 @@ def serialize_json(
 
 @overload
 def serialize_json(
-    member: HeaderDict,
+    members: HeaderDict,
     payload: bytes | str,
     private_key: KeyFlexible,
     algorithms: list[str] | None = None,
