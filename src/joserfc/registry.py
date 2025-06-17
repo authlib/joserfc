@@ -126,6 +126,8 @@ JWS_HEADER_REGISTRY: HeaderRegistryDict = {
     "typ": HeaderParameter("Type", is_str),
     "cty": HeaderParameter("Content Type", is_str),
     "crit": HeaderParameter("Critical", is_list_str),
+    # Enable RFC7797 by default.
+    "b64": HeaderParameter("JWS Signing Input Formula", is_bool),
 }
 
 #: Basic JWE header registry
