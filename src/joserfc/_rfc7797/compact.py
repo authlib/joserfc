@@ -31,7 +31,7 @@ def extract_rfc7515_compact(value: bytes, payload: bytes | str | None = None) ->
     """Extract the JWS Compact Serialization from bytes to object.
 
     :param value: JWS in bytes
-    :param payload: optional payload, required with unencoded non-safe payload characters
+    :param payload: optional payload, required with detached content
     :raise: DecodeError
     """
     parts = value.split(b".")
@@ -46,10 +46,14 @@ def extract_rfc7515_compact(value: bytes, payload: bytes | str | None = None) ->
             payload_segment = to_bytes(payload)
         payload = payload_segment
     else:
-        try:
-            payload = urlsafe_b64decode(payload_segment)
-        except (TypeError, ValueError):
-            raise DecodeError("Invalid payload")
+        if not payload_segment and payload:
+            payload = to_bytes(payload)
+            payload_segment = urlsafe_b64encode(payload)
+        else:
+            try:
+                payload = urlsafe_b64decode(payload_segment)
+            except (TypeError, ValueError):
+                raise DecodeError("Invalid payload")
 
     obj = CompactSignature(protected, payload)
     obj.segments.update(

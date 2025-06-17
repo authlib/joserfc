@@ -7,7 +7,6 @@ from .model import (
     FlattenedJSONSignature,
 )
 from .types import (
-    HeaderDict,
     JSONSignatureDict,
     GeneralJSONSerialization,
     FlattenedJSONSerialization,
@@ -25,11 +24,15 @@ FindKey = t.Callable[[HeaderMember], t.Any]
 
 
 def sign_general_json(
-    members: list[HeaderDict], payload: bytes, registry: JWSRegistry, find_key: FindKey
+    members: list[HeaderMember],
+    payload: bytes,
+    registry: JWSRegistry,
+    find_key: FindKey,
 ) -> GeneralJSONSerialization:
     payload_segment = urlsafe_b64encode(payload)
     signatures: list[JSONSignatureDict] = [
-        __sign_member(payload_segment, HeaderMember(**member), registry, find_key) for member in members
+        sign_json_member(payload_segment, member, registry, find_key)
+        for member in members
     ]
     return {
         "payload": payload_segment.decode("utf-8"),
@@ -38,16 +41,25 @@ def sign_general_json(
 
 
 def sign_flattened_json(
-    member: HeaderDict, payload: bytes, registry: JWSRegistry, find_key: FindKey
+    member: HeaderMember,
+    payload: bytes,
+    registry: JWSRegistry,
+    find_key: FindKey,
 ) -> FlattenedJSONSerialization:
     payload_segment = urlsafe_b64encode(payload)
-    signature = __sign_member(payload_segment, HeaderMember(**member), registry, find_key)
-    data = {"payload": payload_segment.decode("utf-8"), **signature}
-    return data  # type: ignore[return-value]
+    signature = sign_json_member(payload_segment, member, registry, find_key)
+    data: FlattenedJSONSerialization = {
+        "payload": payload_segment.decode("utf-8"),
+        **signature
+    }
+    return data
 
 
-def __sign_member(
-    payload_segment: bytes, member: HeaderMember, registry: JWSRegistry, find_key: FindKey
+def sign_json_member(
+    payload_segment: bytes,
+    member: HeaderMember,
+    registry: JWSRegistry,
+    find_key: FindKey
 ) -> JSONSignatureDict:
     headers = member.headers()
     registry.check_header(headers)
@@ -84,26 +96,6 @@ def extract_general_json(value: GeneralJSONSerialization) -> GeneralJSONSignatur
     return obj
 
 
-def extract_flattened_json(value: FlattenedJSONSerialization) -> FlattenedJSONSignature:
-    payload_segment: bytes = value["payload"].encode("utf-8")
-    try:
-        payload = urlsafe_b64decode(payload_segment)
-    except (TypeError, ValueError):
-        raise DecodeError("Invalid payload")
-
-    _sig: JSONSignatureDict = {"signature": value["signature"]}
-    if "protected" in value:
-        _sig["protected"] = value["protected"]
-    if "header" in value:
-        _sig["header"] = value["header"]
-
-    member = __signature_to_member(_sig)
-    obj = FlattenedJSONSignature(member, payload)
-    obj.signature = _sig
-    obj.segments = {"payload": payload_segment}
-    return obj
-
-
 def __signature_to_member(sig: JSONSignatureDict) -> HeaderMember:
     member = HeaderMember()
     if "protected" in sig:
@@ -130,7 +122,11 @@ def verify_flattened_json(obj: FlattenedJSONSignature, registry: JWSRegistry, fi
 
 
 def verify_signature(
-    member: HeaderMember, signature: JSONSignatureDict, payload_segment: bytes, registry: JWSRegistry, find_key: FindKey
+    member: HeaderMember,
+    signature: JSONSignatureDict,
+    payload_segment: bytes,
+    registry: JWSRegistry,
+    find_key: FindKey,
 ) -> bool:
     headers = member.headers()
     registry.check_header(headers)

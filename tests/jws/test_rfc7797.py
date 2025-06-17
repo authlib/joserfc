@@ -1,9 +1,4 @@
 from joserfc.jwk import OctKey
-from joserfc.rfc7797 import (
-    JWSRegistry,
-    serialize_json,
-    deserialize_json,
-)
 from joserfc.errors import (
     DecodeError,
     MissingAlgorithmError,
@@ -30,9 +25,9 @@ class TestRFC7797(TestFixture):
         obj1 = jws.deserialize_compact(value1, default_key, payload=payload)
         self.assertEqual(obj1.headers(), protected)
         self.assertEqual(obj1.payload, to_bytes(payload))
-        value2 = serialize_json({"protected": protected}, payload, default_key)
+        value2 = jws.serialize_json({"protected": protected}, payload, default_key)
         self.assertEqual(value2, data["flattened_json"])
-        obj2 = deserialize_json(value2, default_key)
+        obj2 = jws.deserialize_json(value2, default_key)
         self.assertTrue(obj2.flattened)
         self.assertEqual(obj2.payload, to_bytes(payload))
         self.assertEqual(obj2.members[0].protected, protected)
@@ -61,37 +56,35 @@ class TestRFC7797(TestFixture):
         self.assertRaises(BadSignatureError, jws.deserialize_compact, value, key2)
 
     def test_compact_use_registry(self):
-        registry = JWSRegistry()
         protected = {"alg": "HS256", "b64": True, "crit": ["b64"]}
-        value = jws.serialize_compact(protected, "hello", default_key, registry=registry)
-        obj = jws.deserialize_compact(value, default_key, registry=registry)
+        value = jws.serialize_compact(protected, "hello", default_key)
+        obj = jws.deserialize_compact(value, default_key)
         self.assertEqual(obj.protected, protected)
 
         protected = {"alg": "HS256"}
-        value = jws.serialize_compact(protected, "hello", default_key, registry=registry)
-        obj = jws.deserialize_compact(value, default_key, registry=registry)
+        value = jws.serialize_compact(protected, "hello", default_key)
+        obj = jws.deserialize_compact(value, default_key)
         self.assertEqual(obj.protected, protected)
 
     def test_json_without_protected_header(self):
-        registry = JWSRegistry()
         header = {"alg": "HS256", "b64": False, "crit": ["b64"]}
         member = {"header": header}
-        value = serialize_json(member, "hello", default_key, registry=registry)
-        obj = deserialize_json(value, default_key, registry=registry)
+        value = jws.serialize_json(member, "hello", default_key)
+        obj = jws.deserialize_json(value, default_key)
         self.assertTrue(obj.flattened)
         self.assertEqual(obj.headers(), header)
 
     def test_general_json(self):
         members = [{"protected": {"alg": "HS256"}}]
         value = jws.serialize_json(members, "hello", default_key)
-        obj = deserialize_json(value, default_key)
+        obj = jws.deserialize_json(value, default_key)
         self.assertFalse(obj.flattened)
 
     def test_json_bad_signature(self):
         member = {"protected": {"alg": "HS256", "b64": False, "crit": ["b64"]}}
-        value = serialize_json(member, "hello", default_key)
+        value = jws.serialize_json(member, "hello", default_key)
         key2 = OctKey.import_key("secret")
-        self.assertRaises(BadSignatureError, deserialize_json, value, key2)
+        self.assertRaises(BadSignatureError, jws.deserialize_json, value, key2)
 
 
 TestRFC7797.load_fixture("jws_rfc7797.json")

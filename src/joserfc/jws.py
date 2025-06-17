@@ -22,7 +22,6 @@ from .rfc7515.json import (
     verify_general_json,
     verify_flattened_json,
     extract_general_json,
-    extract_flattened_json,
     detach_json_content,
 )
 from .rfc7515.types import (
@@ -35,6 +34,10 @@ from ._rfc7797.util import is_rfc7797_enabled
 from ._rfc7797.compact import (
     sign_rfc7515_compact,
     extract_rfc7515_compact as extract_compact,
+)
+from ._rfc7797.json import (
+    sign_rfc7797_json,
+    extract_rfc7797_json as extract_flattened_json,
 )
 from .rfc8037.jws_eddsa import EdDSA
 from .rfc8812 import ES256K
@@ -194,7 +197,7 @@ def deserialize_compact(
     :param public_key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
-    :param payload: optional payload, required with unencoded non-safe payload characters
+    :param payload: optional payload, required with detached content
     :return: object of the ``CompactSignature``
     """
     obj = extract_compact(to_bytes(value), payload)
@@ -215,7 +218,7 @@ def serialize_json(
 
 @overload
 def serialize_json(
-    members: HeaderDict,
+    member: HeaderDict,
     payload: bytes | str,
     private_key: KeyFlexible,
     algorithms: list[str] | None = None,
@@ -264,9 +267,13 @@ def serialize_json(
 
     _payload = to_bytes(payload)
     if isinstance(members, list):
-        return sign_general_json(members, _payload, registry, find_key)
+        _members = [HeaderMember(**member) for member in members]
+        return sign_general_json(_members, _payload, registry, find_key)
     else:
-        return sign_flattened_json(members, _payload, registry, find_key)
+        member = HeaderMember(**members)
+        if is_rfc7797_enabled(member.headers()):
+            return sign_rfc7797_json(member, _payload, registry, find_key)
+        return sign_flattened_json(member, _payload, registry, find_key)
 
 
 @overload
