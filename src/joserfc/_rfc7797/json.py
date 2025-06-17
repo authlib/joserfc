@@ -14,10 +14,7 @@ def sign_rfc7797_json(
     find_key: FindKey,
 ) -> FlattenedJSONSerialization:
     signature = sign_json_member(payload, member, registry, find_key)
-    data: FlattenedJSONSerialization = {
-        "payload": payload.decode("utf-8"),
-        **signature
-    }
+    data: FlattenedJSONSerialization = {"payload": payload.decode("utf-8"), **signature}
     return data
 
 

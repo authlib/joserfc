@@ -76,9 +76,4 @@ class TestCompact(TestCase):
 
     def test_non_canonical_signature_encoding(self):
         text = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4ifQ.VI29GgHzuh2xfF0bkRYvZIsSuQnbTXSIvuRyt7RDrwo"[:-1] + "p"
-        self.assertRaises(
-            BadSignatureError,
-            deserialize_compact,
-            text,
-            OctKey.import_key("secret")
-        )
+        self.assertRaises(BadSignatureError, deserialize_compact, text, OctKey.import_key("secret"))

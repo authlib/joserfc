@@ -31,8 +31,7 @@ def sign_general_json(
 ) -> GeneralJSONSerialization:
     payload_segment = urlsafe_b64encode(payload)
     signatures: list[JSONSignatureDict] = [
-        sign_json_member(payload_segment, member, registry, find_key)
-        for member in members
+        sign_json_member(payload_segment, member, registry, find_key) for member in members
     ]
     return {
         "payload": payload_segment.decode("utf-8"),
@@ -48,18 +47,12 @@ def sign_flattened_json(
 ) -> FlattenedJSONSerialization:
     payload_segment = urlsafe_b64encode(payload)
     signature = sign_json_member(payload_segment, member, registry, find_key)
-    data: FlattenedJSONSerialization = {
-        "payload": payload_segment.decode("utf-8"),
-        **signature
-    }
+    data: FlattenedJSONSerialization = {"payload": payload_segment.decode("utf-8"), **signature}
     return data
 
 
 def sign_json_member(
-    payload_segment: bytes,
-    member: HeaderMember,
-    registry: JWSRegistry,
-    find_key: FindKey
+    payload_segment: bytes, member: HeaderMember, registry: JWSRegistry, find_key: FindKey
 ) -> JSONSignatureDict:
     headers = member.headers()
     registry.check_header(headers)

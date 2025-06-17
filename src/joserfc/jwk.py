@@ -94,11 +94,7 @@ def _normalize_key(key: KeyBase) -> Key | KeySet:
     return key
 
 
-def import_key(
-    data: AnyKey,
-    key_type: str | None = None,
-    parameters: KeyParameters | None = None
-) -> Key:
+def import_key(data: AnyKey, key_type: str | None = None, parameters: KeyParameters | None = None) -> Key:
     """Importing a key from bytes, string, and dict. When ``value`` is a dict,
     this method can tell the key type automatically, otherwise, developers
     SHOULD pass the ``key_type`` themselves.
