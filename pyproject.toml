@@ -82,6 +82,9 @@ filterwarnings = ["error"]
 [tool.coverage.run]
 branch = true
 source = ["joserfc"]
+omit = [
+  "src/joserfc/rfc7797/*",
+]
 
 [tool.coverage.paths]
 source = ["src"]
