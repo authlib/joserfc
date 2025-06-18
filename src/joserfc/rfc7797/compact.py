@@ -20,7 +20,7 @@ def serialize_compact(
     registry: t.Optional[_JWSRegistry] = None,
 ) -> str:
     warnings.warn(
-        "Please use jws.serialize_compact directly.",
+        "Please use jws.serialize_compact directly, as this method will be removed in version 1.4.0.",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -35,7 +35,7 @@ def deserialize_compact(
     registry: t.Optional[JWSRegistry] = None,
 ) -> CompactSignature:
     warnings.warn(
-        "Please use jws.deserialize_compact directly.",
+        "Please use jws.deserialize_compact directly, as this method will be removed in version 1.4.0.",
         DeprecationWarning,
         stacklevel=2,
     )

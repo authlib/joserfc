@@ -20,7 +20,7 @@ def serialize_json(
     registry: t.Optional[_JWSRegistry] = None,
 ) -> FlattenedJSONSerialization:
     warnings.warn(
-        "Please use jws.serialize_json directly.",
+        "Please use jws.serialize_json directly, as this method will be removed in version 1.4.0.",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -34,7 +34,7 @@ def deserialize_json(
     registry: t.Optional[_JWSRegistry] = None,
 ) -> FlattenedJSONSignature:
     warnings.warn(
-        "Please use jws.deserialize_json directly.",
+        "Please use jws.deserialize_json directly, as this method will be removed in version 1.4.0.",
         DeprecationWarning,
         stacklevel=2,
     )
