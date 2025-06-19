@@ -20,35 +20,6 @@ def sign_compact(obj: CompactSignature, alg: JWSAlgModel, key: t.Any) -> bytes:
     return signing_input + b"." + signature
 
 
-def extract_compact(value: bytes) -> CompactSignature:
-    """Extract the JWS Compact Serialization from bytes to object.
-
-    :param value: JWS in bytes
-    :raise: DecodeError
-    """
-    parts = value.split(b".")
-    if len(parts) != 3:
-        raise DecodeError("Invalid JSON Web Signature")
-
-    header_segment, payload_segment, signature_segment = parts
-    protected = decode_header(header_segment)
-
-    try:
-        payload = urlsafe_b64decode(payload_segment)
-    except (TypeError, ValueError):
-        raise DecodeError("Invalid payload")
-
-    obj = CompactSignature(protected, payload)
-    obj.segments.update(
-        {
-            "header": header_segment,
-            "payload": payload_segment,
-            "signature": signature_segment,
-        }
-    )
-    return obj
-
-
 def verify_compact(obj: CompactSignature, alg: JWSAlgModel, key: t.Any) -> bool:
     signing_input = obj.segments["header"] + b"." + obj.segments["payload"]
     try:

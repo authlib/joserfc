@@ -1,7 +1,17 @@
 from unittest import TestCase
-from joserfc.jws import serialize_json, deserialize_json, detach_content
-from joserfc.jwk import RSAKey, KeySet
-from joserfc.errors import DecodeError, BadSignatureError
+from joserfc.jws import (
+    JWSRegistry,
+    serialize_json,
+    deserialize_json,
+    detach_content,
+)
+from joserfc.jwk import RSAKey, OctKey, KeySet
+from joserfc.errors import (
+    DecodeError,
+    BadSignatureError,
+    UnsupportedHeaderError,
+    UnsupportedAlgorithmError,
+)
 from tests.base import load_key
 
 
@@ -97,3 +107,17 @@ class TestJSON(TestCase):
         obj = deserialize_json(value, key)
         self.assertEqual(obj.payload, b"hello")
         self.assertEqual(obj.headers(), {"alg": "RS256", "kid": "abc"})
+
+    def test_strict_check_header(self):
+        member = {"protected": {"alg": "HS256", "custom": "hi"}}
+        key = OctKey.import_key("secret")
+        self.assertRaises(UnsupportedHeaderError, serialize_json, member, b"hi", key)
+        registry = JWSRegistry(strict_check_header=False)
+        serialize_json(member, b"hi", key, registry=registry)
+
+    def test_unsupported_algorithm(self):
+        key = OctKey.import_key("secret")
+        member = {"protected": {"alg": "HS256"}}
+        value = serialize_json(member, b"hi", key)
+        registry = JWSRegistry(algorithms=["HS512"])
+        self.assertRaises(UnsupportedAlgorithmError, deserialize_json, value, key, registry=registry)

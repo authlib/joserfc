@@ -1,5 +1,10 @@
 from unittest import TestCase
-from joserfc.jws import JWSRegistry, serialize_compact, deserialize_compact
+from joserfc.jws import (
+    JWSRegistry,
+    serialize_compact,
+    deserialize_compact,
+    detach_content,
+)
 from joserfc.jwk import OctKey, RSAKey, KeySet
 from joserfc.errors import (
     BadSignatureError,
@@ -76,9 +81,12 @@ class TestCompact(TestCase):
 
     def test_non_canonical_signature_encoding(self):
         text = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYWRtaW4ifQ.VI29GgHzuh2xfF0bkRYvZIsSuQnbTXSIvuRyt7RDrwo"[:-1] + "p"
-        self.assertRaises(
-            BadSignatureError,
-            deserialize_compact,
-            text,
-            OctKey.import_key("secret")
-        )
+        self.assertRaises(BadSignatureError, deserialize_compact, text, OctKey.import_key("secret"))
+
+    def test_detached_content(self):
+        key = OctKey.import_key("secret")
+        value = detach_content(serialize_compact({"alg": "HS256"}, b"foo", key))
+        expected = "eyJhbGciOiJIUzI1NiJ9..0pehoi-RMZM1jl-4TP_C4Y6BJ-bcmsuzfDyQpkpJkh0"
+        self.assertEqual(value, expected)
+        obj = deserialize_compact(value, key, payload=b"foo")
+        self.assertEqual(obj.payload, b"foo")

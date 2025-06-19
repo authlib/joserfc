@@ -23,7 +23,7 @@ class TestUtil(TestCase):
     def test_urlsafe_b64decode(self):
         self.assertEqual(util.urlsafe_b64decode(b"_foo123-"), b"\xfd\xfa(\xd7m\xfe")
         self.assertRaises(binascii.Error, util.urlsafe_b64decode, b"+foo123/")
-        for c in "RSTUVWXYZabdef": # A -> QQ==
+        for c in "RSTUVWXYZabdef":  # A -> QQ==
             self.assertRaises(binascii.Error, util.urlsafe_b64decode, b"Q" + c.encode())
-        for c in "FGH": # AAAAAAAAAAAAAA -> QUFBQUFBQUFBQUFBQUE=
+        for c in "FGH":  # AAAAAAAAAAAAAA -> QUFBQUFBQUFBQUFBQUE=
             self.assertRaises(binascii.Error, util.urlsafe_b64decode, b"QUFBQUFBQUFBQUFBQU" + c.encode())

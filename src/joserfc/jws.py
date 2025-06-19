@@ -12,7 +12,6 @@ from .rfc7515.registry import (
     construct_registry,
 )
 from .rfc7515.compact import (
-    extract_compact as extract_compact,
     sign_compact,
     verify_compact,
     detach_compact_content,
@@ -23,7 +22,6 @@ from .rfc7515.json import (
     verify_general_json,
     verify_flattened_json,
     extract_general_json,
-    extract_flattened_json,
     detach_json_content,
 )
 from .rfc7515.types import (
@@ -32,6 +30,15 @@ from .rfc7515.types import (
     FlattenedJSONSerialization as FlattenedJSONSerialization,
 )
 from .rfc7518.jws_algs import JWS_ALGORITHMS
+from ._rfc7797.util import is_rfc7797_enabled
+from ._rfc7797.compact import (
+    sign_rfc7515_compact,
+    extract_rfc7515_compact as extract_compact,
+)
+from ._rfc7797.json import (
+    sign_rfc7797_json,
+    extract_rfc7797_json as extract_flattened_json,
+)
 from .rfc8037.jws_eddsa import EdDSA
 from .rfc8812 import ES256K
 from .errors import BadSignatureError, MissingKeyError
@@ -109,22 +116,26 @@ def serialize_compact(
         registry = construct_registry(algorithms)
 
     registry.check_header(protected)
+
+    is_rfc7797 = is_rfc7797_enabled(protected)
     obj = CompactSignature(protected, to_bytes(payload))
     alg: JWSAlgModel = registry.get_alg(protected["alg"])
 
     # "none" algorithm requires no key
-    if alg.name == "none":
-        out = sign_compact(obj, alg, None)
-        return out.decode("utf-8")
+    key: Key | None = None
+    if alg.name != "none":
+        if private_key is None:
+            raise MissingKeyError()
 
-    if private_key is None:
-        raise MissingKeyError()
+        key = guess_key(private_key, obj, True)
+        key.check_use("sig")
+        alg.check_key_type(key)
+        key.check_alg(protected["alg"])
 
-    key: Key = guess_key(private_key, obj, True)
-    key.check_use("sig")
-    alg.check_key_type(key)
-    key.check_alg(protected["alg"])
-    out = sign_compact(obj, alg, key)
+    if is_rfc7797:
+        out = sign_rfc7515_compact(obj, alg, key)
+    else:
+        out = sign_compact(obj, alg, key)
     return out.decode("utf-8")
 
 
@@ -167,6 +178,7 @@ def deserialize_compact(
     public_key: KeyFlexible | None,
     algorithms: list[str] | None = None,
     registry: JWSRegistry | None = None,
+    payload: bytes | str | None = None,
 ) -> CompactSignature:
     """Extract and validate the JWS Compact Serialization (in string, or bytes)
     with the given key. An JWE Compact Serialization looks like:
@@ -185,9 +197,10 @@ def deserialize_compact(
     :param public_key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
+    :param payload: optional payload, required with detached content
     :return: object of the ``CompactSignature``
     """
-    obj = extract_compact(to_bytes(value))
+    obj = extract_compact(to_bytes(value), payload)
     if not validate_compact(obj, public_key, algorithms, registry):
         raise BadSignatureError()
     return obj
@@ -254,9 +267,13 @@ def serialize_json(
 
     _payload = to_bytes(payload)
     if isinstance(members, list):
-        return sign_general_json(members, _payload, registry, find_key)
+        _members = [HeaderMember(**member) for member in members]
+        return sign_general_json(_members, _payload, registry, find_key)
     else:
-        return sign_flattened_json(members, _payload, registry, find_key)
+        member = HeaderMember(**members)
+        if is_rfc7797_enabled(member.headers()):
+            return sign_rfc7797_json(member, _payload, registry, find_key)
+        return sign_flattened_json(member, _payload, registry, find_key)
 
 
 @overload
