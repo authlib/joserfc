@@ -22,6 +22,14 @@ from ..util import (
 from .._keys import Key
 
 
+__all__ = [
+    'represent_general_json',
+    'represent_flattened_json',
+    'extract_general_json',
+    'extract_flattened_json',
+]
+
+
 def represent_general_json(obj: GeneralJSONEncryption) -> GeneralJSONSerialization:
     data = __represent_json_serialization(obj)
     recipients = []

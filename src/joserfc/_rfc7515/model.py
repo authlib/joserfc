@@ -5,6 +5,14 @@ from .types import SegmentsDict, JSONSignatureDict
 from ..errors import InvalidKeyTypeError
 from ..registry import Header
 
+__all__ = [
+    'HeaderMember',
+    'CompactSignature',
+    'FlattenedJSONSignature',
+    'GeneralJSONSignature',
+    'JWSAlgModel',
+]
+
 
 class HeaderMember:
     """A header member of the JSON signature. It is combined with protected header,

@@ -11,6 +11,12 @@ from ..registry import (
     check_supported_header,
 )
 
+__all__ = [
+    'JWSRegistry',
+    'construct_registry',
+    'default_registry',
+]
+
 
 class JWSRegistry:
     """A registry for JSON Web Signature to keep all the supported algorithms.

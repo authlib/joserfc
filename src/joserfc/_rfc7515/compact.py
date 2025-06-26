@@ -11,6 +11,13 @@ from ..util import (
     urlsafe_b64decode,
 )
 
+__all__ = [
+    'sign_compact',
+    'verify_compact',
+    'detach_compact_content',
+    'decode_header',
+]
+
 
 def sign_compact(obj: CompactSignature, alg: JWSAlgModel, key: t.Any) -> bytes:
     header_segment = json_b64encode(obj.headers())

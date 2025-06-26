@@ -11,6 +11,12 @@ from ..registry import (
     check_crit_header,
 )
 
+__all__ = [
+    'JWEAlgorithm',
+    'JWERegistry',
+    'default_registry',
+]
+
 JWEAlgorithm = t.Union[JWEAlgModel, JWEEncModel, JWEZipModel]
 
 AlgorithmsDict = t.TypedDict(

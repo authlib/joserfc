@@ -11,6 +11,11 @@ from ..util import (
     urlsafe_b64decode,
 )
 
+__all__ = [
+    'represent_compact',
+    'extract_compact',
+]
+
 
 def represent_compact(obj: CompactEncryption) -> bytes:
     assert obj.recipient is not None

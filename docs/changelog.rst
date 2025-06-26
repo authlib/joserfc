@@ -24,6 +24,7 @@ Changelog
   - Use ``joserfc.jws.deserialize_compact`` instead of ``joserfc.rfc7797.deserialize_compact``
   - Use ``joserfc.jws.serialize_json`` instead of ``joserfc.rfc7797.serialize_json``
   - Use ``joserfc.jws.deserialize_json`` instead of ``joserfc.rfc7797.deserialize_json``
+- Convert ``joserfc.rfcXXXX`` to private modules ``joserfc._rfcXXXX``.
 
 1.1.0
 -----

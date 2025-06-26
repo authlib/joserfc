@@ -6,6 +6,22 @@ from ..registry import Header, HeaderRegistryDict
 from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
 from .._keys import Key, ECKey, OctKey
 
+__all__ = [
+    'Recipient',
+    'CompactEncryption',
+    'BaseJSONEncryption',
+    'GeneralJSONEncryption',
+    'FlattenedJSONEncryption',
+    'JWEEncModel',
+    'JWEZipModel',
+    'KeyManagement',
+    'JWEDirectEncryption',
+    'JWEKeyEncryption',
+    'JWEKeyWrapping',
+    'JWEKeyAgreement',
+    'JWEAlgModel',
+]
+
 KeyType = t.TypeVar("KeyType")
 
 

@@ -26,6 +26,12 @@ from ..util import (
     urlsafe_b64encode,
 )
 
+__all__ = [
+    'EncryptionData',
+    'perform_encrypt',
+    'perform_decrypt',
+]
+
 EncryptionData = t.Union[CompactEncryption, GeneralJSONEncryption, FlattenedJSONEncryption]
 
 
