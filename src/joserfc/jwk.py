@@ -7,12 +7,12 @@ from ._keys import (
     Key,
     KeySetSerialization,
 )
-from .rfc7517.types import AnyKey, DictKey, KeyParameters
-from .rfc7518.oct_key import OctKey as OctKey
-from .rfc7518.rsa_key import RSAKey as RSAKey
-from .rfc7518.ec_key import ECKey as ECKey
-from .rfc8037.okp_key import OKPKey as OKPKey
-from .rfc8812 import register_secp256k1
+from ._rfc7517.types import AnyKey, DictKey, KeyParameters
+from ._rfc7518.oct_key import OctKey as OctKey
+from ._rfc7518.rsa_key import RSAKey as RSAKey
+from ._rfc7518.ec_key import ECKey as ECKey
+from ._rfc8037.okp_key import OKPKey as OKPKey
+from ._rfc8812 import register_secp256k1
 from .registry import Header
 
 

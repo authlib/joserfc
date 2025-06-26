@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import overload
-from .rfc7516.types import (
+from ._rfc7516.types import (
     GeneralJSONSerialization,
     FlattenedJSONSerialization,
 )
-from .rfc7516.models import (
+from ._rfc7516.models import (
     Recipient as Recipient,
     CompactEncryption as CompactEncryption,
     GeneralJSONEncryption as GeneralJSONEncryption,
@@ -12,21 +12,21 @@ from .rfc7516.models import (
     JWEEncModel,
     JWEZipModel,
 )
-from .rfc7516.registry import (
+from ._rfc7516.registry import (
     JWERegistry as JWERegistry,
     default_registry,
 )
-from .rfc7516.message import perform_encrypt, perform_decrypt
-from .rfc7516.compact import represent_compact, extract_compact
-from .rfc7516.json import (
+from ._rfc7516.message import perform_encrypt, perform_decrypt
+from ._rfc7516.compact import represent_compact, extract_compact
+from ._rfc7516.json import (
     represent_general_json,
     represent_flattened_json,
     extract_general_json,
     extract_flattened_json,
 )
-from .rfc7518.jwe_algs import JWE_ALG_MODELS
-from .rfc7518.jwe_encs import JWE_ENC_MODELS
-from .rfc7518.jwe_zips import JWE_ZIP_MODELS
+from ._rfc7518.jwe_algs import JWE_ALG_MODELS
+from ._rfc7518.jwe_encs import JWE_ENC_MODELS
+from ._rfc7518.jwe_zips import JWE_ZIP_MODELS
 from .jwk import Key, KeySet, ECKey, OKPKey, KeyFlexible, guess_key
 from .util import to_bytes
 from .registry import Header
@@ -44,6 +44,9 @@ __all__ = [
     "encrypt_json",
     "decrypt_json",
     "default_registry",
+    "JWE_ALG_MODELS",
+    "JWE_ENC_MODELS",
+    "JWE_ZIP_MODELS",
 ]
 
 

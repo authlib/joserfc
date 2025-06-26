@@ -83,7 +83,7 @@ filterwarnings = ["error"]
 branch = true
 source = ["joserfc"]
 omit = [
-  "src/joserfc/rfc7797/*",
+  "src/joserfc/rfc*/*",
 ]
 
 [tool.coverage.paths]

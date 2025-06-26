@@ -1,6 +1,6 @@
 from __future__ import annotations
 import zlib
-from ..rfc7516.models import JWEZipModel
+from .._rfc7516.models import JWEZipModel
 from ..errors import ExceededSizeError
 
 GZIP_HEAD = bytes([120, 156])

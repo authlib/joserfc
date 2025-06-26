@@ -1,7 +1,7 @@
-from ..rfc7515.types import FlattenedJSONSerialization, JSONSignatureDict
-from ..rfc7515.model import HeaderMember, FlattenedJSONSignature
-from ..rfc7515.registry import JWSRegistry
-from ..rfc7515.json import sign_json_member, FindKey
+from .._rfc7515.types import FlattenedJSONSerialization, JSONSignatureDict
+from .._rfc7515.model import HeaderMember, FlattenedJSONSignature
+from .._rfc7515.registry import JWSRegistry
+from .._rfc7515.json import sign_json_member, FindKey
 from ..util import to_bytes, json_b64decode, urlsafe_b64decode
 from ..errors import DecodeError
 from .util import is_rfc7797_enabled

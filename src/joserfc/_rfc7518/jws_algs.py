@@ -1,6 +1,6 @@
 """
-joserfc.rfc7518.jws_algs
-~~~~~~~~~~~~~~~~~~~~~~~~
+joserfc._rfc7518
+~~~~~~~~~~~~~~~~
 
 Originally designed in ``authlib.jose.rfc7518``.
 
@@ -20,7 +20,7 @@ from cryptography.hazmat.primitives.asymmetric.utils import (
 from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
-from ..rfc7515.model import JWSAlgModel
+from .._rfc7515.model import JWSAlgModel
 from .oct_key import OctKey
 from .rsa_key import RSAKey
 from .ec_key import ECKey

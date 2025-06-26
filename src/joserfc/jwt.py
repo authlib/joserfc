@@ -2,11 +2,16 @@ from __future__ import annotations
 import json
 from json import JSONEncoder, JSONDecoder
 from typing import Type
-from .rfc7519.claims import convert_claims
-from .rfc7519.claims import Claims as Claims
-from .rfc7519.claims import check_sensitive_data as check_sensitive_data
-from .rfc7519.registry import ClaimsOption as ClaimsOption
-from .rfc7519.registry import JWTClaimsRegistry as JWTClaimsRegistry
+from ._rfc7519.claims import (
+    convert_claims,
+    check_sensitive_data,
+    Claims,
+)
+from ._rfc7519.registry import (
+    ClaimsOption,
+    ClaimsRegistry,
+    JWTClaimsRegistry,
+)
 from .jws import (
     JWSRegistry,
     serialize_compact,
@@ -26,6 +31,7 @@ __all__ = [
     "Claims",
     "Token",
     "ClaimsOption",
+    "ClaimsRegistry",
     "JWTClaimsRegistry",
     "encode",
     "decode",

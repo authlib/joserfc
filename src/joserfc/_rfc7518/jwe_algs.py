@@ -17,7 +17,7 @@ from .derive_key import derive_key_for_concat_kdf
 from .oct_key import OctKey
 from .rsa_key import RSAKey
 from .ec_key import ECKey
-from ..rfc7516.models import (
+from .._rfc7516.models import (
     JWEAlgModel,
     JWEDirectEncryption,
     JWEKeyEncryption,

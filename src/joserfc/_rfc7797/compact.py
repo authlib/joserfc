@@ -8,8 +8,8 @@ from ..util import (
     urlsafe_b64encode,
     urlsafe_b64decode,
 )
-from ..rfc7515.model import JWSAlgModel, CompactSignature
-from ..rfc7515.compact import decode_header
+from .._rfc7515.model import JWSAlgModel, CompactSignature
+from .._rfc7515.compact import decode_header
 from ..errors import DecodeError
 from .util import is_rfc7797_enabled
 

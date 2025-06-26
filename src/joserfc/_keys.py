@@ -1,11 +1,11 @@
 from __future__ import annotations
 import typing as t
 import random
-from .rfc7517.types import AnyKey, KeyParameters, DictKey
-from .rfc7518.oct_key import OctKey
-from .rfc7518.rsa_key import RSAKey
-from .rfc7518.ec_key import ECKey
-from .rfc8037.okp_key import OKPKey
+from ._rfc7517.types import AnyKey, KeyParameters, DictKey
+from ._rfc7518.oct_key import OctKey
+from ._rfc7518.rsa_key import RSAKey
+from ._rfc7518.ec_key import ECKey
+from ._rfc8037.okp_key import OKPKey
 from .errors import (
     MissingKeyError,
     InvalidKeyIdError,

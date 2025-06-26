@@ -1,6 +1,6 @@
 """
-authlib.jose.rfc7518
-~~~~~~~~~~~~~~~~~~~~
+joserfc._rfc7518
+~~~~~~~~~~~~~~~~
 
 Cryptographic Models for Cryptographic Models for Content
 Encryption per `Section 5`_.
@@ -17,7 +17,7 @@ from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.ciphers.modes import GCM, CBC
 from cryptography.hazmat.primitives.padding import PKCS7
 from cryptography.exceptions import InvalidTag
-from ..rfc7516.models import JWEEncModel
+from .._rfc7516.models import JWEEncModel
 from ..errors import DecodeError
 from .util import encode_int
 

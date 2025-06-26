@@ -1,15 +1,15 @@
 from __future__ import annotations
-from ..rfc7516.models import Recipient, JWEKeyAgreement, JWEKeyWrapping, JWEEncModel
-from ..rfc7518.jwe_algs import (
+from .._rfc7516.models import Recipient, JWEKeyAgreement, JWEKeyWrapping, JWEEncModel
+from .._rfc7518.jwe_algs import (
     A128KW,
     A192KW,
     A256KW,
 )
-from ..rfc7518.ec_key import ECKey
-from ..rfc7518.derive_key import (
+from .._rfc7518.ec_key import ECKey
+from .._rfc7518.derive_key import (
     derive_key_for_concat_kdf,
 )
-from ..rfc7518.jwe_encs import CBCHS2EncModel
+from .._rfc7518.jwe_encs import CBCHS2EncModel
 from ..registry import HeaderParameter
 from ..errors import InvalidEncryptionAlgorithmError
 

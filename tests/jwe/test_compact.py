@@ -1,7 +1,12 @@
 from unittest import TestCase
-from joserfc.jwe import JWERegistry, encrypt_compact, decrypt_compact, CompactEncryption
+from joserfc.jwe import (
+    JWERegistry,
+    encrypt_compact,
+    decrypt_compact,
+    CompactEncryption,
+    JWE_ENC_MODELS,
+)
 from joserfc.jwk import RSAKey, ECKey, OctKey, OKPKey, KeySet
-from joserfc.rfc7518.jwe_encs import JWE_ENC_MODELS
 from joserfc.errors import (
     InvalidKeyLengthError,
     MissingAlgorithmError,

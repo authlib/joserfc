@@ -1,33 +1,8 @@
-import typing as t
+from .._rfc7516.types import *
+import warnings
 
-__all__ = [
-    "JSONRecipientDict",
-    "FlattenedJSONSerialization",
-    "GeneralJSONSerialization",
-]
-
-
-class JSONRecipientDict(t.TypedDict, total=False):
-    header: t.Dict[str, t.Any]
-    encrypted_key: str
-
-
-class GeneralJSONSerialization(t.TypedDict, total=False):
-    protected: str
-    unprotected: t.Dict[str, t.Any]
-    iv: str
-    aad: str
-    ciphertext: str
-    tag: str
-    recipients: t.List[JSONRecipientDict]
-
-
-class FlattenedJSONSerialization(t.TypedDict, total=False):
-    protected: str
-    unprotected: t.Dict[str, t.Any]
-    iv: str
-    aad: str
-    ciphertext: str
-    tag: str
-    header: t.Dict[str, t.Any]
-    encrypted_key: str
+warnings.warn(
+    "Please import from joserfc.jwe module, as this module will be removed in version 1.4.0.",
+    DeprecationWarning,
+    stacklevel=2,
+)

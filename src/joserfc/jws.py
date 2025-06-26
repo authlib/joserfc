@@ -1,22 +1,22 @@
 from __future__ import annotations
 from typing import overload, TypeVar, Any, Dict
-from .rfc7515.model import (
+from ._rfc7515.model import (
     JWSAlgModel,
     HeaderMember as HeaderMember,
     CompactSignature as CompactSignature,
     GeneralJSONSignature as GeneralJSONSignature,
     FlattenedJSONSignature as FlattenedJSONSignature,
 )
-from .rfc7515.registry import (
+from ._rfc7515.registry import (
     JWSRegistry as JWSRegistry,
     construct_registry,
 )
-from .rfc7515.compact import (
+from ._rfc7515.compact import (
     sign_compact,
     verify_compact,
     detach_compact_content,
 )
-from .rfc7515.json import (
+from ._rfc7515.json import (
     sign_general_json,
     sign_flattened_json,
     verify_general_json,
@@ -24,12 +24,12 @@ from .rfc7515.json import (
     extract_general_json,
     detach_json_content,
 )
-from .rfc7515.types import (
+from ._rfc7515.types import (
     HeaderDict as HeaderDict,
     GeneralJSONSerialization as GeneralJSONSerialization,
     FlattenedJSONSerialization as FlattenedJSONSerialization,
 )
-from .rfc7518.jws_algs import JWS_ALGORITHMS
+from ._rfc7518.jws_algs import JWS_ALGORITHMS
 from ._rfc7797.util import is_rfc7797_enabled
 from ._rfc7797.compact import (
     sign_rfc7515_compact,
@@ -39,8 +39,8 @@ from ._rfc7797.json import (
     sign_rfc7797_json,
     extract_rfc7797_json as extract_flattened_json,
 )
-from .rfc8037.jws_eddsa import EdDSA
-from .rfc8812 import ES256K
+from ._rfc8037.jws_eddsa import EdDSA
+from ._rfc8812 import ES256K
 from .errors import BadSignatureError, MissingKeyError
 from .jwk import Key, KeyFlexible, KeySet, guess_key
 from .util import to_bytes
