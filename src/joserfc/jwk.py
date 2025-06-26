@@ -7,7 +7,7 @@ from ._keys import (
     Key,
     KeySetSerialization,
 )
-from .rfc7517.types import AnyKey, KeyParameters
+from .rfc7517.types import AnyKey, DictKey, KeyParameters
 from .rfc7518.oct_key import OctKey as OctKey
 from .rfc7518.rsa_key import RSAKey as RSAKey
 from .rfc7518.ec_key import ECKey as ECKey
@@ -19,6 +19,7 @@ from .registry import Header
 __all__ = [
     "JWKRegistry",
     "Key",
+    "DictKey",
     "KeyCallable",
     "KeyFlexible",
     "KeySetSerialization",
