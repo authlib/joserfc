@@ -1,4 +1,4 @@
-from .._rfc7517.models import *
+from .._rfc7517.models import *  # noqa: F403
 import warnings
 
 warnings.warn(

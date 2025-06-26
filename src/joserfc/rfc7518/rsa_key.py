@@ -1,4 +1,4 @@
-from .._rfc7518.rsa_key import *
+from .._rfc7518.rsa_key import *  # noqa: F403
 import warnings
 
 warnings.warn(

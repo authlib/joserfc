@@ -1,4 +1,4 @@
-from .._rfc7519.claims import *
+from .._rfc7519.claims import *  # noqa: F403
 import warnings
 
 warnings.warn(

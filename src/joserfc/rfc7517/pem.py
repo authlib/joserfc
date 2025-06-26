@@ -1,4 +1,4 @@
-from .._rfc7517.pem import *
+from .._rfc7517.pem import *  # noqa: F403
 import warnings
 
 warnings.warn(

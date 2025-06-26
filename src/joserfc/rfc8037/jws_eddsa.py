@@ -1,4 +1,4 @@
-from .._rfc8037.jws_eddsa import *
+from .._rfc8037.jws_eddsa import *  # noqa: F403
 import warnings
 
 warnings.warn(

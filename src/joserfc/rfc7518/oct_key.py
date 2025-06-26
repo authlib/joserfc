@@ -1,4 +1,4 @@
-from .._rfc7518.oct_key import *
+from .._rfc7518.oct_key import *  # noqa: F403
 import warnings
 
 warnings.warn(

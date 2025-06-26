@@ -1,4 +1,4 @@
-from .._rfc8037.okp_key import *
+from .._rfc8037.okp_key import *  # noqa: F403
 import warnings
 
 warnings.warn(

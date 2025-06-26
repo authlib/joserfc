@@ -1,4 +1,4 @@
-from .._rfc7515.json import *
+from .._rfc7515.json import *  # noqa: F403
 import warnings
 
 warnings.warn(
