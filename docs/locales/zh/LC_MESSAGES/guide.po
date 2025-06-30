@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-24 13:25+0900\n"
+"POT-Creation-Date: 2025-06-30 14:51+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -78,16 +78,16 @@ msgid ""
 "RFC8812. You MUST specify the correct key type for each algorithm."
 msgstr "``joserfc.jws`` 模块支持 RFC7518、RFC8037 和 RFC8812 中的算法。您必须为每个算法指定正确的密钥类型。"
 
-#: ../../guide/algorithms.rst:37 ../../guide/algorithms.rst:85
+#: ../../guide/algorithms.rst:37 ../../guide/algorithms.rst:88
 #: ../../guide/jws.rst:245
 msgid "Algorithm name"
 msgstr "算法名"
 
-#: ../../guide/algorithms.rst:37 ../../guide/algorithms.rst:85
+#: ../../guide/algorithms.rst:37 ../../guide/algorithms.rst:88
 msgid "Key Type"
 msgstr "密钥类型"
 
-#: ../../guide/algorithms.rst:37 ../../guide/algorithms.rst:85
+#: ../../guide/algorithms.rst:37 ../../guide/algorithms.rst:88
 #: ../../guide/jws.rst:245
 msgid "Recommended"
 msgstr "是推荐"
@@ -98,10 +98,10 @@ msgstr ""
 
 #: ../../guide/algorithms.rst:39 ../../guide/algorithms.rst:40
 #: ../../guide/algorithms.rst:41 ../../guide/algorithms.rst:42
-#: ../../guide/algorithms.rst:87 ../../guide/algorithms.rst:88
-#: ../../guide/algorithms.rst:89 ../../guide/algorithms.rst:90
-#: ../../guide/algorithms.rst:98 ../../guide/algorithms.rst:99
-#: ../../guide/algorithms.rst:100 ../../guide/jwk.rst:19
+#: ../../guide/algorithms.rst:90 ../../guide/algorithms.rst:91
+#: ../../guide/algorithms.rst:92 ../../guide/algorithms.rst:93
+#: ../../guide/algorithms.rst:101 ../../guide/algorithms.rst:102
+#: ../../guide/algorithms.rst:103 ../../guide/jwk.rst:19
 msgid "OctKey"
 msgstr ""
 
@@ -111,11 +111,11 @@ msgstr ""
 #: ../../guide/algorithms.rst:48 ../../guide/algorithms.rst:49
 #: ../../guide/algorithms.rst:50 ../../guide/algorithms.rst:51
 #: ../../guide/algorithms.rst:52 ../../guide/algorithms.rst:53
-#: ../../guide/algorithms.rst:89 ../../guide/algorithms.rst:91
-#: ../../guide/algorithms.rst:93 ../../guide/algorithms.rst:96
-#: ../../guide/algorithms.rst:98 ../../guide/algorithms.rst:99
-#: ../../guide/algorithms.rst:100 ../../guide/algorithms.rst:101
-#: ../../guide/algorithms.rst:102 ../../guide/algorithms.rst:103
+#: ../../guide/algorithms.rst:92 ../../guide/algorithms.rst:94
+#: ../../guide/algorithms.rst:96 ../../guide/algorithms.rst:99
+#: ../../guide/algorithms.rst:101 ../../guide/algorithms.rst:102
+#: ../../guide/algorithms.rst:103 ../../guide/algorithms.rst:104
+#: ../../guide/algorithms.rst:105 ../../guide/algorithms.rst:106
 #: ../../guide/jws.rst:247 ../../guide/jws.rst:249 ../../guide/jws.rst:250
 #: ../../guide/jws.rst:252 ../../guide/jws.rst:253 ../../guide/jws.rst:255
 #: ../../guide/jws.rst:256 ../../guide/jws.rst:257 ../../guide/jws.rst:258
@@ -128,10 +128,10 @@ msgid "HS256"
 msgstr ""
 
 #: ../../guide/algorithms.rst:40 ../../guide/algorithms.rst:43
-#: ../../guide/algorithms.rst:46 ../../guide/algorithms.rst:87
-#: ../../guide/algorithms.rst:88 ../../guide/algorithms.rst:90
-#: ../../guide/algorithms.rst:92 ../../guide/algorithms.rst:94
+#: ../../guide/algorithms.rst:46 ../../guide/algorithms.rst:90
+#: ../../guide/algorithms.rst:91 ../../guide/algorithms.rst:93
 #: ../../guide/algorithms.rst:95 ../../guide/algorithms.rst:97
+#: ../../guide/algorithms.rst:98 ../../guide/algorithms.rst:100
 msgid ":bdg-success:`Yes`"
 msgstr ":bdg-success:`是`"
 
@@ -150,9 +150,9 @@ msgstr ""
 #: ../../guide/algorithms.rst:43 ../../guide/algorithms.rst:44
 #: ../../guide/algorithms.rst:45 ../../guide/algorithms.rst:49
 #: ../../guide/algorithms.rst:50 ../../guide/algorithms.rst:51
-#: ../../guide/algorithms.rst:91 ../../guide/algorithms.rst:92
-#: ../../guide/algorithms.rst:93 ../../guide/algorithms.rst:101
-#: ../../guide/algorithms.rst:102 ../../guide/algorithms.rst:103
+#: ../../guide/algorithms.rst:94 ../../guide/algorithms.rst:95
+#: ../../guide/algorithms.rst:96 ../../guide/algorithms.rst:104
+#: ../../guide/algorithms.rst:105 ../../guide/algorithms.rst:106
 #: ../../guide/jwk.rst:64
 msgid "RSAKey"
 msgstr ""
@@ -171,8 +171,8 @@ msgstr ""
 
 #: ../../guide/algorithms.rst:46 ../../guide/algorithms.rst:47
 #: ../../guide/algorithms.rst:48 ../../guide/algorithms.rst:53
-#: ../../guide/algorithms.rst:94 ../../guide/algorithms.rst:95
-#: ../../guide/algorithms.rst:96 ../../guide/algorithms.rst:97
+#: ../../guide/algorithms.rst:97 ../../guide/algorithms.rst:98
+#: ../../guide/algorithms.rst:99 ../../guide/algorithms.rst:100
 #: ../../guide/jwk.rst:125
 msgid "ECKey"
 msgstr ""
@@ -201,7 +201,7 @@ msgstr ""
 msgid "EdDSA"
 msgstr ""
 
-#: ../../guide/algorithms.rst:52 ../../guide/algorithms.rst:124
+#: ../../guide/algorithms.rst:52 ../../guide/algorithms.rst:130
 #: ../../guide/jwk.rst:180
 msgid "OKPKey"
 msgstr ""
@@ -224,143 +224,155 @@ msgid ""
 "parameter, or ``registry`` parameter."
 msgstr ""
 
-#: ../../guide/algorithms.rst:79 ../../guide/index.rst:87 ../../guide/jwe.rst:6
+#: ../../guide/algorithms.rst:77
+msgid ""
+"``none`` algorithm is deprecated via https://datatracker.ietf.org/doc"
+"/draft-ietf-jose-deprecate-none-rsa15/"
+msgstr ""
+
+#: ../../guide/algorithms.rst:82 ../../guide/index.rst:87 ../../guide/jwe.rst:6
 msgid "JSON Web Encryption"
 msgstr ""
 
-#: ../../guide/algorithms.rst:81
+#: ../../guide/algorithms.rst:84
 msgid ""
 "``joserfc.jwe`` module supports algorithms from RFC7518, and drafts of "
 "``ECDH-1PU``. You MUST specify the correct key type for each algorithm."
 msgstr "``joserfc.jwe`` 模块支持 RFC7518 中的算法，以及 ``ECDH-1PU`` 的草案。您必须为每个算法指定正确的密钥类型。"
 
-#: ../../guide/algorithms.rst:87
+#: ../../guide/algorithms.rst:90
 msgid "dir"
 msgstr ""
 
-#: ../../guide/algorithms.rst:88
+#: ../../guide/algorithms.rst:91
 msgid "A128KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:89
+#: ../../guide/algorithms.rst:92
 msgid "A192KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:90
+#: ../../guide/algorithms.rst:93
 msgid "A256KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:91
+#: ../../guide/algorithms.rst:94
 msgid "RSA1_5"
 msgstr ""
 
-#: ../../guide/algorithms.rst:92
+#: ../../guide/algorithms.rst:95
 msgid "RSA-OAEP"
 msgstr ""
 
-#: ../../guide/algorithms.rst:93
+#: ../../guide/algorithms.rst:96
 msgid "RSA-OAEP-256"
 msgstr ""
 
-#: ../../guide/algorithms.rst:94 ../../guide/algorithms.rst:129
+#: ../../guide/algorithms.rst:97 ../../guide/algorithms.rst:135
 msgid "ECDH-ES"
 msgstr ""
 
-#: ../../guide/algorithms.rst:95 ../../guide/algorithms.rst:130
+#: ../../guide/algorithms.rst:98 ../../guide/algorithms.rst:136
 msgid "ECDH-ES+A128KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:96 ../../guide/algorithms.rst:131
+#: ../../guide/algorithms.rst:99 ../../guide/algorithms.rst:137
 msgid "ECDH-ES+A192KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:97 ../../guide/algorithms.rst:132
+#: ../../guide/algorithms.rst:100 ../../guide/algorithms.rst:138
 msgid "ECDH-ES+A256KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:98
+#: ../../guide/algorithms.rst:101
 msgid "A128GCMKW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:99
+#: ../../guide/algorithms.rst:102
 msgid "A192GCMKW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:100
+#: ../../guide/algorithms.rst:103
 msgid "A256GCMKW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:101
+#: ../../guide/algorithms.rst:104
 msgid "PBES2-HS256+A128KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:102
+#: ../../guide/algorithms.rst:105
 msgid "PBES2-HS384+A192KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:103
+#: ../../guide/algorithms.rst:106
 msgid "PBES2-HS512+A256KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:106
+#: ../../guide/algorithms.rst:109
 msgid ""
 "All algorithms defined in RFC7518 for \"enc\" value are recommended, "
 "which including:"
 msgstr "RFC7518 中定义的所有用于 \"enc\" 值的算法都是推荐使用的，包括："
 
-#: ../../guide/algorithms.rst:109
+#: ../../guide/algorithms.rst:112
 msgid "``A128CBC-HS256``"
 msgstr ""
 
-#: ../../guide/algorithms.rst:110
+#: ../../guide/algorithms.rst:113
 msgid "``A192CBC-HS384``"
 msgstr ""
 
-#: ../../guide/algorithms.rst:111
+#: ../../guide/algorithms.rst:114
 msgid "``A256CBC-HS512``"
 msgstr ""
 
-#: ../../guide/algorithms.rst:112
+#: ../../guide/algorithms.rst:115
 msgid "``A128GCM``"
 msgstr ""
 
-#: ../../guide/algorithms.rst:113
+#: ../../guide/algorithms.rst:116
 msgid "``A192GCM``"
 msgstr ""
 
-#: ../../guide/algorithms.rst:114
+#: ../../guide/algorithms.rst:117
 msgid "``A256GCM``"
 msgstr ""
 
-#: ../../guide/algorithms.rst:116
+#: ../../guide/algorithms.rst:120
+msgid ""
+"``RSA1_5`` algorithm is deprecated via https://datatracker.ietf.org/doc"
+"/draft-ietf-jose-deprecate-none-rsa15/"
+msgstr ""
+
+#: ../../guide/algorithms.rst:122
 msgid ""
 "A ``DEF`` algorithm for the \"zip\" (compression) header parameter is "
 "also defined in RFC7518, which is recommended."
 msgstr "RFC7518 还定义了用于 \"zip\"（压缩）头参数的 ``DEF`` 算法，该算法推荐使用。"
 
-#: ../../guide/algorithms.rst:119
+#: ../../guide/algorithms.rst:125
 msgid ""
 "There are also additional algorithms for \"alg\" and \"enc\" in draft "
 "versions. Please refer to the following sections for more information."
 msgstr "草案版本中还有针对 \"alg\" 和 \"enc\" 的额外算法。请参考以下章节获取更多信息。"
 
-#: ../../guide/algorithms.rst:126
+#: ../../guide/algorithms.rst:132
 msgid ""
 "You can use ``OKPKey`` with the \"crv\" (curve) parameter set to "
 "``X25519`` or ``X448`` for the following algorithms:"
 msgstr "对于以下算法，您可以使用 ``OKPKey`` 并将 \"crv\"（曲线）参数设置为 ``X25519`` 或 ``X448``："
 
-#: ../../guide/algorithms.rst:134
+#: ../../guide/algorithms.rst:140
 msgid ""
 "This allows you to utilize these elliptic curve algorithms with "
 "``OKPKey`` for your cryptographic operations."
 msgstr ""
 
-#: ../../guide/algorithms.rst:140
+#: ../../guide/algorithms.rst:146
 msgid "C20P and XC20P"
 msgstr "C20P 与 XC20P"
 
-#: ../../guide/algorithms.rst:142
+#: ../../guide/algorithms.rst:148
 msgid ""
 "``C20P`` and ``XC20P`` algorithms are still in drafts, they are not "
 "registered by default. To use ``C20P`` and ``XC20P``, developers have to "
@@ -369,7 +381,7 @@ msgstr ""
 "``C20P`` 和 ``XC20P`` 算法仍处于草案阶段，默认状态下他们未注册到 ``JWERegistry``。要使用 ``C20P`` 和"
 " ``XC20P``，开发人员必须安装 ``PyCryptodome`` 模块。"
 
-#: ../../guide/algorithms.rst:149
+#: ../../guide/algorithms.rst:155
 msgid ""
 "This is caused by ``cryptography`` package does only support \"ChaCha20\""
 " cipher, not **XChaCha20**, while ``pycryptodome`` supports both "
@@ -378,21 +390,21 @@ msgstr ""
 "这是由于 ``cryptography`` 库只支持 \"ChaCha20\" 密码算法，不支持 **XChaCha20**，而 "
 "``pycryptodome`` 同时支持 \"ChaCha20\" 和 \"XChaCha20\" 密码算法。"
 
-#: ../../guide/algorithms.rst:153
+#: ../../guide/algorithms.rst:159
 msgid "Register ciphers"
 msgstr "注册密码算法"
 
-#: ../../guide/algorithms.rst:155
+#: ../../guide/algorithms.rst:161
 msgid ""
 "The default :ref:`registry` doesn't contain draft ciphers, developers "
 "MUST register ``C20P`` and ``XC20P`` at first:"
 msgstr "默认的 :ref:`registry` 不包含草案算法，开发人员必须先注册 ``C20P`` 和 ``XC20P``："
 
-#: ../../guide/algorithms.rst:165
+#: ../../guide/algorithms.rst:171
 msgid "Use custom ``registry``"
 msgstr "自定义注册表 ``registry``"
 
-#: ../../guide/algorithms.rst:170
+#: ../../guide/algorithms.rst:176
 msgid ""
 "Use a custom ``registry`` in :meth:`encrypt_compact`, "
 ":meth:`decrypt_compact`, :meth:`encrypt_json`, and :meth:`decrypt_json`."
@@ -400,11 +412,11 @@ msgstr ""
 "在 :meth:`encrypt_compact`、:meth:`decrypt_compact`、:meth:`encrypt_json` 和 "
 ":meth:`decrypt_json` 中使用自定义 ``registry``。"
 
-#: ../../guide/algorithms.rst:195
+#: ../../guide/algorithms.rst:201
 msgid "ECDH-1PU algorithms"
 msgstr "ECDH-1PU 相关算法"
 
-#: ../../guide/algorithms.rst:197
+#: ../../guide/algorithms.rst:203
 msgid ""
 "Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model "
 "(ECDH-1PU) are still in drafts, they are not registered by default. To "
@@ -414,13 +426,13 @@ msgstr ""
 "椭圆曲线迪菲-赫尔曼一次通用模型（ECDH-1PU）密钥协商仍然处于草案阶段，默认情况下未注册。要使用与 ``ECDH-1PU`` "
 "相关的算法，开发人员必须手动注册它们："
 
-#: ../../guide/algorithms.rst:207
+#: ../../guide/algorithms.rst:213
 msgid ""
 "Then use a custom ``registry`` with the required ``ECDH-1PU`` algorithms."
 " For instance:"
 msgstr "然后使用带有所需的 ``ECDH-1PU`` 算法的自定义 ``registry``。例如："
 
-#: ../../guide/algorithms.rst:230
+#: ../../guide/algorithms.rst:236
 msgid ""
 "The ``ECDH-1PU`` algorithms require a **sender key**, which MUST be a "
 "private key when calling :meth:`encrypt_compact` and :meth:`encrypt_json`"
@@ -429,7 +441,7 @@ msgstr ""
 "``ECDH-1PU`` 算法需要一个 **发送方密钥**，在调用 :meth:`encrypt_compact` 和 "
 ":meth:`encrypt_json` 方法时，该密钥必须是私钥。"
 
-#: ../../guide/algorithms.rst:233
+#: ../../guide/algorithms.rst:239
 msgid ""
 "The ``sender_key`` can be a :class:`~joserfc.jwk.KeySet`, and JWE will "
 "find the correct key according to ``skid`` header value."
@@ -1605,8 +1617,8 @@ msgstr ""
 #: ../../guide/jwt.rst:292
 msgid ""
 "The :meth:`encode` and :meth:`decode` accept an ``algorithms`` parameter "
-"for specifying the allowed algorithms. By default, it only allows your to"
-" use **recommended** algorithms."
+"for specifying the allowed algorithms. By default, it only allows you to "
+"use the **recommended** algorithms."
 msgstr ""
 
 #: ../../guide/jwt.rst:296
@@ -1638,7 +1650,7 @@ msgstr ""
 
 #: ../../guide/jwt.rst:323
 msgid ""
-"When using ``jwt.encode``` to encode claims that contain data types that "
+"When using ``jwt.encode`` to encode claims that contain data types that "
 "``json`` module does not natively support, such as ``UUID`` and "
 "``datetime``, an error will be raised."
 msgstr ""
@@ -1791,4 +1803,3 @@ msgid ""
 "Depending on the algorithm of the JWT, you need to decide whether to use "
 "``JWSRegistry`` or ``JWERegistry``."
 msgstr ""
-

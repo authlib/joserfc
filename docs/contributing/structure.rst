@@ -12,18 +12,19 @@ The overall structure is organized as follows:
 .. code-block:: none
 
     joserfc/
-      rfc7515/          # Code related to RFC7515 (JWS)
-      rfc7516/          # Code related to RFC7516 (JWE)
-      rfc7517/          # Code related to RFC7517 (JWK)
-      rfc7518/          # Code related to RFC7518 (JWA)
-      rfc7519/          # Code related to RFC7519 (JWT)
-      rfc7638/          # Code related to RFC7638 (JWK Thumbprint)
-      rfc8037/          # Code related to RFC8037 (OKP Keys)
-      rfc8812/          # Code related to RFC8812 (secp256k1 Curve)
-      jws.py            # High-level API for JWS operations
-      jwe.py            # High-level API for JWE operations
-      jwk.py            # High-level API for JWK operations
-      jwt.py            # High-level API for JWT operations
+      _rfc7515/          # Code related to RFC7515 (JWS)
+      _rfc7516/          # Code related to RFC7516 (JWE)
+      _rfc7517/          # Code related to RFC7517 (JWK)
+      _rfc7518/          # Code related to RFC7518 (JWA)
+      _rfc7519/          # Code related to RFC7519 (JWT)
+      _rfc7638/          # Code related to RFC7638 (JWK Thumbprint)
+      _rfc7797/          # Code related to RFC7797 (Unencoded Payload Option)
+      _rfc8037/          # Code related to RFC8037 (OKP Keys)
+      _rfc8812/          # Code related to RFC8812 (secp256k1 Curve)
+      jws.py             # High-level API for JWS operations
+      jwe.py             # High-level API for JWE operations
+      jwk.py             # High-level API for JWK operations
+      jwt.py             # High-level API for JWT operations
 
 This structure allows developers to easily navigate and comprehend each RFC specification
 individually. The code is organized from low-level to high-level, making it intuitive and

@@ -73,6 +73,9 @@ algorithms either by the ``algorithms`` parameter, or ``registry`` parameter.
     registry = jws.JWSRegistry(algorithms=["HS384"])
     jws.serialize_compact({"alg": "HS384"}, b"payload", key, registry=registry)
 
+.. warning::
+    ``none`` algorithm is deprecated via https://datatracker.ietf.org/doc/draft-ietf-jose-deprecate-none-rsa15/
+
 .. _jwe_algorithms:
 
 JSON Web Encryption
@@ -112,6 +115,9 @@ including:
 - ``A128GCM``
 - ``A192GCM``
 - ``A256GCM``
+
+.. warning::
+    ``RSA1_5`` algorithm is deprecated via https://datatracker.ietf.org/doc/draft-ietf-jose-deprecate-none-rsa15/
 
 A ``DEF`` algorithm for the "zip" (compression) header parameter is also defined in
 RFC7518, which is recommended.
