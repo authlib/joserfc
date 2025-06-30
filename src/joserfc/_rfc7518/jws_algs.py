@@ -30,6 +30,7 @@ from .util import encode_int, decode_int
 class NoneAlgModel(JWSAlgModel):
     name = "none"
     description = "No digital signature or MAC performed"
+    security_warning = 'JWS algorithm "none" is deprecated, via draft-ietf-jose-deprecate-none-rsa15-02'
 
     def sign(self, msg: bytes, key: t.Any) -> bytes:
         return b""

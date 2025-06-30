@@ -1,7 +1,8 @@
 from __future__ import annotations
+import warnings
 from typing import Dict
 from .model import JWSAlgModel
-from ..errors import UnsupportedAlgorithmError
+from ..errors import UnsupportedAlgorithmError, SecurityWarning
 from ..registry import (
     JWS_HEADER_REGISTRY,
     Header,
@@ -66,7 +67,11 @@ class JWSRegistry:
         else:
             if name not in self.recommended:
                 raise UnsupportedAlgorithmError(f"Algorithm of '{name}' is not recommended")
-        return self.algorithms[name]
+
+        alg = self.algorithms[name]
+        if alg.security_warning:
+            warnings.warn(alg.security_warning, SecurityWarning)
+        return alg
 
     def check_header(self, header: Header) -> None:
         """Check and validate the fields in header part of a JWS object."""

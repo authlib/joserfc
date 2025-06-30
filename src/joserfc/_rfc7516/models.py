@@ -229,8 +229,10 @@ class KeyManagement:
     name: str
     description: str
     recommended: bool = False
-    key_size: t.Optional[int] = None
+    key_size: int | None = None
     key_types: t.List[str]
+    security_warning: str | None = None
+
     algorithm_type: t.Literal["JWE"] = "JWE"
     algorithm_location: t.Literal["alg"] = "alg"
     more_header_registry: HeaderRegistryDict = {}
