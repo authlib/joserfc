@@ -1,4 +1,5 @@
 from __future__ import annotations
+import warnings
 from typing import TypedDict
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.rsa import (
@@ -14,6 +15,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
 )
 from cryptography.hazmat.backends import default_backend
 from ..registry import KeyParameter
+from ..errors import SecurityWarning
 from .._rfc7517.models import AsymmetricKey
 from .._rfc7517.pem import CryptographyBinding
 from .._rfc7517.types import KeyParameters
@@ -148,11 +150,12 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         if key_size is None:
             key_size = 2048
 
-        if key_size < 512:
-            raise ValueError("key_size must not be less than 512")
-
         if key_size % 8 != 0:
             raise ValueError("Invalid key_size for RSAKey")
+
+        if key_size < 2048:
+            # https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+            warnings.warn("Key size should be >= 2048 bits", SecurityWarning)
 
         raw_key = generate_private_key(
             public_exponent=65537,

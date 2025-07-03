@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Any
 import secrets
 import warnings
+from ..errors import SecurityWarning
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
@@ -36,7 +37,7 @@ class OctBinding(NativeKeyBinding):
     def import_from_bytes(cls, value: bytes, password: Any | None = None) -> bytes:
         # security check
         if value.startswith(POSSIBLE_UNSAFE_KEYS):
-            warnings.warn("This key may not be safe to import")
+            warnings.warn("This key may not be safe to import", SecurityWarning)
         return value
 
 
@@ -72,6 +73,10 @@ class OctKey(SymmetricKey):
 
         if key_size % 8 != 0:
             raise ValueError("Invalid bit size for oct key")
+
+        if key_size < 112:
+            # https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+            warnings.warn("Key size should be >= 112 bits", SecurityWarning)
 
         raw_key = secrets.token_bytes(key_size // 8)
         key: OctKey = cls(raw_key, raw_key, parameters)
