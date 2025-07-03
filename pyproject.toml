@@ -77,7 +77,10 @@ line-length = 120
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]
 testpaths = ["tests"]
-filterwarnings = ["error"]
+filterwarnings = [
+  "error::DeprecationWarning",
+  "ignore::UserWarning",
+]
 
 [tool.coverage.run]
 branch = true

@@ -1,6 +1,11 @@
 from __future__ import annotations
 
 
+class SecurityWarning(UserWarning):
+    """Base class for warnings of security issues."""
+    pass
+
+
 class JoseError(Exception):
     """Base Exception for all errors in joserfc."""
 

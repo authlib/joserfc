@@ -8,9 +8,11 @@ getting closer to a stable state.
 Interfaces
 ----------
 
-Starting from **version 0.5.0**, the method names and their parameters are expected
-to remain stable. This means that once you have updated your code to use the
-methods provided by joserfc, you can rely on them without the need for frequent changes.
+``joserfc`` have released **1.0.0**, the method names and their parameters
+in modules ``joserfc.jws``, ``joserfc.jwe``, ``joserfc.jwk`` and ``joserfc.jwt``
+are expected to remain stable. This means that once you have updated your code
+to use the methods provided by joserfc, you can rely on them without the need
+for frequent changes.
 
 Python Versions
 ---------------

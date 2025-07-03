@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-28 11:54+0900\n"
+"POT-Creation-Date: 2025-06-30 14:51+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -83,6 +83,10 @@ msgstr ""
 msgid "CVE-2024-37568: fixed in 0.11.0"
 msgstr ""
 
-#~ msgid "Waiting..."
-#~ msgstr ""
+#: ../../security.rst:34
+msgid "CWE fixes"
+msgstr ""
 
+#: ../../security.rst:36
+msgid "CWE-290: fixed in 1.1.0"
+msgstr ""

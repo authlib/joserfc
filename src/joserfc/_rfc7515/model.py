@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal
 from abc import ABCMeta, abstractmethod
 from .types import SegmentsDict, JSONSignatureDict
 from ..errors import InvalidKeyTypeError
@@ -107,8 +107,10 @@ class JWSAlgModel(object, metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = False
+    security_warning: str | None = None
+
     key_type = "oct"
-    algorithm_type = "JWS"
+    algorithm_type: Literal["JWS"] = "JWS"
     algorithm_location = "sig"
 
     def check_key_type(self, key: Any) -> None:

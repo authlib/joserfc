@@ -1,7 +1,8 @@
 from __future__ import annotations
+import warnings
 import typing as t
 from .models import JWEAlgModel, JWEEncModel, JWEZipModel
-from ..errors import UnsupportedAlgorithmError
+from ..errors import UnsupportedAlgorithmError, SecurityWarning
 from ..registry import (
     Header,
     HeaderRegistryDict,
@@ -91,7 +92,10 @@ class JWERegistry:
         """
         registry = self.algorithms["alg"]
         self._check_algorithm(name, registry)
-        return registry[name]
+        alg: JWEAlgModel = registry[name]
+        if alg.security_warning:
+            warnings.warn(alg.security_warning, SecurityWarning)
+        return alg
 
     def get_enc(self, name: str) -> JWEEncModel:
         """Get the allowed ("enc") algorithm instance of the given name.

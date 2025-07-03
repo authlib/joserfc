@@ -60,6 +60,8 @@ class RSAAlgModel(JWEKeyEncryption):
         self.description = description
         self.padding = pad_fn
         self.recommended = recommended
+        if name == "RSA1_5":
+            self.security_warning = 'JWE algorithm "RSA1_5" is deprecated, via draft-ietf-jose-deprecate-none-rsa15-02'
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient[RSAKey]) -> bytes:
         key = recipient.recipient_key

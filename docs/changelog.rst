@@ -17,6 +17,8 @@ Changelog
 
 **Unreleased**
 
+- Show security warnings for ``none`` and ``RSA1_5`` algorithms.
+
 **Breaking changes**:
 
 - Enable "RFC7797" by default, use the ``joserfc.jws`` module directly.

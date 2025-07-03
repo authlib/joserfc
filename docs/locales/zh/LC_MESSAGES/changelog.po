@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-24 13:25+0900\n"
+"POT-Creation-Date: 2025-06-30 14:51+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -28,401 +28,425 @@ msgid "Here is the history of joserfc_ package releases."
 msgstr "这里记录了 joserfc_ 的发布历史。"
 
 #: ../../changelog.rst:16
-msgid "1.1.0"
+msgid "1.2.0"
 msgstr ""
 
 #: ../../changelog.rst:18
-msgid "**Released on May 24, 2025**"
+msgid "**Unreleased**"
 msgstr ""
 
 #: ../../changelog.rst:20
+msgid "Show security warnings for ``none`` and ``RSA1_5`` algorithms."
+msgstr ""
+
+#: ../../changelog.rst:22 ../../changelog.rst:41 ../../changelog.rst:154
+msgid "**Breaking changes**:"
+msgstr ""
+
+#: ../../changelog.rst:24
+msgid ""
+"Enable \"RFC7797\" by default, use the ``joserfc.jws`` module directly. -"
+" Use ``joserfc.jws.serialize_compact`` instead of "
+"``joserfc.rfc7797.serialize_compact`` - Use "
+"``joserfc.jws.deserialize_compact`` instead of "
+"``joserfc.rfc7797.deserialize_compact`` - Use "
+"``joserfc.jws.serialize_json`` instead of "
+"``joserfc.rfc7797.serialize_json`` - Use ``joserfc.jws.deserialize_json``"
+" instead of ``joserfc.rfc7797.deserialize_json``"
+msgstr ""
+
+#: ../../changelog.rst:29
+msgid "Convert ``joserfc.rfcXXXX`` to private modules ``joserfc._rfcXXXX``."
+msgstr ""
+
+#: ../../changelog.rst:32
+msgid "1.1.0"
+msgstr ""
+
+#: ../../changelog.rst:34
+msgid "**Released on May 24, 2025**"
+msgstr ""
+
+#: ../../changelog.rst:36
 msgid "Use \"import as\" to prioritize the modules for editors."
 msgstr ""
 
-#: ../../changelog.rst:21
+#: ../../changelog.rst:37
 msgid ""
 "Added parameter ``encoder_cls`` for ``jwt.encode`` and ``decoder_cls`` "
 "for ``jwt.decode``."
 msgstr ""
 
-#: ../../changelog.rst:22
+#: ../../changelog.rst:38
 msgid "Added ``none`` algorithm for JWS."
 msgstr ""
 
-#: ../../changelog.rst:23
+#: ../../changelog.rst:39
 msgid "Added ``jwk.import_key`` and ``jwk.generate_key`` aliases."
 msgstr ""
 
-#: ../../changelog.rst:25 ../../changelog.rst:138
-msgid "**Breaking changes**:"
-msgstr ""
-
-#: ../../changelog.rst:27
+#: ../../changelog.rst:43
 msgid "Use ``ECKey.binding.register_curve`` to register new supported curves."
 msgstr ""
 
-#: ../../changelog.rst:28
+#: ../../changelog.rst:44
 msgid ""
 "Use ``UnsupportedAlgorithmError`` instead of ``ValueError`` in JWS/JWE "
 "registry."
 msgstr ""
 
-#: ../../changelog.rst:29
+#: ../../changelog.rst:45
 msgid "Use ``MissingKeyTypeError`` and ``InvalidKeyIdError`` for errors in JWK."
 msgstr ""
 
-#: ../../changelog.rst:30
+#: ../../changelog.rst:46
 msgid ""
 "Use ``UnsupportedHeaderError``, ``MissingHeaderError``, and "
 "``MissingCritHeaderError`` for header validation."
 msgstr ""
 
-#: ../../changelog.rst:31
+#: ../../changelog.rst:47
 msgid "Respect RFC6749 character set in error descriptions."
 msgstr ""
 
-#: ../../changelog.rst:34
+#: ../../changelog.rst:50
 msgid "1.0.4"
 msgstr ""
 
-#: ../../changelog.rst:36
+#: ../../changelog.rst:52
 msgid "**Released on Feb 28, 2025**"
 msgstr ""
 
-#: ../../changelog.rst:38
+#: ../../changelog.rst:54
 msgid "Use secrets module to generate random bytes."
 msgstr ""
 
-#: ../../changelog.rst:39
+#: ../../changelog.rst:55
 msgid ""
 "Use warnings for possible unsafe ``OctKey``` instead of raising error, "
 "via :issue:`32`."
 msgstr ""
 
-#: ../../changelog.rst:42
+#: ../../changelog.rst:58
 msgid "1.0.3"
 msgstr ""
 
-#: ../../changelog.rst:44
+#: ../../changelog.rst:60
 msgid "**Released on Feb 6, 2025**"
 msgstr ""
 
-#: ../../changelog.rst:46
+#: ../../changelog.rst:62
 msgid "Allow using sha256, sha384, sha512 hash functions in thumbprint (RFC7638)."
 msgstr ""
 
-#: ../../changelog.rst:49
+#: ../../changelog.rst:65
 msgid "1.0.2"
 msgstr ""
 
-#: ../../changelog.rst:51
+#: ../../changelog.rst:67
 msgid "**Released on Jan 20, 2025**"
 msgstr ""
 
-#: ../../changelog.rst:53
+#: ../../changelog.rst:69
 msgid "Support import key from a certificate pem file."
 msgstr ""
 
-#: ../../changelog.rst:56
+#: ../../changelog.rst:72
 msgid "1.0.1"
 msgstr ""
 
-#: ../../changelog.rst:58
+#: ../../changelog.rst:74
 msgid "**Released on December 3, 2024**"
 msgstr ""
 
-#: ../../changelog.rst:60
+#: ../../changelog.rst:76
 msgid "Throw an error on non-valid base64 strings."
 msgstr ""
 
-#: ../../changelog.rst:63
+#: ../../changelog.rst:79
 msgid "1.0.0"
 msgstr ""
 
-#: ../../changelog.rst:65
+#: ../../changelog.rst:81
 msgid "**Released on July 14, 2024**"
 msgstr ""
 
-#: ../../changelog.rst:67
+#: ../../changelog.rst:83
 msgid "Fix type hints for strict mode."
 msgstr ""
 
-#: ../../changelog.rst:70
+#: ../../changelog.rst:86
 msgid "0.12.0"
 msgstr ""
 
-#: ../../changelog.rst:72
+#: ../../changelog.rst:88
 msgid "**Released on June 15, 2024**"
 msgstr ""
 
-#: ../../changelog.rst:74
+#: ../../changelog.rst:90
 msgid "Limit DEF decompress size to 250k bytes."
 msgstr ""
 
-#: ../../changelog.rst:75
+#: ../../changelog.rst:91
 msgid "Fix claims validation, via :issue:`23`."
 msgstr ""
 
-#: ../../changelog.rst:78
+#: ../../changelog.rst:94
 msgid "0.11.1"
 msgstr ""
 
-#: ../../changelog.rst:80 ../../changelog.rst:87
+#: ../../changelog.rst:96 ../../changelog.rst:103
 msgid "**Released on June 4, 2024**"
 msgstr ""
 
-#: ../../changelog.rst:82
+#: ../../changelog.rst:98
 msgid "Remove validating ``typ`` header with ``jwt.decode`` method."
 msgstr ""
 
-#: ../../changelog.rst:85
+#: ../../changelog.rst:101
 msgid "0.11.0"
 msgstr ""
 
-#: ../../changelog.rst:89
+#: ../../changelog.rst:105
 msgid "``jwe.decrypt_json`` allows to verify only one recipient."
 msgstr ""
 
-#: ../../changelog.rst:90
+#: ../../changelog.rst:106
 msgid "Prevent ``OctKey`` to import ``ssh-dss``."
 msgstr ""
 
-#: ../../changelog.rst:91
+#: ../../changelog.rst:107
 msgid "Deprecate use of string and bytes as key."
 msgstr ""
 
-#: ../../changelog.rst:94
+#: ../../changelog.rst:110
 msgid "0.10.0"
 msgstr ""
 
-#: ../../changelog.rst:96
+#: ../../changelog.rst:112
 msgid "**Released on May 13, 2024**"
 msgstr ""
 
-#: ../../changelog.rst:98
+#: ../../changelog.rst:114
 msgid "Change ``jwt.encode`` and ``jwt.decode`` to use JWS by default."
 msgstr ""
 
-#: ../../changelog.rst:101
+#: ../../changelog.rst:117
 msgid "0.9.0"
 msgstr ""
 
-#: ../../changelog.rst:103
+#: ../../changelog.rst:119
 msgid "**Released on November 16, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:105
+#: ../../changelog.rst:121
 msgid "Use ``os.urandom`` for ``OctKey.generate_key``."
 msgstr ""
 
-#: ../../changelog.rst:106
+#: ../../changelog.rst:122
 msgid "Add ``allow_blank`` for ``JWTClaimsRegistry``."
 msgstr ""
 
-#: ../../changelog.rst:107
+#: ../../changelog.rst:123
 msgid "Improve callable key for :meth:`~jwk.guess_key`."
 msgstr ""
 
-#: ../../changelog.rst:110
+#: ../../changelog.rst:126
 msgid "0.8.0"
 msgstr ""
 
-#: ../../changelog.rst:112
+#: ../../changelog.rst:128
 msgid "**Released on September 06, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:114
+#: ../../changelog.rst:130
 msgid "Add :ref:`ensure_kid` method on key models."
 msgstr ""
 
-#: ../../changelog.rst:115
+#: ../../changelog.rst:131
 msgid "Add ``auto_kid`` parameter on key model ``.generate_key`` method."
 msgstr ""
 
-#: ../../changelog.rst:116 ../../changelog.rst:126
+#: ../../changelog.rst:132 ../../changelog.rst:142
 msgid "Improvements on type hints"
 msgstr ""
 
-#: ../../changelog.rst:119
+#: ../../changelog.rst:135
 msgid "0.7.0"
 msgstr ""
 
-#: ../../changelog.rst:121
+#: ../../changelog.rst:137
 msgid "**Released on August 14, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:123
+#: ../../changelog.rst:139
 msgid "Add \"iat\" claims validation in JWT."
 msgstr ""
 
-#: ../../changelog.rst:124
+#: ../../changelog.rst:140
 msgid "Add ``__bool__`` magic method on :class:`jwk.KeySet`."
 msgstr ""
 
-#: ../../changelog.rst:125
+#: ../../changelog.rst:141
 msgid ""
 "Raise ``InvalidExchangeKeyError`` for ``exchange_derive_key`` on Curve "
 "key."
 msgstr ""
 
-#: ../../changelog.rst:129
+#: ../../changelog.rst:145
 msgid "0.6.0"
 msgstr ""
 
-#: ../../changelog.rst:131
+#: ../../changelog.rst:147
 msgid "**Released on July 20, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:133
+#: ../../changelog.rst:149
 msgid "Huge improvements on type hints, via :user:`Viicos`."
 msgstr ""
 
-#: ../../changelog.rst:134
+#: ../../changelog.rst:150
 msgid "Do not mutate the header when ``jwt.encode``, via :issue:`6`."
 msgstr ""
 
-#: ../../changelog.rst:135
+#: ../../changelog.rst:151
 msgid "Register algorithms with their matched key types on key set."
 msgstr ""
 
-#: ../../changelog.rst:136
+#: ../../changelog.rst:152
 msgid "Improve error handling, raise proper errors."
 msgstr ""
 
-#: ../../changelog.rst:140
+#: ../../changelog.rst:156
 msgid ""
 "``jws.JSONSignature`` is replaced by :class:`jws.GeneralJSONSignature` "
 "and :class:`jws.FlattenedJSONSignature`."
 msgstr ""
 
-#: ../../changelog.rst:142
+#: ../../changelog.rst:158
 msgid ""
 "``jwe.JSONEncryption`` is replaced by :class:`jwe.GeneralJSONEncryption` "
 "and :class:`jwe.FlattenedJSONEncryption`."
 msgstr ""
 
-#: ../../changelog.rst:146
+#: ../../changelog.rst:162
 msgid "0.5.0"
 msgstr ""
 
-#: ../../changelog.rst:148
+#: ../../changelog.rst:164
 msgid "**Released on July 12, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:150
+#: ../../changelog.rst:166
 msgid "Add RFC7797 JSON Web Signature (JWS) Unencoded Payload Option"
 msgstr ""
 
-#: ../../changelog.rst:151
+#: ../../changelog.rst:167
 msgid "Fix ``decrypt_json`` when there is no ``encrypted_key``"
 msgstr ""
 
-#: ../../changelog.rst:152
+#: ../../changelog.rst:168
 msgid "Rename JWE CompleteJSONSerialization to GeneralJSONSerialization"
 msgstr ""
 
-#: ../../changelog.rst:153
+#: ../../changelog.rst:169
 msgid "Rename ``JSONEncryption.flatten`` to ``.flattened``"
 msgstr ""
 
-#: ../../changelog.rst:154
+#: ../../changelog.rst:170
 msgid "Load and dump RSA, EC, and OKP key with password"
 msgstr ""
 
-#: ../../changelog.rst:155
+#: ../../changelog.rst:171
 msgid ""
 "Rename Curve key method: ``exchange_shared_key`` to "
 "``exchange_derive_key``"
 msgstr ""
 
-#: ../../changelog.rst:158
+#: ../../changelog.rst:174
 msgid "0.4.0"
 msgstr ""
 
-#: ../../changelog.rst:160
+#: ../../changelog.rst:176
 msgid "**Released on July 6, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:162
+#: ../../changelog.rst:178
 msgid "Change ``options`` to ``parameters`` for JWK methods"
 msgstr ""
 
-#: ../../changelog.rst:163
+#: ../../changelog.rst:179
 msgid "Change ``JWSRegistry`` and ``JWERegistry`` parameters"
 msgstr ""
 
-#: ../../changelog.rst:164
+#: ../../changelog.rst:180
 msgid "Guess ``sender_key`` from JWKs in JWE"
 msgstr ""
 
-#: ../../changelog.rst:165
+#: ../../changelog.rst:181
 msgid "Add importing key from DER encoding bytes"
 msgstr ""
 
-#: ../../changelog.rst:166
+#: ../../changelog.rst:182
 msgid "Fix JWS JSON serialization when members have only unprotected headers"
 msgstr ""
 
-#: ../../changelog.rst:167
+#: ../../changelog.rst:183
 msgid "Check key type before processing algorithms of JWS and JWE"
 msgstr ""
 
-#: ../../changelog.rst:170
+#: ../../changelog.rst:186
 msgid "0.3.0"
 msgstr ""
 
-#: ../../changelog.rst:172
+#: ../../changelog.rst:188
 msgid "**Released on June 29, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:174
+#: ../../changelog.rst:190
 msgid "Return ``str`` instead of ``bytes`` for JWS and JWE serializations"
 msgstr ""
 
-#: ../../changelog.rst:175
+#: ../../changelog.rst:191
 msgid "Add a ``detach_content`` method for JWS"
 msgstr ""
 
-#: ../../changelog.rst:176
+#: ../../changelog.rst:192
 msgid "Remove ``jwt.extract`` method, because ``extract`` won't work for JWE"
 msgstr ""
 
-#: ../../changelog.rst:177
+#: ../../changelog.rst:193
 msgid "Add ``JWKRegistry`` for JWK"
 msgstr ""
 
-#: ../../changelog.rst:178
+#: ../../changelog.rst:194
 msgid "Update ``JSONEncryption.add_recipient`` parameters"
 msgstr ""
 
-#: ../../changelog.rst:179
+#: ../../changelog.rst:195
 msgid "Export register methods for JWE drafts"
 msgstr ""
 
-#: ../../changelog.rst:182
+#: ../../changelog.rst:198
 msgid "0.2.0"
 msgstr ""
 
-#: ../../changelog.rst:184
+#: ../../changelog.rst:200
 msgid "**Released on June 25, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:186
+#: ../../changelog.rst:202
 msgid "A beta release."
 msgstr ""
 
-#: ../../changelog.rst:189
+#: ../../changelog.rst:205
 msgid "0.1.0"
 msgstr ""
 
-#: ../../changelog.rst:191
+#: ../../changelog.rst:207
 msgid "**Released on March 5, 2023**"
 msgstr ""
 
-#: ../../changelog.rst:193
+#: ../../changelog.rst:209
 msgid "Initial release."
 msgstr ""
-
-#~ msgid "Unreleased"
-#~ msgstr ""
-
