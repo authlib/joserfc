@@ -28,11 +28,16 @@ from .util import to_bytes
 from .registry import Header
 
 __all__ = [
+    # types
     "Claims",
-    "Token",
     "ClaimsOption",
+
+    # modules
     "ClaimsRegistry",
     "JWTClaimsRegistry",
+    "Token",
+
+    # methods
     "encode",
     "decode",
     "check_sensitive_data",

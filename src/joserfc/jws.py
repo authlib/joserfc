@@ -47,15 +47,20 @@ from .util import to_bytes
 from .registry import Header
 
 __all__ = [
+    # types
+    "HeaderDict",
+    "GeneralJSONSerialization",
+    "FlattenedJSONSerialization",
+
+    # modules
     "JWSAlgModel",
     "JWSRegistry",
-    "HeaderDict",
     "HeaderMember",
     "CompactSignature",
     "GeneralJSONSignature",
     "FlattenedJSONSignature",
-    "GeneralJSONSerialization",
-    "FlattenedJSONSerialization",
+
+    # methods
     "serialize_compact",
     "deserialize_compact",
     "extract_compact",

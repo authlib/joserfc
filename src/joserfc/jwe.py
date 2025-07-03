@@ -32,6 +32,11 @@ from .util import to_bytes
 from .registry import Header
 
 __all__ = [
+    # types
+    "GeneralJSONSerialization",
+    "FlattenedJSONSerialization",
+
+    # modules
     "JWERegistry",
     "JWEEncModel",
     "JWEZipModel",
@@ -39,10 +44,14 @@ __all__ = [
     "CompactEncryption",
     "GeneralJSONEncryption",
     "FlattenedJSONEncryption",
+
+    # methods
     "encrypt_compact",
     "decrypt_compact",
     "encrypt_json",
     "decrypt_json",
+
+    # consts
     "default_registry",
     "JWE_ALG_MODELS",
     "JWE_ENC_MODELS",

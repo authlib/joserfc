@@ -1,5 +1,6 @@
 from unittest import TestCase
-from joserfc.jws import register_key_set
+# trigger register_key_set
+import joserfc.jws  # noqa: F401
 from joserfc.jwk import guess_key, import_key, generate_key
 from joserfc.jwk import KeySet, OctKey, RSAKey, ECKey, OKPKey
 from joserfc.errors import (
@@ -10,8 +11,6 @@ from joserfc.errors import (
     MissingKeyTypeError,
     InvalidKeyIdError,
 )
-
-register_key_set()
 
 
 class Guest:
@@ -26,49 +25,23 @@ class Guest:
 
 
 class TestKeyMethods(TestCase):
-    def test_guess_str_key(self):
-        self.assertRaises(
-            DeprecationWarning,
-            guess_key,
-            "key",
-            Guest(),
-        )
-
-    def test_guess_bytes_key(self):
-        self.assertRaises(
-            DeprecationWarning,
-            guess_key,
-            b"key",
-            Guest(),
-        )
-
     def test_guess_callable_key(self):
         oct_key = OctKey.generate_key(parameters={"kid": "1"})
         rsa_key = RSAKey.generate_key(parameters={"kid": "2"})
 
-        def key_func1(obj):
-            return "key"
-
-        def key_func2(obj):
+        def rsa_key_func(obj):
             return rsa_key
 
-        def key_func3(obj):
+        def key_set_func(obj):
             return KeySet([oct_key, rsa_key])
 
-        self.assertRaises(
-            DeprecationWarning,
-            guess_key,
-            key_func1,
-            Guest(),
-        )
-
-        key2 = guess_key(key_func2, Guest())
-        self.assertIsInstance(key2, RSAKey)
+        key = guess_key(rsa_key_func, Guest())
+        self.assertIsInstance(key, RSAKey)
 
         guest = Guest()
         guest.set_kid("2")
-        key3 = guess_key(key_func3, guest)
-        self.assertIsInstance(key3, RSAKey)
+        key = guess_key(key_set_func, guest)
+        self.assertIsInstance(key, RSAKey)
 
     def test_guess_key_set(self):
         key_set = KeySet([OctKey.generate_key(), RSAKey.generate_key()])

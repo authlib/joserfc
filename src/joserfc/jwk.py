@@ -1,6 +1,5 @@
 from __future__ import annotations
 import typing as t
-import warnings
 from ._keys import (
     JWKRegistry,
     KeySet,
@@ -17,19 +16,25 @@ from .registry import Header
 
 
 __all__ = [
-    "JWKRegistry",
+    # types
     "Key",
     "DictKey",
+    "KeyParameters",
     "KeyCallable",
     "KeyFlexible",
     "KeySetSerialization",
+    "KeyBase",
+    "GuestProtocol",
+
+    # modules
+    "JWKRegistry",
     "OctKey",
     "RSAKey",
     "ECKey",
     "OKPKey",
     "KeySet",
-    "KeyBase",
-    "GuestProtocol",
+
+    # methods
     "guess_key",
     "import_key",
     "generate_key",
@@ -44,7 +49,7 @@ class GuestProtocol(t.Protocol):  # pragma: no cover
     def set_kid(self, kid: str) -> None: ...
 
 
-KeyBase = t.Union[str, bytes, Key, KeySet]
+KeyBase = t.Union[Key, KeySet]
 KeyCallable = t.Callable[[GuestProtocol], KeyBase]
 KeyFlexible = t.Union[KeyBase, KeyCallable]
 
@@ -56,43 +61,29 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) ->
     :param obj: a protocol that has ``headers`` and ``set_kid`` methods
     :param use_random: pick a random key from key set
     """
-
-    _norm_key: t.Union[Key, KeySet]
+    resolved_key: KeyBase
     if callable(key):
-        _norm_key = _normalize_key(key(obj))
+        resolved_key = key(obj)
     else:
-        _norm_key = _normalize_key(key)
+        resolved_key = key
 
-    rv_key: Key
-    if isinstance(_norm_key, KeySet):
+    if isinstance(resolved_key, (OctKey, RSAKey, ECKey, OKPKey)):
+        return resolved_key
+    elif isinstance(resolved_key, KeySet):
         headers = obj.headers()
-        kid = headers.get("kid")
+        kid: str | None = headers.get("kid")
         if not kid and use_random:
             # choose one key by random
-            rv_key = _norm_key.pick_random_key(headers["alg"])  # type: ignore[assignment]
-            if rv_key is None:
+            return_key = resolved_key.pick_random_key(headers["alg"])
+            if return_key is None:
                 raise ValueError("Invalid key")
-            rv_key.ensure_kid()
-            assert rv_key.kid is not None  # for mypy
-            obj.set_kid(rv_key.kid)
+            return_key.ensure_kid()
+            obj.set_kid(t.cast(str, return_key.kid))
         else:
-            rv_key = _norm_key.get_by_kid(kid)
-    elif isinstance(_norm_key, (OctKey, RSAKey, ECKey, OKPKey)):
-        rv_key = _norm_key
+            return_key = resolved_key.get_by_kid(kid)
+        return return_key
     else:
         raise ValueError("Invalid key")
-    return rv_key
-
-
-def _normalize_key(key: KeyBase) -> Key | KeySet:
-    if isinstance(key, (str, bytes)):  # pragma: no cover
-        warnings.warn(
-            "Please use a Key object instead of bytes or string.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return OctKey.import_key(key)
-    return key
 
 
 def import_key(data: AnyKey, key_type: str | None = None, parameters: KeyParameters | None = None) -> Key:
