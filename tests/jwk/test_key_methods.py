@@ -1,4 +1,5 @@
 from unittest import TestCase
+
 # trigger register_key_set
 import joserfc.jws  # noqa: F401
 from joserfc.jwk import guess_key, import_key, generate_key

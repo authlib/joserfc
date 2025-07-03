@@ -12,10 +12,10 @@ from ..util import (
 )
 
 __all__ = [
-    'sign_compact',
-    'verify_compact',
-    'detach_compact_content',
-    'decode_header',
+    "sign_compact",
+    "verify_compact",
+    "detach_compact_content",
+    "decode_header",
 ]
 
 

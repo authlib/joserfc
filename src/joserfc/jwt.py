@@ -31,12 +31,10 @@ __all__ = [
     # types
     "Claims",
     "ClaimsOption",
-
     # modules
     "ClaimsRegistry",
     "JWTClaimsRegistry",
     "Token",
-
     # methods
     "encode",
     "decode",

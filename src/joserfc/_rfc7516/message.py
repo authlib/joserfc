@@ -27,9 +27,9 @@ from ..util import (
 )
 
 __all__ = [
-    'EncryptionData',
-    'perform_encrypt',
-    'perform_decrypt',
+    "EncryptionData",
+    "perform_encrypt",
+    "perform_decrypt",
 ]
 
 EncryptionData = t.Union[CompactEncryption, GeneralJSONEncryption, FlattenedJSONEncryption]

@@ -12,8 +12,8 @@ from ..util import (
 )
 
 __all__ = [
-    'represent_compact',
-    'extract_compact',
+    "represent_compact",
+    "extract_compact",
 ]
 
 

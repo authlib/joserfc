@@ -25,7 +25,6 @@ __all__ = [
     "KeySetSerialization",
     "KeyBase",
     "GuestProtocol",
-
     # modules
     "JWKRegistry",
     "OctKey",
@@ -33,7 +32,6 @@ __all__ = [
     "ECKey",
     "OKPKey",
     "KeySet",
-
     # methods
     "guess_key",
     "import_key",

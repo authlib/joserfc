@@ -23,10 +23,10 @@ from .._keys import Key
 
 
 __all__ = [
-    'represent_general_json',
-    'represent_flattened_json',
-    'extract_general_json',
-    'extract_flattened_json',
+    "represent_general_json",
+    "represent_flattened_json",
+    "extract_general_json",
+    "extract_flattened_json",
 ]
 
 

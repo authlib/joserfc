@@ -21,14 +21,14 @@ from ..util import (
 from ..errors import DecodeError
 
 __all__ = [
-    'FindKey',
-    'sign_general_json',
-    'sign_flattened_json',
-    'sign_json_member',
-    'extract_general_json',
-    'verify_general_json',
-    'verify_flattened_json',
-    'detach_json_content',
+    "FindKey",
+    "sign_general_json",
+    "sign_flattened_json",
+    "sign_json_member",
+    "extract_general_json",
+    "verify_general_json",
+    "verify_flattened_json",
+    "detach_json_content",
 ]
 
 FindKey = t.Callable[[HeaderMember], t.Any]

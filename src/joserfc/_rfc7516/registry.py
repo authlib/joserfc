@@ -13,9 +13,9 @@ from ..registry import (
 )
 
 __all__ = [
-    'JWEAlgorithm',
-    'JWERegistry',
-    'default_registry',
+    "JWEAlgorithm",
+    "JWERegistry",
+    "default_registry",
 ]
 
 JWEAlgorithm = t.Union[JWEAlgModel, JWEEncModel, JWEZipModel]

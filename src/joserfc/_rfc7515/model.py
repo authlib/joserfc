@@ -6,11 +6,11 @@ from ..errors import InvalidKeyTypeError
 from ..registry import Header
 
 __all__ = [
-    'HeaderMember',
-    'CompactSignature',
-    'FlattenedJSONSignature',
-    'GeneralJSONSignature',
-    'JWSAlgModel',
+    "HeaderMember",
+    "CompactSignature",
+    "FlattenedJSONSignature",
+    "GeneralJSONSignature",
+    "JWSAlgModel",
 ]
 
 

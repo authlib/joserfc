@@ -13,9 +13,9 @@ from ..registry import (
 )
 
 __all__ = [
-    'JWSRegistry',
-    'construct_registry',
-    'default_registry',
+    "JWSRegistry",
+    "construct_registry",
+    "default_registry",
 ]
 
 

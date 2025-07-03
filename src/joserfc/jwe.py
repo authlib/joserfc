@@ -35,7 +35,6 @@ __all__ = [
     # types
     "GeneralJSONSerialization",
     "FlattenedJSONSerialization",
-
     # modules
     "JWERegistry",
     "JWEEncModel",
@@ -44,13 +43,11 @@ __all__ = [
     "CompactEncryption",
     "GeneralJSONEncryption",
     "FlattenedJSONEncryption",
-
     # methods
     "encrypt_compact",
     "decrypt_compact",
     "encrypt_json",
     "decrypt_json",
-
     # consts
     "default_registry",
     "JWE_ALG_MODELS",

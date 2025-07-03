@@ -51,7 +51,6 @@ __all__ = [
     "HeaderDict",
     "GeneralJSONSerialization",
     "FlattenedJSONSerialization",
-
     # modules
     "JWSAlgModel",
     "JWSRegistry",
@@ -59,7 +58,6 @@ __all__ = [
     "CompactSignature",
     "GeneralJSONSignature",
     "FlattenedJSONSignature",
-
     # methods
     "serialize_compact",
     "deserialize_compact",
