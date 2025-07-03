@@ -154,7 +154,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
             raise ValueError("Invalid key_size for RSAKey")
 
         if key_size < 2048:
-            # https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+            # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
             warnings.warn("Key size should be >= 2048 bits", SecurityWarning)
 
         raw_key = generate_private_key(

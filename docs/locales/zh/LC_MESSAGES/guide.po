@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-30 14:51+0900\n"
+"POT-Creation-Date: 2025-07-03 11:52+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -448,6 +448,57 @@ msgid ""
 msgstr ""
 "``sender_key`` 可以是 :class:`~joserfc.jwk.KeySet`，JWE 会根据 ``skid`` "
 "头部值查找正确的密钥。"
+
+#: ../../guide/errors.rst:2
+msgid "Errors & Warnings"
+msgstr ""
+
+#: ../../guide/errors.rst:4
+msgid "Here are some common errors and warnings, and how to handle them."
+msgstr ""
+
+#: ../../guide/errors.rst:7
+msgid "SecurityWarning"
+msgstr ""
+
+#: ../../guide/errors.rst:9
+msgid ""
+"You may encounter a ``SecurityWarning`` when using potentially unsafe "
+"algorithms or generating insecure keys. These warnings do not interrupt "
+"the execution of your application — they are simply printed to standard "
+"output (e.g., your terminal)."
+msgstr ""
+
+#: ../../guide/errors.rst:14
+msgid ""
+"If you prefer to suppress these warnings, you can use Python’s built-in "
+"``warnings`` module:"
+msgstr ""
+
+#: ../../guide/errors.rst:24
+msgid ""
+"With this configuration, ``SecurityWarning`` messages will no longer "
+"appear. Be cautious when suppressing these warnings, as they are meant to"
+" alert you to potentially insecure practices."
+msgstr ""
+
+#: ../../guide/errors.rst:29 ../../guide/jws.rst:265
+msgid "UnsupportedAlgorithmError"
+msgstr ""
+
+#: ../../guide/errors.rst:31
+msgid ""
+"By default, **ONLY recommended** :ref:`jwa` are allowed. With non "
+"recommended algorithms, you may encounter the "
+"``UnsupportedAlgorithmError``` error."
+msgstr ""
+
+#: ../../guide/errors.rst:49
+msgid ""
+"Because \"HS384\" is not a recommended algorithm, it is not allowed by "
+"default. You SHOULD enable it manually by passing an ``algorithms`` "
+"parameter:"
+msgstr ""
 
 #: ../../guide/index.rst:4
 msgid "Guide"
@@ -1274,10 +1325,6 @@ msgstr ""
 msgid "ECDSA using secp256k1 curve and SHA-256"
 msgstr ""
 
-#: ../../guide/jws.rst:265
-msgid "UnsupportedAlgorithmError"
-msgstr ""
-
 #: ../../guide/jws.rst:269
 msgid ""
 "From version 1.1.0, an ``UnsupportedAlgorithmError`` will be raised "
@@ -1803,3 +1850,4 @@ msgid ""
 "Depending on the algorithm of the JWT, you need to decide whether to use "
 "``JWSRegistry`` or ``JWERegistry``."
 msgstr ""
+

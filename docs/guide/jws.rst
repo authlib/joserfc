@@ -279,14 +279,14 @@ the below error.
 
     >>> from joserfc import jws
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("secret")
+    >>> key = OctKey.generate_key()
     >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File ".../joserfc/jws.py", line 112, in serialize_compact
         alg: JWSAlgModel = registry.get_alg(protected["alg"])
                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File ".../joserfc/rfc7515/registry.py", line 60, in get_alg
+      File ".../joserfc/_rfc7515/registry.py", line 60, in get_alg
         raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not recommended')
     joserfc.errors.UnsupportedAlgorithmError: unsupported_algorithm: Algorithm of "HS384" is not recommended
 

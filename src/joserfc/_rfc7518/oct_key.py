@@ -75,7 +75,7 @@ class OctKey(SymmetricKey):
             raise ValueError("Invalid bit size for oct key")
 
         if key_size < 112:
-            # https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf
+            # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
             warnings.warn("Key size should be >= 112 bits", SecurityWarning)
 
         raw_key = secrets.token_bytes(key_size // 8)

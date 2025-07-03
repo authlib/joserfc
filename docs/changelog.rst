@@ -18,6 +18,10 @@ Changelog
 **Unreleased**
 
 - Show security warnings for ``none`` and ``RSA1_5`` algorithms.
+- Show security warnings for ``OctKey.generate_key`` and ``RSAKey.generate_key``
+  when key size is too short, per `NIST SP 800-131A`_.
+
+.. _`NIST SP 800-131A`: https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
 
 **Breaking changes**:
 
@@ -52,7 +56,7 @@ Changelog
 **Released on Feb 28, 2025**
 
 - Use secrets module to generate random bytes.
-- Use warnings for possible unsafe ``OctKey``` instead of raising error, via :issue:`32`.
+- Use warnings for possible unsafe ``OctKey`` instead of raising error, via :issue:`32`.
 
 1.0.3
 -----
