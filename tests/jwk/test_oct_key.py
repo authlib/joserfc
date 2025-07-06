@@ -37,6 +37,18 @@ class TestOctKey(TestCase):
         key = OctKey.import_key(data)
         self.assertEqual(key.as_dict(), data)
 
+    def test_thumbprint_uri(self):
+        data = {
+            "kty": "oct",
+            "alg": "A128KW",
+            "k": "GawgguFyGrWKav7AX4VKUg",
+            "use": "sig",
+            "key_ops": ["sign", "verify"],
+        }
+        key = OctKey.import_key(data)
+        thumbprint = "k1JnWRfC-5zzmL72vXIuBgTLfVROXBakS4OmGcrMCoc"
+        self.assertEqual(key.thumbprint_uri(), f"urn:ietf:params:oauth:jwk-thumbprint:sha-256:{thumbprint}")
+
     def test_import_missing_k(self):
         data = {
             "kty": "oct",

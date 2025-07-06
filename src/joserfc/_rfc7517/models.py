@@ -3,7 +3,8 @@ import typing as t
 from collections.abc import KeysView
 from abc import ABCMeta, abstractmethod
 from .types import DictKey, AnyKey, KeyParameters
-from .._rfc7638 import thumbprint
+from .._rfc7638 import calculate_thumbprint
+from .._rfc9278 import concat_thumbprint_uri
 from ..registry import (
     KeyParameterRegistryDict,
     JWK_PARAMETER_REGISTRY,
@@ -167,7 +168,14 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         defined in RFC7638."""
         fields = [k for k in self.value_registry if self.value_registry[k].required]
         fields.append("kty")
-        return thumbprint(self.dict_value, fields, self.thumbprint_digest_method)
+        data = {key: self.dict_value[key] for key in fields}
+        return calculate_thumbprint(data, self.thumbprint_digest_method)
+
+    def thumbprint_uri(self) -> str:
+        """Call this method will generate the thumbprint URI
+        defined in RFC9278."""
+        value = self.thumbprint()
+        return concat_thumbprint_uri(value, self.thumbprint_digest_method)
 
     def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> DictKey:
         """Output this key to a JWK format (in dict). By default, it will return

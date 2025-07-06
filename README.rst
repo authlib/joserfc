@@ -16,6 +16,7 @@ This package contains implementation of:
 - RFC7797: JSON Web Signature (JWS) Unencoded Payload Option
 - RFC8037: OKP Key and EdDSA algorithm
 - RFC8812: ES256K algorithm
+- RFC9278: JWK Thumbprint URI
 
 And draft RFCs implementation of:
 

@@ -5,17 +5,14 @@ from collections import OrderedDict
 from ..util import to_bytes, urlsafe_b64encode
 
 
-def thumbprint(
-    dict_value: t.Dict[str, t.Any],
-    fields: t.List[str],
+def calculate_thumbprint(
+    value: t.Dict[str, t.Any],
     digest_method: t.Literal["sha256", "sha384", "sha512"] = "sha256",
 ) -> str:
-    sorted_fields = sorted(fields)
-
+    sorted_fields = sorted(value.keys())
     data = OrderedDict()
     for k in sorted_fields:
-        data[k] = dict_value[k]
-
+        data[k] = value[k]
     json_data = json.dumps(data, ensure_ascii=True, separators=(",", ":"))
     hash_value = hashlib.new(digest_method, to_bytes(json_data))
     digest_data = hash_value.digest()

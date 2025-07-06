@@ -53,6 +53,7 @@ It follows RFCs with extensible API. The module has implementations of:
 - RFC7797: [JSON Web Signature (JWS) Unencoded Payload Option](https://jose.authlib.org/en/dev/guide/jws/#rfc7797)
 - RFC8037: ``OKP`` Key and ``EdDSA`` algorithm
 - RFC8812: ``ES256K`` algorithm
+- RFC9278: [JWK Thumbprint URI](https://jose.authlib.org/en/api/jwk/#joserfc.jwk.thumbprint_uri)
 
 And draft RFCs implementation of:
 

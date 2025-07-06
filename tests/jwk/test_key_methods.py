@@ -2,7 +2,7 @@ from unittest import TestCase
 
 # trigger register_key_set
 import joserfc.jws  # noqa: F401
-from joserfc.jwk import guess_key, import_key, generate_key
+from joserfc.jwk import guess_key, import_key, generate_key, thumbprint_uri
 from joserfc.jwk import KeySet, OctKey, RSAKey, ECKey, OKPKey
 from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
@@ -126,3 +126,15 @@ class TestKeyMethods(TestCase):
 
     def test_import_without_kty(self):
         self.assertRaises(MissingKeyTypeError, import_key, {})
+
+    def test_thumbprint_uri(self):
+        value = thumbprint_uri(
+            {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "jJ6Flys3zK9jUhnOHf6G49Dyp5hah6CNP84-gY-n9eo",
+                "y": "nhI6iD5eFXgBTLt_1p3aip-5VbZeMhxeFSpjfEAf7Ww",
+            }
+        )
+        expected = "urn:ietf:params:oauth:jwk-thumbprint:sha-256:w9eYdC6_s_tLQ8lH6PUpc0mddazaqtPgeC2IgWDiqY8"
+        self.assertEqual(value, expected)
