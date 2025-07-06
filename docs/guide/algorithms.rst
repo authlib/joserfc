@@ -33,25 +33,25 @@ JSON Web Signature
 ``joserfc.jws`` module supports algorithms from RFC7518, RFC8037,
 and RFC8812. You MUST specify the correct key type for each algorithm.
 
-============== ========== ==================
-Algorithm name Key Type      Recommended
-============== ========== ==================
-none           OctKey      :bdg-danger:`No`
-HS256          OctKey      :bdg-success:`Yes`
-HS384          OctKey      :bdg-danger:`No`
-HS512          OctKey      :bdg-danger:`No`
-RS256          RSAKey      :bdg-success:`Yes`
-RS384          RSAKey      :bdg-danger:`No`
-RS512          RSAKey      :bdg-danger:`No`
-ES256          ECKey       :bdg-success:`Yes`
-ES384          ECKey       :bdg-danger:`No`
-ES512          ECKey       :bdg-danger:`No`
-PS256          RSAKey      :bdg-danger:`No`
-PS384          RSAKey      :bdg-danger:`No`
-PS512          RSAKey      :bdg-danger:`No`
-EdDSA          OKPKey      :bdg-danger:`No`
-ES256K         ECKey       :bdg-danger:`No`
-============== ========== ==================
+============== ========== ============================
+Algorithm name Key Type      Requirements
+============== ========== ============================
+none           OctKey      :bdg-danger:`Deprecated`
+HS256          OctKey      :bdg-success:`Recommended`
+HS384          OctKey      :bdg-muted:`Optional`
+HS512          OctKey      :bdg-muted:`Optional`
+RS256          RSAKey      :bdg-success:`Recommended`
+RS384          RSAKey      :bdg-muted:`Optional`
+RS512          RSAKey      :bdg-muted:`Optional`
+ES256          ECKey       :bdg-success:`Recommended`
+ES384          ECKey       :bdg-muted:`Optional`
+ES512          ECKey       :bdg-muted:`Optional`
+PS256          RSAKey      :bdg-muted:`Optional`
+PS384          RSAKey      :bdg-muted:`Optional`
+PS512          RSAKey      :bdg-muted:`Optional`
+EdDSA          OKPKey      :bdg-muted:`Optional`
+ES256K         ECKey       :bdg-muted:`Optional`
+============== ========== ============================
 
 .. note::
     ``EdDSA`` algorithm only accepts ``OKPKey`` with "crv" of "Ed25519" and "Ed448".
@@ -84,27 +84,27 @@ JSON Web Encryption
 ``joserfc.jwe`` module supports algorithms from RFC7518, and drafts of
 ``ECDH-1PU``. You MUST specify the correct key type for each algorithm.
 
-===================  ==========  ==================
-Algorithm name       Key Type    Recommended
-===================  ==========  ==================
-dir                  OctKey      :bdg-success:`Yes`
-A128KW               OctKey      :bdg-success:`Yes`
-A192KW               OctKey      :bdg-danger:`No`
-A256KW               OctKey      :bdg-success:`Yes`
-RSA1_5               RSAKey      :bdg-danger:`No`
-RSA-OAEP             RSAKey      :bdg-success:`Yes`
-RSA-OAEP-256         RSAKey      :bdg-danger:`No`
-ECDH-ES              ECKey       :bdg-success:`Yes`
-ECDH-ES+A128KW       ECKey       :bdg-success:`Yes`
-ECDH-ES+A192KW       ECKey       :bdg-danger:`No`
-ECDH-ES+A256KW       ECKey       :bdg-success:`Yes`
-A128GCMKW            OctKey      :bdg-danger:`No`
-A192GCMKW            OctKey      :bdg-danger:`No`
-A256GCMKW            OctKey      :bdg-danger:`No`
-PBES2-HS256+A128KW   RSAKey      :bdg-danger:`No`
-PBES2-HS384+A192KW   RSAKey      :bdg-danger:`No`
-PBES2-HS512+A256KW   RSAKey      :bdg-danger:`No`
-===================  ==========  ==================
+===================  ==========  ===========================
+Algorithm name       Key Type    Requirements
+===================  ==========  ===========================
+dir                  OctKey      :bdg-success:`Recommended`
+A128KW               OctKey      :bdg-success:`Recommended`
+A192KW               OctKey      :bdg-muted:`Optional`
+A256KW               OctKey      :bdg-success:`Recommended`
+RSA1_5               RSAKey      :bdg-danger:`Deprecated`
+RSA-OAEP             RSAKey      :bdg-success:`Recommended`
+RSA-OAEP-256         RSAKey      :bdg-muted:`Optional`
+ECDH-ES              ECKey       :bdg-success:`Recommended`
+ECDH-ES+A128KW       ECKey       :bdg-success:`Recommended`
+ECDH-ES+A192KW       ECKey       :bdg-muted:`Optional`
+ECDH-ES+A256KW       ECKey       :bdg-success:`Recommended`
+A128GCMKW            OctKey      :bdg-muted:`Optional`
+A192GCMKW            OctKey      :bdg-muted:`Optional`
+A256GCMKW            OctKey      :bdg-muted:`Optional`
+PBES2-HS256+A128KW   RSAKey      :bdg-muted:`Optional`
+PBES2-HS384+A192KW   RSAKey      :bdg-muted:`Optional`
+PBES2-HS512+A256KW   RSAKey      :bdg-muted:`Optional`
+===================  ==========  ===========================
 
 All algorithms defined in RFC7518 for "enc" value are recommended, which
 including:

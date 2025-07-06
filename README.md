@@ -58,6 +58,7 @@ And draft RFCs implementation of:
 
 - [`C20P` and `XC20P`](https://jose.authlib.org/en/dev/guide/algorithms/#c20p-and-xc20p)
 - [Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model](https://jose.authlib.org/en/dev/guide/algorithms/#ecdh-1pu-algorithms)
+- draft-ietf-jose-deprecate-none-rsa15-02
 
 ## Useful Links
 

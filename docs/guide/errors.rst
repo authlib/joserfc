@@ -6,6 +6,8 @@ Here are some common errors and warnings, and how to handle them.
 SecurityWarning
 ---------------
 
+.. versionadded:: 1.2.0
+
 You may encounter a ``SecurityWarning`` when using potentially
 unsafe algorithms or generating insecure keys. These warnings
 do not interrupt the execution of your application — they are
@@ -27,6 +29,8 @@ they are meant to alert you to potentially insecure practices.
 
 UnsupportedAlgorithmError
 -------------------------
+
+.. versionadded:: 1.1.0
 
 By default, **ONLY recommended** :ref:`jwa` are allowed. With non recommended
 algorithms, you may encounter the ``UnsupportedAlgorithmError``` error.

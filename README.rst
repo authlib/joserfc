@@ -13,13 +13,15 @@ This package contains implementation of:
 - RFC7519: JSON Web Token
 - RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
 - RFC7638: thumbprint for JWK
+- RFC7797: JSON Web Signature (JWS) Unencoded Payload Option
 - RFC8037: OKP Key and EdDSA algorithm
 - RFC8812: ES256K algorithm
 
 And draft RFCs implementation of:
 
-- C20P and XC20P
-- ECDH-1PU algorithms
+- draft-ietf-jose-deprecate-none-rsa15-02
+- draft-amringer-jose-chacha-02
+- draft-madden-jose-ecdh-1pu-04
 
 Usage
 -----
