@@ -9,8 +9,8 @@ def calculate_thumbprint_uri(
     digest_method: t.Literal["sha256", "sha384", "sha512"] = "sha256",
 ) -> str:
     """Calculate JWK thumbprint URI, defined by RFC9278."""
-    value = calculate_thumbprint(value, digest_method=digest_method)
-    return concat_thumbprint_uri(value, digest_method=digest_method)
+    thumbprint = calculate_thumbprint(value, digest_method=digest_method)
+    return concat_thumbprint_uri(thumbprint, digest_method=digest_method)
 
 
 def concat_thumbprint_uri(value: str, digest_method: t.Literal["sha256", "sha384", "sha512"]) -> str:
