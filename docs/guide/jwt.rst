@@ -286,6 +286,70 @@ It is also possible to assign a callable function as the ``key``:
 
     # jwt.encode(header, claims, load_key)
 
+Embedded JWK
+~~~~~~~~~~~~
+
+The key may be embedded directly in the token's header. For example,
+the decoded header might look like this:
+
+.. code-block:: json
+
+    {
+      "jwk": {
+        "crv": "P-256",
+        "x": "UM9g5nKnZXYovWAlM76cLz9vTozRj__CHU_dOl-gOoE",
+        "y": "ds8aeQw1l2cDCA7bCkONvwDKpXAbtXjvqCleYH8Ws_U",
+        "kty": "EC"
+      },
+      "alg": "ES256"
+    }
+
+In such cases, you don't need to supply a separate key manually. Instead,
+as shown above, you can use a callable key function to dynamically
+resolve the embedded JWK value.
+
+.. code-block:: python
+
+    from joserfc import jwk
+
+    def embedded_jwk(obj: jwk.GuestProtocol) -> jwk.Key:
+        headers = obj.headers()
+        return jwk.import_key(headers["jwk"])
+
+    # jwt.decode(value, embedded_jwk)
+
+Embedded JWK Set URL
+~~~~~~~~~~~~~~~~~~~~
+
+As shown above, the key may also be provided as a JWK Set URL
+within the token header, for example:
+
+.. code-block:: json
+
+    {
+      "jku": "https://example-site/jwks.json",
+      "alg": "ES256"
+    }
+
+In this case, you can use a callable key function to import the
+JWKs:
+
+.. code-block:: python
+
+    import requests
+    from joserfc import jwk
+
+    def fetch_jwk_set(obj: jwk.GuestProtocol) -> jwk.Key:
+        headers = obj.headers()
+        resp = requests.get(headers["jku"])
+        return jwk.import_key(resp.json())
+
+    jwt.decode(value, fetch_jwk_set)
+
+.. hint::
+
+    Use a cache method to improve the performance.
+
 Algorithms & Registry
 ---------------------
 

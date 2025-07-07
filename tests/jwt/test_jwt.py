@@ -1,12 +1,16 @@
 from unittest import TestCase
 from joserfc import jws, jwe, jwt
-from joserfc.jwk import OctKey
+from joserfc.jwk import OctKey, GuestProtocol, Key, import_key
 from joserfc.errors import (
     InvalidPayloadError,
     MissingClaimError,
     UnsupportedHeaderError,
     DecodeError,
 )
+
+def use_embedded_jwk(obj: GuestProtocol) -> Key:
+    headers = obj.headers()
+    return import_key(headers["jwk"])
 
 
 class TestJWT(TestCase):
@@ -75,3 +79,16 @@ class TestJWT(TestCase):
             key,
             registry=jws.JWSRegistry(),
         )
+
+    def test_with_embedded_jwk(self):
+        value = (
+            'eyJqd2siOnsiY3J2IjoiUC0yNTYiLCJ4IjoiVU05ZzVuS25aWFlvdldBbE'
+            '03NmNMejl2VG96UmpfX0NIVV9kT2wtZ09vRSIsInkiOiJkczhhZVF3MWwy'
+            'Y0RDQTdiQ2tPTnZ3REtwWEFidFhqdnFDbGVZSDhXc19VIiwia3R5IjoiRU'
+            'MifSwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJ1cm46ZXhhbXBsZTppc3N1Z'
+            'XIiLCJhdWQiOiJ1cm46ZXhhbXBsZTphdWRpZW5jZSIsImlhdCI6MTYwNDU'
+            '4MDc5NH0.60boak3_dErnW47ZPty1C0nrjeVq86EN_eK0GOq6K8w2OA0th'
+            'KoBxFK4j-NuU9yZ_A9UKGxPT_G87DladBaV9g'
+        )
+        token = jwt.decode(value, use_embedded_jwk)
+        self.assertEqual(token.claims["iss"], "urn:example:issuer")
