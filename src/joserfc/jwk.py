@@ -88,7 +88,25 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) ->
         raise ValueError("Invalid key")
 
 
-def import_key(data: AnyKey, key_type: str | None = None, parameters: KeyParameters | None = None) -> Key:
+@t.overload
+def import_key(data: AnyKey, key_type: t.Literal["oct"], parameters: KeyParameters | None = None) -> OctKey: ...
+
+
+@t.overload
+def import_key(data: AnyKey, key_type: t.Literal["RSA"], parameters: KeyParameters | None = None) -> RSAKey: ...
+
+
+@t.overload
+def import_key(data: AnyKey, key_type: t.Literal["EC"], parameters: KeyParameters | None = None) -> ECKey: ...
+
+
+@t.overload
+def import_key(data: AnyKey, key_type: t.Literal["OKP"], parameters: KeyParameters | None = None) -> OKPKey: ...
+
+
+def import_key(
+    data: AnyKey, key_type: t.Literal["oct", "RSA", "EC", "OKP"] | None = None, parameters: KeyParameters | None = None
+) -> Key:
     """Importing a key from bytes, string, and dict. When ``value`` is a dict,
     this method can tell the key type automatically, otherwise, developers
     SHOULD pass the ``key_type`` themselves.
@@ -101,8 +119,48 @@ def import_key(data: AnyKey, key_type: str | None = None, parameters: KeyParamet
     return JWKRegistry.import_key(data, key_type, parameters)
 
 
+@t.overload
 def generate_key(
-    key_type: str,
+    key_type: t.Literal["oct"],
+    crv_or_size: str | int | None = None,
+    parameters: KeyParameters | None = None,
+    private: bool = True,
+    auto_kid: bool = False,
+) -> OctKey: ...
+
+
+@t.overload
+def generate_key(
+    key_type: t.Literal["RSA"],
+    crv_or_size: str | int | None = None,
+    parameters: KeyParameters | None = None,
+    private: bool = True,
+    auto_kid: bool = False,
+) -> RSAKey: ...
+
+
+@t.overload
+def generate_key(
+    key_type: t.Literal["EC"],
+    crv_or_size: str | int | None = None,
+    parameters: KeyParameters | None = None,
+    private: bool = True,
+    auto_kid: bool = False,
+) -> ECKey: ...
+
+
+@t.overload
+def generate_key(
+    key_type: t.Literal["OKP"],
+    crv_or_size: str | int | None = None,
+    parameters: KeyParameters | None = None,
+    private: bool = True,
+    auto_kid: bool = False,
+) -> OKPKey: ...
+
+
+def generate_key(
+    key_type: t.Literal["oct", "RSA", "EC", "OKP"],
     crv_or_size: str | int | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
