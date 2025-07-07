@@ -60,8 +60,6 @@ class RSAAlgModel(JWEKeyEncryption):
         self.description = description
         self.padding = pad_fn
         self.recommended = recommended
-        if name == "RSA1_5":
-            self.security_warning = 'JWE algorithm "RSA1_5" is deprecated, via draft-ietf-jose-deprecate-none-rsa15-02'
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient[RSAKey]) -> bytes:
         key = recipient.recipient_key
@@ -295,6 +293,9 @@ class PBES2HSAlgModel(JWEKeyEncryption):
         return self.key_wrapping.unwrap_cek(recipient.encrypted_key, kek)
 
 
+RSA1_5 = RSAAlgModel("RSA1_5", "RSAES-PKCS1-v1_5", padding.PKCS1v15())
+RSA1_5.security_warning = 'JWE algorithm "RSA1_5" is deprecated, via draft-ietf-jose-deprecate-none-rsa15-02'
+
 A128KW = AESAlgModel(128, True)  # A128KW, Recommended
 A192KW = AESAlgModel(192)  # A192KW
 A256KW = AESAlgModel(256, True)  # A256KW, Recommended
@@ -302,10 +303,7 @@ A256KW = AESAlgModel(256, True)  # A256KW, Recommended
 
 #: https://www.rfc-editor.org/rfc/rfc7518#section-4.1
 JWE_ALG_MODELS: list[JWEAlgModel] = [
-    # Avoid all RSA-PKCS1 v1.5 encryption algorithms ([RFC8017], Section 7.2),
-    # preferring RSAES-OAEP ([RFC8017], Section 7.1).
-    # https://www.rfc-editor.org/rfc/rfc8725#section-3.2
-    RSAAlgModel("RSA1_5", "RSAES-PKCS1-v1_5", padding.PKCS1v15()),
+    RSA1_5,
     RSAAlgModel(
         "RSA-OAEP",
         "RSAES OAEP using default parameters",
