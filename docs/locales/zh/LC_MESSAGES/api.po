@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-30 14:51+0900\n"
+"POT-Creation-Date: 2025-07-07 23:00+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -446,6 +446,87 @@ msgid ""
 "``joserfc.jwk``."
 msgstr "文档的这一部分涵盖了 ``joserfc.jwk`` 的所有接口。"
 
+#: joserfc.jwk.ECKey.alg:1 joserfc.jwk.OKPKey.alg:1 joserfc.jwk.OctKey.alg:1
+#: joserfc.jwk.RSAKey.alg:1 of
+msgid "The \"alg\" value of the JSON Web Key."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.as_dict:1 of
+msgid ""
+"Output this key to a JWK format (in dict). By default, it will return the"
+" ``dict_value`` of this key."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.as_dict:4 of
+msgid "determine whether this method should output private key or not"
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.as_dict:5 of
+msgid "other parameters added into this key"
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.as_dict
+#: joserfc._rfc7517.models.BaseKey.check_alg
+#: joserfc._rfc7517.models.BaseKey.check_key_op
+#: joserfc._rfc7517.models.BaseKey.check_use
+#: joserfc._rfc7797.compact.extract_rfc7515_compact
+#: joserfc.jws.deserialize_json joserfc.jwt.decode of
+msgid "raise"
+msgstr "触发"
+
+#: joserfc._rfc7517.models.BaseKey.as_dict:6 of
+msgid "ValueError"
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_alg:1 of
+msgid "Check if this key supports the given \"alg\"."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_alg:3 of
+msgid "the algorithm this key is intended to be used, e.g. \"HS256\", \"ECDH-EC\""
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_alg:4 of
+msgid "UnsupportedKeyAlgorithmError"
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_key_op:1 of
+msgid "Check if the given key_op is supported by this key."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_key_op:3 of
+msgid "key operation value, such as \"sign\", \"encrypt\"."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_key_op:4 of
+msgid "UnsupportedKeyOperationError"
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_use:1 of
+msgid "Check if this key supports the given \"use\"."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_use:3 of
+msgid "this key is used for, e.g. \"sig\", \"enc\""
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_use:4 of
+msgid "UnsupportedKeyUseError"
+msgstr ""
+
+#: joserfc.jwk.ECKey.dict_value:1 joserfc.jwk.OKPKey.dict_value:1
+#: joserfc.jwk.OctKey.dict_value:1 joserfc.jwk.RSAKey.dict_value:1 of
+#, fuzzy
+msgid "Property of the Key in Dict (JSON)."
+msgstr "JWE 的受保护 header 部分，字典形式"
+
+#: joserfc._rfc7517.models.BaseKey.ensure_kid:1 of
+msgid ""
+"Ensure this key has a ``kid``. If ``kid`` is not provided by default, it "
+"will generate the kid with ``.thumbprint`` method, which is defined by "
+"RFC7638."
+msgstr ""
+
 #: joserfc._rfc7518.ec_key.ECKey.generate_key:1 of
 msgid "Generate a ``ECKey`` with the given \"crv\" value."
 msgstr "生成具有给定 \"crv\" 值的 ``ECKey``。"
@@ -473,6 +554,21 @@ msgstr "生成私钥或公钥"
 #: joserfc._rfc8037.okp_key.OKPKey.generate_key:6 of
 msgid "add ``kid`` automatically"
 msgstr "自动添加 ``kid``"
+
+#: joserfc.jwk.ECKey.kid:1 joserfc.jwk.OKPKey.kid:1 joserfc.jwk.OctKey.kid:1
+#: joserfc.jwk.RSAKey.kid:1 of
+msgid "The \"kid\" value of the JSON Web Key."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.thumbprint:1 of
+msgid ""
+"Call this method will generate the thumbprint with algorithm defined in "
+"RFC7638."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.thumbprint_uri:1 of
+msgid "Call this method will generate the thumbprint URI defined in RFC9278."
+msgstr ""
 
 #: ../../docstring joserfc.jwk.ECKey.value_registry:1 of
 msgid ""
@@ -525,6 +621,49 @@ msgstr "额外的密钥参数"
 msgid "OctKey, RSAKey, ECKey, or OKPKey"
 msgstr "OctKey、RSAKey、ECKey 或 OKPKey"
 
+#: joserfc.jwk.KeyParameters.fromkeys:1
+#: joserfc.jwk.KeySetSerialization.fromkeys:1 of
+msgid "Create a new dictionary with keys from iterable and values set to value."
+msgstr ""
+
+#: joserfc.jwk.KeyParameters.get:1 joserfc.jwk.KeyParameters.setdefault:3
+#: joserfc.jwk.KeySetSerialization.get:1
+#: joserfc.jwk.KeySetSerialization.setdefault:3 of
+msgid "Return the value for key if key is in the dictionary, else default."
+msgstr ""
+
+#: joserfc.jwk.KeyParameters.pop:1 joserfc.jwk.KeySetSerialization.pop:1 of
+msgid ""
+"If the key is not found, return the default if given; otherwise, raise a "
+"KeyError."
+msgstr ""
+
+#: joserfc.jwk.KeyParameters.popitem:1
+#: joserfc.jwk.KeySetSerialization.popitem:1 of
+msgid "Remove and return a (key, value) pair as a 2-tuple."
+msgstr ""
+
+#: joserfc.jwk.KeyParameters.popitem:3
+#: joserfc.jwk.KeySetSerialization.popitem:3 of
+msgid ""
+"Pairs are returned in LIFO (last-in, first-out) order. Raises KeyError if"
+" the dict is empty."
+msgstr ""
+
+#: joserfc.jwk.KeyParameters.setdefault:1
+#: joserfc.jwk.KeySetSerialization.setdefault:1 of
+msgid "Insert key with a value of default if key is not in the dictionary."
+msgstr ""
+
+#: joserfc.jwk.KeyParameters.update:1 joserfc.jwk.KeySetSerialization.update:1
+#: of
+msgid ""
+"If E is present and has a .keys() method, then does:  for k in E.keys(): "
+"D[k] = E[k] If E is present and lacks a .keys() method, then does:  for "
+"k, v in E: D[k] = v In either case, this is followed by: for k in F:  "
+"D[k] = F[k]"
+msgstr ""
+
 #: joserfc._rfc8037.okp_key.OKPKey:1 of
 msgid "Key class of the ``OKP`` key type."
 msgstr "``OKP`` 密钥类型的密钥类。"
@@ -559,6 +698,23 @@ msgstr "位大小"
 #: joserfc._rfc7518.oct_key.OctKey.generate_key:5 of
 msgid "must be True"
 msgstr "必须为 True"
+
+#: joserfc.jwk.OctKey.is_private:1 of
+msgid "A symmetric key will always be private."
+msgstr ""
+
+#: joserfc.jwk.OctKey.private_key:1 of
+msgid "Returns the ``raw_value`` as the private key."
+msgstr ""
+
+#: joserfc.jwk.OctKey.public_key:1 of
+msgid "Returns the ``raw_value`` as the public key."
+msgstr ""
+
+#: joserfc.jwk.OctKey.raw_value:1 of
+#, fuzzy
+msgid "The raw key in bytes."
+msgstr "字节形式的明文"
 
 #: ../../docstring joserfc.jwk.OctKey.value_registry:1 of
 msgid "https://www.rfc-editor.org/rfc/rfc7518#section-6.4"
@@ -610,6 +766,14 @@ msgid ""
 msgstr ""
 "从字节、字符串和字典导入密钥的类方法。当 ``value`` 为字典时，此方法可以自动识别密钥类型，否则，开发人员应自行传递 "
 "``key_type``。"
+
+#: joserfc._rfc7638.calculate_thumbprint:1 of
+msgid "Calculate the thumbprint value of a Key, per RFC 7638."
+msgstr ""
+
+#: joserfc._rfc9278.calculate_thumbprint_uri:1 of
+msgid "Calculate JWK thumbprint URI, defined by RFC9278."
+msgstr ""
 
 #: ../../api/jws.rst:6
 msgid ""
@@ -783,11 +947,6 @@ msgstr "字典形式的 JSON Signature"
 #: joserfc.jws.deserialize_json:7 of
 msgid "object of the SignatureData"
 msgstr "SignatureData 对象"
-
-#: joserfc._rfc7797.compact.extract_rfc7515_compact
-#: joserfc.jws.deserialize_json joserfc.jwt.decode of
-msgid "raise"
-msgstr "触发"
 
 #: joserfc.jws.deserialize_json:8 of
 msgid "ValueError or BadSignatureError"
@@ -1028,4 +1187,3 @@ msgstr "用于签名的密钥"
 #: joserfc.jwt.encode:8 of
 msgid "A JSONEncoder subclass to use"
 msgstr ""
-

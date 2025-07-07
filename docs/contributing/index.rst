@@ -63,7 +63,7 @@ Then install the Python requirements for development:
 
 .. code-block:: shell
 
-    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
 
 Run tests
 ~~~~~~~~~~

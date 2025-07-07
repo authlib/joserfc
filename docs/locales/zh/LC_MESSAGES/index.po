@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: joserfc\n"
+"Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-15 13:31+0900\n"
+"POT-Creation-Date: 2025-07-07 23:00+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -17,21 +17,21 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.17.0\n"
 
-#: ../../index.rst:67
+#: ../../index.rst:68
 msgid "Getting started"
 msgstr "开始上手"
 
-#: ../../index.rst:74
+#: ../../index.rst:75
 msgid "Essentials"
 msgstr "必读文档"
 
-#: ../../index.rst:83
+#: ../../index.rst:85
 msgid "Recipes"
 msgstr "小技巧"
 
-#: ../../index.rst:91
+#: ../../index.rst:93
 msgid "Development"
 msgstr "开发者文档"
 
@@ -77,9 +77,7 @@ msgid ""
 "intended for demonstration purposes. In a production environment, it is "
 "crucial to use a highly secure secret key to ensure robust security "
 "measures."
-msgstr ""
-"上述示例中使用的字符串 ``\"secret\"`` 仅用于演示目的。在生产环境中，"
-"使用高度安全的密钥以确保强大的安全措施是至关重要的。"
+msgstr "上述示例中使用的字符串 ``\"secret\"`` 仅用于演示目的。在生产环境中，使用高度安全的密钥以确保强大的安全措施是至关重要的。"
 
 #: ../../index.rst:41
 msgid "RFCs"
@@ -113,8 +111,7 @@ msgstr "RFC7519: :ref:`JSON Web Token <jwt>`"
 msgid ""
 "RFC7520: Examples of Protecting Content Using JSON Object Signing and "
 "Encryption"
-msgstr ""
-"RFC7520: 使用 JSON 对象签名和加密保护内容的示例"
+msgstr "RFC7520: 使用 JSON 对象签名和加密保护内容的示例"
 
 #: ../../index.rst:51
 msgid "RFC7638: ``thumbprint`` for JWK"
@@ -128,27 +125,31 @@ msgstr "RFC8037: :ref:`OKPKey` 和 ``EdDSA`` 算法"
 msgid "RFC8812: ``ES256K`` algorithm"
 msgstr "RFC8812: ``ES256K`` 算法"
 
-#: ../../index.rst:55
+#: ../../index.rst:54
+msgid "RFC9278: ``thumbprint_uri`` for JWK"
+msgstr "RFC9278: JWK 的 ``thumbprint_uri``"
+
+#: ../../index.rst:56
 msgid "And draft RFCs implementation of:"
 msgstr "同时包含如下 JOSE 草案的实现："
 
-#: ../../index.rst:57
+#: ../../index.rst:58
 msgid ":ref:`chacha20`"
 msgstr ":ref:`chacha20`"
 
-#: ../../index.rst:58
+#: ../../index.rst:59
 msgid ":ref:`ecdh1pu`"
 msgstr ":ref:`ecdh1pu`"
 
-#: ../../index.rst:60
+#: ../../index.rst:61
 msgid "RFC7520 is implemented as test cases."
 msgstr "RFC7520 是测试案例，详情请参考源码里的 tests 部分。"
 
-#: ../../index.rst:63
+#: ../../index.rst:64
 msgid "Next"
 msgstr "继续阅读"
 
-#: ../../index.rst:65
+#: ../../index.rst:66
 msgid ""
 "Explore the following sections to discover more about ``joserfc`` and its"
 " features."

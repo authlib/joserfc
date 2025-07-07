@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-03 11:52+0900\n"
+"POT-Creation-Date: 2025-07-07 23:00+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -88,9 +88,8 @@ msgid "Key Type"
 msgstr "密钥类型"
 
 #: ../../guide/algorithms.rst:37 ../../guide/algorithms.rst:88
-#: ../../guide/jws.rst:245
-msgid "Recommended"
-msgstr "是推荐"
+msgid "Requirements"
+msgstr ""
 
 #: ../../guide/algorithms.rst:39 ../../guide/jws.rst:247
 msgid "none"
@@ -105,23 +104,9 @@ msgstr ""
 msgid "OctKey"
 msgstr ""
 
-#: ../../guide/algorithms.rst:39 ../../guide/algorithms.rst:41
-#: ../../guide/algorithms.rst:42 ../../guide/algorithms.rst:44
-#: ../../guide/algorithms.rst:45 ../../guide/algorithms.rst:47
-#: ../../guide/algorithms.rst:48 ../../guide/algorithms.rst:49
-#: ../../guide/algorithms.rst:50 ../../guide/algorithms.rst:51
-#: ../../guide/algorithms.rst:52 ../../guide/algorithms.rst:53
-#: ../../guide/algorithms.rst:92 ../../guide/algorithms.rst:94
-#: ../../guide/algorithms.rst:96 ../../guide/algorithms.rst:99
-#: ../../guide/algorithms.rst:101 ../../guide/algorithms.rst:102
-#: ../../guide/algorithms.rst:103 ../../guide/algorithms.rst:104
-#: ../../guide/algorithms.rst:105 ../../guide/algorithms.rst:106
-#: ../../guide/jws.rst:247 ../../guide/jws.rst:249 ../../guide/jws.rst:250
-#: ../../guide/jws.rst:252 ../../guide/jws.rst:253 ../../guide/jws.rst:255
-#: ../../guide/jws.rst:256 ../../guide/jws.rst:257 ../../guide/jws.rst:258
-#: ../../guide/jws.rst:259 ../../guide/jws.rst:260 ../../guide/jws.rst:261
-msgid ":bdg-danger:`No`"
-msgstr ":bdg-danger:`否`"
+#: ../../guide/algorithms.rst:39 ../../guide/algorithms.rst:94
+msgid ":bdg-danger:`Deprecated`"
+msgstr ":bdg-danger:`弃用`"
 
 #: ../../guide/algorithms.rst:40 ../../guide/jws.rst:248
 msgid "HS256"
@@ -132,12 +117,25 @@ msgstr ""
 #: ../../guide/algorithms.rst:91 ../../guide/algorithms.rst:93
 #: ../../guide/algorithms.rst:95 ../../guide/algorithms.rst:97
 #: ../../guide/algorithms.rst:98 ../../guide/algorithms.rst:100
-msgid ":bdg-success:`Yes`"
-msgstr ":bdg-success:`是`"
+msgid ":bdg-success:`Recommended`"
+msgstr ":bdg-success:`推荐`"
 
 #: ../../guide/algorithms.rst:41 ../../guide/jws.rst:249
 msgid "HS384"
 msgstr ""
+
+#: ../../guide/algorithms.rst:41 ../../guide/algorithms.rst:42
+#: ../../guide/algorithms.rst:44 ../../guide/algorithms.rst:45
+#: ../../guide/algorithms.rst:47 ../../guide/algorithms.rst:48
+#: ../../guide/algorithms.rst:49 ../../guide/algorithms.rst:50
+#: ../../guide/algorithms.rst:51 ../../guide/algorithms.rst:52
+#: ../../guide/algorithms.rst:53 ../../guide/algorithms.rst:92
+#: ../../guide/algorithms.rst:96 ../../guide/algorithms.rst:99
+#: ../../guide/algorithms.rst:101 ../../guide/algorithms.rst:102
+#: ../../guide/algorithms.rst:103 ../../guide/algorithms.rst:104
+#: ../../guide/algorithms.rst:105 ../../guide/algorithms.rst:106
+msgid ":bdg-muted:`Optional`"
+msgstr ":bdg-muted:`可选`"
 
 #: ../../guide/algorithms.rst:42 ../../guide/jws.rst:250
 msgid "HS512"
@@ -201,7 +199,7 @@ msgstr ""
 msgid "EdDSA"
 msgstr ""
 
-#: ../../guide/algorithms.rst:52 ../../guide/algorithms.rst:130
+#: ../../guide/algorithms.rst:52 ../../guide/algorithms.rst:129
 #: ../../guide/jwk.rst:180
 msgid "OKPKey"
 msgstr ""
@@ -268,19 +266,19 @@ msgstr ""
 msgid "RSA-OAEP-256"
 msgstr ""
 
-#: ../../guide/algorithms.rst:97 ../../guide/algorithms.rst:135
+#: ../../guide/algorithms.rst:97 ../../guide/algorithms.rst:134
 msgid "ECDH-ES"
 msgstr ""
 
-#: ../../guide/algorithms.rst:98 ../../guide/algorithms.rst:136
+#: ../../guide/algorithms.rst:98 ../../guide/algorithms.rst:135
 msgid "ECDH-ES+A128KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:99 ../../guide/algorithms.rst:137
+#: ../../guide/algorithms.rst:99 ../../guide/algorithms.rst:136
 msgid "ECDH-ES+A192KW"
 msgstr ""
 
-#: ../../guide/algorithms.rst:100 ../../guide/algorithms.rst:138
+#: ../../guide/algorithms.rst:100 ../../guide/algorithms.rst:137
 msgid "ECDH-ES+A256KW"
 msgstr ""
 
@@ -345,9 +343,10 @@ msgid ""
 msgstr ""
 
 #: ../../guide/algorithms.rst:122
+#, fuzzy
 msgid ""
-"A ``DEF`` algorithm for the \"zip\" (compression) header parameter is "
-"also defined in RFC7518, which is recommended."
+"There is also a ``DEF`` algorithm for the \"zip\" (compression) header "
+"parameter, using of ``DEF`` is optional."
 msgstr "RFC7518 还定义了用于 \"zip\"（压缩）头参数的 ``DEF`` 算法，该算法推荐使用。"
 
 #: ../../guide/algorithms.rst:125
@@ -356,23 +355,23 @@ msgid ""
 "versions. Please refer to the following sections for more information."
 msgstr "草案版本中还有针对 \"alg\" 和 \"enc\" 的额外算法。请参考以下章节获取更多信息。"
 
-#: ../../guide/algorithms.rst:132
+#: ../../guide/algorithms.rst:131
 msgid ""
 "You can use ``OKPKey`` with the \"crv\" (curve) parameter set to "
 "``X25519`` or ``X448`` for the following algorithms:"
 msgstr "对于以下算法，您可以使用 ``OKPKey`` 并将 \"crv\"（曲线）参数设置为 ``X25519`` 或 ``X448``："
 
-#: ../../guide/algorithms.rst:140
+#: ../../guide/algorithms.rst:139
 msgid ""
 "This allows you to utilize these elliptic curve algorithms with "
 "``OKPKey`` for your cryptographic operations."
 msgstr ""
 
-#: ../../guide/algorithms.rst:146
+#: ../../guide/algorithms.rst:145
 msgid "C20P and XC20P"
 msgstr "C20P 与 XC20P"
 
-#: ../../guide/algorithms.rst:148
+#: ../../guide/algorithms.rst:147
 msgid ""
 "``C20P`` and ``XC20P`` algorithms are still in drafts, they are not "
 "registered by default. To use ``C20P`` and ``XC20P``, developers have to "
@@ -381,7 +380,7 @@ msgstr ""
 "``C20P`` 和 ``XC20P`` 算法仍处于草案阶段，默认状态下他们未注册到 ``JWERegistry``。要使用 ``C20P`` 和"
 " ``XC20P``，开发人员必须安装 ``PyCryptodome`` 模块。"
 
-#: ../../guide/algorithms.rst:155
+#: ../../guide/algorithms.rst:154
 msgid ""
 "This is caused by ``cryptography`` package does only support \"ChaCha20\""
 " cipher, not **XChaCha20**, while ``pycryptodome`` supports both "
@@ -390,21 +389,21 @@ msgstr ""
 "这是由于 ``cryptography`` 库只支持 \"ChaCha20\" 密码算法，不支持 **XChaCha20**，而 "
 "``pycryptodome`` 同时支持 \"ChaCha20\" 和 \"XChaCha20\" 密码算法。"
 
-#: ../../guide/algorithms.rst:159
+#: ../../guide/algorithms.rst:158
 msgid "Register ciphers"
 msgstr "注册密码算法"
 
-#: ../../guide/algorithms.rst:161
+#: ../../guide/algorithms.rst:160
 msgid ""
 "The default :ref:`registry` doesn't contain draft ciphers, developers "
 "MUST register ``C20P`` and ``XC20P`` at first:"
 msgstr "默认的 :ref:`registry` 不包含草案算法，开发人员必须先注册 ``C20P`` 和 ``XC20P``："
 
-#: ../../guide/algorithms.rst:171
+#: ../../guide/algorithms.rst:170
 msgid "Use custom ``registry``"
 msgstr "自定义注册表 ``registry``"
 
-#: ../../guide/algorithms.rst:176
+#: ../../guide/algorithms.rst:175
 msgid ""
 "Use a custom ``registry`` in :meth:`encrypt_compact`, "
 ":meth:`decrypt_compact`, :meth:`encrypt_json`, and :meth:`decrypt_json`."
@@ -412,11 +411,11 @@ msgstr ""
 "在 :meth:`encrypt_compact`、:meth:`decrypt_compact`、:meth:`encrypt_json` 和 "
 ":meth:`decrypt_json` 中使用自定义 ``registry``。"
 
-#: ../../guide/algorithms.rst:201
+#: ../../guide/algorithms.rst:200
 msgid "ECDH-1PU algorithms"
 msgstr "ECDH-1PU 相关算法"
 
-#: ../../guide/algorithms.rst:203
+#: ../../guide/algorithms.rst:202
 msgid ""
 "Key Agreement with Elliptic Curve Diffie-Hellman One-Pass Unified Model "
 "(ECDH-1PU) are still in drafts, they are not registered by default. To "
@@ -426,13 +425,13 @@ msgstr ""
 "椭圆曲线迪菲-赫尔曼一次通用模型（ECDH-1PU）密钥协商仍然处于草案阶段，默认情况下未注册。要使用与 ``ECDH-1PU`` "
 "相关的算法，开发人员必须手动注册它们："
 
-#: ../../guide/algorithms.rst:213
+#: ../../guide/algorithms.rst:212
 msgid ""
 "Then use a custom ``registry`` with the required ``ECDH-1PU`` algorithms."
 " For instance:"
 msgstr "然后使用带有所需的 ``ECDH-1PU`` 算法的自定义 ``registry``。例如："
 
-#: ../../guide/algorithms.rst:236
+#: ../../guide/algorithms.rst:235
 msgid ""
 "The ``ECDH-1PU`` algorithms require a **sender key**, which MUST be a "
 "private key when calling :meth:`encrypt_compact` and :meth:`encrypt_json`"
@@ -441,7 +440,7 @@ msgstr ""
 "``ECDH-1PU`` 算法需要一个 **发送方密钥**，在调用 :meth:`encrypt_compact` 和 "
 ":meth:`encrypt_json` 方法时，该密钥必须是私钥。"
 
-#: ../../guide/algorithms.rst:239
+#: ../../guide/algorithms.rst:238
 msgid ""
 "The ``sender_key`` can be a :class:`~joserfc.jwk.KeySet`, and JWE will "
 "find the correct key according to ``skid`` header value."
@@ -461,7 +460,7 @@ msgstr ""
 msgid "SecurityWarning"
 msgstr ""
 
-#: ../../guide/errors.rst:9
+#: ../../guide/errors.rst:11
 msgid ""
 "You may encounter a ``SecurityWarning`` when using potentially unsafe "
 "algorithms or generating insecure keys. These warnings do not interrupt "
@@ -469,31 +468,31 @@ msgid ""
 "output (e.g., your terminal)."
 msgstr ""
 
-#: ../../guide/errors.rst:14
+#: ../../guide/errors.rst:16
 msgid ""
 "If you prefer to suppress these warnings, you can use Python’s built-in "
 "``warnings`` module:"
 msgstr ""
 
-#: ../../guide/errors.rst:24
+#: ../../guide/errors.rst:26
 msgid ""
 "With this configuration, ``SecurityWarning`` messages will no longer "
 "appear. Be cautious when suppressing these warnings, as they are meant to"
 " alert you to potentially insecure practices."
 msgstr ""
 
-#: ../../guide/errors.rst:29 ../../guide/jws.rst:265
+#: ../../guide/errors.rst:31 ../../guide/jws.rst:265
 msgid "UnsupportedAlgorithmError"
 msgstr ""
 
-#: ../../guide/errors.rst:31
+#: ../../guide/errors.rst:35
 msgid ""
 "By default, **ONLY recommended** :ref:`jwa` are allowed. With non "
 "recommended algorithms, you may encounter the "
 "``UnsupportedAlgorithmError``` error."
 msgstr ""
 
-#: ../../guide/errors.rst:49
+#: ../../guide/errors.rst:53
 msgid ""
 "Because \"HS384\" is not a recommended algorithm, it is not allowed by "
 "default. You SHOULD enable it manually by passing an ``algorithms`` "
@@ -782,7 +781,7 @@ msgstr ""
 msgid "And make sure only adding one recipient."
 msgstr "同时注意，你只能增加一位成员。"
 
-#: ../../guide/jwe.rst:220 ../../guide/jwt.rst:290
+#: ../../guide/jwe.rst:220 ../../guide/jwt.rst:354
 msgid "Algorithms & Registry"
 msgstr "算法和注册表"
 
@@ -981,142 +980,142 @@ msgid "``thumbprint``"
 msgstr ""
 
 #: ../../guide/jwk.rst:300
-msgid ""
-"Call this method will generate the thumbprint with algorithm defined in "
-"RFC7638."
+msgid "Call this method will generate the thumbprint of the JWK, per RFC7638."
 msgstr ""
 
-#: ../../guide/jwk.rst:312
+#: ../../guide/jwk.rst:309
+msgid "You can also use the ``jwk.thumbprint`` method:"
+msgstr ""
+
+#: ../../guide/jwk.rst:322
+msgid "``thumbprint_uri``"
+msgstr ""
+
+#: ../../guide/jwk.rst:326
+msgid "Call this method will generate the JWK thumbprint URI, per RFC9278."
+msgstr ""
+
+#: ../../guide/jwk.rst:335
+msgid "You can also use the ``jwk.thumbprint_uri`` method:"
+msgstr ""
+
+#: ../../guide/jwk.rst:349
 msgid "``ensure_kid``"
 msgstr ""
 
-#: ../../guide/jwk.rst:314
+#: ../../guide/jwk.rst:351
 msgid ""
 "Call this method to make sure the key contains a ``kid``. If the key has "
 "no ``kid``, generate one with the above ``.thumbprint`` method."
 msgstr ""
 
-#: ../../guide/jwk.rst:328
+#: ../../guide/jwk.rst:365
 msgid "``as_dict``"
 msgstr ""
 
-#: ../../guide/jwk.rst:330
+#: ../../guide/jwk.rst:367
 msgid ""
 "Dump a key or key set into dict format, which can be used to convert to "
 "JSON:"
 msgstr ""
 
-#: ../../guide/jwk.rst:340
+#: ../../guide/jwk.rst:377
 msgid "``as_pem``"
 msgstr ""
 
-#: ../../guide/jwk.rst:342
+#: ../../guide/jwk.rst:379
 msgid "Dump an asymmetric key into PEM format (in bytes):"
 msgstr "将非对称密钥转换为 PEM 格式（数据为字节形式）："
 
-#: ../../guide/jwk.rst:353
+#: ../../guide/jwk.rst:390
 msgid "``as_der``"
 msgstr ""
 
-#: ../../guide/jwk.rst:355
+#: ../../guide/jwk.rst:392
 msgid "Dump an asymmetric key into DER format (in bytes):"
 msgstr ""
 
-#: ../../guide/jwk.rst:366
-msgid "``JWKRegistry``"
+#: ../../guide/jwk.rst:403
+msgid "Utilities"
 msgstr ""
 
-#: ../../guide/jwk.rst:368
-msgid ""
-"The :class:`JWKRegistry` class serves as a registry for storing all the "
-"supported key types in the ``joserfc`` library. While developers "
-"typically use specific key types such as ``RSAKey`` or ``ECKey``, this "
-"registry offers a means to dynamically import and generate keys."
+#: ../../guide/jwk.rst:405
+msgid "The ``jwk`` module offers a means to dynamically import and generate keys."
 msgstr ""
 
-#: ../../guide/jwk.rst:374
+#: ../../guide/jwk.rst:408
 msgid "Import keys"
 msgstr ""
 
-#: ../../guide/jwk.rst:376
+#: ../../guide/jwk.rst:412
 msgid ""
-"The :meth:`JWKRegistry.import_key` can choose the correct key type "
-"automatically when importing a JWK in dict:"
+"The :meth:`import_key` can choose the correct key type automatically when"
+" importing a JWK in dict:"
 msgstr ""
 
-#: ../../guide/jwk.rst:393
+#: ../../guide/jwk.rst:431
 msgid ""
 "If the key is in bytes or string, not dict, developers SHOULD specify the"
 " key type manually:"
 msgstr ""
 
-#: ../../guide/jwk.rst:403
-msgid "You can use ``jwk.import_key`` directly. For example::"
-msgstr ""
-
-#: ../../guide/jwk.rst:410
+#: ../../guide/jwk.rst:441
 msgid "Generate keys"
 msgstr ""
 
-#: ../../guide/jwk.rst:412
+#: ../../guide/jwk.rst:445
 msgid ""
-"The :meth:`JWKRegistry.generate_key` can generate a key with all the "
-"supported key types. For ``oct`` and ``RSA`` the parameters in this "
-"method:"
+"The :meth:`generate_key` can generate a key with all the supported key "
+"types. For ``oct`` and ``RSA`` the parameters in this method:"
 msgstr ""
 
-#: ../../guide/jwk.rst:422
+#: ../../guide/jwk.rst:456
 msgid "For ``EC`` and ``OKP`` keys, the parameters are:"
 msgstr ""
 
-#: ../../guide/jwk.rst:432
-msgid "You can use ``jwk.generate_key`` directly. For example::"
-msgstr ""
-
-#: ../../guide/jwk.rst:438
+#: ../../guide/jwk.rst:466
 msgid "Options"
 msgstr ""
 
-#: ../../guide/jwk.rst:440
+#: ../../guide/jwk.rst:468
 msgid ""
-"The ``import_key`` and ``generate_key`` methods available in ``OctKey``, "
-"``RSAKey``, ``ECKey``, ``OKPKey``, and ``JWKRegistry`` classes have an "
-"optional ``parameters`` parameter. This ``parameters`` allows you to "
-"provide a dict that includes additional key parameters to be included in "
-"the JWK."
+"The ``import_key`` and ``generate_key`` methods available on ``OctKey``, "
+"``RSAKey``, ``ECKey``, ``OKPKey``, and ``jwk`` classes have an optional "
+"``parameters`` parameter. This ``parameters`` allows you to provide a "
+"dict that includes additional key parameters to be included in the JWK."
 msgstr ""
 
-#: ../../guide/jwk.rst:445
+#: ../../guide/jwk.rst:473
 msgid "Some of the standard (registered) header fields are:"
 msgstr ""
 
-#: ../../guide/jwk.rst:447
+#: ../../guide/jwk.rst:475
 msgid "``kty``: Key Type, it is automatically added"
 msgstr ""
 
-#: ../../guide/jwk.rst:448
+#: ../../guide/jwk.rst:476
 msgid "``use``: Public Key Use, \"sig\" or \"enc\""
 msgstr ""
 
-#: ../../guide/jwk.rst:449
+#: ../../guide/jwk.rst:477
 msgid "``key_ops``: Key Operations, allowed operations of this key"
 msgstr ""
 
-#: ../../guide/jwk.rst:450
+#: ../../guide/jwk.rst:478
 msgid "``alg``: Algorithm, allowed algorithm of this key"
 msgstr ""
 
-#: ../../guide/jwk.rst:451
+#: ../../guide/jwk.rst:479
 msgid "``kid``: Key ID, a string of the key ID"
 msgstr ""
 
-#: ../../guide/jwk.rst:453
+#: ../../guide/jwk.rst:481
 msgid ""
 "When using ``import_key`` and ``generate_key``, developers can pass the "
 "extra key ``parameters``:"
 msgstr ""
 
-#: ../../guide/jwk.rst:460
+#: ../../guide/jwk.rst:488
 msgid ""
 "The above ``RSAKey`` then can only be used for ``JWS`` with ``alg`` of "
 "``RS256``, and it can only be used for deserialization (``verify``)."
@@ -1261,9 +1260,20 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+#: ../../guide/jws.rst:245
+msgid "Recommended"
+msgstr "是推荐"
+
 #: ../../guide/jws.rst:247
 msgid "No digital signature or MAC performed"
 msgstr ""
+
+#: ../../guide/jws.rst:247 ../../guide/jws.rst:249 ../../guide/jws.rst:250
+#: ../../guide/jws.rst:252 ../../guide/jws.rst:253 ../../guide/jws.rst:255
+#: ../../guide/jws.rst:256 ../../guide/jws.rst:257 ../../guide/jws.rst:258
+#: ../../guide/jws.rst:259 ../../guide/jws.rst:260 ../../guide/jws.rst:261
+msgid ":bdg-danger:`No`"
+msgstr ":bdg-danger:`否`"
 
 #: ../../guide/jws.rst:248
 msgid "HMAC using SHA-256"
@@ -1611,11 +1621,11 @@ msgstr ""
 msgid "You can find the correct key type for each algorithm at:"
 msgstr ""
 
-#: ../../guide/jwt.rst:202 ../../guide/jwt.rst:298
+#: ../../guide/jwt.rst:202 ../../guide/jwt.rst:362
 msgid ":ref:`JSON Web Signature Algorithms <jws_algorithms>`"
 msgstr ""
 
-#: ../../guide/jwt.rst:203 ../../guide/jwt.rst:299
+#: ../../guide/jwt.rst:203 ../../guide/jwt.rst:363
 msgid ":ref:`JSON Web Encryption Algorithms <jwe_algorithms>`"
 msgstr ""
 
@@ -1661,54 +1671,89 @@ msgstr ""
 msgid "It is also possible to assign a callable function as the ``key``:"
 msgstr ""
 
+#: ../../guide/jwt.rst:290
+msgid "Embedded JWK"
+msgstr ""
+
 #: ../../guide/jwt.rst:292
+msgid ""
+"The key may be embedded directly in the token's header. For example, the "
+"decoded header might look like this:"
+msgstr ""
+
+#: ../../guide/jwt.rst:307
+msgid ""
+"In such cases, you don't need to supply a separate key manually. Instead,"
+" as shown above, you can use a callable key function to dynamically "
+"resolve the embedded JWK value."
+msgstr ""
+
+#: ../../guide/jwt.rst:322
+msgid "Embedded JWK Set URL"
+msgstr ""
+
+#: ../../guide/jwt.rst:324
+msgid ""
+"As shown above, the key may also be provided as a JWK Set URL within the "
+"token header, for example:"
+msgstr ""
+
+#: ../../guide/jwt.rst:334
+msgid "In this case, you can use a callable key function to import the JWKs:"
+msgstr ""
+
+#: ../../guide/jwt.rst:351
+msgid "Use a cache method to improve the performance."
+msgstr ""
+
+#: ../../guide/jwt.rst:356
 msgid ""
 "The :meth:`encode` and :meth:`decode` accept an ``algorithms`` parameter "
 "for specifying the allowed algorithms. By default, it only allows you to "
 "use the **recommended** algorithms."
 msgstr ""
 
-#: ../../guide/jwt.rst:296
+#: ../../guide/jwt.rst:360
 msgid "You can find out the recommended algorithms at:"
 msgstr ""
 
-#: ../../guide/jwt.rst:301
+#: ../../guide/jwt.rst:365
 msgid ""
 "For instance, ``HS386`` is not a recommended algorithm, and you want to "
 "use this algorithm:"
 msgstr ""
 
-#: ../../guide/jwt.rst:312
+#: ../../guide/jwt.rst:376
 msgid ""
 "If not specifying the ``algorithms`` parameter, the ``encode`` method "
 "will raise an error."
 msgstr ""
 
-#: ../../guide/jwt.rst:316
+#: ../../guide/jwt.rst:380
 #, fuzzy
 msgid "JSON Encoder and Decoder"
 msgstr "JWT 的编码与解码"
 
-#: ../../guide/jwt.rst:320
+#: ../../guide/jwt.rst:384
 msgid ""
 "The parameters ``encoder_cls`` for ``jwt.encode`` and ``decoder_cls`` for"
 " ``jwt.decode`` were introduced in version 1.1.0."
 msgstr ""
 
-#: ../../guide/jwt.rst:323
+#: ../../guide/jwt.rst:387
 msgid ""
 "When using ``jwt.encode`` to encode claims that contain data types that "
 "``json`` module does not natively support, such as ``UUID`` and "
 "``datetime``, an error will be raised."
 msgstr ""
 
-#: ../../guide/jwt.rst:356
+#: ../../guide/jwt.rst:420
 msgid ""
 "To resolve this issue, you can pass a custom ``JSONEncoder`` using the "
 "``encoder_cls`` parameter."
 msgstr ""
 
-#: ../../guide/jwt.rst:374
+#: ../../guide/jwt.rst:438
 msgid ""
 "Additionally, ``jwt.decode`` accepts a ``decoder_cls`` parameter. If you "
 "need to convert the decoded claims into the appropriate data types, you "
@@ -1851,3 +1896,52 @@ msgid ""
 "``JWSRegistry`` or ``JWERegistry``."
 msgstr ""
 
+#~ msgid ""
+#~ "Call this method will generate the "
+#~ "thumbprint with algorithm defined in "
+#~ "RFC7638."
+#~ msgstr ""
+
+#~ msgid "``JWKRegistry``"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The :class:`JWKRegistry` class serves as "
+#~ "a registry for storing all the "
+#~ "supported key types in the ``joserfc``"
+#~ " library. While developers typically use"
+#~ " specific key types such as "
+#~ "``RSAKey`` or ``ECKey``, this registry "
+#~ "offers a means to dynamically import "
+#~ "and generate keys."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The :meth:`JWKRegistry.import_key` can choose "
+#~ "the correct key type automatically when"
+#~ " importing a JWK in dict:"
+#~ msgstr ""
+
+#~ msgid "You can use ``jwk.import_key`` directly. For example::"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The :meth:`JWKRegistry.generate_key` can generate"
+#~ " a key with all the supported "
+#~ "key types. For ``oct`` and ``RSA`` "
+#~ "the parameters in this method:"
+#~ msgstr ""
+
+#~ msgid "You can use ``jwk.generate_key`` directly. For example::"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The ``import_key`` and ``generate_key`` "
+#~ "methods available in ``OctKey``, ``RSAKey``,"
+#~ " ``ECKey``, ``OKPKey``, and ``JWKRegistry`` "
+#~ "classes have an optional ``parameters`` "
+#~ "parameter. This ``parameters`` allows you "
+#~ "to provide a dict that includes "
+#~ "additional key parameters to be included"
+#~ " in the JWK."
+#~ msgstr ""
