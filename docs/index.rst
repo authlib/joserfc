@@ -51,6 +51,7 @@ It follows RFCs with extensible API. The module has implementations of:
 - RFC7638: ``thumbprint`` for JWK
 - RFC8037: :ref:`OKPKey` and ``EdDSA`` algorithm
 - RFC8812: ``ES256K`` algorithm
+- RFC9278: ``thumbprint_uri`` for JWK
 
 And draft RFCs implementation of:
 

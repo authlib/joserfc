@@ -15,10 +15,11 @@ Changelog
 1.2.0
 -----
 
-**Unreleased**
+**Released on July 7, 2025**
 
+- Added RFC9278 JWK Thumbprint URI ``thumbprint_uri``.
 - Show security warnings for ``none`` and ``RSA1_5`` algorithms.
-- Show security warnings for ``OctKey.generate_key`` and ``RSAKey.generate_key``
+- Show security warnings for ``OctKey.generate_key`` and ``RSAKey.generate_key``.
   when key size is too short, per `NIST SP 800-131A`_.
 
 .. _`NIST SP 800-131A`: https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
@@ -53,7 +54,7 @@ Changelog
 1.0.4
 -----
 
-**Released on Feb 28, 2025**
+**Released on February 28, 2025**
 
 - Use secrets module to generate random bytes.
 - Use warnings for possible unsafe ``OctKey`` instead of raising error, via :issue:`32`.
@@ -61,14 +62,14 @@ Changelog
 1.0.3
 -----
 
-**Released on Feb 6, 2025**
+**Released on February 6, 2025**
 
 - Allow using sha256, sha384, sha512 hash functions in thumbprint (RFC7638).
 
 1.0.2
 -----
 
-**Released on Jan 20, 2025**
+**Released on January 20, 2025**
 
 - Support import key from a certificate pem file.
 

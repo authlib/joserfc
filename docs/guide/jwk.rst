@@ -297,14 +297,26 @@ Key methods
 ``thumbprint``
 ~~~~~~~~~~~~~~
 
-Call this method will generate the thumbprint with algorithm defined in RFC7638.
+Call this method will generate the thumbprint of the JWK, per RFC7638.
 
 .. code-block:: python
 
     >>> from joserfc.jwk import OctKey
     >>> key = OctKey.generate_key()
     >>> key.thumbprint()
-    'RltMKTBXPdfe_CssBuyDK0pz17m0lKVraYEGfSlS6Ow'
+    'DCdRGGDKvhAJgmVlCp6tosc2T9ELtd30S_15vn8bhrI'
+
+You can also use the ``jwk.thumbprint`` method:
+
+.. code-block:: python
+
+    from joserfc import jwk
+    jwk.thumbprint({
+        'kty': 'oct',
+        'k': 'sTBpI_oCHSyW-n0exSwhzNHwU9FGRioPauxWA84bnRU',
+    })
+    # 'DCdRGGDKvhAJgmVlCp6tosc2T9ELtd30S_15vn8bhrI'
+
 
 ``thumbprint_uri``
 ~~~~~~~~~~~~~~~~~~
@@ -318,7 +330,18 @@ Call this method will generate the JWK thumbprint URI, per RFC9278.
     >>> from joserfc.jwk import OctKey
     >>> key = OctKey.generate_key()
     >>> key.thumbprint_uri()
-    'urn:ietf:params:oauth:jwk-thumbprint:sha-256:RltMKTBXPdfe_CssBuyDK0pz17m0lKVraYEGfSlS6Ow'
+    'urn:ietf:params:oauth:jwk-thumbprint:sha-256:DCdRGGDKvhAJgmVlCp6tosc2T9ELtd30S_15vn8bhrI'
+
+You can also use the ``jwk.thumbprint_uri`` method:
+
+.. code-block:: python
+
+    from joserfc import jwk
+    jwk.thumbprint_uri({
+        'kty': 'oct',
+        'k': 'sTBpI_oCHSyW-n0exSwhzNHwU9FGRioPauxWA84bnRU',
+    })
+    # 'urn:ietf:params:oauth:jwk-thumbprint:sha-256:DCdRGGDKvhAJgmVlCp6tosc2T9ELtd30S_15vn8bhrI'
 
 .. _ensure_kid:
 
