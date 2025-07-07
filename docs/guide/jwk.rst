@@ -399,33 +399,34 @@ Dump an asymmetric key into DER format (in bytes):
     with open("my-key.der", "w") as f:
         f.write(text)
 
-``JWKRegistry``
----------------
+Utilities
+---------
 
-The :class:`JWKRegistry` class serves as a registry for storing all
-the supported key types in the ``joserfc`` library. While developers
-typically use specific key types such as ``RSAKey`` or ``ECKey``,
-this registry offers a means to dynamically import and generate keys.
+The ``jwk`` module offers a means to dynamically import and generate keys.
 
 Import keys
 ~~~~~~~~~~~
 
-The :meth:`JWKRegistry.import_key` can choose the correct key type
-automatically when importing a JWK in dict:
+.. versionadded:: v1.1.0
+
+The :meth:`import_key` can choose the correct key type automatically when
+importing a JWK in dict:
 
 .. code-block:: python
 
+    from joserfc import jwk
+
     data = {"kty": "oct", "k": "..."}
-    key = JWKRegistry.import_key(data)  # returns a OctKey
+    key = jwk.import_key(data)  # returns a OctKey
 
     data = {"kty": "RSA", ...}
-    key = JWKRegistry.import_key(data)  # returns a RSAKey
+    key = jwk.import_key(data)  # returns a RSAKey
 
     data = {"kty": "EC", ...}
-    key = JWKRegistry.import_key(data)  # returns a ECKey
+    key = jwk.import_key(data)  # returns a ECKey
 
     data = {"kty": "OKP", ...}
-    key = JWKRegistry.import_key(data)  # returns a OKPKey
+    key = jwk.import_key(data)  # returns a OKPKey
 
 If the key is in bytes or string, not dict, developers SHOULD specify
 the key type manually:
@@ -433,49 +434,39 @@ the key type manually:
 .. code-block:: python
 
     data = b"---- BEGIN RSA PRIVATE KEY ----\n..."
-    key = JWKRegistry.import_key(data, "RSA")
+    key = jwk.import_key(data, "RSA")
 
-.. versionadded:: v1.1.0
-
-    You can use ``jwk.import_key`` directly. For example::
-
-        from joserfc.jwk import import_key
-        data = {"kty": "oct", "k": "..."}
-        key = import_key(data)
 
 Generate keys
 ~~~~~~~~~~~~~
 
-The :meth:`JWKRegistry.generate_key` can generate a key with all
-the supported key types. For ``oct`` and ``RSA`` the parameters
-in this method:
+.. versionadded:: v1.1.0
+
+The :meth:`generate_key` can generate a key with all the supported key
+types. For ``oct`` and ``RSA`` the parameters in this method:
 
 .. code-block:: python
 
+    from joserfc import jwk
+
     # (key_type: str, size: int, parameters: Optional[dict], private: bool=True)
-    key = JWKRegistry.generate_key("oct", 256)
-    key = JWKRegistry.generate_key("RSA", 2048, {"use": "sig"})
+    key = jwk.generate_key("oct", 256)
+    key = jwk.generate_key("RSA", 2048, {"use": "sig"})
 
 For ``EC`` and ``OKP`` keys, the parameters are:
 
 .. code-block:: python
 
     # (key_type: str, crv: str, parameters: Optional[dict], private: bool=True)
-    key = JWKRegistry.generate_key("EC", "P-256")
-    key = JWKRegistry.generate_key("OKP", "Ed25519")
+    key = jwk.generate_key("EC", "P-256")
+    key = jwk.generate_key("OKP", "Ed25519")
 
-.. versionadded:: v1.1.0
-
-    You can use ``jwk.generate_key`` directly. For example::
-
-        from joserfc.jwk import generate_key
-        key = generate_key("oct", 256)
 
 Options
 -------
 
-The ``import_key`` and ``generate_key`` methods available in ``OctKey``, ``RSAKey``,
-``ECKey``, ``OKPKey``, and ``JWKRegistry`` classes have an optional ``parameters`` parameter.
+The ``import_key`` and ``generate_key`` methods available on ``OctKey``, ``RSAKey``,
+``ECKey``, ``OKPKey``, and ``jwk`` classes have an optional ``parameters`` parameter.
 This ``parameters`` allows you to provide a dict that includes additional key parameters
 to be included in the JWK.
 
