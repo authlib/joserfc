@@ -119,12 +119,11 @@ including:
 .. warning::
     ``RSA1_5`` algorithm is deprecated via https://datatracker.ietf.org/doc/draft-ietf-jose-deprecate-none-rsa15/
 
-A ``DEF`` algorithm for the "zip" (compression) header parameter is also defined in
-RFC7518, which is recommended.
+There is also a ``DEF`` algorithm for the "zip" (compression) header parameter,
+using of ``DEF`` is optional.
 
 There are also additional algorithms for "alg" and "enc" in draft versions.
 Please refer to the following sections for more information.
-
 
 OKPKey
 ~~~~~~
