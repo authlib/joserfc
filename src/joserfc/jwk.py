@@ -105,7 +105,9 @@ def import_key(data: AnyKey, key_type: t.Literal["OKP"], parameters: KeyParamete
 
 
 def import_key(
-    data: AnyKey, key_type: t.Literal["oct", "RSA", "EC", "OKP"] | None = None, parameters: KeyParameters | None = None
+    data: AnyKey,
+    key_type: t.Literal["oct", "RSA", "EC", "OKP"] | None = None,
+    parameters: KeyParameters | None = None,
 ) -> Key:
     """Importing a key from bytes, string, and dict. When ``value`` is a dict,
     this method can tell the key type automatically, otherwise, developers
@@ -122,7 +124,7 @@ def import_key(
 @t.overload
 def generate_key(
     key_type: t.Literal["oct"],
-    crv_or_size: str | int | None = None,
+    crv_or_size: int | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
     auto_kid: bool = False,
@@ -132,7 +134,7 @@ def generate_key(
 @t.overload
 def generate_key(
     key_type: t.Literal["RSA"],
-    crv_or_size: str | int | None = None,
+    crv_or_size: int | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
     auto_kid: bool = False,
@@ -142,7 +144,7 @@ def generate_key(
 @t.overload
 def generate_key(
     key_type: t.Literal["EC"],
-    crv_or_size: str | int | None = None,
+    crv_or_size: t.Literal["P-256", "P-384", "P-521", "secp256k1"] | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
     auto_kid: bool = False,
@@ -152,7 +154,7 @@ def generate_key(
 @t.overload
 def generate_key(
     key_type: t.Literal["OKP"],
-    crv_or_size: str | int | None = None,
+    crv_or_size: t.Literal["Ed25519", "Ed448", "X25519", "X448"] | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
     auto_kid: bool = False,
