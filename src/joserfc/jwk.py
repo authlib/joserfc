@@ -12,6 +12,7 @@ from ._rfc7518.rsa_key import RSAKey as RSAKey
 from ._rfc7518.ec_key import ECKey as ECKey
 from ._rfc8037.okp_key import OKPKey as OKPKey
 from ._rfc8812 import register_secp256k1
+from ._rfc7638 import calculate_thumbprint as thumbprint
 from ._rfc9278 import calculate_thumbprint_uri as thumbprint_uri
 from .registry import Header
 
@@ -37,6 +38,7 @@ __all__ = [
     "guess_key",
     "import_key",
     "generate_key",
+    "thumbprint",
     "thumbprint_uri",
 ]
 
