@@ -111,8 +111,8 @@ differ significantly in terms of structure and flexibility.
     # => token.header : {"alg": "HS256"}
     # => token.claims : {"a": "b"}
 
-get_unverified_header
-~~~~~~~~~~~~~~~~~~~~~
+``get_unverified_header``
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``jwt`` module in python-jose provides a method called ``get_unverified_header``,
 which allows extracting the header from a JWT without verifying its signature.
@@ -129,8 +129,8 @@ In ``joserfc``, we can get the unverified header with:
         token_content = jws.extract_compact(token.encode())
         return token_content.protected
 
-get_unverified_claims
-~~~~~~~~~~~~~~~~~~~~~
+``get_unverified_claims``
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can also use the ``jws.extract_compact`` method to extract the JWT's claims:
 

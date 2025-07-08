@@ -217,22 +217,3 @@ msgstr ""
 #: ../../recipes/openssl.rst:82
 msgid "EC key with crv secp256k1"
 msgstr ""
-
-#~ msgid ""
-#~ "Let's illustrate this process using a"
-#~ " JWT token extracted from Microsoft's "
-#~ "official documentation `Access tokens in "
-#~ "the Microsoft identity platform "
-#~ "<ms_doc_url>`_:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "JOSE RFC provides a method "
-#~ ":meth:`JWKRegistry.generate_key` for generating keys"
-#~ " to be used for JWS/JWE/JWT. However,"
-#~ " you can also use other tools "
-#~ "to generate the keys, here lists "
-#~ "some of the commands you might "
-#~ "find helpful for ``openssl``."
-#~ msgstr ""
-

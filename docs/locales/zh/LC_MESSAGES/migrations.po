@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-28 11:54+0900\n"
+"POT-Creation-Date: 2025-07-08 12:01+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -34,7 +34,7 @@ msgstr ""
 
 #: ../../migrations/authlib.rst:11 ../../migrations/python-jose.rst:85
 msgid "JWT"
-msgstr ""
+msgstr "JWT"
 
 #: ../../migrations/authlib.rst:13
 msgid ""
@@ -45,7 +45,7 @@ msgstr ""
 
 #: ../../migrations/authlib.rst:17 ../../migrations/pyjwt.rst:11
 msgid "jwt.encode"
-msgstr ""
+msgstr "jwt.encode"
 
 #: ../../migrations/authlib.rst:19
 msgid ""
@@ -56,20 +56,21 @@ msgstr ""
 
 #: ../../migrations/authlib.rst:22 ../../migrations/authlib.rst:80
 msgid "Authlib"
-msgstr ""
+msgstr "Authlib"
 
 #: ../../migrations/authlib.rst:30 ../../migrations/authlib.rst:92
 #: ../../migrations/pyjwt.rst:23 ../../migrations/pyjwt.rst:45
 #: ../../migrations/pyjwt.rst:77 ../../migrations/pyjwt.rst:117
 #: ../../migrations/pyjwt.rst:136 ../../migrations/python-jose.rst:31
 #: ../../migrations/python-jose.rst:72 ../../migrations/python-jose.rst:101
-#: ../../migrations/python-jose.rst:122
+#: ../../migrations/python-jose.rst:122 ../../migrations/python-jose.rst:137
+#: ../../migrations/python-jose.rst:155
 msgid "joserfc"
-msgstr ""
+msgstr "joserfc"
 
 #: ../../migrations/authlib.rst:40 ../../migrations/pyjwt.rst:34
 msgid "jwt.decode"
-msgstr ""
+msgstr "jwt.decode"
 
 #: ../../migrations/authlib.rst:42
 msgid ""
@@ -99,7 +100,7 @@ msgstr ""
 
 #: ../../migrations/authlib.rst:75 ../../migrations/python-jose.rst:14
 msgid "JWS"
-msgstr ""
+msgstr "JWS"
 
 #: ../../migrations/authlib.rst:77
 msgid ""
@@ -116,7 +117,7 @@ msgstr ""
 
 #: ../../migrations/authlib.rst:109 ../../migrations/python-jose.rst:55
 msgid "JWE"
-msgstr ""
+msgstr "JWE"
 
 #: ../../migrations/authlib.rst:111
 msgid ""
@@ -130,11 +131,11 @@ msgstr ""
 
 #: ../../migrations/authlib.rst:116
 msgid "``.serialize_compact(header, payload, key)``"
-msgstr ""
+msgstr "``.serialize_compact(header, payload, key)``"
 
 #: ../../migrations/authlib.rst:117
 msgid "``.deserialize_compact(token, key)``"
-msgstr ""
+msgstr "``.deserialize_compact(token, key)``"
 
 #: ../../migrations/authlib.rst:127
 msgid ""
@@ -144,11 +145,11 @@ msgstr ""
 
 #: ../../migrations/authlib.rst:129
 msgid "``.encrypt_compact(header, payload, key)``"
-msgstr ""
+msgstr "``.encrypt_compact(header, payload, key)``"
 
 #: ../../migrations/authlib.rst:130
 msgid "``.decrypt_compact(token, key)``"
-msgstr ""
+msgstr "``.decrypt_compact(token, key)``"
 
 #: ../../migrations/authlib.rst:139
 msgid ""
@@ -190,7 +191,7 @@ msgstr ""
 #: ../../migrations/pyjwt.rst:65 ../../migrations/pyjwt.rst:111
 #: ../../migrations/pyjwt.rst:130
 msgid "PyJWT"
-msgstr ""
+msgstr "PyJWT"
 
 #: ../../migrations/pyjwt.rst:36
 msgid ""
@@ -328,8 +329,8 @@ msgid ""
 msgstr ""
 
 #: ../../migrations/python-jose.rst:115
-msgid "get_unverified_header"
-msgstr ""
+msgid "``get_unverified_header``"
+msgstr "``get_unverified_header``"
 
 #: ../../migrations/python-jose.rst:117
 msgid ""
@@ -343,6 +344,22 @@ msgid "In ``joserfc``, we can get the unverified header with:"
 msgstr ""
 
 #: ../../migrations/python-jose.rst:133
+msgid "``get_unverified_claims``"
+msgstr "``get_unverified_claims``"
+
+#: ../../migrations/python-jose.rst:135
+msgid ""
+"You can also use the ``jws.extract_compact`` method to extract the JWT's "
+"claims:"
+msgstr ""
+
+#: ../../migrations/python-jose.rst:149
 msgid "JWK"
 msgstr ""
 
+#: ../../migrations/python-jose.rst:151
+msgid ""
+"In ``python-jose``, you can use ``jwk.construct`` to create a key "
+"instance from a JWK-formatted dictionary. In contrast, ``joserfc`` "
+"provides the ``jwk.import_key`` method to achieve the same result."
+msgstr ""
