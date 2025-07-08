@@ -109,7 +109,7 @@ differ significantly in terms of structure and flexibility.
     encoded = jwt.encode({"alg": "HS256"}, {'a': 'b'}, key)
     token = jwt.decode(encoded, key)
     # => token.header : {"alg": "HS256"}
-    # => token.claims : {"some": "payload"}
+    # => token.claims : {"a": "b"}
 
 get_unverified_header
 ~~~~~~~~~~~~~~~~~~~~~
@@ -129,5 +129,38 @@ In ``joserfc``, we can get the unverified header with:
         token_content = jws.extract_compact(token.encode())
         return token_content.protected
 
+get_unverified_claims
+~~~~~~~~~~~~~~~~~~~~~
+
+You can also use the ``jws.extract_compact`` method to extract the JWT's claims:
+
+.. code-block:: python
+    :caption: joserfc
+
+    import json
+    from typing import Any
+    from joserfc import jws
+
+    def get_unverified_claims(token: str) -> dict[str, Any]:
+        token_content = jws.extract_compact(token.encode())
+        return json.loads(token_content.payload)
+
 JWK
 ---
+
+In ``python-jose``, you can use ``jwk.construct`` to create a key instance
+from a JWK-formatted dictionary. In contrast, ``joserfc`` provides the
+``jwk.import_key`` method to achieve the same result.
+
+.. code-block:: python
+    :caption: joserfc
+
+    from joserfc import jwk
+
+    jwk.import_key({
+        "kty": "oct",
+        "kid": "018c0ae5-4d9b-471b-bfd6-eef314bc7037",
+        "use": "sig",
+        "alg": "HS256",
+        "k": "hJtXIZ2uSN5kbQfbtTNWbpdmhkV8FJG-Onbc6mxCcYg"
+    })
