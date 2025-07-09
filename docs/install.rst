@@ -40,6 +40,17 @@ installed using pip.
 
     To use :ref:`chacha20` algorithms, developers have to install the ``PyCryptodome`` module.
 
+conda install
+-------------
+
+``joserfc`` is also available from conda-forge_:
+
+.. code-block:: shell
+
+    conda install conda-forge::joserfc
+
+.. _conda-forge: https://anaconda.org/conda-forge/joserfc
+
 Dependency management
 ---------------------
 
