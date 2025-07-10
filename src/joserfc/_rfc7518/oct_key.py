@@ -10,7 +10,7 @@ from ..util import (
 )
 from ..registry import KeyParameter
 from .._rfc7517.models import SymmetricKey, NativeKeyBinding
-from .._rfc7517.types import KeyParameters, DictKey
+from .._rfc7517.types import KeyParameters, DictKey, AnyKey
 
 
 POSSIBLE_UNSAFE_KEYS = (
@@ -49,6 +49,15 @@ class OctKey(SymmetricKey):
 
     #: https://www.rfc-editor.org/rfc/rfc7518#section-6.4
     value_registry = {"k": KeyParameter("Key Value", "str", True, True)}
+
+    @classmethod
+    def import_key(
+        cls: Any,
+        value: AnyKey,
+        parameters: KeyParameters | None = None,
+        password: Any = None,
+    ) -> "OctKey":
+        return super(OctKey, cls).import_key(value, parameters, password)
 
     @classmethod
     def generate_key(

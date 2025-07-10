@@ -115,6 +115,10 @@ def import_key(data: AnyKey, key_type: t.Literal["EC"], parameters: KeyParameter
 def import_key(data: AnyKey, key_type: t.Literal["OKP"], parameters: KeyParameters | None = None) -> OKPKey: ...
 
 
+@t.overload
+def import_key(data: DictKey, key_type: None = None, parameters: KeyParameters | None = None) -> Key: ...
+
+
 def import_key(
     data: AnyKey,
     key_type: t.Literal["oct", "RSA", "EC", "OKP"] | None = None,

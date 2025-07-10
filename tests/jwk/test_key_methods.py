@@ -142,8 +142,8 @@ class TestKeyMethods(TestCase):
         key = OctKey.generate_key()
         dict_key = key.as_dict()
 
-        key1: OctKey = OctKey.import_key(dict_key, {"use": "enc"})
-        key2: OctKey = OctKey.import_key(dict_key, {"use": "sig"})
+        key1 = OctKey.import_key(dict_key, {"use": "enc"})
+        key2 = OctKey.import_key(dict_key, {"use": "sig"})
         self.assertEqual(key1.kid, key2.kid)
 
         key_set = KeySet([key1, key2])
@@ -165,8 +165,8 @@ class TestKeyMethods(TestCase):
         key = OctKey.generate_key()
         dict_key = key.as_dict()
 
-        key1: OctKey = OctKey.import_key(dict_key, {"alg": "HS256"})
-        key2: OctKey = OctKey.import_key(dict_key, {"alg": "dir"})
+        key1 = OctKey.import_key(dict_key, {"alg": "HS256"})
+        key2 = OctKey.import_key(dict_key, {"alg": "dir"})
 
         self.assertEqual(key1.kid, key2.kid)
 

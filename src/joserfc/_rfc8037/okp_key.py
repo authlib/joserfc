@@ -13,7 +13,7 @@ from cryptography.hazmat.primitives.serialization import (
     NoEncryption,
 )
 from .._rfc7517.models import CurveKey
-from .._rfc7517.types import KeyParameters
+from .._rfc7517.types import KeyParameters, AnyKey
 from .._rfc7517.pem import CryptographyBinding
 from ..errors import InvalidExchangeKeyError
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
@@ -119,6 +119,15 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
     @property
     def curve_name(self) -> str:
         return get_key_curve(self.raw_value)
+
+    @classmethod
+    def import_key(
+        cls: t.Any,
+        value: AnyKey,
+        parameters: KeyParameters | None = None,
+        password: t.Any = None,
+    ) -> "OKPKey":
+        return super(OKPKey, cls).import_key(value, parameters, password)
 
     @classmethod
     def generate_key(

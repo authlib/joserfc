@@ -42,15 +42,15 @@ class NativeKeyBinding(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def import_from_bytes(cls, value: bytes, password: t.Optional[t.Any] = None) -> t.Any:
+    def import_from_bytes(cls, value: bytes, password: t.Any = None) -> t.Any:
         pass
 
     @staticmethod
     def as_bytes(
         key: GenericKey,
-        encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
-        private: t.Optional[bool] = None,
-        password: t.Optional[str] = None,
+        encoding: t.Literal["PEM", "DER"] | None = None,
+        private: bool | None = None,
+        password: str | None = None,
     ) -> bytes:
         raise NotImplementedError()
 
@@ -88,7 +88,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         self,
         raw_value: NativePrivateKey | NativePublicKey,
         original_value: t.Any,
-        parameters: t.Optional[KeyParameters] = None,
+        parameters: KeyParameters | None = None,
     ):
         self._raw_value = raw_value
         self.original_value = original_value
@@ -160,7 +160,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         raise NotImplementedError()
 
     @property
-    def private_key(self) -> t.Optional[NativePrivateKey]:
+    def private_key(self) -> NativePrivateKey | None:
         raise NotImplementedError()
 
     def thumbprint(self) -> str:
@@ -177,7 +177,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         value = self.thumbprint()
         return concat_thumbprint_uri(value, self.thumbprint_digest_method)
 
-    def as_dict(self, private: t.Optional[bool] = None, **params: t.Any) -> DictKey:
+    def as_dict(self, private: bool | None = None, **params: t.Any) -> DictKey:
         """Output this key to a JWK format (in dict). By default, it will return
         the ``dict_value`` of this key.
 
@@ -270,8 +270,8 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     def import_key(
         cls: t.Type[GenericKey],
         value: AnyKey,
-        parameters: t.Optional[KeyParameters] = None,
-        password: t.Optional[t.Any] = None,
+        parameters: KeyParameters | None = None,
+        password: t.Any = None,
     ) -> GenericKey:
         if isinstance(value, dict):
             cls.validate_dict_key(value)
@@ -285,7 +285,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     def generate_key(
         cls: t.Type[GenericKey],
         size_or_crv: t.Any,
-        parameters: t.Optional[KeyParameters] = None,
+        parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
     ) -> GenericKey:
@@ -321,16 +321,16 @@ class AsymmetricKey(BaseKey[NativePrivateKey, NativePublicKey], metaclass=ABCMet
 
     def as_bytes(
         self,
-        encoding: t.Optional[t.Literal["PEM", "DER"]] = None,
-        private: t.Optional[bool] = None,
-        password: t.Optional[str] = None,
+        encoding: t.Literal["PEM", "DER"] | None = None,
+        private: bool | None = None,
+        password: str | None = None,
     ) -> bytes:
         return self.binding.as_bytes(self, encoding, private, password)
 
-    def as_pem(self, private: t.Optional[bool] = None, password: t.Optional[str] = None) -> bytes:
+    def as_pem(self, private: bool | None = None, password: str | None = None) -> bytes:
         return self.as_bytes(private=private, password=password)
 
-    def as_der(self, private: t.Optional[bool] = None, password: t.Optional[str] = None) -> bytes:
+    def as_der(self, private: bool | None = None, password: str | None = None) -> bytes:
         return self.as_bytes(encoding="DER", private=private, password=password)
 
 

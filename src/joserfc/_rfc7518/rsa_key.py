@@ -1,6 +1,6 @@
 from __future__ import annotations
 import warnings
-from typing import TypedDict
+from typing import TypedDict, Any
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.rsa import (
     generate_private_key,
@@ -18,7 +18,7 @@ from ..registry import KeyParameter
 from ..errors import SecurityWarning
 from .._rfc7517.models import AsymmetricKey
 from .._rfc7517.pem import CryptographyBinding
-from .._rfc7517.types import KeyParameters
+from .._rfc7517.types import KeyParameters, AnyKey
 from ..util import int_to_base64, base64_to_int
 
 
@@ -131,6 +131,15 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         if isinstance(self.raw_value, RSAPrivateKey):
             return self.raw_value
         return None
+
+    @classmethod
+    def import_key(
+        cls: Any,
+        value: AnyKey,
+        parameters: KeyParameters | None = None,
+        password: Any = None,
+    ) -> "RSAKey":
+        return super(RSAKey, cls).import_key(value, parameters, password)
 
     @classmethod
     def generate_key(

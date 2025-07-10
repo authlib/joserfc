@@ -17,7 +17,7 @@ from cryptography.hazmat.backends import default_backend
 from ..errors import InvalidExchangeKeyError
 from .._rfc7517.models import CurveKey
 from .._rfc7517.pem import CryptographyBinding
-from .._rfc7517.types import KeyParameters
+from .._rfc7517.types import KeyParameters, AnyKey
 from ..util import base64_to_int, int_to_base64
 from ..registry import KeyParameter
 
@@ -141,6 +141,15 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
     @property
     def curve_key_size(self) -> int:
         return self.raw_value.curve.key_size
+
+    @classmethod
+    def import_key(
+        cls: t.Any,
+        value: AnyKey,
+        parameters: KeyParameters | None = None,
+        password: t.Any = None,
+    ) -> "ECKey":
+        return super(ECKey, cls).import_key(value, parameters, password)
 
     @classmethod
     def generate_key(
