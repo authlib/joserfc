@@ -12,6 +12,16 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.2.1
+-----
+
+**Released on July 10, 2025**
+
+- Improve type hints on JWK module:
+  - Overload type hints on ``jwk.import_key`` and ``jwk.generate_key``.
+  - Return correct types on ``OctKey.import_key``, ``RSAKey.import_key``, and etc.
+- Guess key with "alg" and "use" parameters.
+
 1.2.0
 -----
 
