@@ -140,21 +140,32 @@ class KeySet:
                 keys.append(key.as_dict(private=private, **params))
         return {"keys": keys}
 
-    def get_by_kid(self, kid: str | None = None) -> Key:
+    def get_by_kid(self, kid: str | None = None, parameters: KeyParameters | None = None) -> Key:
         if kid is None and len(self.keys) == 1:
             return self.keys[0]
 
-        for key in self.keys:
-            if key.kid == kid:
-                return key
-        raise InvalidKeyIdError(f"No key for kid: '{kid}'")
+        keys = [key for key in self.keys if key.kid == kid]
+        if parameters:
+            keys = list(_filter_keys_by_parameters(keys, parameters))
 
-    def pick_random_key(self, algorithm: str) -> t.Optional[Key]:
+        if len(keys) == 1:
+            return keys[0]
+
+        elif len(keys) == 0:
+            raise InvalidKeyIdError(f"No key for kid: '{kid}'")
+        else:
+            raise InvalidKeyIdError(f"Multiple keys for kid: '{kid}'")
+
+    def pick_random_key(self, algorithm: str, parameters: KeyParameters | None = None) -> t.Optional[Key]:
         key_types = self.algorithm_keys.get(algorithm)
         if key_types:
             keys = [k for k in self.keys if k.key_type in key_types]
         else:
             keys = self.keys
+
+        if parameters:
+            keys = list(_filter_keys_by_parameters(keys, parameters))
+
         if keys:
             return random.choice(keys)
         return None
@@ -186,3 +197,19 @@ class KeySet:
             keys.append(key)
 
         return cls(keys)
+
+
+def _filter_keys_by_parameters(keys: list[Key], parameters: KeyParameters) -> t.Generator[Key]:
+    _use = parameters.get("use")
+    _alg = parameters.get("alg")
+
+    for key in keys:
+        designed_use = key.get("use")
+        if designed_use and _use and designed_use != _use:
+            continue
+
+        designed_alg = key.get("alg")
+        if designed_alg and _alg and designed_alg != _alg:
+            continue
+
+        yield key

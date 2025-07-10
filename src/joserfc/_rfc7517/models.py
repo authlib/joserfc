@@ -205,6 +205,15 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     def check_use(self, use: str) -> None:
         """Check if this key supports the given "use".
 
+        Values defined by this specification are:
+
+        - "sig" (signature)
+        - "enc" (encryption)
+
+        Other values MAY be used.  The "use" value is a case-sensitive
+        string. Use of the "use" member is OPTIONAL, unless the application
+        requires its presence.
+
         :param use: this key is used for, e.g. "sig", "enc"
         :raise: UnsupportedKeyUseError
         """

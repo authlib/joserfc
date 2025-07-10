@@ -56,12 +56,18 @@ KeyCallable = t.Callable[[GuestProtocol], KeyBase]
 KeyFlexible = t.Union[KeyBase, KeyCallable]
 
 
-def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) -> Key:
+def guess_key(
+    key: KeyFlexible,
+    obj: GuestProtocol,
+    random: bool = False,
+    use: t.Literal["sig", "enc"] | None = None,
+) -> Key:
     """Guess key from a various sources.
 
     :param key: a very flexible key
     :param obj: a protocol that has ``headers`` and ``set_kid`` methods
-    :param use_random: pick a random key from key set
+    :param random: pick a random key from key set
+    :param use: optional "use" value
     """
     resolved_key: KeyBase
     if callable(key):
@@ -74,15 +80,20 @@ def guess_key(key: KeyFlexible, obj: GuestProtocol, use_random: bool = False) ->
     elif isinstance(resolved_key, KeySet):
         headers = obj.headers()
         kid: str | None = headers.get("kid")
-        if not kid and use_random:
+
+        parameters: KeyParameters = {"alg": headers["alg"]}
+        if use:
+            parameters["use"] = use
+
+        if not kid and random:
             # choose one key by random
-            return_key = resolved_key.pick_random_key(headers["alg"])
+            return_key = resolved_key.pick_random_key(headers["alg"], parameters)
             if return_key is None:
                 raise ValueError("Invalid key")
             return_key.ensure_kid()
             obj.set_kid(t.cast(str, return_key.kid))
         else:
-            return_key = resolved_key.get_by_kid(kid)
+            return_key = resolved_key.get_by_kid(kid, parameters)
         return return_key
     else:
         raise ValueError("Invalid key")

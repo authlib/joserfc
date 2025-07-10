@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-# trigger register_key_set
-import joserfc.jws  # noqa: F401
+from joserfc import jws
 from joserfc.jwk import guess_key, import_key, generate_key, thumbprint_uri
 from joserfc.jwk import KeySet, OctKey, RSAKey, ECKey, OKPKey
 from joserfc.errors import (
@@ -16,7 +15,7 @@ from joserfc.errors import (
 
 class Guest:
     def __init__(self):
-        self._headers = {}
+        self._headers = {"alg": "HS256"}
 
     def headers(self):
         return self._headers
@@ -138,3 +137,41 @@ class TestKeyMethods(TestCase):
         )
         expected = "urn:ietf:params:oauth:jwk-thumbprint:sha-256:w9eYdC6_s_tLQ8lH6PUpc0mddazaqtPgeC2IgWDiqY8"
         self.assertEqual(value, expected)
+
+    def test_find_correct_key_with_use(self):
+        key = OctKey.generate_key()
+        dict_key = key.as_dict()
+
+        key1: OctKey = OctKey.import_key(dict_key, {"use": "enc"})
+        key2: OctKey = OctKey.import_key(dict_key, {"use": "sig"})
+        self.assertEqual(key1.kid, key2.kid)
+
+        key_set = KeySet([key1, key2])
+        # pick randomly
+        jws.serialize_compact({"alg": "HS256"}, "foo", key_set)
+        # get by kid
+        jws.serialize_compact({"alg": "HS256", "kid": key2.kid}, "foo", key_set)
+
+        key_set = KeySet([key1, key2, key2])
+        self.assertRaises(
+            InvalidKeyIdError,
+            jws.serialize_compact,
+            {"alg": "HS256", "kid": key2.kid},
+            "foo",
+            key_set,
+        )
+
+    def test_find_correct_key_with_alg(self):
+        key = OctKey.generate_key()
+        dict_key = key.as_dict()
+
+        key1: OctKey = OctKey.import_key(dict_key, {"alg": "HS256"})
+        key2: OctKey = OctKey.import_key(dict_key, {"alg": "dir"})
+
+        self.assertEqual(key1.kid, key2.kid)
+
+        key_set = KeySet([key1, key2])
+        # pick randomly
+        jws.serialize_compact({"alg": "HS256"}, "foo", key_set)
+        # get by kid
+        jws.serialize_compact({"alg": "HS256", "kid": key2.kid}, "foo", key_set)

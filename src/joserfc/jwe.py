@@ -109,7 +109,7 @@ def encrypt_compact(
 
     obj = CompactEncryption(protected, to_bytes(plaintext))
     recipient: Recipient[Key] = Recipient(obj)
-    key = guess_key(public_key, recipient, True)
+    key = guess_key(public_key, recipient, True, use="enc")
     key.check_use("enc")
     recipient.recipient_key = key
     if sender_key:
@@ -155,7 +155,7 @@ def decrypt_compact(
 
     recipient = obj.recipient
     assert recipient is not None
-    key = guess_key(private_key, recipient)
+    key = guess_key(private_key, recipient, use="enc")
     key.check_use("enc")
     recipient.recipient_key = key
     if sender_key:
@@ -228,7 +228,7 @@ def encrypt_json(
             recipient.sender_key = _guess_sender_key(recipient, sender_key, True)
         if not recipient.recipient_key:
             assert public_key is not None
-            key = guess_key(public_key, recipient, True)
+            key = guess_key(public_key, recipient, True, use="enc")
             key.check_use("enc")
             recipient.recipient_key = key
 
@@ -276,7 +276,7 @@ def _attach_recipient_keys(
     recipients: list[Recipient[Key]], private_key: KeyFlexible, sender_key: ECKey | OKPKey | KeySet | None = None
 ) -> None:
     for recipient in recipients:
-        key = guess_key(private_key, recipient)
+        key = guess_key(private_key, recipient, use="enc")
         key.check_use("enc")
         recipient.recipient_key = key
         if sender_key:

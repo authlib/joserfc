@@ -130,10 +130,10 @@ def serialize_compact(
         if private_key is None:
             raise MissingKeyError()
 
-        key = guess_key(private_key, obj, True)
+        key = guess_key(private_key, obj, True, use="sig")
         key.check_use("sig")
         alg.check_key_type(key)
-        key.check_alg(protected["alg"])
+        key.check_alg(alg.name)
 
     if is_rfc7797:
         out = sign_rfc7515_compact(obj, alg, key)
@@ -170,7 +170,7 @@ def validate_compact(
     if public_key is None:
         raise MissingKeyError()
 
-    key: Key = guess_key(public_key, obj)
+    key: Key = guess_key(public_key, obj, use="sig")
     key.check_use("sig")
     alg.check_key_type(key)
     return verify_compact(obj, alg, key)
@@ -265,8 +265,8 @@ def serialize_json(
     if registry is None:
         registry = construct_registry(algorithms)
 
-    def find_key(obj: Any) -> Key:
-        return guess_key(private_key, obj, True)
+    def find_key(obj: HeaderMember) -> Key:
+        return guess_key(private_key, obj, True, use="sig")
 
     _payload = to_bytes(payload)
     if isinstance(members, list):
@@ -315,8 +315,8 @@ def deserialize_json(
     if registry is None:
         registry = construct_registry(algorithms)
 
-    def find_key(obj: Any) -> Key:
-        return guess_key(public_key, obj)
+    def find_key(obj: HeaderMember) -> Key:
+        return guess_key(public_key, obj, use="sig")
 
     if "signatures" in value:
         general_obj = extract_general_json(value)
