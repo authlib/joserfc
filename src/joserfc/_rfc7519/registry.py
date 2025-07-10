@@ -93,7 +93,7 @@ class JWTClaimsRegistry(ClaimsRegistry):
         else:
             aud_list = [value]
 
-        if not any([v in aud_list for v in option_values]):
+        if not any(v in aud_list for v in option_values):
             raise InvalidClaimError("aud")
 
     def validate_exp(self, value: int) -> None:
