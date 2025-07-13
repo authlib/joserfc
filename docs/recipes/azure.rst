@@ -68,7 +68,7 @@ the following format:
 
     https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration
 
-In the example provided, replace {tenant} with your specific Azure tenant ID or
+In the example provided, replace ``{tenant}`` with your specific Azure tenant ID or
 the tenant's globally unique identifier (GUID). The resulting URL will lead you
 to the OpenID configuration details. Then, the OpenID configuration endpoint for
 the above example could be:
@@ -88,7 +88,7 @@ can typically be found within the configuration as follows:
 
     https://login.microsoftonline.com/{tenant}/discovery/v2.0/keys
 
-Once again, remember to replace {tenant} with your Azure tenant ID or the appropriate identifier.
+Once again, remember to replace ``{tenant}`` with your Azure tenant ID or the appropriate identifier.
 In the above example, the ``jwks_uri`` could be:
 
 .. code-block:: none
