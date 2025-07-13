@@ -362,7 +362,7 @@ You can find out the recommended algorithms at:
 - :ref:`JSON Web Signature Algorithms <jws_algorithms>`
 - :ref:`JSON Web Encryption Algorithms <jwe_algorithms>`
 
-For instance, ``HS386`` is not a recommended algorithm, and you want to use
+For instance, ``HS384`` is not a recommended algorithm, and you want to use
 this algorithm:
 
 .. code-block:: python
