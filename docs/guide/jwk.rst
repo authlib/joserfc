@@ -297,7 +297,7 @@ Key methods
 ``thumbprint``
 ~~~~~~~~~~~~~~
 
-Call this method will generate the thumbprint of the JWK, per RFC7638.
+Calling this method will generate the thumbprint of the JWK, per RFC7638.
 
 .. code-block:: python
 
@@ -323,7 +323,7 @@ You can also use the ``jwk.thumbprint`` method:
 
 .. versionadded:: 1.2.0
 
-Call this method will generate the JWK thumbprint URI, per RFC9278.
+Calling this method will generate the JWK thumbprint URI, per RFC9278.
 
 .. code-block:: python
 
