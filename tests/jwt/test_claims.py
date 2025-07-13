@@ -144,3 +144,61 @@ class TestJWTClaims(TestCase):
         encoded_text = jwt.encode({"alg": "HS256"}, claims, key, encoder_cls=UUIDEncoder)
         token = jwt.decode(encoded_text, key)
         self.assertEqual(token.claims, {"uuid": str(value)})
+
+    def test_validate_list_inclusion(self):
+        # Case 1: use option value
+        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"essential": True, "value": "a"})
+        self.assertRaises(MissingClaimError, claims_requests.validate, {"iss": "a"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": "b"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": ["b"]})
+        claims_requests.validate({"custom_claim": "a"})
+        claims_requests.validate({"custom_claim": ["a"]})
+
+        # Case 2: use option values
+        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"essential": True, "values": ["a", "b"]})
+        self.assertRaises(MissingClaimError, claims_requests.validate, {"iss": "a"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": "c"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": ["c"]})
+        claims_requests.validate({"custom_claim": "a"})
+        claims_requests.validate({"custom_claim": "b"})
+        claims_requests.validate({"custom_claim": ["a"]})
+        claims_requests.validate({"custom_claim": ["b"]})
+        claims_requests.validate({"custom_claim": ["a", "b"]})
+        claims_requests.validate({"custom_claim": ["c", "a"]})
+
+        # Case 3: do not validate
+        claims_requests = jwt.JWTClaimsRegistry()
+        claims_requests.validate({"custom_claim": "a"})
+
+        # Case 4: essential claim without value(s)
+        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"essential": True})
+        claims_requests.validate({"custom_claim": "a"})
+
+    def test_validate_allow_blank(self):
+        # Case 1: allow blank value
+        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"essential": True, "allow_blank": True})
+        self.assertRaises(MissingClaimError, claims_requests.validate, {"custom_claim": None})
+        claims_requests.validate({"custom_claim": ""})
+        claims_requests.validate({"custom_claim": []})
+        claims_requests.validate({"custom_claim": {}})
+        
+        # Case 2: allow blank value without essential
+        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"allow_blank": True})
+        claims_requests.validate({"custom_claim": None})
+        claims_requests.validate({"custom_claim": ""})
+        claims_requests.validate({"custom_claim": []})
+        claims_requests.validate({"custom_claim": {}})
+
+        # Case 3: do not allow blank value
+        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"essential": True, "allow_blank": False})
+        self.assertRaises(MissingClaimError, claims_requests.validate, {"custom_claim": None})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": ""})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": []})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": {}})
+
+        # Case 4: do not allow blank value without essential
+        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"allow_blank": False})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": None})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": ""})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": []})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": {}})
