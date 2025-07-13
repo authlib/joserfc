@@ -70,7 +70,7 @@ It represents RSA keys.
 Generate an "RSA" key
 ~~~~~~~~~~~~~~~~~~~~~
 
-You can generate an "EC" key with a given key size (in bit):
+You can generate an "RSA" key with a given key size (in bit):
 
 .. code-block:: python
 
