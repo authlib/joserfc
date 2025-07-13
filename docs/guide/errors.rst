@@ -33,7 +33,7 @@ UnsupportedAlgorithmError
 .. versionadded:: 1.1.0
 
 By default, **ONLY recommended** :ref:`jwa` are allowed. With non recommended
-algorithms, you may encounter the ``UnsupportedAlgorithmError``` error.
+algorithms, you may encounter the ``UnsupportedAlgorithmError`` error.
 
 .. code-block:: python
 
