@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-07 23:00+0900\n"
+"POT-Creation-Date: 2025-07-14 11:51+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -507,10 +507,30 @@ msgid "Check if this key supports the given \"use\"."
 msgstr ""
 
 #: joserfc._rfc7517.models.BaseKey.check_use:3 of
+msgid "Values defined by this specification are:"
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_use:5 of
+#, fuzzy
+msgid "\"sig\" (signature)"
+msgstr "签名"
+
+#: joserfc._rfc7517.models.BaseKey.check_use:6 of
+msgid "\"enc\" (encryption)"
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_use:8 of
+msgid ""
+"Other values MAY be used.  The \"use\" value is a case-sensitive string. "
+"Use of the \"use\" member is OPTIONAL, unless the application requires "
+"its presence."
+msgstr ""
+
+#: joserfc._rfc7517.models.BaseKey.check_use:12 of
 msgid "this key is used for, e.g. \"sig\", \"enc\""
 msgstr ""
 
-#: joserfc._rfc7517.models.BaseKey.check_use:4 of
+#: joserfc._rfc7517.models.BaseKey.check_use:13 of
 msgid "UnsupportedKeyUseError"
 msgstr ""
 
@@ -756,6 +776,10 @@ msgstr "具有 ``headers`` 和 ``set_kid`` 方法的协议"
 #: joserfc.jwk.guess_key:5 of
 msgid "pick a random key from key set"
 msgstr "从密钥集中随机选择一个密钥"
+
+#: joserfc.jwk.guess_key:6 of
+msgid "optional \"use\" value"
+msgstr ""
 
 #: joserfc.jwk.import_key:1 of
 #, fuzzy
@@ -1061,24 +1085,6 @@ msgstr "文档的这一部分涵盖了 ``joserfc.jwt`` 的所有接口。"
 #: joserfc._rfc7519.registry.ClaimsRegistry:1 of
 msgid "Requesting \"claims\" for JWT with the given conditions."
 msgstr ""
-
-#: joserfc._rfc7519.registry.JWTClaimsRegistry.validate_aud:1 of
-msgid ""
-"The \"aud\" (audience) claim identifies the recipients that the JWT is "
-"intended for.  Each principal intended to process the JWT MUST identify "
-"itself with a value in the audience claim.  If the principal processing "
-"the claim does not identify itself with a value in the \"aud\" claim when"
-" this claim is present, then the JWT MUST be rejected.  In the general "
-"case, the \"aud\" value is an array of case-sensitive strings, each "
-"containing a StringOrURI value.  In the special case when the JWT has one"
-" audience, the \"aud\" value MAY be a single case-sensitive string "
-"containing a StringOrURI value.  The interpretation of audience values is"
-" generally application specific. Use of this claim is OPTIONAL."
-msgstr ""
-"“aud”（受众）声明标识 JWT 预期的接收者。每个预期处理 JWT "
-"的主体必须在受众声明中标识自己。如果处理声明的主体在存在此声明时未在“aud”声明中标识自己，则必须拒绝 JWT。一般情况下，“aud”值是包含 "
-"StringOrURI 值的区分大小写字符串数组。在 JWT 只有一个受众的特殊情况下，“aud”值可以是包含 StringOrURI "
-"值的单个区分大小写字符串。受众值的解释通常是特定于应用程序的。使用此声明是可选的。"
 
 #: joserfc._rfc7519.registry.JWTClaimsRegistry.validate_exp:1 of
 msgid ""

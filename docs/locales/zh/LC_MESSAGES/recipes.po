@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-24 19:31+0900\n"
+"POT-Creation-Date: 2025-07-14 11:51+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -71,10 +71,10 @@ msgstr ""
 #: ../../recipes/azure.rst:71
 #, python-brace-format
 msgid ""
-"In the example provided, replace {tenant} with your specific Azure tenant"
-" ID or the tenant's globally unique identifier (GUID). The resulting URL "
-"will lead you to the OpenID configuration details. Then, the OpenID "
-"configuration endpoint for the above example could be:"
+"In the example provided, replace ``{tenant}`` with your specific Azure "
+"tenant ID or the tenant's globally unique identifier (GUID). The "
+"resulting URL will lead you to the OpenID configuration details. Then, "
+"the OpenID configuration endpoint for the above example could be:"
 msgstr ""
 
 #: ../../recipes/azure.rst:81
@@ -92,8 +92,9 @@ msgstr ""
 #: ../../recipes/azure.rst:91
 #, python-brace-format
 msgid ""
-"Once again, remember to replace {tenant} with your Azure tenant ID or the"
-" appropriate identifier. In the above example, the ``jwks_uri`` could be:"
+"Once again, remember to replace ``{tenant}`` with your Azure tenant ID or"
+" the appropriate identifier. In the above example, the ``jwks_uri`` could"
+" be:"
 msgstr ""
 
 #: ../../recipes/azure.rst:99
@@ -217,3 +218,22 @@ msgstr ""
 #: ../../recipes/openssl.rst:82
 msgid "EC key with crv secp256k1"
 msgstr ""
+
+#~ msgid ""
+#~ "In the example provided, replace "
+#~ "{tenant} with your specific Azure tenant"
+#~ " ID or the tenant's globally unique"
+#~ " identifier (GUID). The resulting URL "
+#~ "will lead you to the OpenID "
+#~ "configuration details. Then, the OpenID "
+#~ "configuration endpoint for the above "
+#~ "example could be:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Once again, remember to replace {tenant}"
+#~ " with your Azure tenant ID or "
+#~ "the appropriate identifier. In the above"
+#~ " example, the ``jwks_uri`` could be:"
+#~ msgstr ""
+

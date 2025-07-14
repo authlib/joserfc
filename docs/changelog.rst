@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.2.2
+-----
+
+**Released on July 14, 2025**
+
+- Fix typo for function name of Chacha20-Poly1305 registration, via :pull:`67`.
+- Add claims partial list matching in ``JWTClaimRegistry.validate``, via :pull:`63`.
+
 1.2.1
 -----
 

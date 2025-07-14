@@ -24,21 +24,25 @@ installed using pip.
 
 .. tab-set::
 
-    .. tab-item:: General
+    .. tab-item:: pip
 
         .. code-block:: shell
 
             pip install joserfc
 
-    .. tab-item:: C20P and XC20P
+    .. tab-item:: uv
 
         .. code-block:: shell
 
-            pip install joserfc pycryptodome
+            uv add joserfc
 
 .. important::
 
     To use :ref:`chacha20` algorithms, developers have to install the ``PyCryptodome`` module.
+
+    .. code-block:: shell
+
+        pip install joserfc pycryptodome
 
 conda install
 -------------
