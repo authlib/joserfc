@@ -208,7 +208,7 @@ The syntax of a JWE using the flattened JWE JSON Serialization is as follows:
 
 It is flattened, it moves all the members out of the ``recipients`` field. To
 ``encrypt_json`` into a flattened serialization, you can construct a
-:class`jwe.FlattenedJSONEncryption` instead:
+:class:`jwe.FlattenedJSONEncryption` instead:
 
 .. code-block:: python
 

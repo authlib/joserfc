@@ -246,7 +246,7 @@ You can also pass a JWK Set to the ``key`` parameter of :meth:`encode` and
     jwt.encode(header, claims, key_set)
 
 The methods will find the correct key according to the ``kid`` you specified.
-If there is no ``kid`` in header, it will pick on randomly and add the ``kid``
+If there is no ``kid`` in header, it will pick one randomly and add the ``kid``
 of the key into header.
 
 A client would usually get the public key set from a public URL, normally the
@@ -362,7 +362,7 @@ You can find out the recommended algorithms at:
 - :ref:`JSON Web Signature Algorithms <jws_algorithms>`
 - :ref:`JSON Web Encryption Algorithms <jwe_algorithms>`
 
-For instance, ``HS386`` is not a recommended algorithm, and you want to use
+For instance, ``HS384`` is not a recommended algorithm, and you want to use
 this algorithm:
 
 .. code-block:: python
