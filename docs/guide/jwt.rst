@@ -146,12 +146,12 @@ The ``JWTClaimsRegistry`` has built-in validators for timing related fields:
 List validation
 ~~~~~~~~~~~~~~~
 
-When validating claims that contain lists, the registry checks if **any** of the 
-required values are present in the claim's list. This behavior is designed for 
-flexible authorization checks where matching any of the required permissions grants 
+When validating claims that contain lists, the registry checks if **any** of the
+required values are present in the claim's list. This behavior is designed for
+flexible authorization checks where matching any of the required permissions grants
 access. For single values, it checks for an exact match.
 
-This is particularly useful for validating role based or permission based claims. For 
+This is particularly useful for validating role based or permission based claims. For
 example:
 
 .. code-block:: python
@@ -162,7 +162,7 @@ example:
     # Passes since "users:write" is present in the list
     claims_requests = JWTClaimsRegistry(
         permissions={"values": ["users:write", "system:admin"]}
-    )   
+    )
     claims_requests.validate(claims)
 
     # Raises InvalidClaimError since none of the required values are present
@@ -183,6 +183,31 @@ You can also validate against a single required value:
         permissions={"value": "users:read"}
     )
     claims_requests.validate(claims)
+
+Custom validation
+-----------------
+
+When it's not possible to validate a claim using ``ClaimsOption``,
+you can define a custom validation method named ``validate_{name}``.
+For example, if the claims must include a ``source`` field, and the
+value of ``source`` must be an HTTPS URL, you can implement a custom
+method to enforce this requirement.
+
+.. code-block:: python
+
+    from joserfc.jwt import JWTClaimsRegistry
+    from joserfc.errors import InvalidClaimError
+
+    class MyClaimsRegistry(JWTClaimsRegistry):
+        def validate_source(self, value):
+            if not value.startswith('https://'):
+                raise InvalidClaimError('source')
+
+Then, you can validate the claims with:
+
+.. code-block:: python
+
+    claims_requests = MyClaimsRegistry(source={"essential": True})
 
 JWS & JWE
 ---------
