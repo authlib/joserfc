@@ -181,7 +181,7 @@ class TestJWTClaims(TestCase):
         claims_requests.validate({"custom_claim": ""})
         claims_requests.validate({"custom_claim": []})
         claims_requests.validate({"custom_claim": {}})
-        
+
         # Case 2: allow blank value without essential
         claims_requests = jwt.JWTClaimsRegistry(custom_claim={"allow_blank": True})
         claims_requests.validate({"custom_claim": None})
