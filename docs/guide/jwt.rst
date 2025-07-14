@@ -143,6 +143,47 @@ The ``JWTClaimsRegistry`` has built-in validators for timing related fields:
 - ``nbf``: not before
 - ``iat``: issued at
 
+List validation
+~~~~~~~~~~~~~~~
+
+When validating claims that contain lists, the registry checks if **any** of the 
+required values are present in the claim's list. This behavior is designed for 
+flexible authorization checks where matching any of the required permissions grants 
+access. For single values, it checks for an exact match.
+
+This is particularly useful for validating role based or permission based claims. For 
+example:
+
+.. code-block:: python
+
+    # Claim containing a list of permissions
+    claims = {"permissions": ["users:read", "users:write", "users:admin"]}
+
+    # Passes since "users:write" is present in the list
+    claims_requests = JWTClaimsRegistry(
+        permissions={"values": ["users:write", "system:admin"]}
+    )   
+    claims_requests.validate(claims)
+
+    # Raises InvalidClaimError since none of the required values are present
+    claims_requests = JWTClaimsRegistry(
+        permissions={"values": ["system:admin"]}
+    )
+    claims_requests.validate(claims)
+
+You can also validate against a single required value:
+
+.. code-block:: python
+
+    # Claim containing a list of permissions
+    claims = {"permissions": ["users:read", "users:write", "users:admin"]}
+
+    # Passes since "users:read" is present in the list
+    claims_requests = JWTClaimsRegistry(
+        permissions={"value": "users:read"}
+    )
+    claims_requests.validate(claims)
+
 JWS & JWE
 ---------
 
