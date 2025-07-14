@@ -28,13 +28,13 @@ class ClaimsRegistry:
         option = self.options.get(claim_name)
         if not option:
             return
-        
+
         allow_blank = option.get("allow_blank")
         if not allow_blank and value in (None, "", [], {}):
             raise InvalidClaimError(claim_name)
 
         option_values = option.get("values")
-        
+
         if option_values is None:
             option_value = option.get("value")
             if option_value is not None:
@@ -71,41 +71,6 @@ class JWTClaimsRegistry(ClaimsRegistry):
         self.now = now
         self.leeway = leeway
         super().__init__(**kwargs)
-
-    def validate_aud(self, value: str | list[str]) -> None:
-        """The "aud" (audience) claim identifies the recipients that the JWT is
-        intended for.  Each principal intended to process the JWT MUST
-        identify itself with a value in the audience claim.  If the principal
-        processing the claim does not identify itself with a value in the
-        "aud" claim when this claim is present, then the JWT MUST be
-        rejected.  In the general case, the "aud" value is an array of
-        case-sensitive strings, each containing a StringOrURI value.  In the
-        special case when the JWT has one audience, the "aud" value MAY be a
-        single case-sensitive string containing a StringOrURI value.  The
-        interpretation of audience values is generally application specific.
-        Use of this claim is OPTIONAL.
-        """
-        option = self.options.get("aud")
-        if not option:
-            return
-
-        option_values = option.get("values")
-
-        if option_values is None:
-            option_value = option.get("value")
-            if option_value:
-                option_values = [option_value]
-
-        if not option_values:
-            return
-
-        if isinstance(value, list):
-            aud_list = value
-        else:
-            aud_list = [value]
-
-        if not any(v in aud_list for v in option_values):
-            raise InvalidClaimError("aud")
 
     def validate_exp(self, value: int) -> None:
         """The "exp" (expiration time) claim identifies the expiration time on
