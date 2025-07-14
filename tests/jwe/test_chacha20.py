@@ -5,9 +5,9 @@ from joserfc.jwe import (
     JWERegistry,
 )
 from joserfc.jwk import OctKey
-from joserfc.drafts.jwe_chacha20 import register_chaha20_poly1305
+from joserfc.drafts.jwe_chacha20 import register_chacha20_poly1305
 
-register_chaha20_poly1305()
+register_chacha20_poly1305()
 chacha_registry = JWERegistry(algorithms=["dir", "C20P", "XC20P"])
 
 

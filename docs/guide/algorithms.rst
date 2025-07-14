@@ -162,9 +162,9 @@ The default :ref:`registry` doesn't contain draft ciphers, developers MUST regis
 
 .. code-block:: python
 
-    from joserfc.drafts.jwe_chacha20 import register_chaha20_poly1305
+    from joserfc.drafts.jwe_chacha20 import register_chacha20_poly1305
 
-    register_chaha20_poly1305()
+    register_chacha20_poly1305()
 
 Use custom ``registry``
 +++++++++++++++++++++++
