@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import overload, TypeVar, Any, Dict
+from typing import overload, TypeVar, Any
 from ._rfc7515.model import (
     JWSAlgModel,
     HeaderMember as HeaderMember,
@@ -330,7 +330,7 @@ def deserialize_json(
         return flattened_obj
 
 
-DetachValue = TypeVar("DetachValue", str, Dict[str, Any])
+DetachValue = TypeVar("DetachValue", str, dict[str, Any])
 
 
 def detach_content(value: DetachValue) -> DetachValue:

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Dict, Callable, Union
+from typing import Any, Callable, Union
 from .errors import (
     MissingHeaderError,
     MissingCritHeaderError,
@@ -7,7 +7,7 @@ from .errors import (
     InvalidHeaderValueError,
 )
 
-Header = Dict[str, Any]
+Header = dict[str, Any]
 
 
 def is_str(value: str) -> None:
@@ -39,7 +39,7 @@ def is_list_str(values: list[str]) -> None:
         raise ValueError("must be a list[str]")
 
 
-def is_jwk(value: Dict[str, Any]) -> None:
+def is_jwk(value: dict[str, Any]) -> None:
     if not isinstance(value, dict):
         raise ValueError("must be a JWK")
 
@@ -61,7 +61,7 @@ def not_support(_: Any) -> None:
 
 
 Validate = Callable[[Any], None]
-_value_validators: Dict[str, Validate] = {
+_value_validators: dict[str, Validate] = {
     "str": is_str,
     "list[str]": is_list_str,
     "int": is_int,
@@ -85,7 +85,7 @@ class HeaderParameter:
 
 
 #: Define header parameters for JWS and JWE
-HeaderRegistryDict = Dict[str, HeaderParameter]
+HeaderRegistryDict = dict[str, HeaderParameter]
 
 
 class KeyParameter:
@@ -110,8 +110,8 @@ class KeyOperation:
 
 
 #: Define parameters for JWK
-KeyParameterRegistryDict = Dict[str, KeyParameter]
-KeyOperationRegistryDict = Dict[str, KeyOperation]
+KeyParameterRegistryDict = dict[str, KeyParameter]
+KeyOperationRegistryDict = dict[str, KeyOperation]
 
 #: Basic JWS header registry
 JWS_HEADER_REGISTRY: HeaderRegistryDict = {

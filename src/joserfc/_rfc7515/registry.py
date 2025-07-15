@@ -1,6 +1,5 @@
 from __future__ import annotations
 import warnings
-from typing import Dict
 from .model import JWSAlgModel
 from ..errors import UnsupportedAlgorithmError, SecurityWarning
 from ..registry import (
@@ -30,7 +29,7 @@ class JWSRegistry:
     """
 
     default_header_registry: HeaderRegistryDict = JWS_HEADER_REGISTRY
-    algorithms: Dict[str, JWSAlgModel] = {}
+    algorithms: dict[str, JWSAlgModel] = {}
     recommended: list[str] = []
 
     def __init__(
