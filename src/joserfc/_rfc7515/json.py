@@ -147,7 +147,7 @@ def verify_signature(
     return alg.verify(signing_input, sig, key)
 
 
-def detach_json_content(value: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
+def detach_json_content(value: dict[str, t.Any]) -> dict[str, t.Any]:
     # https://www.rfc-editor.org/rfc/rfc7515#appendix-F
     rv = copy.deepcopy(value)  # don't alter original value
     if "payload" in rv:

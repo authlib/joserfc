@@ -23,9 +23,9 @@ JWEAlgorithm = t.Union[JWEAlgModel, JWEEncModel, JWEZipModel]
 AlgorithmsDict = t.TypedDict(
     "AlgorithmsDict",
     {
-        "alg": t.Dict[str, JWEAlgModel],
-        "enc": t.Dict[str, JWEEncModel],
-        "zip": t.Dict[str, JWEZipModel],
+        "alg": dict[str, JWEAlgModel],
+        "enc": dict[str, JWEEncModel],
+        "zip": dict[str, JWEZipModel],
     },
 )
 
@@ -46,7 +46,7 @@ class JWERegistry:
         "enc": {},
         "zip": {},
     }
-    recommended: t.ClassVar[t.List[str]] = []
+    recommended: t.ClassVar[list[str]] = []
 
     def __init__(
         self,

@@ -25,7 +25,7 @@ GenericKey = t.TypeVar("GenericKey", bound="BaseKey[t.Any, t.Any]")
 
 
 class NativeKeyBinding(metaclass=ABCMeta):
-    use_key_ops_registry: t.ClassVar[t.Dict[str, t.List[str]]] = {
+    use_key_ops_registry: t.ClassVar[dict[str, list[str]]] = {
         "sig": ["sign", "verify"],
         "enc": ["encrypt", "decrypt", "wrapKey", "unwrapKey", "deriveKey", "deriveBits"],
     }

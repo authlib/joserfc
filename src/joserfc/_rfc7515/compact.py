@@ -43,9 +43,9 @@ def detach_compact_content(value: str) -> str:
     return ".".join(parts)
 
 
-def decode_header(header_segment: bytes) -> t.Dict[str, t.Any]:
+def decode_header(header_segment: bytes) -> dict[str, t.Any]:
     try:
-        protected: t.Dict[str, t.Any] = json_b64decode(header_segment)
+        protected: dict[str, t.Any] = json_b64decode(header_segment)
         if "alg" not in protected:
             raise MissingAlgorithmError()
     except (TypeError, ValueError):

@@ -71,8 +71,8 @@ class CompactEncryption:
         #: the plaintext in bytes
         self.plaintext = plaintext
         self.recipient: Recipient[t.Any] | None = None
-        self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
-        self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
+        self.bytes_segments: dict[str, bytes] = {}  # store the decoded segments
+        self.base64_segments: dict[str, bytes] = {}  # store the encoded segments
 
     def headers(self) -> Header:
         """Returns the protected header values in dict."""
@@ -109,7 +109,7 @@ class BaseJSONEncryption(metaclass=ABCMeta):
     #: an optional additional authenticated data
     aad: t.Optional[bytes]
     #: a list of recipients
-    recipients: t.List[Recipient[t.Any]]
+    recipients: list[Recipient[t.Any]]
 
     def __init__(
         self,
@@ -123,8 +123,8 @@ class BaseJSONEncryption(metaclass=ABCMeta):
         self.unprotected = unprotected
         self.aad = aad
         self.recipients = []
-        self.bytes_segments: t.Dict[str, bytes] = {}  # store the decoded segments
-        self.base64_segments: t.Dict[str, bytes] = {}  # store the encoded segments
+        self.bytes_segments: dict[str, bytes] = {}  # store the decoded segments
+        self.base64_segments: dict[str, bytes] = {}  # store the encoded segments
 
     @abstractmethod
     def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:
@@ -230,7 +230,7 @@ class KeyManagement:
     description: str
     recommended: bool = False
     key_size: int | None = None
-    key_types: t.List[str]
+    key_types: list[str]
     security_warning: str | None = None
 
     algorithm_type: t.Literal["JWE"] = "JWE"

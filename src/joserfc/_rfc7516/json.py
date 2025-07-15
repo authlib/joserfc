@@ -56,7 +56,7 @@ def represent_flattened_json(obj: FlattenedJSONEncryption) -> FlattenedJSONSeria
 
 
 def __represent_json_serialization(obj: BaseJSONEncryption):  # type: ignore[no-untyped-def]
-    data: t.Dict[str, t.Union[str, Header, t.List[Header]]] = {
+    data: dict[str, t.Union[str, Header, list[Header]]] = {
         "protected": to_str(json_b64encode(obj.protected)),
         "iv": to_str(obj.base64_segments["iv"]),
         "ciphertext": to_str(obj.base64_segments["ciphertext"]),
@@ -102,13 +102,13 @@ def extract_flattened_json(data: FlattenedJSONSerialization) -> FlattenedJSONEnc
 
 def __extract_segments(
     data: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization],
-) -> t.Tuple[t.Dict[str, bytes], t.Dict[str, bytes], t.Optional[bytes]]:
-    base64_segments: t.Dict[str, bytes] = {
+) -> tuple[dict[str, bytes], dict[str, bytes], t.Optional[bytes]]:
+    base64_segments: dict[str, bytes] = {
         "iv": to_bytes(data["iv"]),
         "ciphertext": to_bytes(data["ciphertext"]),
         "tag": to_bytes(data["tag"]),
     }
-    bytes_segments: t.Dict[str, bytes] = {
+    bytes_segments: dict[str, bytes] = {
         "iv": urlsafe_b64decode(base64_segments["iv"]),
         "ciphertext": urlsafe_b64decode(base64_segments["ciphertext"]),
         "tag": urlsafe_b64decode(base64_segments["tag"]),

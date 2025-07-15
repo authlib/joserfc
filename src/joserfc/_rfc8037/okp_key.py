@@ -30,13 +30,13 @@ OKPDictKey = t.TypedDict(
     },
     total=False,
 )
-PUBLIC_KEYS_MAP: t.Dict[str, t.Type[PublicOKPKey]] = {
+PUBLIC_KEYS_MAP: dict[str, t.Type[PublicOKPKey]] = {
     "Ed25519": Ed25519PublicKey,
     "Ed448": Ed448PublicKey,
     "X25519": X25519PublicKey,
     "X448": X448PublicKey,
 }
-PRIVATE_KEYS_MAP: t.Dict[str, t.Type[PrivateOKPKey]] = {
+PRIVATE_KEYS_MAP: dict[str, t.Type[PrivateOKPKey]] = {
     "Ed25519": Ed25519PrivateKey,
     "Ed448": Ed448PrivateKey,
     "X25519": X25519PrivateKey,
@@ -61,14 +61,14 @@ class OKPBinding(CryptographyBinding):
         return crv_key.from_public_bytes(x_bytes)
 
     @staticmethod
-    def export_private_key(key: PrivateOKPKey) -> t.Dict[str, str]:
+    def export_private_key(key: PrivateOKPKey) -> dict[str, str]:
         obj = OKPBinding.export_public_key(key.public_key())
         d_bytes = key.private_bytes(Encoding.Raw, PrivateFormat.Raw, NoEncryption())
         obj["d"] = urlsafe_b64encode(d_bytes).decode("utf-8")
         return obj
 
     @staticmethod
-    def export_public_key(key: PublicOKPKey) -> t.Dict[str, str]:
+    def export_public_key(key: PublicOKPKey) -> dict[str, str]:
         x_bytes = key.public_bytes(Encoding.Raw, PublicFormat.Raw)
         return {
             "crv": get_key_curve(key),

@@ -189,7 +189,7 @@ class RSAPSSAlgModel(JWSAlgModel):
             return False
 
 
-JWS_ALGORITHMS: t.List[JWSAlgModel] = [
+JWS_ALGORITHMS: list[JWSAlgModel] = [
     NoneAlgModel(),  # none
     HMACAlgModel(256, True),  # HS256
     HMACAlgModel(384),  # HS384

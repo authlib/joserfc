@@ -44,7 +44,7 @@ class JWKRegistry:
         key = JWKRegistry.import_key(data)
     """
 
-    key_types: t.Dict[str, t.Type[Key]] = {
+    key_types: dict[str, t.Type[Key]] = {
         OctKey.key_type: OctKey,
         RSAKey.key_type: RSAKey,
         ECKey.key_type: ECKey,
@@ -103,7 +103,7 @@ class JWKRegistry:
         return key_cls.generate_key(crv_or_size, parameters, private, auto_kid)  # type: ignore[arg-type]
 
 
-KeySetSerialization = t.TypedDict("KeySetSerialization", {"keys": t.List[DictKey]})
+KeySetSerialization = t.TypedDict("KeySetSerialization", {"keys": list[DictKey]})
 
 
 class KeySet:
@@ -111,7 +111,7 @@ class KeySet:
     keys: list[Key]
 
     registry_cls: t.Type[JWKRegistry] = JWKRegistry
-    algorithm_keys: t.ClassVar[t.Dict[str, list[str]]] = {}
+    algorithm_keys: t.ClassVar[dict[str, list[str]]] = {}
 
     def __init__(self, keys: list[Key]):
         for key in keys:

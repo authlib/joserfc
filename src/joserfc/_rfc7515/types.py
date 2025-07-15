@@ -30,7 +30,7 @@ class JSONSignatureDict(t.TypedDict, total=False):
 @t.final
 class GeneralJSONSerialization(t.TypedDict):
     payload: str
-    signatures: t.List[JSONSignatureDict]
+    signatures: list[JSONSignatureDict]
 
 
 @t.final

@@ -38,8 +38,8 @@ ECDictKey = t.TypedDict(
 class ECBinding(CryptographyBinding):
     ssh_type = b"ecdsa-sha2-"
 
-    _dss_curves: t.Dict[str, t.Type[EllipticCurve]] = {}
-    _curves_dss: t.Dict[str, str] = {}
+    _dss_curves: dict[str, t.Type[EllipticCurve]] = {}
+    _curves_dss: dict[str, str] = {}
 
     @classmethod
     def register_curve(cls, name: str, curve: t.Type[EllipticCurve]) -> None:

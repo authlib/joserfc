@@ -136,10 +136,10 @@ def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
 
 
 def pre_encrypt_recipients(
-    enc: JWEEncModel, recipients: t.List[Recipient[t.Any]], registry: JWERegistry
-) -> t.Tuple[bytes, t.List[t.Tuple[JWEKeyAgreement, Recipient[t.Any]]]]:
+    enc: JWEEncModel, recipients: list[Recipient[t.Any]], registry: JWERegistry
+) -> tuple[bytes, list[tuple[JWEKeyAgreement, Recipient[t.Any]]]]:
     cek: bytes = b""
-    delayed_tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient[t.Any]]] = []
+    delayed_tasks: list[tuple[JWEKeyAgreement, Recipient[t.Any]]] = []
     for recipient in recipients:
         alg = __prepare_recipient_algorithm(recipient, registry)
 
@@ -201,7 +201,7 @@ def __pre_encrypt_direct_mode(alg: JWEAlgModel, enc: JWEEncModel, recipient: Rec
 
 
 def post_encrypt_recipients(
-    enc: JWEEncModel, tasks: t.List[t.Tuple[JWEKeyAgreement, Recipient[t.Any]]], cek: bytes, tag: bytes
+    enc: JWEEncModel, tasks: list[tuple[JWEKeyAgreement, Recipient[t.Any]]], cek: bytes, tag: bytes
 ) -> None:
     for alg, recipient in tasks:
         if alg.tag_aware:
