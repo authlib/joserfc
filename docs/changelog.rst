@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.3.0
+-----
+
+**Unreleased**
+
+- Remove Python 3.8 support.
+
 1.2.2
 -----
 
