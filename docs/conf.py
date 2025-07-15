@@ -27,7 +27,10 @@ extensions = [
     "sphinx_design",
     "sphinx_sitemap",
     "sphinx_contributors",
+    "sphinx_iconify",
 ]
+
+iconify_script_url = ""
 
 extlinks = {
     "user": ("https://github.com/%s", "@%s"),

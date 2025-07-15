@@ -16,25 +16,32 @@ cryptography, you can follow the documentation
 
 .. _cryptography: https://cryptography.io/
 
-pip install
------------
+Package install
+---------------
 
-``joserfc`` is conveniently available as a Python package on PyPI and can be easily
-installed using pip.
+``joserfc`` is conveniently available as a Python package on PyPI_ and conda-forge_.
+It can be easily installed via:
 
 .. tab-set::
+    :class: outline
 
-    .. tab-item:: pip
+    .. tab-item:: :iconify:`devicon:pypi` pip
 
         .. code-block:: shell
 
             pip install joserfc
 
-    .. tab-item:: uv
+    .. tab-item:: :iconify:`material-icon-theme:uv` uv
 
         .. code-block:: shell
 
             uv add joserfc
+
+    .. tab-item:: :iconify:`devicon:anaconda` conda
+
+        .. code-block:: shell
+
+            conda install conda-forge::joserfc
 
 .. important::
 
@@ -44,15 +51,7 @@ installed using pip.
 
         pip install joserfc pycryptodome
 
-conda install
--------------
-
-``joserfc`` is also available from conda-forge_:
-
-.. code-block:: shell
-
-    conda install conda-forge::joserfc
-
+.. _PyPI: https://pypi.org/project/joserfc/
 .. _conda-forge: https://anaconda.org/conda-forge/joserfc
 
 Dependency management

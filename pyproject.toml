@@ -68,6 +68,7 @@ docs = [
     "sphinx-design",
     "sphinx-intl",
     "sphinx-sitemap",
+    "sphinx-iconify",
 ]
 
 [tool.ruff]
