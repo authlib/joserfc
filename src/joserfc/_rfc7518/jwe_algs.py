@@ -34,7 +34,7 @@ from ..errors import (
 )
 
 
-class DirectAlgModel(JWEDirectEncryption):
+class DirectAlgEncryption(JWEDirectEncryption):
     name = "dir"
     description = "Direct use of a shared symmetric key"
     recommended = True
@@ -49,7 +49,7 @@ class DirectAlgModel(JWEDirectEncryption):
         return cek
 
 
-class RSAAlgModel(JWEKeyEncryption):
+class RSAAlgKeyEncryption(JWEKeyEncryption):
     #: A key of size 2048 bits or larger MUST be used with these algorithms
     #: RSA1_5, RSA-OAEP, RSA-OAEP-256
     key_size = 2048
@@ -83,7 +83,7 @@ class RSAAlgModel(JWEKeyEncryption):
         return cek
 
 
-class AESAlgModel(JWEKeyWrapping):
+class AESAlgKeyWrapping(JWEKeyWrapping):
     def __init__(self, key_size: int, recommended: bool = False):
         self.name = f"A{key_size}KW"
         self.description = f"AES Key Wrap using {key_size}-bit key"
@@ -118,7 +118,7 @@ class AESAlgModel(JWEKeyWrapping):
         return self.unwrap_cek(recipient.encrypted_key, op_key)
 
 
-class AESGCMAlgModel(JWEKeyWrapping):
+class AESGCMAlgKeyWrapping(JWEKeyWrapping):
     more_header_registry = {
         "iv": HeaderParameter("Initialization vector", "str", True),
         "tag": HeaderParameter("Authentication tag", "str", True),
@@ -179,7 +179,7 @@ class AESGCMAlgModel(JWEKeyWrapping):
         return cek
 
 
-class ECDHESAlgModel(JWEKeyAgreement):
+class ECDHESAlgKeyAgreement(JWEKeyAgreement):
     key_types = ["EC", "OKP"]
     more_header_registry = {
         "epk": HeaderParameter("Ephemeral Public Key", "jwk", True),
@@ -225,7 +225,7 @@ class ECDHESAlgModel(JWEKeyAgreement):
         return derive_key_for_concat_kdf(shared_key, headers, enc.cek_size, self.key_size)
 
 
-class PBES2HSAlgModel(JWEKeyEncryption):
+class PBES2HSAlgKeyEncryption(JWEKeyEncryption):
     # https://www.rfc-editor.org/rfc/rfc7518#section-4.8
     key_size: int
     more_header_registry = {
@@ -293,24 +293,24 @@ class PBES2HSAlgModel(JWEKeyEncryption):
         return self.key_wrapping.unwrap_cek(recipient.encrypted_key, kek)
 
 
-RSA1_5 = RSAAlgModel("RSA1_5", "RSAES-PKCS1-v1_5", padding.PKCS1v15())
+RSA1_5 = RSAAlgKeyEncryption("RSA1_5", "RSAES-PKCS1-v1_5", padding.PKCS1v15())
 RSA1_5.security_warning = 'JWE algorithm "RSA1_5" is deprecated, via draft-ietf-jose-deprecate-none-rsa15-02'
 
-A128KW = AESAlgModel(128, True)  # A128KW, Recommended
-A192KW = AESAlgModel(192)  # A192KW
-A256KW = AESAlgModel(256, True)  # A256KW, Recommended
+A128KW = AESAlgKeyWrapping(128, True)  # A128KW, Recommended
+A192KW = AESAlgKeyWrapping(192)  # A192KW
+A256KW = AESAlgKeyWrapping(256, True)  # A256KW, Recommended
 
 
 #: https://www.rfc-editor.org/rfc/rfc7518#section-4.1
 JWE_ALG_MODELS: list[JWEAlgModel] = [
     RSA1_5,
-    RSAAlgModel(
+    RSAAlgKeyEncryption(
         "RSA-OAEP",
         "RSAES OAEP using default parameters",
         padding.OAEP(padding.MGF1(hashes.SHA1()), hashes.SHA1(), None),
         True,
     ),  # Recommended+
-    RSAAlgModel(
+    RSAAlgKeyEncryption(
         "RSA-OAEP-256",
         "RSAES OAEP using SHA-256 and MGF1 with SHA-256",
         padding.OAEP(padding.MGF1(hashes.SHA256()), hashes.SHA256(), None),
@@ -318,15 +318,22 @@ JWE_ALG_MODELS: list[JWEAlgModel] = [
     A128KW,
     A192KW,
     A256KW,
-    DirectAlgModel(),  # dir, Recommended
-    ECDHESAlgModel(None),  # ECDH-ES, Recommended+
-    ECDHESAlgModel(A128KW),  # ECDH-ES+A128KW, Recommended
-    ECDHESAlgModel(A192KW),  # ECDH-ES+A192KW
-    ECDHESAlgModel(A256KW),  # ECDH-ES+A256KW, Recommended
-    AESGCMAlgModel(128),  # A128GCMKW
-    AESGCMAlgModel(192),  # A192GCMKW
-    AESGCMAlgModel(256),  # A256GCMKW
-    PBES2HSAlgModel(256, A128KW),  # PBES2-HS256+A128KW
-    PBES2HSAlgModel(384, A192KW),  # PBES2-HS384+A192KW
-    PBES2HSAlgModel(512, A256KW),  # PBES2-HS512+A256KW
+    DirectAlgEncryption(),  # dir, Recommended
+    ECDHESAlgKeyAgreement(None),  # ECDH-ES, Recommended+
+    ECDHESAlgKeyAgreement(A128KW),  # ECDH-ES+A128KW, Recommended
+    ECDHESAlgKeyAgreement(A192KW),  # ECDH-ES+A192KW
+    ECDHESAlgKeyAgreement(A256KW),  # ECDH-ES+A256KW, Recommended
+    AESGCMAlgKeyWrapping(128),  # A128GCMKW
+    AESGCMAlgKeyWrapping(192),  # A192GCMKW
+    AESGCMAlgKeyWrapping(256),  # A256GCMKW
+    PBES2HSAlgKeyEncryption(256, A128KW),  # PBES2-HS256+A128KW
+    PBES2HSAlgKeyEncryption(384, A192KW),  # PBES2-HS384+A192KW
+    PBES2HSAlgKeyEncryption(512, A256KW),  # PBES2-HS512+A256KW
 ]
+
+# compatible alias
+DirectAlgModel = DirectAlgEncryption
+AESAlgModel = AESAlgKeyWrapping
+ECDHESAlgModel = ECDHESAlgKeyAgreement
+AESGCMAlgModel = AESGCMAlgKeyWrapping
+PBES2HSAlgModel = PBES2HSAlgKeyEncryption

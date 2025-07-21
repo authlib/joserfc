@@ -27,7 +27,7 @@ from .ec_key import ECKey
 from .util import encode_int, decode_int
 
 
-class NoneAlgModel(JWSAlgModel):
+class NoneAlgorithm(JWSAlgModel):
     name = "none"
     description = "No digital signature or MAC performed"
     security_warning = 'JWS algorithm "none" is deprecated, via draft-ietf-jose-deprecate-none-rsa15-02'
@@ -39,7 +39,7 @@ class NoneAlgModel(JWSAlgModel):
         return sig == b""
 
 
-class HMACAlgModel(JWSAlgModel):
+class HMACAlgorithm(JWSAlgModel):
     """HMAC using SHA algorithms for JWS. Available algorithms:
 
     - HS256: HMAC using SHA-256
@@ -68,7 +68,7 @@ class HMACAlgModel(JWSAlgModel):
         return hmac.compare_digest(sig, v_sig)
 
 
-class RSAAlgModel(JWSAlgModel):
+class RSAAlgorithm(JWSAlgModel):
     """RSA using SHA algorithms for JWS. Available algorithms:
 
     - RS256: RSASSA-PKCS1-v1_5 using SHA-256
@@ -102,7 +102,7 @@ class RSAAlgModel(JWSAlgModel):
             return False
 
 
-class ECAlgModel(JWSAlgModel):
+class ECAlgorithm(JWSAlgModel):
     """ECDSA using SHA algorithms for JWS. Available algorithms:
 
     - ES256: ECDSA using P-256 and SHA-256
@@ -156,7 +156,7 @@ class ECAlgModel(JWSAlgModel):
             return False
 
 
-class RSAPSSAlgModel(JWSAlgModel):
+class RSAPSSAlgorithm(JWSAlgModel):
     """RSASSA-PSS using SHA algorithms for JWS. Available algorithms:
 
     - PS256: RSASSA-PSS using SHA-256 and MGF1 with SHA-256
@@ -190,17 +190,24 @@ class RSAPSSAlgModel(JWSAlgModel):
 
 
 JWS_ALGORITHMS: list[JWSAlgModel] = [
-    NoneAlgModel(),  # none
-    HMACAlgModel(256, True),  # HS256
-    HMACAlgModel(384),  # HS384
-    HMACAlgModel(512),  # HS512
-    RSAAlgModel(256, True),  # RS256
-    RSAAlgModel(384),  # RS384
-    RSAAlgModel(512),  # RS512
-    ECAlgModel("ES256", "P-256", 256, True),
-    ECAlgModel("ES384", "P-384", 384),
-    ECAlgModel("ES512", "P-521", 512),
-    RSAPSSAlgModel(256),  # PS256
-    RSAPSSAlgModel(384),  # PS384
-    RSAPSSAlgModel(512),  # PS512
+    NoneAlgorithm(),  # none
+    HMACAlgorithm(256, True),  # HS256
+    HMACAlgorithm(384),  # HS384
+    HMACAlgorithm(512),  # HS512
+    RSAAlgorithm(256, True),  # RS256
+    RSAAlgorithm(384),  # RS384
+    RSAAlgorithm(512),  # RS512
+    ECAlgorithm("ES256", "P-256", 256, True),
+    ECAlgorithm("ES384", "P-384", 384),
+    ECAlgorithm("ES512", "P-521", 512),
+    RSAPSSAlgorithm(256),  # PS256
+    RSAPSSAlgorithm(384),  # PS384
+    RSAPSSAlgorithm(512),  # PS512
 ]
+
+# compatible
+NoneAlgModel = NoneAlgorithm
+HMACAlgModel = HMACAlgorithm
+RSAAlgModel = RSAAlgorithm
+ECAlgModel = ECAlgorithm
+RSAPSSAlgModel = RSAPSSAlgorithm
