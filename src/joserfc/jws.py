@@ -29,7 +29,6 @@ from ._rfc7515.types import (
     GeneralJSONSerialization as GeneralJSONSerialization,
     FlattenedJSONSerialization as FlattenedJSONSerialization,
 )
-from ._rfc7518.jws_algs import JWS_ALGORITHMS
 from ._rfc7797.util import is_rfc7797_enabled
 from ._rfc7797.compact import (
     sign_rfc7515_compact,
@@ -39,10 +38,9 @@ from ._rfc7797.json import (
     sign_rfc7797_json,
     extract_rfc7797_json as extract_flattened_json,
 )
-from ._rfc8037.jws_eddsa import EdDSA
-from ._rfc8812 import ES256K
 from .errors import BadSignatureError, MissingKeyError
 from .jwk import Key, KeyFlexible, KeySet, guess_key
+from .jwa import JWS_ALGORITHMS
 from .util import to_bytes
 from .registry import Header
 
@@ -69,26 +67,13 @@ __all__ = [
 ]
 
 
-def register_key_set() -> None:
-    for _alg in JWS_ALGORITHMS:
-        KeySet.algorithm_keys[_alg.name] = [_alg.key_type]
-    KeySet.algorithm_keys[EdDSA.name] = [EdDSA.key_type]
-    KeySet.algorithm_keys[ES256K.name] = [ES256K.key_type]
-
-
-# register supported alg models
-def register_algorithms() -> None:
-    # register alg in RFC7518
+def __setup_jws() -> None:
     for _alg in JWS_ALGORITHMS:
         JWSRegistry.register(_alg)
-    # register alg in RFC8037
-    JWSRegistry.register(EdDSA)
-    # register alg in RFC8812
-    JWSRegistry.register(ES256K)
+        KeySet.algorithm_keys[_alg.name] = [_alg.key_type]
 
 
-register_key_set()
-register_algorithms()
+__setup_jws()
 
 
 def serialize_compact(

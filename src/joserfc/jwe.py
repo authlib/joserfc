@@ -24,9 +24,7 @@ from ._rfc7516.json import (
     extract_general_json,
     extract_flattened_json,
 )
-from ._rfc7518.jwe_algs import JWE_ALG_MODELS
-from ._rfc7518.jwe_encs import JWE_ENC_MODELS
-from ._rfc7518.jwe_zips import JWE_ZIP_MODELS
+from .jwa import JWE_ALG_MODELS, JWE_ENC_MODELS, JWE_ZIP_MODELS
 from .jwk import Key, KeySet, ECKey, OKPKey, KeyFlexible, guess_key
 from .util import to_bytes
 from .registry import Header
@@ -56,13 +54,9 @@ __all__ = [
 ]
 
 
-def register_key_set() -> None:
+def __setup_jwe() -> None:
     for _alg in JWE_ALG_MODELS:
         KeySet.algorithm_keys[_alg.name] = _alg.key_types
-
-
-def register_algorithms() -> None:
-    for _alg in JWE_ALG_MODELS:
         JWERegistry.register(_alg)
 
     for _enc in JWE_ENC_MODELS:
@@ -72,8 +66,7 @@ def register_algorithms() -> None:
         JWERegistry.register(_zip)
 
 
-register_key_set()
-register_algorithms()
+__setup_jwe()
 
 
 def encrypt_compact(
