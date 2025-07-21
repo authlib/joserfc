@@ -380,7 +380,7 @@ Dump an asymmetric key into PEM format (in bytes):
 
 .. code-block:: python
 
-    # text = key.as_pem(public=True)  # dump as a public key
+    # text = key.as_pem(private=False)  # dump as a public key
     text: bytes = key.as_pem(private=True)  # dump as a private key
 
     with open("my-key.pem", "w") as f:
@@ -393,7 +393,7 @@ Dump an asymmetric key into DER format (in bytes):
 
 .. code-block:: python
 
-    # text = key.as_der(public=True)  # dump as a public key
+    # text = key.as_der(private=False)  # dump as a public key
     text: bytes = key.as_der(private=True)  # dump as a private key
 
     with open("my-key.der", "w") as f:

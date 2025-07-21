@@ -156,8 +156,7 @@ Let's enhance the callable key method to improve its efficiency.
     def load_key(obj: CompactSignature):
         claims = json.loads(obj.payload)
         key_set = fetch_key_set(claims['iss'])
-        key = key_set.get_by_kid(obj.headers()['kid'])
-        return key
+        return key_set
 
 In this enhanced callable key, an LRU (Least Recently Used) cache is used to store
 JWK Sets for different issuers. When decoding a token, the callable key function first
