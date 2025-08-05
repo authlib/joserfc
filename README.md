@@ -10,7 +10,7 @@
 [![Build Status](https://github.com/authlib/joserfc/actions/workflows/test.yml/badge.svg)](https://github.com/authlib/joserfc/actions)
 [![PyPI version](https://img.shields.io/pypi/v/joserfc.svg)](https://pypi.org/project/joserfc)
 [![conda-forge version](https://img.shields.io/conda/v/conda-forge/joserfc.svg?label=conda-forge&colorB=0090ff)](https://anaconda.org/conda-forge/joserfc)
-[![PyPI Downloads](https://img.shields.io/pypi/dm/joserfc)](https://pepy.tech/projects/joserfc)
+[![PyPI Downloads](https://static.pepy.tech/badge/joserfc/month)](https://pepy.tech/projects/joserfc)
 [![Code Coverage](https://codecov.io/gh/authlib/joserfc/branch/main/graph/badge.svg?token=WCD9X8HKI1)](https://codecov.io/gh/authlib/joserfc)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=authlib_joserfc&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=authlib_joserfc)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=authlib_joserfc&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=authlib_joserfc)
@@ -50,7 +50,7 @@ It follows RFCs with extensible API. The module has implementations of:
 - RFC7518: [JSON Web Algorithms](https://jose.authlib.org/en/dev/guide/algorithms/)
 - RFC7519: [JSON Web Token](https://jose.authlib.org/en/dev/guide/jwt/)
 - RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
-- RFC7638: ``thumbprint`` for JWK
+- RFC7638: [JSON Web Key (JWK) Thumbprint](https://jose.authlib.org/en/guide/jwk/#thumbprint)
 - RFC7797: [JSON Web Signature (JWS) Unencoded Payload Option](https://jose.authlib.org/en/dev/guide/jws/#rfc7797)
 - RFC8037: ``OKP`` Key and ``EdDSA`` algorithm
 - RFC8812: ``ES256K`` algorithm

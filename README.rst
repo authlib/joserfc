@@ -12,7 +12,7 @@ This package contains implementation of:
 - RFC7518: JSON Web Algorithms
 - RFC7519: JSON Web Token
 - RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
-- RFC7638: thumbprint for JWK
+- RFC7638: JSON Web Key (JWK) Thumbprint
 - RFC7797: JSON Web Signature (JWS) Unencoded Payload Option
 - RFC8037: OKP Key and EdDSA algorithm
 - RFC8812: ES256K algorithm
