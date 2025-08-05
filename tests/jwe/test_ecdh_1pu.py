@@ -6,8 +6,8 @@ from joserfc.jwe import (
     decrypt_compact,
     encrypt_json,
     decrypt_json,
-    JWE_ENC_MODELS,
 )
+from joserfc.jwa import JWE_ENC_MODELS
 from joserfc.jwk import KeySet
 from joserfc.errors import InvalidEncryptionAlgorithmError
 from joserfc.drafts.jwe_ecdh_1pu import JWE_ALG_MODELS, register_ecdh_1pu

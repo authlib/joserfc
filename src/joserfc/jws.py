@@ -10,6 +10,7 @@ from ._rfc7515.model import (
 from ._rfc7515.registry import (
     JWSRegistry as JWSRegistry,
     construct_registry,
+    default_registry,
 )
 from ._rfc7515.compact import (
     sign_compact,
@@ -39,8 +40,8 @@ from ._rfc7797.json import (
     extract_rfc7797_json as extract_flattened_json,
 )
 from .errors import BadSignatureError, MissingKeyError
-from .jwk import Key, KeyFlexible, KeySet, guess_key
-from .jwa import JWS_ALGORITHMS
+from .jwk import Key, KeyFlexible, guess_key
+from .jwa import setup_jws_algorithms
 from .util import to_bytes
 from .registry import Header
 
@@ -50,7 +51,6 @@ __all__ = [
     "GeneralJSONSerialization",
     "FlattenedJSONSerialization",
     # modules
-    "JWSAlgModel",
     "JWSRegistry",
     "HeaderMember",
     "CompactSignature",
@@ -64,16 +64,11 @@ __all__ = [
     "serialize_json",
     "deserialize_json",
     "detach_content",
+    # consts
+    "default_registry",
 ]
 
-
-def __setup_jws() -> None:
-    for _alg in JWS_ALGORITHMS:
-        JWSRegistry.register(_alg)
-        KeySet.algorithm_keys[_alg.name] = [_alg.key_type]
-
-
-__setup_jws()
+setup_jws_algorithms()
 
 
 def serialize_compact(

@@ -4,8 +4,8 @@ from joserfc.jwe import (
     encrypt_compact,
     decrypt_compact,
     CompactEncryption,
-    JWE_ENC_MODELS,
 )
+from joserfc.jwa import JWE_ENC_MODELS
 from joserfc.jwk import RSAKey, ECKey, OctKey, OKPKey, KeySet
 from joserfc.errors import (
     InvalidKeyLengthError,
