@@ -15,7 +15,7 @@ Changelog
 1.3.0
 -----
 
-**Unreleased**
+**Released on August 25, 2025**
 
 - Exporting all algorithms in ``joserfc.jwa`` module.
 - Allow re-using ``JWTClaimsRegistry`` instance, via :issue:`68`.
