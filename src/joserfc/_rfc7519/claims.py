@@ -4,7 +4,7 @@ import json
 import datetime
 import calendar
 from json import JSONEncoder
-from typing import TypedDict, Type, Any
+from typing import TypedDict, Type, Any, Callable
 from ..util import to_bytes
 from ..errors import (
     MissingClaimError,
@@ -83,12 +83,25 @@ class ClaimsRegistry:
 
 
 class JWTClaimsRegistry(ClaimsRegistry):
-    def __init__(self, now: int | None = None, leeway: int = 0, **kwargs: ClaimsOption):
+    """A claims registry for validating JWT claims.
+
+    :param now: timestamp of "now" time
+    :param leeway: leeway time in seconds
+    :param **kwargs: claims options
+    """
+
+    def __init__(self, now: int | Callable[[], int] | None = None, leeway: int = 0, **kwargs: ClaimsOption) -> None:
         if now is None:
-            now = int(time.time())
-        self.now = now
+            now = _generate_now
+        self._now = now
         self.leeway = leeway
         super().__init__(**kwargs)
+
+    @property
+    def now(self) -> int:
+        if callable(self._now):
+            return self._now()
+        return self._now
 
     def validate_exp(self, value: int) -> None:
         """The "exp" (expiration time) claim identifies the expiration time on
@@ -135,3 +148,7 @@ class JWTClaimsRegistry(ClaimsRegistry):
 
 def _validate_numeric_time(s: int) -> bool:
     return isinstance(s, (int, float))
+
+
+def _generate_now() -> int:
+    return int(time.time())
