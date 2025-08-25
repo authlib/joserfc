@@ -1,4 +1,4 @@
-from .._rfc7519.claims import ClaimsRegistry, JWTClaimsRegistry  # noqa: F403
+from .._rfc7519.claims import ClaimsRegistry, JWTClaimsRegistry  # noqa: F401
 import warnings
 
 warnings.warn(
