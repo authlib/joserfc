@@ -17,7 +17,15 @@ Changelog
 
 **Unreleased**
 
+- Exporting all algorithms in ``joserfc.jwa`` module.
+- Allow re-using ``JWTClaimsRegistry`` instance, via :issue:`68`.
+- Added ``claim`` attribute on claim errors, via :issue:`69`.
+
+**Breaking changes**:
+
 - Remove Python 3.8 support.
+- Rename JWS and JWE Algorithm model class names to prevent name conflicts.
+
 
 1.2.2
 -----
