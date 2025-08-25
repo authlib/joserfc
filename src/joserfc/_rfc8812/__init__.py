@@ -1,8 +1,8 @@
 from cryptography.hazmat.primitives.asymmetric.ec import SECP256K1
 from .._rfc7518.ec_key import ECKey
-from .._rfc7518.jws_algs import ECAlgorithm
+from .._rfc7518.jws_algs import ESAlgorithm
 
-ES256K = ECAlgorithm("ES256K", "secp256k1", 256)
+ES256K = ESAlgorithm("ES256K", "secp256k1", 256)
 
 
 def register_secp256k1() -> None:

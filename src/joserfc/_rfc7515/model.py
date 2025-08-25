@@ -112,6 +112,7 @@ class JWSAlgModel(object, metaclass=ABCMeta):
     key_type = "oct"
     algorithm_type: Literal["JWS"] = "JWS"
     algorithm_location = "sig"
+    algorithm_security = 0
 
     def check_key(self, key: Any) -> None:
         key.check_use("sig")

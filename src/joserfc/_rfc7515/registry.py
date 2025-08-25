@@ -1,7 +1,9 @@
 from __future__ import annotations
 import warnings
+from typing import Any
+from enum import Enum
 from .model import JWSAlgModel
-from ..errors import UnsupportedAlgorithmError, SecurityWarning
+from ..errors import UnsupportedAlgorithmError, SecurityWarning, JoseError
 from ..registry import (
     JWS_HEADER_REGISTRY,
     Header,
@@ -27,6 +29,10 @@ class JWSRegistry:
     :param algorithms: allowed algorithms to be used
     :param strict_check_header: only allow header key in the registry to be used
     """
+
+    class Strategy(Enum):
+        RECOMMENDED = 1
+        SECURITY = 2
 
     default_header_registry: HeaderRegistryDict = JWS_HEADER_REGISTRY
     algorithms: dict[str, JWSAlgModel] = {}
@@ -78,6 +84,45 @@ class JWSRegistry:
         validate_registry_header(self.header_registry, header)
         if self.strict_check_header:
             check_supported_header(self.header_registry, header)
+
+    @classmethod
+    def guess_alg(cls, key: Any, strategy: Strategy) -> str | None:
+        """Guess the JWS algorithm for a given key.
+
+        :param key: key instance
+        :param strategy: the strategy for guessing the JWS algorithm
+        """
+        if strategy == cls.Strategy.RECOMMENDED:
+            algorithms = cls.filter_algorithms(key, cls.recommended)
+        elif strategy == cls.Strategy.SECURITY:
+            names = list(cls.algorithms.keys())
+            algorithms = cls.filter_algorithms(key, names)
+            # sort by security level
+            algorithms.sort(key=lambda alg: alg.algorithm_security, reverse=True)
+        else:
+            raise NotImplementedError(f"Unknown algorithm strategy '{strategy}'")
+
+        if algorithms:
+            return algorithms[0].name
+        else:
+            return None
+
+    @classmethod
+    def filter_algorithms(cls, key: Any, names: list[str]) -> list[JWSAlgModel]:
+        """Filter JWS algorithms based on the given algorithm names.
+
+        :param key: key instance
+        :param names: list of algorithm names
+        """
+        rv: list[JWSAlgModel] = []
+        for name in names:
+            alg = cls.algorithms[name]
+            try:
+                alg.check_key(key)
+                rv.append(alg)
+            except JoseError:
+                pass
+        return rv
 
 
 #: default JWS registry

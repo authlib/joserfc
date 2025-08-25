@@ -57,6 +57,7 @@ class HMACAlgorithm(JWSAlgModel):
         self.description = f"HMAC using SHA-{sha_type}"
         self.recommended = recommended
         self.hash_alg = getattr(self, f"SHA{sha_type}")
+        self.algorithm_security = sha_type
 
     def sign(self, msg: bytes, key: OctKey) -> bytes:
         # it is faster than the one in cryptography
@@ -89,6 +90,7 @@ class RSAAlgorithm(JWSAlgModel):
         self.description = f"RSASSA-PKCS1-v1_5 using SHA-{sha_type}"
         self.recommended = recommended
         self.hash_alg = getattr(self, f"SHA{sha_type}")
+        self.algorithm_security = sha_type
 
     def sign(self, msg: bytes, key: RSAKey) -> bytes:
         op_key = key.get_op_key("sign")
@@ -103,7 +105,7 @@ class RSAAlgorithm(JWSAlgModel):
             return False
 
 
-class ECAlgorithm(JWSAlgModel):
+class ESAlgorithm(JWSAlgModel):
     """ECDSA using SHA algorithms for JWS. Available algorithms:
 
     - ES256: ECDSA using P-256 and SHA-256
@@ -123,6 +125,7 @@ class ECAlgorithm(JWSAlgModel):
         self.description = f"ECDSA using {self.curve} and SHA-{sha_type}"
         self.recommended = recommended
         self.hash_alg = getattr(self, f"SHA{sha_type}")
+        self.algorithm_security = sha_type
 
     def check_key(self, key: ECKey) -> None:
         super().check_key(key)
@@ -174,6 +177,7 @@ class RSAPSSAlgorithm(JWSAlgModel):
         self.description = f"RSASSA-PSS using SHA-{sha_type} and MGF1 with SHA-{sha_type}"
         self.hash_alg = getattr(self, f"SHA{sha_type}")
         self.padding = padding.PSS(mgf=padding.MGF1(self.hash_alg()), salt_length=self.hash_alg.digest_size)
+        self.algorithm_security = sha_type
 
     def sign(self, msg: bytes, key: RSAKey) -> bytes:
         op_key = key.get_op_key("sign")
@@ -196,9 +200,9 @@ JWS_ALGORITHMS: list[JWSAlgModel] = [
     RSAAlgorithm(256, True),  # RS256
     RSAAlgorithm(384),  # RS384
     RSAAlgorithm(512),  # RS512
-    ECAlgorithm("ES256", "P-256", 256, True),
-    ECAlgorithm("ES384", "P-384", 384),
-    ECAlgorithm("ES512", "P-521", 512),
+    ESAlgorithm("ES256", "P-256", 256, True),
+    ESAlgorithm("ES384", "P-384", 384),
+    ESAlgorithm("ES512", "P-521", 512),
     RSAPSSAlgorithm(256),  # PS256
     RSAPSSAlgorithm(384),  # PS384
     RSAPSSAlgorithm(512),  # PS512
@@ -208,5 +212,5 @@ JWS_ALGORITHMS: list[JWSAlgModel] = [
 NoneAlgModel = NoneAlgorithm
 HMACAlgModel = HMACAlgorithm
 RSAAlgModel = RSAAlgorithm
-ECAlgModel = ECAlgorithm
+ECAlgModel = ESAlgorithm
 RSAPSSAlgModel = RSAPSSAlgorithm

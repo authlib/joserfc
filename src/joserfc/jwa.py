@@ -14,7 +14,7 @@ from ._rfc7518.jws_algs import (
     NoneAlgorithm,
     HMACAlgorithm,
     RSAAlgorithm,
-    ECAlgorithm,
+    ESAlgorithm,
     RSAPSSAlgorithm,
     JWS_ALGORITHMS as _JWS_ALGORITHMS,
 )
@@ -46,7 +46,7 @@ __all__ = [
     "NoneAlgorithm",
     "HMACAlgorithm",
     "RSAAlgorithm",
-    "ECAlgorithm",
+    "ESAlgorithm",
     "RSAPSSAlgorithm",
     "EdDSAAlgorithm",
     # JWE algorithms
