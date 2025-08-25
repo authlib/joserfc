@@ -20,6 +20,7 @@ Changelog
 - Exporting all algorithms in ``joserfc.jwa`` module.
 - Allow re-using ``JWTClaimsRegistry`` instance, via :issue:`68`.
 - Added ``claim`` attribute on claim errors, via :issue:`69`.
+- Added ``JWSRegistry.guess_alg`` method, via :issue:`49`.
 
 **Breaking changes**:
 

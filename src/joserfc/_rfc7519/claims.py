@@ -87,7 +87,7 @@ class JWTClaimsRegistry(ClaimsRegistry):
 
     :param now: timestamp of "now" time
     :param leeway: leeway time in seconds
-    :param **kwargs: claims options
+    :param kwargs: claims options
     """
 
     def __init__(self, now: int | Callable[[], int] | None = None, leeway: int = 0, **kwargs: ClaimsOption) -> None:

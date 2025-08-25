@@ -325,14 +325,11 @@ JWS (JSON Web Signature) to remain unencoded, without using base64 encoding.
 To enable this option, you need to set the ``b64`` header parameter to ``false``
 in the JWS header.
 
-To utilize the unencoded payload option in joserfc, you must import the
-serialize and deserialize methods from ``joserfc.rfc7797``.
-
 Here are examples demonstrating the usage of the ``b64`` option:
 
 .. code-block:: python
 
-    from joserfc.rfc7797 import serialize_compact, deserialize_compact
+    from joserfc.jws import serialize_compact, deserialize_compact
     from joserfc.jwk import OctKey
 
     key = OctKey.import_key("secret")
@@ -351,7 +348,7 @@ characters, the compact serialization will detach the payload:
 
 .. code-block:: python
 
-    from joserfc.rfc7797 import serialize_compact, deserialize_compact
+    from joserfc.jws import serialize_compact, deserialize_compact
     from joserfc.jwk import OctKey
 
     key = OctKey.import_key("secret")
@@ -362,5 +359,19 @@ characters, the compact serialization will detach the payload:
     # payload when calling deserialize_compact
     deserialize_compact(value, key, payload="$.02")
 
-There are also methods for JSON serialization: ``serialize_json`` and
+You can also use ``b64`` header for JSON serialization: ``serialize_json`` and
 ``deserialize_json``.
+
+Guess Algorithms via Key
+------------------------
+
+If you are unsure which algorithm to use but already have a key, you can call the
+:meth:`jws.JWSRegistry.guess_alg` method to determine a suitable algorithm:
+
+.. code-block:: python
+
+    from joserfc.jws import JWSRegistry, serialize_compact
+
+    alg = JWSRegistry.guess_alg(key, JWSRegistry.Strategy.RECOMMENDED)
+    protected = {"alg": alg}
+    serialize_compact(protected, b"payload", key)

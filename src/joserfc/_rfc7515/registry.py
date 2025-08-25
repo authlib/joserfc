@@ -31,7 +31,9 @@ class JWSRegistry:
     """
 
     class Strategy(Enum):
+        #: find the recommended algorithm
         RECOMMENDED = 1
+        #: find the most secure algorithm
         SECURITY = 2
 
     default_header_registry: HeaderRegistryDict = JWS_HEADER_REGISTRY
