@@ -126,14 +126,14 @@ class TestJWTClaims(TestCase):
         claims_requests.validate({"aud": "a"})
 
     def test_validate_iat(self):
+        claims_requests = jwt.JWTClaimsRegistry(leeway=500)
         now = int(time.time())
-        claims_requests = jwt.JWTClaimsRegistry(now=now, leeway=500)
         claims_requests.validate({"iat": now})
         self.assertRaises(InvalidTokenError, claims_requests.validate, {"iat": now + 1000})
 
     def test_validate_nbf(self):
+        claims_requests = jwt.JWTClaimsRegistry(leeway=500)
         now = int(time.time())
-        claims_requests = jwt.JWTClaimsRegistry(now=now, leeway=500)
         claims_requests.validate({"nbf": now})
         self.assertRaises(InvalidTokenError, claims_requests.validate, {"nbf": now + 1000})
 
