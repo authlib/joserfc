@@ -21,6 +21,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import ECDSA
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
 from .._rfc7515.model import JWSAlgModel
+from ..errors import InvalidKeyCurveError
 from .oct_key import OctKey
 from .rsa_key import RSAKey
 from .ec_key import ECKey
@@ -123,13 +124,12 @@ class ECAlgorithm(JWSAlgModel):
         self.recommended = recommended
         self.hash_alg = getattr(self, f"SHA{sha_type}")
 
-    def _check_key(self, key: ECKey) -> ECKey:
+    def check_key(self, key: ECKey) -> None:
+        super().check_key(key)
         if key.curve_name != self.curve:
-            raise ValueError(f"Key for '{self.name}' not supported, only '{self.curve}' allowed")
-        return key
+            raise InvalidKeyCurveError(f"Key for '{self.name}' not supported, only '{self.curve}' allowed")
 
     def sign(self, msg: bytes, key: ECKey) -> bytes:
-        self._check_key(key)
         op_key = key.get_op_key("sign")
         der_sig = op_key.sign(msg, ECDSA(self.hash_alg()))
         r, s = decode_dss_signature(der_sig)
@@ -137,7 +137,6 @@ class ECAlgorithm(JWSAlgModel):
         return encode_int(r, size) + encode_int(s, size)
 
     def verify(self, msg: bytes, sig: bytes, key: ECKey) -> bool:
-        self._check_key(key)
         key_size = key.curve_key_size
         length = (key_size + 7) // 8
 

@@ -59,6 +59,10 @@ class InvalidKeyTypeError(JoseError):
     error = "invalid_key_type"
 
 
+class InvalidKeyCurveError(JoseError):
+    error = "invalid_key_curve"
+
+
 class InvalidKeyIdError(JoseError):
     error = "invalid_key_id"
 

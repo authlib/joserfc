@@ -10,6 +10,7 @@ from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyOperationError,
     InvalidKeyTypeError,
+    InvalidKeyCurveError,
     MissingHeaderError,
     MissingCritHeaderError,
     UnsupportedHeaderError,
@@ -144,7 +145,7 @@ class TestJWSErrors(TestCase):
     def test_ec_incorrect_curve(self):
         header = {"alg": "ES256"}
         key = load_key("ec-p512-private.pem")
-        self.assertRaises(ValueError, jws.serialize_compact, header, "i", key)
+        self.assertRaises(InvalidKeyCurveError, jws.serialize_compact, header, "i", key)
 
     def test_ec_invalid_signature(self):
         header = {"alg": "ES256"}

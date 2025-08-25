@@ -111,9 +111,7 @@ def serialize_compact(
             raise MissingKeyError()
 
         key = guess_key(private_key, obj, True, use="sig")
-        key.check_use("sig")
-        alg.check_key_type(key)
-        key.check_alg(alg.name)
+        alg.check_key(key)
 
     if is_rfc7797:
         out = sign_rfc7515_compact(obj, alg, key)
@@ -151,8 +149,7 @@ def validate_compact(
         raise MissingKeyError()
 
     key: Key = guess_key(public_key, obj, use="sig")
-    key.check_use("sig")
-    alg.check_key_type(key)
+    alg.check_key(key)
     return verify_compact(obj, alg, key)
 
 
