@@ -4,14 +4,12 @@ from json import JSONEncoder, JSONDecoder
 from typing import Type
 from ._rfc7519.claims import (
     convert_claims,
-    check_sensitive_data,
     Claims,
-)
-from ._rfc7519.registry import (
     ClaimsOption,
     ClaimsRegistry,
     JWTClaimsRegistry,
 )
+from ._rfc7519.security import check_sensitive_data
 from .jws import (
     JWSRegistry,
     serialize_compact,
