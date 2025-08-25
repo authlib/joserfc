@@ -43,6 +43,21 @@ The returned value of ``text`` in above example is:
 
 Line breaks for display only.
 
+Prevent sensitive data leaks
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Before calling :meth:`encode` on your claims, it's a good practice to ensure
+they do not contain sensitive information, such as credit card numbers.
+
+You can use :meth:`check_sensitive_data` to detect whether sensitive data is
+present in the claims:
+
+.. code-block:: python
+
+    from joserfc import jwt
+
+    jwt.check_sensitive_data(claims)
+
 Decode token
 ------------
 
@@ -403,7 +418,7 @@ JWKs:
 .. code-block:: python
 
     import requests
-    from joserfc import GuestProtocol, Key, KeySet
+    from joserfc.jwk import GuestProtocol, Key, KeySet
 
     def fetch_jwk_set(obj: GuestProtocol) -> Key:
         headers = obj.headers()
