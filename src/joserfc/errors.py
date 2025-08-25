@@ -158,9 +158,11 @@ class InvalidClaimError(JoseError):
     """This error is designed for JWT. It raised when the claim contains
     invalid values or types."""
 
+    claim: str
     error = "invalid_claim"
 
     def __init__(self, claim: str):
+        self.claim = claim
         description = f"Invalid claim: '{claim}'"
         super(InvalidClaimError, self).__init__(description=description)
 
@@ -169,9 +171,11 @@ class MissingClaimError(JoseError):
     """This error is designed for JWT. It raised when the required
     claims are missing."""
 
+    claim: str
     error = "missing_claim"
 
     def __init__(self, claim: str):
+        self.claim = claim
         description = f"Missing claim: '{claim}'"
         super(MissingClaimError, self).__init__(description=description)
 
@@ -180,9 +184,11 @@ class InsecureClaimError(JoseError):
     """This error is designed for JWT. It raised when the claim
     contains sensitive information."""
 
+    claim: str
     error = "insecure_claim"
 
     def __init__(self, claim: str):
+        self.claim = claim
         description = f"Insecure claim '{claim}'"
         super(InsecureClaimError, self).__init__(description=description)
 
