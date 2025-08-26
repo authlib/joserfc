@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-14 11:54+0900\n"
+"POT-Creation-Date: 2025-08-26 11:26+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -40,52 +40,49 @@ msgstr ""
 "<https://cryptography.io/en/latest/installation/>`_。"
 
 #: ../../install.rst:20
-msgid "pip install"
-msgstr "pip 安装"
+msgid "Package install"
+msgstr "安装"
 
 #: ../../install.rst:22
 msgid ""
-"``joserfc`` is conveniently available as a Python package on PyPI and can"
-" be easily installed using pip."
-msgstr "``joserfc`` 是一个 Python 库，您可以方便地在 PyPI 上获取，并可使用 pip 进行安装。"
+"``joserfc`` is conveniently available as a Python package on PyPI_ and "
+"conda-forge_. It can be easily installed via:"
+msgstr ""
+"``joserfc`` 可作为 Python 包方便地在 PyPI_ 和 conda-forge_ 上获取。可以通过以下方式轻松安装："
 
 #: ../../install.rst
-msgid "pip"
-msgstr ""
+msgid ":iconify:`devicon:pypi` pip"
+msgstr ":iconify:`devicon:pypi` pip"
 
 #: ../../install.rst
-msgid "uv"
-msgstr ""
+msgid ":iconify:`material-icon-theme:uv` uv"
+msgstr ":iconify:`material-icon-theme:uv` uv"
 
-#: ../../install.rst:41
+#: ../../install.rst
+msgid ":iconify:`devicon:anaconda` conda"
+msgstr ":iconify:`devicon:anaconda` conda"
+
+#: ../../install.rst:48
 msgid ""
 "To use :ref:`chacha20` algorithms, developers have to install the "
 "``PyCryptodome`` module."
 msgstr "要使用 :ref:`chacha20` 算法，开发人员必须安装 ``PyCryptodome`` 模块。"
 
-#: ../../install.rst:48
-msgid "conda install"
-msgstr "conda 安装"
-
-#: ../../install.rst:50
-msgid "``joserfc`` is also available from conda-forge_:"
-msgstr "``joserfc`` 同时也在 conda-forge_ 里："
-
-#: ../../install.rst:59
+#: ../../install.rst:58
 msgid "Dependency management"
 msgstr "依赖管理"
 
-#: ../../install.rst:61
+#: ../../install.rst:60
 msgid ""
 "There are several ways to manage the dependencies of your project, here "
 "are some examples to track ``joserfc`` in your project."
 msgstr "有多种方法可以管理项目的依赖关系，以下是一些示例，可以用来跟踪您项目中的 ``joserfc``。"
 
-#: ../../install.rst:65 ../../install.rst:70
+#: ../../install.rst:64 ../../install.rst:69
 msgid "pyproject.toml"
 msgstr "pyproject.toml"
 
-#: ../../install.rst:67
+#: ../../install.rst:66
 msgid ""
 "If you're using ``pyproject.toml`` for your Python project, you can add "
 "``joserfc`` to ``project.dependencies``."
@@ -93,11 +90,11 @@ msgstr ""
 "如果您的 Python 项目使用 ``pyproject.toml``，您可以将 ``joserfc`` 添加到 "
 "``project.dependencies`` 中。"
 
-#: ../../install.rst:79 ../../install.rst:84
+#: ../../install.rst:78 ../../install.rst:83
 msgid "requirements.txt"
 msgstr "requirements.txt"
 
-#: ../../install.rst:81
+#: ../../install.rst:80
 msgid ""
 "If you're tracking dependencies in ``requirements.txt``, you can add "
 "``joserfc`` to the requirements file."

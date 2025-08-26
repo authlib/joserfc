@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-07 23:00+0900\n"
+"POT-Creation-Date: 2025-08-26 11:26+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -19,19 +19,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: ../../index.rst:68
+#: ../../index.rst:69
 msgid "Getting started"
 msgstr "开始上手"
 
-#: ../../index.rst:75
+#: ../../index.rst:76
 msgid "Essentials"
 msgstr "必读文档"
 
-#: ../../index.rst:85
+#: ../../index.rst:86
 msgid "Recipes"
 msgstr "小技巧"
 
-#: ../../index.rst:93
+#: ../../index.rst:94
 msgid "Development"
 msgstr "开发者文档"
 
@@ -118,38 +118,44 @@ msgid "RFC7638: ``thumbprint`` for JWK"
 msgstr "RFC7638: JWK 的 ``thumbprint``"
 
 #: ../../index.rst:52
+msgid ""
+"RFC7797: JSON Web Signature (JWS) :ref:`Unencoded Payload Option "
+"<rfc7797>`"
+msgstr "RFC7797: JSON Web Signature (JWS) :ref:`未编码载荷选项 <rfc7797>`"
+
+#: ../../index.rst:53
 msgid "RFC8037: :ref:`OKPKey` and ``EdDSA`` algorithm"
 msgstr "RFC8037: :ref:`OKPKey` 和 ``EdDSA`` 算法"
 
-#: ../../index.rst:53
+#: ../../index.rst:54
 msgid "RFC8812: ``ES256K`` algorithm"
 msgstr "RFC8812: ``ES256K`` 算法"
 
-#: ../../index.rst:54
-msgid "RFC9278: ``thumbprint_uri`` for JWK"
+#: ../../index.rst:55
+msgid "RFC9278: JWK Thumbprint URI (``thumbprint_uri``)"
 msgstr "RFC9278: JWK 的 ``thumbprint_uri``"
 
-#: ../../index.rst:56
+#: ../../index.rst:57
 msgid "And draft RFCs implementation of:"
 msgstr "同时包含如下 JOSE 草案的实现："
 
-#: ../../index.rst:58
+#: ../../index.rst:59
 msgid ":ref:`chacha20`"
 msgstr ":ref:`chacha20`"
 
-#: ../../index.rst:59
+#: ../../index.rst:60
 msgid ":ref:`ecdh1pu`"
 msgstr ":ref:`ecdh1pu`"
 
-#: ../../index.rst:61
+#: ../../index.rst:62
 msgid "RFC7520 is implemented as test cases."
 msgstr "RFC7520 是测试案例，详情请参考源码里的 tests 部分。"
 
-#: ../../index.rst:64
+#: ../../index.rst:65
 msgid "Next"
 msgstr "继续阅读"
 
-#: ../../index.rst:66
+#: ../../index.rst:67
 msgid ""
 "Explore the following sections to discover more about ``joserfc`` and its"
 " features."
