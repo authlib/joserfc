@@ -2,6 +2,7 @@ from unittest import TestCase
 from joserfc.jwe import (
     JWERegistry,
     GeneralJSONEncryption,
+    GeneralJSONSerialization,
     encrypt_compact,
     decrypt_compact,
     encrypt_json,
@@ -178,7 +179,7 @@ TestECDH1PUCompact.load_fixture("jwe_compact_ecdh_1pu.json")
 class TestECDH1PUJSON(TestCase):
     def test_example_B(self):
         # https://datatracker.ietf.org/doc/html/draft-madden-jose-ecdh-1pu-04#appendix-B.11
-        result = {
+        result: GeneralJSONSerialization = {
             "protected": (
                 "eyJhbGciOiJFQ0RILTFQVStBMTI4S1ciLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwiYXB1Ijoi"
                 "UVd4cFkyVSIsImFwdiI6IlFtOWlJR0Z1WkNCRGFHRnliR2xsIiwiZXBrIjp7Imt0eSI6Ik9L"

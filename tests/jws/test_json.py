@@ -1,5 +1,6 @@
 from unittest import TestCase
 from joserfc.jws import (
+    HeaderDict,
     JWSRegistry,
     serialize_json,
     deserialize_json,
@@ -18,7 +19,7 @@ from tests.base import load_key
 class TestJSON(TestCase):
     def test_serialize_json(self):
         key: RSAKey = load_key("rsa-openssl-private.pem")
-        member = {"protected": {"alg": "RS256"}}
+        member: HeaderDict = {"protected": {"alg": "RS256"}}
 
         # flattened
         value = serialize_json(member, b"hello", key)
@@ -39,7 +40,7 @@ class TestJSON(TestCase):
 
     def test_serialize_with_unprotected_header(self):
         key: RSAKey = load_key("rsa-openssl-private.pem")
-        member = {"protected": {"alg": "RS256"}, "header": {"kid": "alice"}}
+        member: HeaderDict = {"protected": {"alg": "RS256"}, "header": {"kid": "alice"}}
         value = serialize_json(member, b"hello", key)
         self.assertIn("header", value)
         self.assertEqual(value["header"], member["header"])
@@ -55,7 +56,7 @@ class TestJSON(TestCase):
         key1 = load_key("ec-p256-alice.json", {"kid": "alice"})
         key2 = load_key("ec-p256-bob.json", {"kid": "bob"})
         keys = KeySet([key1, key2])
-        member = {"protected": {"alg": "ES256"}}
+        member: HeaderDict = {"protected": {"alg": "ES256"}}
         value = serialize_json(member, b"hello", keys)
         self.assertIn("header", value)
         self.assertIn("kid", value["header"])
@@ -71,7 +72,7 @@ class TestJSON(TestCase):
         self.assertIn("kid", value["header"])
 
     def test_detach_content(self):
-        member = {"protected": {"alg": "ES256"}}
+        member: HeaderDict = {"protected": {"alg": "ES256"}}
         key = load_key("ec-p256-alice.json")
         value = serialize_json(member, b"hello", key)
         self.assertIn("payload", value)
@@ -81,7 +82,7 @@ class TestJSON(TestCase):
         detach_content(new_value)
 
     def test_invalid_payload(self):
-        member = {"protected": {"alg": "ES256"}}
+        member: HeaderDict = {"protected": {"alg": "ES256"}}
         key = load_key("ec-p256-alice.json")
         value = serialize_json(member, b"hello", key)
         value["payload"] = "a"
@@ -91,7 +92,7 @@ class TestJSON(TestCase):
         self.assertRaises(DecodeError, deserialize_json, value, key)
 
     def test_bad_signature(self):
-        member = {"protected": {"alg": "ES256"}}
+        member: HeaderDict = {"protected": {"alg": "ES256"}}
         key1 = load_key("ec-p256-alice.json")
         key2 = load_key("ec-p256-bob.json")
         value = serialize_json(member, b"hello", key1)
@@ -101,7 +102,7 @@ class TestJSON(TestCase):
 
     def test_with_public_header(self):
         key: RSAKey = load_key("rsa-openssl-private.pem")
-        member = {"header": {"alg": "RS256", "kid": "abc"}}
+        member: HeaderDict = {"header": {"alg": "RS256", "kid": "abc"}}
         value = serialize_json(member, b"hello", key)
         self.assertIn("header", value)
         obj = deserialize_json(value, key)
@@ -109,7 +110,7 @@ class TestJSON(TestCase):
         self.assertEqual(obj.headers(), {"alg": "RS256", "kid": "abc"})
 
     def test_strict_check_header(self):
-        member = {"protected": {"alg": "HS256", "custom": "hi"}}
+        member: HeaderDict = {"protected": {"alg": "HS256", "custom": "hi"}}
         key = OctKey.import_key("secret")
         self.assertRaises(UnsupportedHeaderError, serialize_json, member, b"hi", key)
         registry = JWSRegistry(strict_check_header=False)
@@ -117,7 +118,15 @@ class TestJSON(TestCase):
 
     def test_unsupported_algorithm(self):
         key = OctKey.import_key("secret")
-        member = {"protected": {"alg": "HS256"}}
+        member: HeaderDict = {"protected": {"alg": "HS256"}}
         value = serialize_json(member, b"hi", key)
         registry = JWSRegistry(algorithms=["HS512"])
         self.assertRaises(UnsupportedAlgorithmError, deserialize_json, value, key, registry=registry)
+
+    def test_prevent_overwrite_header(self):
+        key = OctKey.import_key("secret")
+        member: HeaderDict = {"protected": {"alg": "HS256", "kid": "a"}}
+        value = serialize_json(member, b"hello", key)
+        value["header"] = {"kid": "b"}
+        obj = deserialize_json(value, key)
+        self.assertEqual(obj.headers()["kid"], "a")

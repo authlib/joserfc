@@ -1,5 +1,6 @@
 from tests.base import TestFixture, load_key
 from joserfc.jwk import OctKey
+from joserfc.jws import HeaderDict
 from joserfc import jws
 
 
@@ -23,7 +24,7 @@ class TestJWSExamples(TestFixture):
         if "compact" in data:
             self.assertEqual(value1, data["compact"])
 
-        member = {"protected": protected}
+        member: HeaderDict = {"protected": protected}
         value2 = jws.serialize_json(member, payload, private_key, algorithms=algorithms)
         obj2 = jws.deserialize_json(value2, public_key, algorithms=algorithms)
         self.assertTrue(obj2.flattened)
