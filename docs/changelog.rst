@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.3.1
+-----
+
+**Released on August 27, 2025**
+
+- Fix ``jws.deserialize_json`` and ``jwe.decrypt_json``, preventing unprotected header
+  overwriting protected header.
+
 1.3.0
 -----
 
