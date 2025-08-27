@@ -27,10 +27,12 @@ class HeaderMember:
 
     def headers(self) -> Header:
         rv: Header = {}
-        if self.protected:
-            rv.update(self.protected)
         if self.header:
             rv.update(self.header)
+
+        # protected header is preferred
+        if self.protected:
+            rv.update(self.protected)
         return rv
 
     def set_kid(self, kid: str) -> None:

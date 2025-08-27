@@ -41,11 +41,12 @@ class Recipient(t.Generic[KeyType]):
 
     def headers(self) -> Header:
         rv: Header = {}
-        rv.update(self.__parent.protected)
         if isinstance(self.__parent, BaseJSONEncryption) and self.__parent.unprotected:
             rv.update(self.__parent.unprotected)
         if self.header:
             rv.update(self.header)
+
+        rv.update(self.__parent.protected)
         return rv
 
     def add_header(self, k: str, v: t.Any) -> None:
