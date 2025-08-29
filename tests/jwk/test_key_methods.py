@@ -153,13 +153,8 @@ class TestKeyMethods(TestCase):
         jws.serialize_compact({"alg": "HS256", "kid": key2.kid}, "foo", key_set)
 
         key_set = KeySet([key1, key2, key2])
-        self.assertRaises(
-            InvalidKeyIdError,
-            jws.serialize_compact,
-            {"alg": "HS256", "kid": key2.kid},
-            "foo",
-            key_set,
-        )
+        # return the first found key
+        jws.serialize_compact({"alg": "HS256", "kid": key2.kid}, "foo", key_set)
 
     def test_find_correct_key_with_alg(self):
         key = OctKey.generate_key()

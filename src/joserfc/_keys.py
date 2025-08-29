@@ -148,13 +148,9 @@ class KeySet:
         if parameters:
             keys = list(_filter_keys_by_parameters(keys, parameters))
 
-        if len(keys) == 1:
+        if keys:
             return keys[0]
-
-        elif len(keys) == 0:
-            raise InvalidKeyIdError(f"No key for kid: '{kid}'")
-        else:
-            raise InvalidKeyIdError(f"Multiple keys for kid: '{kid}'")
+        raise InvalidKeyIdError(f"No key for kid: '{kid}'")
 
     def pick_random_key(self, algorithm: str, parameters: KeyParameters | None = None) -> t.Optional[Key]:
         key_types = self.algorithm_keys.get(algorithm)
