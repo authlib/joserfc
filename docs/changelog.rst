@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.3.2
+-----
+
+**Released on September 4, 2025**
+
+- Returns the first key when multiple keys found in a key set.
+- Validate if a "crit" header is supported in the registry.
+
 1.3.1
 -----
 

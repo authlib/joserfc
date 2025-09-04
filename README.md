@@ -8,9 +8,9 @@
 `joserfc` is a Python library that provides a comprehensive implementation of several essential JSON Object Signing and Encryption (JOSE) standards.
 
 [![Build Status](https://github.com/authlib/joserfc/actions/workflows/test.yml/badge.svg)](https://github.com/authlib/joserfc/actions)
-[![PyPI version](https://img.shields.io/pypi/v/joserfc.svg)](https://pypi.org/project/joserfc)
-[![conda-forge version](https://img.shields.io/conda/v/conda-forge/joserfc.svg?label=conda-forge&colorB=0090ff)](https://anaconda.org/conda-forge/joserfc)
-[![PyPI Downloads](https://static.pepy.tech/badge/joserfc/month)](https://pepy.tech/projects/joserfc)
+[![PyPI version](https://img.shields.io/pypi/v/joserfc)](https://pypi.org/project/joserfc)
+[![conda-forge version](https://img.shields.io/conda/v/conda-forge/joserfc?label=conda-forge&colorB=0090ff)](https://anaconda.org/conda-forge/joserfc)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/joserfc)](https://pypistats.org/packages/joserfc)
 [![Code Coverage](https://codecov.io/gh/authlib/joserfc/branch/main/graph/badge.svg?token=WCD9X8HKI1)](https://codecov.io/gh/authlib/joserfc)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=authlib_joserfc&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=authlib_joserfc)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=authlib_joserfc&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=authlib_joserfc)
