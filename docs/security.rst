@@ -1,15 +1,13 @@
 Security
 ========
 
-If you think you have found a potential security vulnerability in ``joserfc``,
-please email <me@lepture.com> directly.
+If you discover a security vulnerability, **do not submit a public issue or patch**.
+Instead, please report it privately through the **GitHub Security** tab.
 
-.. warning:: Do not file a public issue.
-
-Please do not disclose this to anyone else. We will retrieve a CVE identifier
-if necessary and give you full credit under whatever name or alias you provide.
-We will only request an identifier when we have a fix and can publish it in
-a release.
+Do not share details of the vulnerability with anyone else. If necessary, we will
+obtain a CVE identifier and ensure you receive full credit under the name or alias
+you provide. We will only request a CVE once a fix has been implemented and is ready
+to be published in a release.
 
 The Process
 -----------

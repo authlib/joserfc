@@ -126,8 +126,8 @@ In ``joserfc``, we can get the unverified header with:
     from joserfc import jws
 
     def get_unverified_header(token: str) -> dict[str, Any]:
-        token_content = jws.extract_compact(token.encode())
-        return token_content.protected
+        obj = jws.extract_compact(token.encode())
+        return obj.protected
 
 ``get_unverified_claims``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,8 +142,8 @@ You can also use the ``jws.extract_compact`` method to extract the JWT's claims:
     from joserfc import jws
 
     def get_unverified_claims(token: str) -> dict[str, Any]:
-        token_content = jws.extract_compact(token.encode())
-        return json.loads(token_content.payload)
+        obj = jws.extract_compact(token.encode())
+        return json.loads(obj.payload)
 
 JWK
 ---
