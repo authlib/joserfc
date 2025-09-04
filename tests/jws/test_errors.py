@@ -113,6 +113,24 @@ class TestJWSErrors(TestCase):
         header = {"alg": "HS256", "kid": "1", "crit": ["kid"]}
         jws.serialize_compact(header, "i", self.key)
 
+    def test_unsupported_crit_header(self):
+        header = {"alg": "HS256", "bob": "a", "crit": ["bob"]}
+        self.assertRaises(
+            UnsupportedHeaderError,
+            jws.serialize_compact,
+            header,
+            "i",
+            self.key,
+        )
+
+        registry = jws.JWSRegistry(
+            header_registry={
+                "bob": HeaderParameter("Bob", "str"),
+            }
+        )
+        # allow with custom header registry
+        jws.serialize_compact(header, "i", self.key, registry=registry)
+
     def test_extra_header(self):
         header = {"alg": "HS256", "extra": "hi"}
         self.assertRaises(

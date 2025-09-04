@@ -10,7 +10,7 @@ from .errors import (
 Header = dict[str, Any]
 
 
-def is_str(value: str) -> None:
+def is_str(value: Any) -> None:
     if not isinstance(value, str):
         raise ValueError("must be a str")
 
@@ -185,7 +185,7 @@ def check_supported_header(registry: HeaderRegistryDict, header: Header) -> None
         raise UnsupportedHeaderError(f"Unsupported {unsupported_keys} in header")
 
 
-def validate_registry_header(registry: HeaderRegistryDict, header: Header, check_required: bool = True) -> None:
+def check_registry_header(registry: HeaderRegistryDict, header: Header, check_required: bool = True) -> None:
     for key, reg in registry.items():
         if check_required and reg.required and key not in header:
             raise MissingHeaderError(key)
@@ -196,9 +196,18 @@ def validate_registry_header(registry: HeaderRegistryDict, header: Header, check
                 raise InvalidHeaderValueError(f"'{key}' in header {error}")
 
 
-def check_crit_header(header: Header) -> None:
-    # check crit header
+def check_crit_header(registry: HeaderRegistryDict, header: Header) -> None:
+    # check `crit` header
+    missing_crit_headers = []
+    unsupported_crit_headers = []
     if "crit" in header:
         for k in header["crit"]:
             if k not in header:
-                raise MissingCritHeaderError(k)
+                missing_crit_headers.append(k)
+            elif k not in registry:
+                unsupported_crit_headers.append(k)
+
+    if missing_crit_headers:
+        raise MissingCritHeaderError(",".join(missing_crit_headers))
+    elif unsupported_crit_headers:
+        raise UnsupportedHeaderError(f"Unsupported {unsupported_crit_headers} in header")

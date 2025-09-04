@@ -8,7 +8,7 @@ from ..registry import (
     JWS_HEADER_REGISTRY,
     Header,
     HeaderRegistryDict,
-    validate_registry_header,
+    check_registry_header,
     check_crit_header,
     check_supported_header,
 )
@@ -82,8 +82,8 @@ class JWSRegistry:
 
     def check_header(self, header: Header) -> None:
         """Check and validate the fields in header part of a JWS object."""
-        check_crit_header(header)
-        validate_registry_header(self.header_registry, header)
+        check_crit_header(self.header_registry, header)
+        check_registry_header(self.header_registry, header)
         if self.strict_check_header:
             check_supported_header(self.header_registry, header)
 
