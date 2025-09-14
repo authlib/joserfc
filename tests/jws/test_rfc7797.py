@@ -5,6 +5,7 @@ from joserfc.errors import (
     BadSignatureError,
     InvalidHeaderValueError,
     MissingCritHeaderError,
+    UnsupportedHeaderError,
 )
 from joserfc.util import to_bytes
 from joserfc.jws import HeaderDict
@@ -70,10 +71,7 @@ class TestRFC7797(TestFixture):
     def test_json_without_protected_header(self):
         header = {"alg": "HS256", "b64": False, "crit": ["b64"]}
         member: HeaderDict = {"header": header}
-        value = jws.serialize_json(member, "hello", default_key)
-        obj = jws.deserialize_json(value, default_key)
-        self.assertTrue(obj.flattened)
-        self.assertEqual(obj.headers(), header)
+        self.assertRaises(UnsupportedHeaderError, jws.serialize_json, member, "hello", default_key)
 
     def test_general_json(self):
         member: HeaderDict = {"protected": {"alg": "HS256"}}

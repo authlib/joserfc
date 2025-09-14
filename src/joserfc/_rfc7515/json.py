@@ -12,6 +12,7 @@ from .types import (
     FlattenedJSONSerialization,
 )
 from .registry import JWSRegistry
+from ..registry import reject_unprotected_crit_header
 from ..util import (
     json_b64encode,
     json_b64decode,
@@ -65,6 +66,7 @@ def sign_flattened_json(
 def sign_json_member(
     payload_segment: bytes, member: HeaderMember, registry: JWSRegistry, find_key: FindKey
 ) -> JSONSignatureDict:
+    reject_unprotected_crit_header(member.header)
     headers = member.headers()
     registry.check_header(headers)
     alg = registry.get_alg(headers["alg"])
@@ -131,6 +133,7 @@ def verify_signature(
     registry: JWSRegistry,
     find_key: FindKey,
 ) -> bool:
+    reject_unprotected_crit_header(member.header)
     headers = member.headers()
     registry.check_header(headers)
     alg = registry.get_alg(headers["alg"])

@@ -211,3 +211,8 @@ def check_crit_header(registry: HeaderRegistryDict, header: Header) -> None:
         raise MissingCritHeaderError(",".join(missing_crit_headers))
     elif unsupported_crit_headers:
         raise UnsupportedHeaderError(f"Unsupported {unsupported_crit_headers} in header")
+
+
+def reject_unprotected_crit_header(unprotected: Header) -> None:
+    if unprotected and "crit" in unprotected:
+        raise UnsupportedHeaderError("'crit' header MUST be protected header")

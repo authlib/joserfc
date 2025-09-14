@@ -25,7 +25,7 @@ from ._rfc7516.json import (
 from .jwa import setup_jwe_algorithms
 from .jwk import Key, KeySet, ECKey, OKPKey, KeyFlexible, guess_key
 from .util import to_bytes
-from .registry import Header
+from .registry import Header, reject_unprotected_crit_header
 
 __all__ = [
     # types
@@ -195,6 +195,7 @@ def encrypt_json(
     elif registry is None:
         registry = default_registry
 
+    reject_unprotected_crit_header(obj.unprotected)
     for recipient in obj.recipients:
         if sender_key and not recipient.sender_key:
             recipient.sender_key = _guess_sender_key(recipient, sender_key, True)
@@ -232,6 +233,7 @@ def decrypt_json(
     elif registry is None:
         registry = default_registry
 
+    reject_unprotected_crit_header(data.get("unprotected"))
     if "recipients" in data:
         general_obj = extract_general_json(data)  # type: ignore[arg-type]
         _attach_recipient_keys(general_obj.recipients, private_key, sender_key)
