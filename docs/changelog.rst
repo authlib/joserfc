@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.3.3
+-----
+
+**Released on September 15, 2025**
+
+- Reject ``crit`` header in unprotected headers.
+
 1.3.2
 -----
 

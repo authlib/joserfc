@@ -82,7 +82,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     value_registry: t.ClassVar[KeyParameterRegistryDict]
     param_registry: t.ClassVar[KeyParameterRegistryDict] = JWK_PARAMETER_REGISTRY
     operation_registry: t.ClassVar[KeyOperationRegistryDict] = JWK_OPERATION_REGISTRY
-    thumbprint_digest_method: t.ClassVar[t.Literal["sha256", "sha384", "sha512"]] = "sha256"
+    thumbprint_digest_method: t.Literal["sha256", "sha384", "sha512"] = "sha256"
 
     def __init__(
         self,
