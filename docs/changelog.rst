@@ -12,6 +12,15 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.3.4
+-----
+
+**Released on September 21, 2025**
+
+- Add size limit for deserializing JWS content.
+- Add size limit for decrypting JWE content.
+
+
 1.3.3
 -----
 
