@@ -1,4 +1,5 @@
 from .models import CompactEncryption, Recipient
+from .registry import JWERegistry
 from .._keys import Key
 from ..errors import (
     MissingAlgorithmError,
@@ -32,12 +33,17 @@ def represent_compact(obj: CompactEncryption) -> bytes:
     )
 
 
-def extract_compact(value: bytes) -> CompactEncryption:
+def extract_compact(value: bytes, registry: JWERegistry) -> CompactEncryption:
     parts = value.split(b".")
     if len(parts) != 5:
         raise ValueError("Invalid JSON Web Encryption")
 
     header_segment, ek_segment, iv_segment, ciphertext_segment, tag_segment = parts
+    registry.validate_protected_header_size(header_segment)
+    registry.validate_encrypted_key_size(ek_segment)
+    registry.validate_initialization_vector_size(iv_segment)
+    registry.validate_ciphertext_size(ciphertext_segment)
+    registry.validate_auth_tag_size(tag_segment)
     try:
         protected = json_b64decode(header_segment)
         if "alg" not in protected:

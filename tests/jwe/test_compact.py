@@ -15,7 +15,7 @@ from joserfc.errors import (
     ExceededSizeError,
     InvalidHeaderValueError,
 )
-from joserfc.util import json_b64encode
+from joserfc.util import json_b64encode, urlsafe_b64encode
 from tests.base import load_key
 
 
@@ -203,6 +203,37 @@ class TestJWECompact(TestCase):
         key = OctKey.import_key({"k": "pyL42ncDFSYnenl-GiZjRw", "kty": "oct"})
         result = encrypt_compact({"alg": "dir", "enc": "A128GCM", "zip": "DEF"}, b"h" * 300000, key)
         self.assertRaises(ExceededSizeError, decrypt_compact, result, key)
+
+    def test_header_exceeds_size(self):
+        header = json_b64encode({f"a{i}": "a" * i for i in range(1000)}).decode("utf-8")
+        s = header + "..YbDfdYa6p-wAEFul.YK7j0MsH-Dko6ifsEg.wES6-QAOEbErZqXiS0JHRw"
+        self.assertRaises(ExceededSizeError, decrypt_compact, s, OctKey.import_key("secret"))
+
+    def test_encrypted_key_exceeds_size(self):
+        header = json_b64encode({"alg": "dir", "enc": "A128GCM"}).decode("utf-8")
+        ek = urlsafe_b64encode(("a" * 1000).encode("utf-8")).decode("utf-8")
+        s = header + "." + ek + ".YbDfdYa6p-wAEFul.YK7j0MsH-Dko6ifsEg.wES6-QAOEbErZqXiS0JHRw"
+        key = OctKey.import_key({"k": "pyL42ncDFSYnenl-GiZjRw", "kty": "oct"})
+        self.assertRaises(ExceededSizeError, decrypt_compact, s, key)
+
+    def test_initialization_vector_size(self):
+        header = json_b64encode({"alg": "dir", "enc": "A128GCM"}).decode("utf-8")
+        iv = urlsafe_b64encode(("a" * 1000).encode("utf-8")).decode("utf-8")
+        s = header + ".." + iv + ".YK7j0MsH-Dko6ifsEg.wES6-QAOEbErZqXiS0JHRw"
+        key = OctKey.import_key({"k": "pyL42ncDFSYnenl-GiZjRw", "kty": "oct"})
+        self.assertRaises(ExceededSizeError, decrypt_compact, s, key)
+
+    def test_ciphertext_exceeds_size(self):
+        header = json_b64encode({"alg": "dir", "enc": "A128GCM"}).decode("utf-8")
+        ciphertext = urlsafe_b64encode(("a" * 70000).encode("utf-8")).decode("utf-8")
+        s = header + "..YbDfdYa6p-wAEFul." + ciphertext + ".wES6-QAOEbErZqXiS0JHRw"
+        self.assertRaises(ExceededSizeError, decrypt_compact, s, OctKey.import_key("secret"))
+
+    def test_auth_tag_exceeds_size(self):
+        header = json_b64encode({"alg": "dir", "enc": "A128GCM"}).decode("utf-8")
+        tag = urlsafe_b64encode(("a" * 80).encode("utf-8")).decode("utf-8")
+        s = header + "..YbDfdYa6p-wAEFul.YK7j0MsH-Dko6ifsEg." + tag
+        self.assertRaises(ExceededSizeError, decrypt_compact, s, OctKey.import_key("secret"))
 
     def test_invalid_compact_data(self):
         private_key: RSAKey = load_key("rsa-openssl-private.pem")

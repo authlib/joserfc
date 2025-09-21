@@ -4,9 +4,9 @@ from typing import Any
 from enum import Enum
 from .model import JWSAlgModel
 from ..errors import (
+    JoseError,
     UnsupportedAlgorithmError,
     SecurityWarning,
-    JoseError,
     ExceededSizeError,
 )
 from ..registry import (
