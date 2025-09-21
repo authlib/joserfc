@@ -180,7 +180,7 @@ def deserialize_compact(
     :param payload: optional payload, required with detached content
     :return: object of the ``CompactSignature``
     """
-    obj = extract_compact(to_bytes(value), payload)
+    obj = extract_compact(to_bytes(value), payload, registry)
     if not validate_compact(obj, public_key, algorithms, registry):
         raise BadSignatureError()
     return obj
@@ -296,12 +296,12 @@ def deserialize_json(
         return guess_key(public_key, obj, use="sig")
 
     if "signatures" in value:
-        general_obj = extract_general_json(value)
+        general_obj = extract_general_json(value, registry)
         if not verify_general_json(general_obj, registry, find_key):
             raise BadSignatureError()
         return general_obj
     else:
-        flattened_obj = extract_flattened_json(value)
+        flattened_obj = extract_flattened_json(value, registry)
         if not verify_flattened_json(flattened_obj, registry, find_key):
             raise BadSignatureError()
         return flattened_obj

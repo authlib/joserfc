@@ -14,6 +14,7 @@ from .types import (
 from .registry import JWSRegistry
 from ..registry import reject_unprotected_crit_header
 from ..util import (
+    to_bytes,
     json_b64encode,
     json_b64decode,
     urlsafe_b64encode,
@@ -86,25 +87,27 @@ def sign_json_member(
     return rv
 
 
-def extract_general_json(value: GeneralJSONSerialization) -> GeneralJSONSignature:
+def extract_general_json(value: GeneralJSONSerialization, registry: JWSRegistry) -> GeneralJSONSignature:
     payload_segment: bytes = value["payload"].encode("utf-8")
+    registry.validate_payload_size(payload_segment)
     try:
         payload = urlsafe_b64decode(payload_segment)
     except (TypeError, ValueError):
         raise DecodeError("Invalid payload")
 
     signatures: list[JSONSignatureDict] = value["signatures"]
-    members = [__signature_to_member(sig) for sig in signatures]
+    members = [__signature_to_member(sig, registry) for sig in signatures]
     obj = GeneralJSONSignature(members, payload)
     obj.signatures = signatures
     obj.segments = {"payload": payload_segment}
     return obj
 
 
-def __signature_to_member(sig: JSONSignatureDict) -> HeaderMember:
+def __signature_to_member(sig: JSONSignatureDict, registry: JWSRegistry) -> HeaderMember:
     member = HeaderMember()
     if "protected" in sig:
-        protected_segment = sig["protected"]
+        protected_segment = to_bytes(sig["protected"])
+        registry.validate_header_size(protected_segment)
         member.protected = json_b64decode(protected_segment)
     if "header" in sig:
         member.header = sig["header"]
@@ -139,11 +142,16 @@ def verify_signature(
     alg = registry.get_alg(headers["alg"])
     key = find_key(member)
     alg.check_key(key)
+
     if "protected" in signature:
-        protected_segment = signature["protected"].encode("utf-8")
+        protected_segment = to_bytes(signature["protected"])
     else:
         protected_segment = b""
-    sig = urlsafe_b64decode(signature["signature"].encode("utf-8"))
+
+    signature_segment = to_bytes(signature["signature"])
+    registry.validate_signature_size(signature_segment)
+
+    sig = urlsafe_b64decode(signature_segment)
     signing_input = b".".join([protected_segment, payload_segment])
     return alg.verify(signing_input, sig, key)
 
