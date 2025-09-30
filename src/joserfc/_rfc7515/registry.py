@@ -3,7 +3,12 @@ import warnings
 from typing import Any
 from enum import Enum
 from .model import JWSAlgModel
-from ..errors import UnsupportedAlgorithmError, SecurityWarning, JoseError
+from ..errors import (
+    JoseError,
+    UnsupportedAlgorithmError,
+    SecurityWarning,
+    ExceededSizeError,
+)
 from ..registry import (
     JWS_HEADER_REGISTRY,
     Header,
@@ -39,6 +44,13 @@ class JWSRegistry:
     default_header_registry: HeaderRegistryDict = JWS_HEADER_REGISTRY
     algorithms: dict[str, JWSAlgModel] = {}
     recommended: list[str] = []
+
+    #: max header content's size in bytes
+    max_header_length: int = 512
+    #: max payload content's size in bytes
+    max_payload_length: int = 8000
+    #: max signature's size in bytes
+    max_signature_length: int = 1024
 
     def __init__(
         self,
@@ -86,6 +98,18 @@ class JWSRegistry:
         check_registry_header(self.header_registry, header)
         if self.strict_check_header:
             check_supported_header(self.header_registry, header)
+
+    def validate_header_size(self, header: bytes) -> None:
+        if header and len(header) > self.max_header_length:
+            raise ExceededSizeError(f"Header size of '{header!r}' exceeds {self.max_header_length} bytes.")
+
+    def validate_payload_size(self, payload: bytes) -> None:
+        if payload and len(payload) > self.max_payload_length:
+            raise ExceededSizeError(f"Payload size of '{payload!r}' exceeds {self.max_payload_length} bytes.")
+
+    def validate_signature_size(self, signature: bytes) -> None:
+        if len(signature) > self.max_signature_length:
+            raise ExceededSizeError(f"Signature of '{signature!r}' exceeds {self.max_signature_length} bytes.")
 
     @classmethod
     def guess_alg(cls, key: Any, strategy: Strategy) -> str | None:

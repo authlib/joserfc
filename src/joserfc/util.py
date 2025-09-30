@@ -56,11 +56,10 @@ def int_to_base64(num: int) -> str:
     return urlsafe_b64encode(s).decode("utf-8", "strict")
 
 
-def json_b64encode(text: Any) -> bytes:
-    if isinstance(text, dict):
-        text = json.dumps(text, ensure_ascii=True, separators=(",", ":"))
+def json_b64encode(data: dict[str, Any]) -> bytes:
+    text = json.dumps(data, ensure_ascii=True, separators=(",", ":"))
     return urlsafe_b64encode(to_bytes(text, "ascii"))
 
 
-def json_b64decode(text: Any) -> Any:
-    return json.loads(urlsafe_b64decode(to_bytes(text, "ascii")))
+def json_b64decode(text: bytes) -> Any:
+    return json.loads(urlsafe_b64decode(text))

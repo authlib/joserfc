@@ -135,8 +135,8 @@ class BadSignatureError(JoseError):
 
 
 class ExceededSizeError(JoseError):
-    """This error is designed for DEF zip algorithm. It raised when the
-    compressed data exceeds the maximum allowed length."""
+    """This error is designed for validating the token's content size.
+    It raised when the data exceeds the maximum allowed length."""
 
     error = "exceeded_size"
 

@@ -119,12 +119,12 @@ def decrypt_compact(
     :param sender_key: only required when using ECDH-1PU
     :return: object of the ``CompactEncryption``
     """
-    obj = extract_compact(to_bytes(value))
     if algorithms:
         registry = JWERegistry(algorithms=algorithms)
     elif registry is None:
         registry = default_registry
 
+    obj = extract_compact(to_bytes(value), registry)
     recipient = obj.recipient
     assert recipient is not None
     key = guess_key(private_key, recipient, use="enc")
@@ -235,12 +235,12 @@ def decrypt_json(
 
     reject_unprotected_crit_header(data.get("unprotected"))
     if "recipients" in data:
-        general_obj = extract_general_json(data)  # type: ignore[arg-type]
+        general_obj = extract_general_json(data, registry)  # type: ignore[arg-type]
         _attach_recipient_keys(general_obj.recipients, private_key, sender_key)
         perform_decrypt(general_obj, registry)
         return general_obj
     else:
-        flattened_obj = extract_flattened_json(data)  # type: ignore[arg-type]
+        flattened_obj = extract_flattened_json(data, registry)  # type: ignore[arg-type]
         _attach_recipient_keys(flattened_obj.recipients, private_key, sender_key)
         perform_decrypt(flattened_obj, registry)
         return flattened_obj

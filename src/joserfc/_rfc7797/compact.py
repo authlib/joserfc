@@ -10,6 +10,7 @@ from ..util import (
 )
 from .._rfc7515.model import JWSAlgModel, CompactSignature
 from .._rfc7515.compact import decode_header
+from .._rfc7515.registry import JWSRegistry, default_registry
 from ..errors import DecodeError
 from .util import is_rfc7797_enabled
 
@@ -27,18 +28,28 @@ def sign_rfc7515_compact(obj: CompactSignature, alg: JWSAlgModel, key: Any) -> b
     return out
 
 
-def extract_rfc7515_compact(value: bytes, payload: bytes | str | None = None) -> CompactSignature:
+def extract_rfc7515_compact(
+    value: bytes, payload: bytes | str | None = None, registry: JWSRegistry | None = None
+) -> CompactSignature:
     """Extract the JWS Compact Serialization from bytes to object.
 
     :param value: JWS in bytes
     :param payload: optional payload, required with detached content
+    :param registry: optional JWSRegistry instance
     :raise: DecodeError
     """
     parts = value.split(b".")
     if len(parts) != 3:
         raise DecodeError("Invalid JSON Web Signature")
 
+    if registry is None:
+        registry = default_registry
+
     header_segment, payload_segment, signature_segment = parts
+
+    registry.validate_header_size(header_segment)
+    registry.validate_signature_size(signature_segment)
+
     protected = decode_header(header_segment)
 
     if is_rfc7797_enabled(protected):
@@ -50,6 +61,7 @@ def extract_rfc7515_compact(value: bytes, payload: bytes | str | None = None) ->
             payload = to_bytes(payload)
             payload_segment = urlsafe_b64encode(payload)
         else:
+            registry.validate_payload_size(payload_segment)
             try:
                 payload = urlsafe_b64decode(payload_segment)
             except (TypeError, ValueError):

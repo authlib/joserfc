@@ -1,6 +1,8 @@
 from unittest import TestCase
 from joserfc.jws import (
     HeaderDict,
+    FlattenedJSONSerialization,
+    GeneralJSONSerialization,
     JWSRegistry,
     serialize_json,
     deserialize_json,
@@ -12,11 +14,15 @@ from joserfc.errors import (
     BadSignatureError,
     UnsupportedHeaderError,
     UnsupportedAlgorithmError,
+    ExceededSizeError,
 )
+from joserfc.util import json_b64encode, urlsafe_b64encode, to_str
 from tests.base import load_key
 
 
 class TestJSON(TestCase):
+    key = OctKey.import_key("secret")
+
     def test_serialize_json(self):
         key: RSAKey = load_key("rsa-openssl-private.pem")
         member: HeaderDict = {"protected": {"alg": "RS256"}}
@@ -111,22 +117,75 @@ class TestJSON(TestCase):
 
     def test_strict_check_header(self):
         member: HeaderDict = {"protected": {"alg": "HS256", "custom": "hi"}}
-        key = OctKey.import_key("secret")
-        self.assertRaises(UnsupportedHeaderError, serialize_json, member, b"hi", key)
+        self.assertRaises(UnsupportedHeaderError, serialize_json, member, b"hi", self.key)
         registry = JWSRegistry(strict_check_header=False)
-        serialize_json(member, b"hi", key, registry=registry)
+        serialize_json(member, b"hi", self.key, registry=registry)
 
     def test_unsupported_algorithm(self):
-        key = OctKey.import_key("secret")
         member: HeaderDict = {"protected": {"alg": "HS256"}}
-        value = serialize_json(member, b"hi", key)
+        value = serialize_json(member, b"hi", self.key)
         registry = JWSRegistry(algorithms=["HS512"])
-        self.assertRaises(UnsupportedAlgorithmError, deserialize_json, value, key, registry=registry)
+        self.assertRaises(UnsupportedAlgorithmError, deserialize_json, value, self.key, registry=registry)
 
     def test_prevent_overwrite_header(self):
-        key = OctKey.import_key("secret")
         member: HeaderDict = {"protected": {"alg": "HS256", "kid": "a"}}
-        value = serialize_json(member, b"hello", key)
+        value = serialize_json(member, b"hello", self.key)
         value["header"] = {"kid": "b"}
-        obj = deserialize_json(value, key)
+        obj = deserialize_json(value, self.key)
         self.assertEqual(obj.headers()["kid"], "a")
+
+    def test_header_exceeded_size_error(self):
+        data: FlattenedJSONSerialization = {
+            "protected": to_str(json_b64encode({f"a{i}": "a" * i for i in range(100)})),
+            "payload": to_str(json_b64encode({"a": "a"})),
+            "signature": to_str(urlsafe_b64encode(b"o")),
+        }
+        self.assertRaises(ExceededSizeError, deserialize_json, data, self.key)
+
+        data: GeneralJSONSerialization = {
+            "payload": to_str(json_b64encode({"a": "a"})),
+            "signatures": [
+                {
+                    "protected": to_str(json_b64encode({f"a{i}": "a" * i for i in range(100)})),
+                    "signature": to_str(urlsafe_b64encode(b"o")),
+                }
+            ],
+        }
+        self.assertRaises(ExceededSizeError, deserialize_json, data, self.key)
+
+    def test_payload_exceeded_size_error(self):
+        data: FlattenedJSONSerialization = {
+            "protected": to_str(json_b64encode({"alg": "HS256"})),
+            "payload": to_str(json_b64encode({f"a{i}": "a" * i for i in range(1000)})),
+            "signature": to_str(urlsafe_b64encode(b"o")),
+        }
+        self.assertRaises(ExceededSizeError, deserialize_json, data, self.key)
+
+        data: GeneralJSONSerialization = {
+            "payload": to_str(json_b64encode({f"a{i}": "a" * i for i in range(1000)})),
+            "signatures": [
+                {
+                    "protected": to_str(json_b64encode({"alg": "HS256"})),
+                    "signature": to_str(urlsafe_b64encode(b"o")),
+                }
+            ],
+        }
+        self.assertRaises(ExceededSizeError, deserialize_json, data, self.key)
+
+    def test_signature_exceeded_size_error(self):
+        data: FlattenedJSONSerialization = {
+            "protected": to_str(json_b64encode({"alg": "HS256"})),
+            "payload": to_str(json_b64encode({"a": "a"})),
+            "signature": to_str(urlsafe_b64encode(("o" * 1000).encode("utf-8"))),
+        }
+        self.assertRaises(ExceededSizeError, deserialize_json, data, self.key)
+        data: GeneralJSONSerialization = {
+            "payload": to_str(json_b64encode({"a": "a"})),
+            "signatures": [
+                {
+                    "protected": to_str(json_b64encode({"alg": "HS256"})),
+                    "signature": to_str(urlsafe_b64encode(("o" * 1000).encode("utf-8"))),
+                }
+            ],
+        }
+        self.assertRaises(ExceededSizeError, deserialize_json, data, self.key)

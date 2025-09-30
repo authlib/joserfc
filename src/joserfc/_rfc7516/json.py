@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing as t
 from .models import (
     BaseJSONEncryption,
@@ -5,6 +6,7 @@ from .models import (
     FlattenedJSONEncryption,
     Recipient,
 )
+from .registry import JWERegistry
 from .types import (
     JSONRecipientDict,
     GeneralJSONSerialization,
@@ -70,44 +72,49 @@ def __represent_json_serialization(obj: BaseJSONEncryption):  # type: ignore[no-
     return data
 
 
-def extract_general_json(data: GeneralJSONSerialization) -> GeneralJSONEncryption:
-    protected = json_b64decode(data["protected"])
+def extract_general_json(data: GeneralJSONSerialization, registry: JWERegistry) -> GeneralJSONEncryption:
+    protected_segment = to_bytes(data["protected"])
+    registry.validate_protected_header_size(protected_segment)
+    protected = json_b64decode(protected_segment)
+
     unprotected = data.get("unprotected")
-    base64_segments, bytes_segments, aad = __extract_segments(data)
+    base64_segments, bytes_segments, aad = __extract_segments(data, registry)
+
     obj = GeneralJSONEncryption(protected, None, unprotected, aad)
     obj.base64_segments = base64_segments
     obj.bytes_segments = bytes_segments
     for item in data["recipients"]:
-        recipient: Recipient[Key] = Recipient(obj, item.get("header"))
-        if "encrypted_key" in item:
-            recipient.encrypted_key = urlsafe_b64decode(to_bytes(item["encrypted_key"]))
+        recipient = __extract_recipient(obj, item, registry)
         obj.recipients.append(recipient)
     return obj
 
 
-def extract_flattened_json(data: FlattenedJSONSerialization) -> FlattenedJSONEncryption:
-    protected = json_b64decode(data["protected"])
+def extract_flattened_json(data: FlattenedJSONSerialization, registry: JWERegistry) -> FlattenedJSONEncryption:
+    protected_segment = to_bytes(data["protected"])
+    registry.validate_protected_header_size(protected_segment)
+    protected = json_b64decode(protected_segment)
     unprotected = data.get("unprotected")
-    base64_segments, bytes_segments, aad = __extract_segments(data)
+    base64_segments, bytes_segments, aad = __extract_segments(data, registry)
     obj = FlattenedJSONEncryption(protected, None, unprotected, aad)
     obj.base64_segments = base64_segments
     obj.bytes_segments = bytes_segments
-
-    recipient: Recipient[Key] = Recipient(obj, data.get("header"))
-    if "encrypted_key" in data:
-        recipient.encrypted_key = urlsafe_b64decode(to_bytes(data["encrypted_key"]))
+    recipient = __extract_recipient(obj, data, registry)
     obj.recipients.append(recipient)
     return obj
 
 
 def __extract_segments(
     data: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization],
+    registry: JWERegistry,
 ) -> tuple[dict[str, bytes], dict[str, bytes], t.Optional[bytes]]:
     base64_segments: dict[str, bytes] = {
         "iv": to_bytes(data["iv"]),
         "ciphertext": to_bytes(data["ciphertext"]),
         "tag": to_bytes(data["tag"]),
     }
+    registry.validate_initialization_vector_size(base64_segments["iv"])
+    registry.validate_ciphertext_size(base64_segments["ciphertext"])
+    registry.validate_auth_tag_size(base64_segments["tag"])
     bytes_segments: dict[str, bytes] = {
         "iv": urlsafe_b64decode(base64_segments["iv"]),
         "ciphertext": urlsafe_b64decode(base64_segments["ciphertext"]),
@@ -118,3 +125,16 @@ def __extract_segments(
     else:
         aad = None
     return base64_segments, bytes_segments, aad
+
+
+def __extract_recipient(
+    obj: FlattenedJSONEncryption | GeneralJSONEncryption,
+    data: FlattenedJSONSerialization | JSONRecipientDict,
+    registry: JWERegistry,
+) -> Recipient[Key]:
+    recipient: Recipient[Key] = Recipient(obj, data.get("header"))
+    if "encrypted_key" in data:
+        ek_segment = to_bytes(data["encrypted_key"])
+        registry.validate_encrypted_key_size(ek_segment)
+        recipient.encrypted_key = urlsafe_b64decode(ek_segment)
+    return recipient
