@@ -28,9 +28,11 @@ extensions = [
     "sphinx_sitemap",
     "sphinx_contributors",
     "sphinx_iconify",
+    "shibuya.sponsors",
 ]
 
 iconify_script_url = ""
+sponsors_json_url = "https://cdn.jsdelivr.net/gh/lepture/lepture/sponsors.json"
 
 extlinks = {
     "user": ("https://github.com/%s", "@%s"),
@@ -68,7 +70,7 @@ html_theme_options = {
                 },
             ],
         },
-        {"title": "Sponsor me", "url": "https://github.com/sponsors/authlib"},
+        {"title": "Support us", "url": "/en/sponsors"},
     ],
 }
 
