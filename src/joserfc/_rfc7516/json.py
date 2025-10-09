@@ -12,7 +12,6 @@ from .types import (
     GeneralJSONSerialization,
     FlattenedJSONSerialization,
 )
-from ..registry import Header
 from ..util import (
     to_bytes,
     to_str,
@@ -33,7 +32,7 @@ __all__ = [
 
 
 def represent_general_json(obj: GeneralJSONEncryption) -> GeneralJSONSerialization:
-    data = __represent_json_serialization(obj)
+    data: GeneralJSONSerialization = __represent_json_serialization(obj)
     recipients = []
     for recipient in obj.recipients:
         item: JSONRecipientDict = {}
@@ -43,22 +42,22 @@ def represent_general_json(obj: GeneralJSONEncryption) -> GeneralJSONSerializati
             item["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
         recipients.append(item)
     data["recipients"] = recipients
-    return data  # type: ignore[no-any-return]
+    return data
 
 
 def represent_flattened_json(obj: FlattenedJSONEncryption) -> FlattenedJSONSerialization:
-    data = __represent_json_serialization(obj)
+    data: FlattenedJSONSerialization = __represent_json_serialization(obj)
     recipient = obj.recipients[0]
     assert recipient is not None
     if recipient.header:
         data["header"] = recipient.header
     if recipient.encrypted_key:
         data["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
-    return data  # type: ignore[no-any-return]
+    return data
 
 
-def __represent_json_serialization(obj: BaseJSONEncryption):  # type: ignore[no-untyped-def]
-    data: dict[str, t.Union[str, Header, list[Header]]] = {
+def __represent_json_serialization(obj: BaseJSONEncryption) -> t.Any:
+    data: dict[str, t.Any] = {
         "protected": to_str(json_b64encode(obj.protected)),
         "iv": to_str(obj.base64_segments["iv"]),
         "ciphertext": to_str(obj.base64_segments["ciphertext"]),
