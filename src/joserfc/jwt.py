@@ -6,7 +6,7 @@ from ._rfc7519.claims import (
     convert_claims,
     Claims,
     ClaimsOption,
-    ClaimsRegistry,
+    BaseClaimsRegistry,
     JWTClaimsRegistry,
 )
 from ._rfc7519.security import check_sensitive_data
@@ -30,7 +30,7 @@ __all__ = [
     "Claims",
     "ClaimsOption",
     # modules
-    "ClaimsRegistry",
+    "BaseClaimsRegistry",
     "JWTClaimsRegistry",
     "Token",
     # methods

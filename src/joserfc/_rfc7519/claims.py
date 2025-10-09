@@ -35,7 +35,7 @@ class ClaimsOption(TypedDict, total=False):
     values: list[str | int | bool] | list[str] | list[int] | list[bool]
 
 
-class ClaimsRegistry:
+class BaseClaimsRegistry:
     """Requesting "claims" for JWT with the given conditions."""
 
     def __init__(self, **kwargs: ClaimsOption):
@@ -82,7 +82,7 @@ class ClaimsRegistry:
                 self.check_value(key, value)
 
 
-class JWTClaimsRegistry(ClaimsRegistry):
+class JWTClaimsRegistry(BaseClaimsRegistry):
     """A claims registry for validating JWT claims.
 
     :param now: timestamp of "now" time
