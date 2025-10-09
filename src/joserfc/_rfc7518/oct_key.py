@@ -37,7 +37,7 @@ class OctBinding(NativeKeyBinding):
     def import_from_bytes(cls, value: bytes, password: Any | None = None) -> bytes:
         # security check
         if value.startswith(POSSIBLE_UNSAFE_KEYS):
-            warnings.warn("This key may not be safe to import", SecurityWarning)
+            warnings.warn("This key should not be used as an oct key", SecurityWarning)
         return value
 
 

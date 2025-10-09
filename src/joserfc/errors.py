@@ -23,12 +23,7 @@ class JoseError(Exception):
         super(JoseError, self).__init__(message)
 
 
-class DecodeError(JoseError):
-    """This error is designed for JWS/JWE. It is raised when deserialization
-    and decryption fails.
-    """
-
-    error = "decode_error"
+# --- Key related errors --- #
 
 
 class MissingKeyError(JoseError):
@@ -47,10 +42,6 @@ class UnsupportedKeyOperationError(JoseError):
     error = "unsupported_key_operation"
 
 
-class InvalidKeyLengthError(JoseError):
-    error = "invalid_key_length"
-
-
 class MissingKeyTypeError(JoseError):
     error = "missing_key_type"
 
@@ -59,25 +50,35 @@ class InvalidKeyTypeError(JoseError):
     error = "invalid_key_type"
 
 
-class InvalidKeyCurveError(JoseError):
-    error = "invalid_key_curve"
-
-
 class InvalidKeyIdError(JoseError):
+    """This error is designed for Key Set. It is raised when a key
+    can not be found with the given key ID."""
+
     error = "invalid_key_id"
 
 
 class InvalidExchangeKeyError(JoseError):
+    """This error is designed for EC and OKP keys. It is raised when
+    exchanging derive key failed."""
+
     error = "invalid_exchange_key"
     description = "Invalid key for exchanging shared key"
 
 
-class InvalidEncryptedKeyError(JoseError):
-    error = "invalid_encrypted_key"
-    description = "JWE Encrypted Key value SHOULD be an empty octet sequence"
+# --- JWS & JWE related errors --- #
+
+
+class DecodeError(JoseError):
+    """This error is designed for both JWS and JWE. It is raised when deserialization
+    and decryption fails.
+    """
+
+    error = "decode_error"
 
 
 class MissingAlgorithmError(JoseError):
+    """Raised when an algorithm ("alg") is missing."""
+
     error = "missing_algorithm"
     description = "Missing 'alg' value in header"
 
@@ -87,14 +88,22 @@ class ConflictAlgorithmError(JoseError):
 
 
 class UnsupportedAlgorithmError(JoseError):
+    """This error is designed for both JWS and JWE. It is raised when the
+    given algorithm is not supported in the registry.
+    """
+
     error = "unsupported_algorithm"
 
 
 class InvalidHeaderValueError(JoseError):
+    """Raised when the given header's value is invalid."""
+
     error = "invalid_header_value"
 
 
 class UnsupportedHeaderError(JoseError):
+    """Raised when an unsupported header is encountered."""
+
     error = "unsupported_header"
 
 
@@ -126,8 +135,24 @@ class MissingEncryptionError(JoseError):
     description = "Missing 'enc' value in header"
 
 
+class InvalidKeyCurveError(JoseError):
+    """This error is designed for JWS. It is raised when key's
+    curve name does not match with the given algorithm.
+    """
+
+    error = "invalid_key_curve"
+
+
+class InvalidKeyLengthError(JoseError):
+    """This error is designed for JWE. It is raised when key's
+    length does not align with the given algorithm.
+    """
+
+    error = "invalid_key_length"
+
+
 class BadSignatureError(JoseError):
-    """This error is designed for JWS/JWT. It is raised when signature
+    """This error is designed for JWS. It is raised when signature
     does not match.
     """
 
@@ -149,6 +174,11 @@ class InvalidEncryptionAlgorithmError(JoseError):
     error = "invalid_encryption_algorithm"
 
 
+class InvalidEncryptedKeyError(JoseError):
+    error = "invalid_encrypted_key"
+    description = "JWE Encrypted Key value SHOULD be an empty octet sequence"
+
+
 class InvalidCEKLengthError(JoseError):
     error = "invalid_cek_length"
     description = "Invalid 'cek' length"
@@ -156,6 +186,9 @@ class InvalidCEKLengthError(JoseError):
     def __init__(self, cek_size: int):  # pragma: no cover
         description = f"A key of size {cek_size} bits MUST be used"
         super(InvalidCEKLengthError, self).__init__(description=description)
+
+
+# --- JWT related errors --- #
 
 
 class InvalidClaimError(JoseError):
