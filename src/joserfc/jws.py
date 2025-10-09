@@ -2,13 +2,13 @@ from __future__ import annotations
 from typing import overload, TypeVar, Any
 from ._rfc7515.model import (
     JWSAlgModel,
-    HeaderMember as HeaderMember,
-    CompactSignature as CompactSignature,
-    GeneralJSONSignature as GeneralJSONSignature,
-    FlattenedJSONSignature as FlattenedJSONSignature,
+    HeaderMember,
+    CompactSignature,
+    GeneralJSONSignature,
+    FlattenedJSONSignature,
 )
 from ._rfc7515.registry import (
-    JWSRegistry as JWSRegistry,
+    JWSRegistry,
     construct_registry,
     default_registry,
 )
@@ -26,9 +26,9 @@ from ._rfc7515.json import (
     detach_json_content,
 )
 from ._rfc7515.types import (
-    HeaderDict as HeaderDict,
-    GeneralJSONSerialization as GeneralJSONSerialization,
-    FlattenedJSONSerialization as FlattenedJSONSerialization,
+    HeaderDict,
+    GeneralJSONSerialization,
+    FlattenedJSONSerialization,
 )
 from ._rfc7797.util import is_rfc7797_enabled
 from ._rfc7797.compact import (
