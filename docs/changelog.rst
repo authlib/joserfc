@@ -12,6 +12,19 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.4.0
+-----
+
+**Not released**
+
+- Improvements on type hints.
+- Add python 3.14 support.
+
+**Breaking changes**:
+
+- Remove deprecated (since 1.2.0) ``rfcXXXX`` modules.
+- Rename ``jwt.ClaimsRegistry`` to ``jwt.BaseClaimsRegistry``.
+
 1.3.4
 -----
 
