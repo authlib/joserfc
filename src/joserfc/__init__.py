@@ -1,4 +1,4 @@
-__version__ = "1.3.4"
+__version__ = "1.4.0"
 __homepage__ = "https://jose.authlib.org/en/"
 __author__ = "Hsiaoming Yang <me@lepture.com>"
 __license__ = "BSD-3-Clause"

@@ -15,7 +15,7 @@ Changelog
 1.4.0
 -----
 
-**Not released**
+**Released on October 9, 2025**
 
 - Improvements on type hints.
 - Add python 3.14 support.
