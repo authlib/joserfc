@@ -53,6 +53,25 @@ but the parameter structure differs.
     # => token.header : {"alg": "HS256"}
     # => token.claims : {"some": "payload"}
 
+``get_unverified_header``
+-------------------------
+
+PyJWT module provides a method called ``get_unverified_header``, which allows
+extracting the header from a JWT without verifying its signature.
+
+In ``joserfc``, we can get the unverified header with:
+
+.. code-block:: python
+    :caption: joserfc
+
+    from typing import Any
+    from joserfc import jws
+
+    def get_unverified_header(token: str) -> dict[str, Any]:
+        obj = jws.extract_compact(token.encode())
+        return obj.protected
+
+
 Non-plain string key
 --------------------
 
