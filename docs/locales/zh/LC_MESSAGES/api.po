@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-26 11:26+0900\n"
+"POT-Creation-Date: 2025-11-04 11:11+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -29,9 +29,9 @@ msgstr "所有的错误类型都是基于``joserfc.errors.JoseError``。"
 
 #: joserfc.errors.BadSignatureError:1 of
 msgid ""
-"This error is designed for JWS/JWT. It is raised when signature does not "
+"This error is designed for JWS. It is raised when signature does not "
 "match."
-msgstr "该错误是为 JWS/JWT 设计的，当签名不匹配时触发。"
+msgstr "该错误是为 JWS 设计的，当签名不匹配时触发。"
 
 #: ../../docstring joserfc.errors.BadSignatureError.error:1
 #: joserfc.errors.ConflictAlgorithmError.error:1
@@ -67,20 +67,19 @@ msgstr "短字符串错误代码"
 
 #: joserfc.errors.DecodeError:1 of
 msgid ""
-"This error is designed for JWS/JWE. It is raised when deserialization and"
-" decryption fails."
+"This error is designed for both JWS and JWE. It is raised when "
+"deserialization and decryption fails."
 msgstr "该错误是为 JWS/JWE 设计的，当反序列化或解密失败时触发。"
 
 #: joserfc.errors.ExceededSizeError:1 of
 msgid ""
-"This error is designed for DEF zip algorithm. It raised when the "
-"compressed data exceeds the maximum allowed length."
+"This error is designed for validating the token's content size. It raised"
+" when the data exceeds the maximum allowed length."
 msgstr "该错误是为 DEF 压缩算法设计的，当压缩数据超过允许的最大长度时触发。"
 
 #: joserfc.errors.ExpiredTokenError:1 of
-#, fuzzy
 msgid "This error is designed for JWT. It raised when the token is expired."
-msgstr "该错误是为 JWS/JWT 设计的，当签名不匹配时触发。"
+msgstr "该错误是为 JWT 设计的，令牌过期时触发。"
 
 #: ../../docstring joserfc.errors.ExpiredTokenError.description:1
 #: joserfc.errors.InvalidCEKLengthError.description:1
@@ -113,12 +112,39 @@ msgid ""
 "work together with \"alg\" value."
 msgstr "该错误是为 JWE 设计的，当 \"enc\" 值与 \"alg\" 值不兼容时触发。"
 
+#: joserfc.errors.InvalidExchangeKeyError:1 of
+msgid ""
+"This error is designed for EC and OKP keys. It is raised when exchanging "
+"derive key failed."
+msgstr "此错误用于 EC 和 OKP 密钥，在密钥派生交换失败时触发。"
+
+#: joserfc.errors.InvalidHeaderValueError:1 of
+msgid "Raised when the given header's value is invalid."
+msgstr "当给定的 header 值无效时触发该错误。"
+
+#: joserfc.errors.InvalidKeyCurveError:1 of
+msgid ""
+"This error is designed for JWS. It is raised when key's curve name does "
+"not match with the given algorithm."
+msgstr "此错误用于 JWS，当密钥（EC、OKP）的曲线名称与指定算法不匹配时触发。"
+
+#: joserfc.errors.InvalidKeyIdError:1 of
+msgid ""
+"This error is designed for Key Set. It is raised when a key can not be "
+"found with the given key ID."
+msgstr "此错误用于密钥集，当无法根据给定的密钥 ID 找到对应密钥时触发。"
+
+#: joserfc.errors.InvalidKeyLengthError:1 of
+msgid ""
+"This error is designed for JWE. It is raised when key's length does not "
+"align with the given algorithm."
+msgstr "此错误用于 JWE。当密钥长度与指定算法不匹配时触发。"
+
 #: joserfc.errors.InvalidPayloadError:1 of
-#, fuzzy
 msgid ""
 "This error is designed for JWT. It raised when the payload is not a valid"
 " JSON object."
-msgstr "该错误是为 JWS/JWT 设计的，当签名不匹配时触发。"
+msgstr "此错误用于 JWT。当载荷（payload）不是有效的 JSON 对象时触发。"
 
 #: joserfc.errors.InvalidTokenError:1 of
 msgid "This error is designed for JWT. It raised when the token is not valid yet."
@@ -128,6 +154,10 @@ msgstr "此错误是为 JWT 设计的，当 Token 不是有效的 JSON 对象时
 msgid "Base Exception for all errors in joserfc."
 msgstr "joserfc 中所有错误的基类异常。"
 
+#: joserfc.errors.MissingAlgorithmError:1 of
+msgid "Raised when an algorithm (\"alg\") is missing."
+msgstr "当缺少算法（\"alg\"）时触发。"
+
 #: joserfc.errors.MissingClaimError:1 of
 msgid ""
 "This error is designed for JWT. It raised when the required claims are "
@@ -136,7 +166,7 @@ msgstr "此错误是为 JWT 设计的，当缺少必要的声明时会触发。"
 
 #: joserfc.errors.MissingCritHeaderError:1 of
 msgid "This error happens when the critical header does not exist."
-msgstr ""
+msgstr "当关键（``crit``） header 值不存在时触发。"
 
 #: joserfc.errors.MissingEncryptionError:1 of
 msgid ""
@@ -151,6 +181,16 @@ msgstr "当 header 中缺少必要数据时会触发此错误。"
 #: joserfc.errors.SecurityWarning:1 of
 msgid "Base class for warnings of security issues."
 msgstr ""
+
+#: joserfc.errors.UnsupportedAlgorithmError:1 of
+msgid ""
+"This error is designed for both JWS and JWE. It is raised when the given "
+"algorithm is not supported in the registry."
+msgstr "此错误适用于 JWS 和 JWE，当注册表中不支持给定算法时触发。"
+
+#: joserfc.errors.UnsupportedHeaderError:1 of
+msgid "Raised when an unsupported header is encountered."
+msgstr "当遇到不支持的 header 值时触发。"
 
 #: ../../api/index.rst:2
 msgid "API References"
@@ -332,6 +372,27 @@ msgstr "获取给定名称的允许 (\"zip\") 算法实例。"
 #: joserfc._rfc7516.registry.JWERegistry.get_zip:3 of
 msgid "value of the ``zip``, e.g. ``DEF``"
 msgstr "``zip`` 的值，例如 ``DEF``"
+
+#: ../../docstring joserfc.jwe.JWERegistry.max_auth_tag_length:1 of
+msgid "max auth tag's size in bytes"
+msgstr ""
+
+#: ../../docstring joserfc.jwe.JWERegistry.max_ciphertext_length:1 of
+msgid "max ciphertext's size in bytes"
+msgstr ""
+
+#: ../../docstring joserfc.jwe.JWERegistry.max_encrypted_key_length:1 of
+msgid "max encrypted key's size in bytes"
+msgstr ""
+
+#: ../../docstring joserfc.jwe.JWERegistry.max_initialization_vector_length:1
+#: of
+msgid "max initialization vector's size in bytes"
+msgstr ""
+
+#: ../../docstring joserfc.jwe.JWERegistry.max_protected_header_length:1 of
+msgid "max protected header content's size in bytes"
+msgstr "受保护的 header 内容的最大字节大小"
 
 #: joserfc.jwe.decrypt_compact:1 of
 msgid ""
@@ -907,6 +968,18 @@ msgstr "为给定密钥推测 JWS 算法。"
 msgid "the strategy for guessing the JWS algorithm"
 msgstr ""
 
+#: ../../docstring joserfc.jws.JWSRegistry.max_header_length:1 of
+msgid "max header content's size in bytes"
+msgstr "header 内容的最大字节大小"
+
+#: ../../docstring joserfc.jws.JWSRegistry.max_payload_length:1 of
+msgid "max payload content's size in bytes"
+msgstr "payload 内容的最大字节大小"
+
+#: ../../docstring joserfc.jws.JWSRegistry.max_signature_length:1 of
+msgid "max signature's size in bytes"
+msgstr "签名的最大字节大小"
+
 #: joserfc._rfc7515.registry.JWSRegistry.register:1 of
 msgid "Register a given JWS algorithm instance to the registry."
 msgstr "将给定的 JWS 算法实例注册到注册表。"
@@ -982,6 +1055,10 @@ msgid "JWS in bytes"
 msgstr "字节形式的 JWS"
 
 #: joserfc._rfc7797.compact.extract_rfc7515_compact:5 of
+msgid "optional JWSRegistry instance"
+msgstr "可选的 JWSRegistry 实例"
+
+#: joserfc._rfc7797.compact.extract_rfc7515_compact:6 of
 msgid "DecodeError"
 msgstr "DecodeError"
 
@@ -1062,7 +1139,7 @@ msgid ""
 "``joserfc.jwt``."
 msgstr "文档的这一部分涵盖了 ``joserfc.jwt`` 的所有接口。"
 
-#: joserfc._rfc7519.claims.ClaimsRegistry:1 of
+#: joserfc._rfc7519.claims.BaseClaimsRegistry:1 of
 msgid "Requesting \"claims\" for JWT with the given conditions."
 msgstr ""
 
@@ -1188,4 +1265,4 @@ msgstr "用于签名的密钥"
 
 #: joserfc.jwt.encode:8 of
 msgid "A JSONEncoder subclass to use"
-msgstr ""
+msgstr "要使用的 JSONEncoder 子类"

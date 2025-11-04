@@ -1,0 +1,177 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 1.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-04 11:11+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../sponsors.rst:5
+msgid "Becoming a sponsor"
+msgstr "赞助我们"
+
+#: ../../sponsors.rst:9
+msgid "People and organizations supporting Authlib"
+msgstr "Authlib 的赞助人和赞助商"
+
+#: ../../sponsors.rst:13
+msgid ""
+"``joserfc`` is an open-source project maintained under Authlib. It is "
+"licensed under BSD-3-Clause and completely free to use."
+msgstr ""
+"``joserfc`` 是一个 Authlib 旗下的开源项目。它采用 BSD-3-Clause 许可证，你可以完全免费的使用它。"
+
+#: ../../sponsors.rst:17
+msgid ""
+"To help keep the project sustainable, please consider supporting us "
+"through `GitHub Sponsors`_."
+msgstr "为帮助项目保持可持续发展，请考虑通过 `GitHub Sponsors`_ 支持我们。"
+
+#: ../../sponsors.rst
+msgid "Gold Sponsors"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Polar"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Auth0-Developers"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Silver Sponsors"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Codeureuses en Liberté"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Backers"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Roboflow"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Yaal Coop"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Supporter"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Birk Jernström"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Past Sponsors"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Justin Ross"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Fixer"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Ecosystems"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "martin68"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Microsoft"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Redbot"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Litestar"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Lydia"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Adam Hill"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Jacob Coffee"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Rafał Pitoń"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Kraken Tech"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Allen"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Hyunwoo Park"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Jeff Heaton"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "GitHub"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Around"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Malik Piara"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Jun"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Indeed Engineering"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Sentry"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Callam"
+msgstr ""
+
+#: ../../sponsors.rst
+msgid "Aveline"
+msgstr ""

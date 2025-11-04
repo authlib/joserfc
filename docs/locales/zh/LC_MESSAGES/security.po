@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-30 14:51+0900\n"
+"POT-Creation-Date: 2025-11-04 11:11+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -25,71 +25,79 @@ msgstr "安全"
 
 #: ../../security.rst:4
 msgid ""
-"If you think you have found a potential security vulnerability in "
-"``joserfc``, please email <me@lepture.com> directly."
-msgstr "如果你发现了一个 ``joserfc`` 的潜在安全漏洞，请直接发邮件给 <me@lepture.com>。"
+"If you discover a security vulnerability, **do not submit a public issue "
+"or patch**. Instead, please report it privately through the **GitHub "
+"Security** tab."
+msgstr ""
 
 #: ../../security.rst:7
-msgid "Do not file a public issue."
-msgstr "请不要提交公开的 Issue。"
-
-#: ../../security.rst:9
+#, fuzzy
 msgid ""
-"Please do not disclose this to anyone else. We will retrieve a CVE "
-"identifier if necessary and give you full credit under whatever name or "
-"alias you provide. We will only request an identifier when we have a fix "
-"and can publish it in a release."
+"Do not share details of the vulnerability with anyone else. If necessary,"
+" we will obtain a CVE identifier and ensure you receive full credit under"
+" the name or alias you provide. We will only request a CVE once a fix has"
+" been implemented and is ready to be published in a release."
 msgstr ""
-"请不要将此问题透露给其他人。如有必要，我们会申请 CVE 编号，"
-"并根据您提供的姓名或别名给予完整的致谢。我们只会在修复完成并"
-"准备发布新版本时申请 CVE 编号。"
+"请不要将此问题透露给其他人。如有必要，我们会申请 CVE 编号，并根据您提供的姓名或别名给予完整的致谢。我们只会在修复完成并准备发布新版本时申请 "
+"CVE 编号。"
 
-#: ../../security.rst:15
+#: ../../security.rst:13
 msgid "The Process"
 msgstr "处理流程"
 
-#: ../../security.rst:17
+#: ../../security.rst:15
 msgid "Here is the process when we have received a security report:"
 msgstr "以下是我们收到安全报告后的处理流程："
 
-#: ../../security.rst:19
+#: ../../security.rst:17
 msgid "we will reply to you in 24 hours"
 msgstr "我们将在 24 小时内回复您。"
 
-#: ../../security.rst:20
+#: ../../security.rst:18
 msgid ""
 "we will confirm it in 2 days, if we can't reproduce it, we will send "
 "emails to you for more information"
 msgstr "我们会在 2 天内确认问题是否存在。如果无法复现，我们会通过邮件向您索取更多信息。"
 
-#: ../../security.rst:22
+#: ../../security.rst:20
 msgid ""
 "we will fix the issue in 1 week after we confirm it. If we can't fix it "
 "for the moment, we will let you know."
 msgstr "问题确认后，我们将在 1 周内完成修复。如果暂时无法修复，我们也会告知您当前的进展。"
 
-#: ../../security.rst:24
+#: ../../security.rst:22
 msgid ""
 "we will push the source code to GitHub when it has been released in PyPI "
 "for 1 week."
 msgstr "修复将在 PyPI 发布 1 周后同步到 GitHub 上的源代码。"
 
-#: ../../security.rst:26
+#: ../../security.rst:24
 msgid "if necessary, we will retrieve a CVE after releasing to PyPI."
 msgstr "如果有必要，我们会在发布到 PyPI 后申请 CVE 编号。"
 
-#: ../../security.rst:29
+#: ../../security.rst:27
 msgid "Previous CVEs"
 msgstr ""
 
-#: ../../security.rst:31
+#: ../../security.rst:29
 msgid "CVE-2024-37568: fixed in 0.11.0"
 msgstr ""
 
-#: ../../security.rst:34
+#: ../../security.rst:32
 msgid "CWE fixes"
 msgstr ""
 
-#: ../../security.rst:36
+#: ../../security.rst:34
 msgid "CWE-290: fixed in 1.1.0"
 msgstr ""
+
+#~ msgid ""
+#~ "If you think you have found a "
+#~ "potential security vulnerability in "
+#~ "``joserfc``, please email <me@lepture.com> "
+#~ "directly."
+#~ msgstr "如果你发现了一个 ``joserfc`` 的潜在安全漏洞，请直接发邮件给 <me@lepture.com>。"
+
+#~ msgid "Do not file a public issue."
+#~ msgstr "请不要提交公开的 Issue。"
+

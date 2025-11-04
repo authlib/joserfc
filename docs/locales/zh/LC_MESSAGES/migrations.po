@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-08 12:01+0900\n"
+"POT-Creation-Date: 2025-11-04 11:11+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -32,7 +32,8 @@ msgid ""
 " structure and functionality."
 msgstr ""
 
-#: ../../migrations/authlib.rst:11 ../../migrations/python-jose.rst:85
+#: ../../migrations/authlib.rst:11 ../../migrations/index.rst:31
+#: ../../migrations/python-jose.rst:85
 msgid "JWT"
 msgstr "JWT"
 
@@ -59,9 +60,10 @@ msgid "Authlib"
 msgstr "Authlib"
 
 #: ../../migrations/authlib.rst:30 ../../migrations/authlib.rst:92
-#: ../../migrations/pyjwt.rst:23 ../../migrations/pyjwt.rst:45
-#: ../../migrations/pyjwt.rst:77 ../../migrations/pyjwt.rst:117
-#: ../../migrations/pyjwt.rst:136 ../../migrations/python-jose.rst:31
+#: ../../migrations/index.rst:23 ../../migrations/pyjwt.rst:23
+#: ../../migrations/pyjwt.rst:45 ../../migrations/pyjwt.rst:64
+#: ../../migrations/pyjwt.rst:96 ../../migrations/pyjwt.rst:136
+#: ../../migrations/pyjwt.rst:155 ../../migrations/python-jose.rst:31
 #: ../../migrations/python-jose.rst:72 ../../migrations/python-jose.rst:101
 #: ../../migrations/python-jose.rst:122 ../../migrations/python-jose.rst:137
 #: ../../migrations/python-jose.rst:155
@@ -167,6 +169,100 @@ msgid ""
 "libraries to ``joserfc``:"
 msgstr ""
 
+#: ../../migrations/index.rst:15 ../../migrations/index.rst:23
+msgid "Comparison"
+msgstr "对比"
+
+#: ../../migrations/index.rst:17
+msgid ""
+"joserfc is the most feature-complete Python library for the JOSE "
+"specifications, providing full coverage of all relevant RFCs."
+msgstr ""
+
+#: ../../migrations/index.rst:20
+msgid ""
+"The following highlights the key differences between joserfc and other "
+"Python libraries:"
+msgstr ""
+
+#: ../../migrations/index.rst:23
+msgid "authlib.jose"
+msgstr "authlib.jose"
+
+#: ../../migrations/index.rst:23
+msgid "pyjwt"
+msgstr "pyjwt"
+
+#: ../../migrations/index.rst:23 ../../migrations/python-jose.rst:22
+#: ../../migrations/python-jose.rst:63 ../../migrations/python-jose.rst:92
+msgid "python-jose"
+msgstr "python-jose"
+
+#: ../../migrations/index.rst:23
+msgid "jwcrypto"
+msgstr "jwcrypto"
+
+#: ../../migrations/index.rst:25
+msgid "Type Hints"
+msgstr ""
+
+#: ../../migrations/index.rst:25 ../../migrations/index.rst:26
+#: ../../migrations/index.rst:27 ../../migrations/index.rst:28
+#: ../../migrations/index.rst:29 ../../migrations/index.rst:30
+#: ../../migrations/index.rst:31 ../../migrations/index.rst:32
+#: ../../migrations/index.rst:33 ../../migrations/index.rst:34
+#: ../../migrations/index.rst:35 ../../migrations/index.rst:36
+msgid ":bdg-success:`Yes`"
+msgstr ":bdg-success:`是`"
+
+#: ../../migrations/index.rst:25 ../../migrations/index.rst:27
+#: ../../migrations/index.rst:28 ../../migrations/index.rst:29
+#: ../../migrations/index.rst:32 ../../migrations/index.rst:33
+#: ../../migrations/index.rst:34 ../../migrations/index.rst:35
+#: ../../migrations/index.rst:36
+msgid ":bdg-danger:`No`"
+msgstr ":bdg-danger:`否`"
+
+#: ../../migrations/index.rst:26
+msgid "Compact JWS"
+msgstr ""
+
+#: ../../migrations/index.rst:27
+msgid "JSON JWS"
+msgstr ""
+
+#: ../../migrations/index.rst:28
+msgid "Compact JWE"
+msgstr ""
+
+#: ../../migrations/index.rst:29
+msgid "JSON JWE"
+msgstr ""
+
+#: ../../migrations/index.rst:30 ../../migrations/python-jose.rst:149
+msgid "JWK"
+msgstr ""
+
+#: ../../migrations/index.rst:32
+msgid "RFC7638"
+msgstr ""
+
+#: ../../migrations/index.rst:33
+msgid "RFC7797"
+msgstr ""
+
+#: ../../migrations/index.rst:34
+msgid "RFC8037"
+msgstr ""
+
+#: ../../migrations/index.rst:35
+msgid "RFC8812"
+msgstr ""
+
+#: ../../migrations/index.rst:36
+msgid "RFC9278"
+msgstr ""
+
 #: ../../migrations/pyjwt.rst:2
 msgid "Migrating from PyJWT"
 msgstr "从 PyJWT 迁移到 joserfc"
@@ -188,8 +284,8 @@ msgid ""
 msgstr ""
 
 #: ../../migrations/pyjwt.rst:16 ../../migrations/pyjwt.rst:39
-#: ../../migrations/pyjwt.rst:65 ../../migrations/pyjwt.rst:111
-#: ../../migrations/pyjwt.rst:130
+#: ../../migrations/pyjwt.rst:84 ../../migrations/pyjwt.rst:130
+#: ../../migrations/pyjwt.rst:149
 msgid "PyJWT"
 msgstr "PyJWT"
 
@@ -199,11 +295,25 @@ msgid ""
 "and decode a JWT, but the parameter structure differs."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:57
+#: ../../migrations/pyjwt.rst:57 ../../migrations/python-jose.rst:115
+msgid "``get_unverified_header``"
+msgstr "``get_unverified_header``"
+
+#: ../../migrations/pyjwt.rst:59
+msgid ""
+"PyJWT module provides a method called ``get_unverified_header``, which "
+"allows extracting the header from a JWT without verifying its signature."
+msgstr ""
+
+#: ../../migrations/pyjwt.rst:62 ../../migrations/python-jose.rst:120
+msgid "In ``joserfc``, we can get the unverified header with:"
+msgstr ""
+
+#: ../../migrations/pyjwt.rst:76
 msgid "Non-plain string key"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:59
+#: ../../migrations/pyjwt.rst:78
 msgid ""
 "When using a non-plain string key (equivalent to an \"oct\" key) in "
 "joserfc, such as RSA, EC, or OKP keys, the library provides built-in "
@@ -211,21 +321,21 @@ msgid ""
 "manual key handling, which is required in PyJWT."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:63
+#: ../../migrations/pyjwt.rst:82
 msgid "Let's take an example using an RSA key:"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:93
+#: ../../migrations/pyjwt.rst:112
 msgid "Claims validation"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:95
+#: ../../migrations/pyjwt.rst:114
 msgid ""
 "Both PyJWT and ``joserfc`` provide mechanisms for claims validation, "
 "although they differ in their approach."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:98
+#: ../../migrations/pyjwt.rst:117
 msgid ""
 "In PyJWT, claims validation is performed within the ``.decode`` method "
 "itself. When decoding a token, you can specify options such as "
@@ -235,7 +345,7 @@ msgid ""
 "process."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:103
+#: ../../migrations/pyjwt.rst:122
 msgid ""
 "On the other hand, ``joserfc`` follows a different approach by separating"
 " the decoding and claims validation steps. The .decode method in joserfc "
@@ -244,25 +354,23 @@ msgid ""
 "claims validators."
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:109
+#: ../../migrations/pyjwt.rst:128
 msgid "Verify \"exp\""
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:128
+#: ../../migrations/pyjwt.rst:147
 msgid "Required claims"
 msgstr ""
 
-#: ../../migrations/pyjwt.rst:149
+#: ../../migrations/pyjwt.rst:168
 msgid ""
 "The ``JWTClaimsRegistry`` accepts each claim as an `Individual Claims "
-"Requests <ClaimsOption>`_ JSON object. You can learn more from "
-":ref:`claims`."
+"Requests`_ JSON object. You can learn more from :ref:`claims`."
 msgstr ""
 
 #: ../../migrations/python-jose.rst:2
-#, fuzzy
 msgid "Migrating from python-jose"
-msgstr "从 PyJWT 迁移到 joserfc"
+msgstr "从 python-jose 迁移到 joserfc"
 
 #: ../../migrations/python-jose.rst:4
 msgid ""
@@ -290,11 +398,6 @@ msgstr ""
 msgid ""
 "On the other hand, ``joserfc`` uses ``jws.serialize_compact`` for "
 "serialization and ``jws.deserialize_compact`` for deserialization."
-msgstr ""
-
-#: ../../migrations/python-jose.rst:22 ../../migrations/python-jose.rst:63
-#: ../../migrations/python-jose.rst:92
-msgid "python-jose"
 msgstr ""
 
 #: ../../migrations/python-jose.rst:46
@@ -328,19 +431,11 @@ msgid ""
 "in terms of structure and flexibility."
 msgstr ""
 
-#: ../../migrations/python-jose.rst:115
-msgid "``get_unverified_header``"
-msgstr "``get_unverified_header``"
-
 #: ../../migrations/python-jose.rst:117
 msgid ""
 "The ``jwt`` module in python-jose provides a method called "
 "``get_unverified_header``, which allows extracting the header from a JWT "
 "without verifying its signature."
-msgstr ""
-
-#: ../../migrations/python-jose.rst:120
-msgid "In ``joserfc``, we can get the unverified header with:"
 msgstr ""
 
 #: ../../migrations/python-jose.rst:133
@@ -351,10 +446,6 @@ msgstr "``get_unverified_claims``"
 msgid ""
 "You can also use the ``jws.extract_compact`` method to extract the JWT's "
 "claims:"
-msgstr ""
-
-#: ../../migrations/python-jose.rst:149
-msgid "JWK"
 msgstr ""
 
 #: ../../migrations/python-jose.rst:151

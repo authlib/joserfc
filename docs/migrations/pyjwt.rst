@@ -165,7 +165,7 @@ Required claims
     token = jwt.decode(encoded_jwt, key)
     claims_requests.validate(token.claims)
 
-The ``JWTClaimsRegistry`` accepts each claim as an `Individual Claims Requests <ClaimsOption>`_
+The ``JWTClaimsRegistry`` accepts each claim as an `Individual Claims Requests`_
 JSON object. You can learn more from :ref:`claims`.
 
-.. _ClaimsOption: http://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests
+.. _`Individual Claims Requests`: http://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests
