@@ -97,6 +97,12 @@ def setup(app):
         sitemap_filename = "sitemap.xml"
         sitemap_locales = [None]
 
+    if language == "zh":
+        nav_links = html_theme_options["nav_links"]
+        nav_links[0]["title"] = "项目"
+        nav_links[1]["title"] = "赞助我们"
+        nav_links[1]["url"] = "/zh/sponsors"
+
     html_baseurl = f"https://jose.authlib.org/{language}/"
     html_context["languages"] = [
         ("English", "https://jose.authlib.org/en/%s/", "en"),
