@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.4.1
+-----
+
+**Released on November 5, 2025**
+
+- Add a base ``ClaimError`` for catching JWT claim validation errors.
+- Show security warnings when importing weak OctKey and RSAKey.
+
 1.4.0
 -----
 
