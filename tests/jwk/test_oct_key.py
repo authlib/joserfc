@@ -1,5 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import OctKey
+from joserfc.errors import SecurityWarning
 from tests.keys import read_key
 
 
@@ -86,7 +87,7 @@ class TestOctKey(TestCase):
 
     def test_import_pem_key(self):
         public_pem = read_key("ec-p256-public.pem")
-        self.assertWarns(UserWarning, OctKey.import_key, public_pem)
+        self.assertWarns(SecurityWarning, OctKey.import_key, public_pem)
 
     def test_generate_key(self):
         key = OctKey.generate_key()
@@ -102,6 +103,12 @@ class TestOctKey(TestCase):
 
         key = OctKey.generate_key(auto_kid=True)
         self.assertIsNotNone(key.kid)
+
+    def test_generate_key_with_warnings(self):
+        self.assertWarns(SecurityWarning, OctKey.generate_key, 16)
+
+    def test_import_key_with_warnings(self):
+        self.assertWarns(SecurityWarning, OctKey.import_key, b"rfc")
 
     def test_key_eq(self):
         key1 = OctKey.generate_key()

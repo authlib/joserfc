@@ -139,7 +139,11 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         parameters: KeyParameters | None = None,
         password: Any = None,
     ) -> "RSAKey":
-        return super(RSAKey, cls).import_key(value, parameters, password)
+        key: RSAKey = super(RSAKey, cls).import_key(value, parameters, password)
+        if key.raw_value.key_size < 2048:
+            # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
+            warnings.warn("Key size should be >= 2048 bits", SecurityWarning)
+        return key
 
     @classmethod
     def generate_key(

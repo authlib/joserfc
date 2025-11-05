@@ -57,7 +57,11 @@ class OctKey(SymmetricKey):
         parameters: KeyParameters | None = None,
         password: Any = None,
     ) -> "OctKey":
-        return super(OctKey, cls).import_key(value, parameters, password)
+        key: OctKey = super(OctKey, cls).import_key(value, parameters, password)
+        if len(key.raw_value) < 14:
+            # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
+            warnings.warn("Key size should be >= 112 bits", SecurityWarning)
+        return key
 
     @classmethod
     def generate_key(
