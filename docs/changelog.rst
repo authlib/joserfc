@@ -95,8 +95,10 @@ Changelog
 **Released on July 10, 2025**
 
 - Improve type hints on JWK module:
+
   - Overload type hints on ``jwk.import_key`` and ``jwk.generate_key``.
   - Return correct types on ``OctKey.import_key``, ``RSAKey.import_key``, and etc.
+
 - Guess key with "alg" and "use" parameters.
 
 1.2.0
@@ -114,10 +116,12 @@ Changelog
 **Breaking changes**:
 
 - Enable "RFC7797" by default, use the ``joserfc.jws`` module directly.
+
   - Use ``joserfc.jws.serialize_compact`` instead of ``joserfc.rfc7797.serialize_compact``
   - Use ``joserfc.jws.deserialize_compact`` instead of ``joserfc.rfc7797.deserialize_compact``
   - Use ``joserfc.jws.serialize_json`` instead of ``joserfc.rfc7797.serialize_json``
   - Use ``joserfc.jws.deserialize_json`` instead of ``joserfc.rfc7797.deserialize_json``
+
 - Convert ``joserfc.rfcXXXX`` to private modules ``joserfc._rfcXXXX``.
 
 1.1.0
