@@ -45,10 +45,10 @@ You can call :meth:`jws.serialize_compact` to construct a compact JWS serializat
     from joserfc import jws
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     protected = {"alg": "HS256"}
     jws.serialize_compact(protected, "hello", key)
-    # => 'eyJhbGciOiJIUzI1NiJ9.aGVsbG8.UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A'
+    # => 'eyJhbGciOiJIUzI1NiJ9.aGVsbG8.i_RrfHeMxwHrhk5Xi3J_bU9B9O-gjkMaQtagtqiCndM'
 
 A compact JWS is constructed by protected header, payload and a private key. In the above
 example, ``protected`` is the "protected header" part, `"hello"` is the payload part, and
@@ -65,8 +65,8 @@ serialization with a public key.
     from joserfc import jws
     from joserfc.jwk import OctKey
 
-    text = "eyJhbGciOiJIUzI1NiJ9.aGVsbG8.UYmO_lPAY5V0Wf4KZsfhiYs1SxqXPhxvjuYqellDV5A"
-    key = OctKey.import_key("secret")
+    text = "eyJhbGciOiJIUzI1NiJ9.aGVsbG8.i_RrfHeMxwHrhk5Xi3J_bU9B9O-gjkMaQtagtqiCndM"
+    key = OctKey.import_key("your-secret-key")
     obj = jws.deserialize_compact(text, key)
     # obj.protected => {"alg": "HS256"}
     # obj.payload => b"hello"
@@ -298,7 +298,7 @@ either by the ``algorithms`` parameter, or ``registry`` parameter.
 
     >>> from joserfc import jws
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("secret")
+    >>> key = OctKey.import_key("your-secret-key")
     >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key, algorithms=["HS384"])
     'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
 
@@ -309,7 +309,7 @@ of using :ref:`registry`.
 
     >>> from joserfc import jws
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("secret")
+    >>> key = OctKey.import_key("your-secret-key")
     >>> registry = jws.JWSRegistry(algorithms=["HS384"])
     >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key, registry=registry)
     'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
@@ -332,7 +332,7 @@ Here are examples demonstrating the usage of the ``b64`` option:
     from joserfc.jws import serialize_compact, deserialize_compact
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
     value = serialize_compact(protected, "hello", key)
     # => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19.hello.mdPbZLtc3tqQ6NCV1pKF-qfEx-3jtR6rv109phKAc4I'
@@ -351,10 +351,10 @@ characters, the compact serialization will detach the payload:
     from joserfc.jws import serialize_compact, deserialize_compact
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
     value = serialize_compact(protected, "$.02", key)
-    # => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..GbtzAD3Cwe6snTZnaAxapwQz5QftEz7agx_6aMtZ4w0'
+    # => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6iWgAK_TZLgwzk1mhtxs6Imw-dJM1cRstsOKVQ5MjFQ'
     # since the payload is detached, you need to specify the
     # payload when calling deserialize_compact
     deserialize_compact(value, key, payload="$.02")

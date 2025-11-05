@@ -65,7 +65,7 @@ algorithms either by the ``algorithms`` parameter, or ``registry`` parameter.
     from joserfc import jws
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     # HS384 is a non-recommended algorithm
     jws.serialize_compact({"alg": "HS384"}, b"payload", key, algorithms=["HS384"])
 

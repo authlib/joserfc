@@ -24,7 +24,7 @@ In both libraries, you can encode a JWT using the ``jwt.encode(header, payload, 
 
     from authlib.jose import jwt
 
-    jwt.encode({"alg": "HS256"}, {"iss": "https://jose.authlib.org"}, "secret")
+    jwt.encode({"alg": "HS256"}, {"iss": "https://jose.authlib.org"}, "your-secret-key")
 
 
 .. code-block:: python
@@ -33,7 +33,7 @@ In both libraries, you can encode a JWT using the ``jwt.encode(header, payload, 
     from joserfc import jwt
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     jwt.encode({"alg": "HS256"}, {"iss": "https://jose.authlib.org"}, key)
 
 jwt.decode
@@ -86,8 +86,8 @@ follow these steps:
 
     protected = {'alg': 'HS256'}
     payload = b"example"
-    value = jws.serialize_compact(protected, payload, "secret")
-    jws.deserialize_compact(value, "secret")
+    value = jws.serialize_compact(protected, payload, "your-secret-key")
+    jws.deserialize_compact(value, "your-secret-key")
 
 .. code-block:: python
     :caption: joserfc
@@ -95,7 +95,7 @@ follow these steps:
     from joserfc import jws
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     protected = {"alg': 'HS256"}
     payload = b"example"
     value = jws.serialize_compact(protected, payload, key)

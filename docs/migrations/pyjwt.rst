@@ -18,7 +18,7 @@ structure differs between the two libraries.
 
     import jwt
     # jwt.encode(payload, key, algorithm)
-    encoded_jwt = jwt.encode({"some": "payload"}, "secret", algorithm="HS256")
+    encoded_jwt = jwt.encode({"some": "payload"}, "your-secret-key", algorithm="HS256")
 
 .. code-block:: python
     :caption: joserfc
@@ -26,7 +26,7 @@ structure differs between the two libraries.
     from joserfc import jwt
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")  # use an explicit key
+    key = OctKey.import_key("your-secret-key")  # use an explicit key
     # jwt.encode(header, payload, key)
     encoded_jwt = jwt.encode({"alg": "HS256"}, {"some": "payload"}, key)
 
@@ -39,7 +39,7 @@ but the parameter structure differs.
 .. code-block:: python
     :caption: PyJWT
 
-    token = jwt.decode(encoded_jwt, "secret", algorithms=["HS256"])
+    token = jwt.decode(encoded_jwt, "your-secret-key", algorithms=["HS256"])
     # => {"some": "payload"}
 
 .. code-block:: python
@@ -48,7 +48,7 @@ but the parameter structure differs.
     from joserfc import jwt
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     token = jwt.decode(encoded_jwt, key)
     # => token.header : {"alg": "HS256"}
     # => token.claims : {"some": "payload"}

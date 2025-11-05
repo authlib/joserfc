@@ -30,7 +30,7 @@ It encodes the payload with the given ``alg`` in header:
 
     header = {"alg": "HS256"}
     claims = {"iss": "https://authlib.org"}
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     text = jwt.encode(header, claims, key)
 
 The returned value of ``text`` in above example is:
@@ -451,7 +451,7 @@ this algorithm:
     >>> from joserfc import jwt, jwk
     >>> header = {"alg": "HS384"}
     >>> claims = {"iss": "https://authlib.org"}
-    >>> key = jwk.OctKey.import_key("secret")
+    >>> key = jwk.OctKey.import_key("your-secret-key")
     >>> jwt.encode(header, claims, key, algorithms=["HS384"])
 
 If not specifying the ``algorithms`` parameter, the ``encode`` method will
@@ -474,7 +474,7 @@ be raised.
     >>> import uuid
     >>> from joserfc import jwt, jwk
     >>>
-    >>> key = jwk.OctKey.import_key("secret")
+    >>> key = jwk.OctKey.import_key("your-secret-key")
     >>> claims = {"sub": uuid.uuid4()}
     >>> jwt.encode({"alg": "HS256"}, claims, key)
     Traceback (most recent call last):
@@ -512,7 +512,7 @@ To resolve this issue, you can pass a custom ``JSONEncoder`` using the ``encoder
                 return str(o)
             return super().default(o)
 
-    key = jwk.OctKey.import_key("secret")
+    key = jwk.OctKey.import_key("your-secret-key")
     claims = {"sub": uuid.uuid4()}
     jwt.encode({"alg": "HS256"}, claims, key, encoder_cls=MyEncoder)
 

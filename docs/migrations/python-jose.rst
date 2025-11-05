@@ -24,8 +24,8 @@ and ``jws.deserialize_compact`` for deserialization.
 
     from jose import jws
 
-    signed = jws.sign({'a': 'b'}, 'secret', algorithm='HS256')
-    jws.verify(signed, 'secret', algorithms='HS256')
+    signed = jws.sign({'a': 'b'}, 'your-secret-key', algorithm='HS256')
+    jws.verify(signed, 'your-secret-key', algorithms='HS256')
     # the verify only returns the payload
 
 .. code-block:: python
@@ -35,7 +35,7 @@ and ``jws.deserialize_compact`` for deserialization.
     from joserfc import jws
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     protected = {"alg": "HS256"}
     signed = jws.serialize_compact(protected, json.dumps({'a': 'b'}), key)
     obj = jws.deserialize_compact(text, key)
@@ -94,8 +94,8 @@ differ significantly in terms of structure and flexibility.
 
     from jose import jwt
 
-    encoded = jwt.encode({'a': 'b'}, 'secret', algorithm='HS256')
-    jwt.decode(encoded, 'secret', algorithms='HS256')
+    encoded = jwt.encode({'a': 'b'}, 'your-secret-key', algorithm='HS256')
+    jwt.decode(encoded, 'your-secret-key', algorithms='HS256')
     # => {'a': 'b'}
 
 .. code-block:: python
@@ -104,7 +104,7 @@ differ significantly in terms of structure and flexibility.
     from joserfc import jwt
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
     # jwt.encode(header, payload, key)
     encoded = jwt.encode({"alg": "HS256"}, {'a': 'b'}, key)
     token = jwt.decode(encoded, key)

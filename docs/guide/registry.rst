@@ -69,7 +69,7 @@ the value type.
 
     >>> from joserfc import jws
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("secret")
+    >>> key = OctKey.import_key("your-secret-key")
     >>> jws.serialize_compact({"alg": "HS256", "kid": 123}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
@@ -95,7 +95,7 @@ indicating that they must be present. For example:
 
     >>> from joserfc import jws
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("secret")
+    >>> key = OctKey.import_key("your-secret-key")
     >>> jws.serialize_compact({"alg": "HS256", "crit": ["kid"]}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
@@ -120,7 +120,7 @@ Any additional header beyond those supported by the algorithm will result in an 
 
     >>> from joserfc import jws
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("secret")
+    >>> key = OctKey.import_key("your-secret-key")
     >>> jws.serialize_compact({"alg": "HS256", "custom": "hi"}, "hello", key)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
@@ -143,7 +143,7 @@ to recognize and validate those parameters instead of raising an error.
     from joserfc.registry import HeaderParameter
     from joserfc.jwk import OctKey
 
-    key = OctKey.import_key("secret")
+    key = OctKey.import_key("your-secret-key")
 
     additional_header_registry = {
         "custom": HeaderParameter("Custom message", "str", required=True),

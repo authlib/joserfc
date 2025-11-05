@@ -46,7 +46,7 @@ You can import an ``OctKey`` from string, bytes and a JWK (in dict).
     OctKey.import_key(b"a-random-bytes-as-key")
     OctKey.import_key({
       "kty": "oct",
-      "k": "Zm9v",
+      "k": "eW91ci1zZWNyZXQta2V5",
     })
 
 When importing a key, you can add extra parameters into a key:
@@ -54,9 +54,9 @@ When importing a key, you can add extra parameters into a key:
 .. code-block:: python
 
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("foo", {"use": "sig"})
+    >>> key = OctKey.import_key("your-secret-key", {"use": "sig"})
     >>> key.as_dict()
-    {'k': 'Zm9v', 'use': 'sig', 'kty': 'oct'}
+    {'k': 'eW91ci1zZWNyZXQta2V5', 'use': 'sig', 'kty': 'oct'}
 
 .. _RSAKey:
 
@@ -354,12 +354,12 @@ Call this method to make sure the key contains a ``kid``. If the key has no
 .. code-block:: python
 
     >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("foo")
+    >>> key = OctKey.import_key("your-secret-key")
     >>> key.kid
     None
     >>> key.ensure_kid()
     >>> key.kid
-    '8-e-qGDS2nDpfZzOPtD8Sb7NkifUbw70MeqOKIqyaRw'
+    'IGfff6pETIMRgwAOHtzIQ_Sflgv5wzWl6SYZlcZ_JDU'
 
 ``as_dict``
 ~~~~~~~~~~~
