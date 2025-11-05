@@ -261,58 +261,11 @@ EdDSA          Edwards-curve Digital Signature                  :bdg-danger:`No`
 ES256K         ECDSA using secp256k1 curve and SHA-256          :bdg-danger:`No`
 ============== ================================================ ==================
 
-UnsupportedAlgorithmError
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionchanged:: 1.1.0
-
-    From version 1.1.0, an ``UnsupportedAlgorithmError`` will be raised instead
-    of a ``ValueError``.
-
 The serialization and deserialization methods on ``joserfc.jws`` module accept
 an ``algorithms`` parameter for specifying the allowed algorithms. By default,
 those ``serialize`` and ``deserialize`` methods will ONLY allow recommended
 algorithms defined by RFCs. With non recommended algorithms, you may encounter
-the below error.
-
-.. code-block:: python
-
-    >>> from joserfc import jws
-    >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.generate_key()
-    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key)
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File ".../joserfc/jws.py", line 112, in serialize_compact
-        alg: JWSAlgModel = registry.get_alg(protected["alg"])
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File ".../joserfc/_rfc7515/registry.py", line 60, in get_alg
-        raise UnsupportedAlgorithmError(f'Algorithm of "{name}" is not recommended')
-    joserfc.errors.UnsupportedAlgorithmError: unsupported_algorithm: Algorithm of "HS384" is not recommended
-
-``joserfc`` does support ``HS384``, but this algorithm is not recommended by
-specifications, developers MUST explicitly specify the supported algorithms
-either by the ``algorithms`` parameter, or ``registry`` parameter.
-
-.. code-block:: python
-
-    >>> from joserfc import jws
-    >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("your-secret-key")
-    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key, algorithms=["HS384"])
-    'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
-
-Developers can also apply the ``registry`` parameter to resolve this issue. Here is an example
-of using :ref:`registry`.
-
-.. code-block:: python
-
-    >>> from joserfc import jws
-    >>> from joserfc.jwk import OctKey
-    >>> key = OctKey.import_key("your-secret-key")
-    >>> registry = jws.JWSRegistry(algorithms=["HS384"])
-    >>> jws.serialize_compact({"alg": "HS384"}, b"payload", key, registry=registry)
-    'eyJhbGciOiJIUzM4NCJ9.cGF5bG9hZA.TJEvlp74g89hNRNGNZxCQvB7YDEAWP5vFAjgu1O9Qr5BLMj0NtvbxvYkVYPGp-xQ'
+an :ref:`UnsupportedAlgorithmError` error.
 
 .. _rfc7797:
 

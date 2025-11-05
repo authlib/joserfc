@@ -80,7 +80,7 @@ pythonpath = ["src", "."]
 testpaths = ["tests"]
 filterwarnings = [
   "error::DeprecationWarning",
-  "ignore::UserWarning",
+  "ignore::joserfc.errors.SecurityWarning",
 ]
 
 [tool.coverage.run]
