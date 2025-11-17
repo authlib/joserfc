@@ -1,7 +1,12 @@
 from unittest import TestCase
 
 from joserfc import jws
-from joserfc.jwk import guess_key, import_key, generate_key, thumbprint_uri
+from joserfc.jwk import (
+    guess_key,
+    import_key,
+    generate_key,
+    thumbprint_uri,
+)
 from joserfc.jwk import KeySet, OctKey, RSAKey, ECKey, OKPKey
 from joserfc.errors import (
     UnsupportedKeyAlgorithmError,
@@ -11,6 +16,7 @@ from joserfc.errors import (
     MissingKeyTypeError,
     InvalidKeyIdError,
 )
+from tests.keys import read_key
 
 
 class Guest:
@@ -170,3 +176,25 @@ class TestKeyMethods(TestCase):
         jws.serialize_compact({"alg": "HS256"}, "foo", key_set)
         # get by kid
         jws.serialize_compact({"alg": "HS256", "kid": key2.kid}, "foo", key_set)
+
+    def test_import_bytes_keys(self):
+        # check by ssh types
+        key = import_key(read_key("ssh-rsa-public.pem"))
+        self.assertEqual(key.key_type, "RSA")
+        key = import_key(read_key("ssh-ecdsa-public.pem"))
+        self.assertEqual(key.key_type, "EC")
+        key = import_key(read_key("ssh-ed25519-public.pem"))
+        self.assertEqual(key.key_type, "OKP")
+        key = import_key("ssh-rsa-oct")
+        self.assertEqual(key.key_type, "oct")
+
+        # check by pem types
+        key = import_key(read_key("rsa-openssl-public.pem"))
+        self.assertEqual(key.key_type, "RSA")
+        key = import_key(read_key("ec-p256-public.pem"))
+        self.assertEqual(key.key_type, "EC")
+        key = import_key(read_key("okp-ed448-public.pem"))
+        self.assertEqual(key.key_type, "OKP")
+
+        key = import_key(b"oct-key")
+        self.assertEqual(key.key_type, "oct")

@@ -1,11 +1,13 @@
 from __future__ import annotations
 import typing as t
+import warnings
 from ._keys import (
     JWKRegistry,
     KeySet,
     Key,
     KeySetSerialization,
 )
+from ._rfc7517.pem import import_from_pem_key, import_from_ssh_key
 from ._rfc7517.types import AnyKey, DictKey, KeyParameters
 from ._rfc7518.oct_key import OctKey
 from ._rfc7518.rsa_key import RSAKey
@@ -14,7 +16,9 @@ from ._rfc8037.okp_key import OKPKey
 from ._rfc8812 import register_secp256k1
 from ._rfc7638 import calculate_thumbprint as thumbprint
 from ._rfc9278 import calculate_thumbprint_uri as thumbprint_uri
+from .errors import SecurityWarning, InvalidKeyTypeError
 from .registry import Header
+from .util import to_bytes
 
 
 __all__ = [
@@ -116,7 +120,7 @@ def import_key(data: AnyKey, key_type: t.Literal["OKP"], parameters: KeyParamete
 
 
 @t.overload
-def import_key(data: DictKey, key_type: None = None, parameters: KeyParameters | None = None) -> Key: ...
+def import_key(data: AnyKey, key_type: None = None, parameters: KeyParameters | None = None) -> Key: ...
 
 
 def import_key(
@@ -133,6 +137,28 @@ def import_key(
     :param parameters: extra key parameters
     :return: OctKey, RSAKey, ECKey, or OKPKey
     """
+    if isinstance(data, (str, bytes)) and key_type is None:
+        warnings.warn("Using implicit key type is not recommended.", SecurityWarning)
+
+        value = to_bytes(data)
+        ssh_types = tuple(
+            cls.binding.ssh_type for cls in JWKRegistry.key_types.values() if hasattr(cls.binding, "ssh_type")
+        )
+        if value.startswith(ssh_types):
+            try:
+                raw_key = import_from_ssh_key(value)
+            except ValueError:
+                return OctKey.import_key(value, parameters)
+        else:
+            try:
+                raw_key = import_from_pem_key(value)
+            except ValueError:
+                return OctKey.import_key(value, parameters)
+
+        for cls in JWKRegistry.key_types.values():
+            if hasattr(cls.binding, "check_cryptography_key") and cls.binding.check_cryptography_key(raw_key):
+                return cls(raw_key, data, parameters)
+        raise InvalidKeyTypeError("Not a key of any supported type")  # pragma: no cover
     return JWKRegistry.import_key(data, key_type, parameters)
 
 

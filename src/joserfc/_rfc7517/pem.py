@@ -23,7 +23,11 @@ from ..errors import InvalidKeyTypeError
 from ..util import to_bytes
 
 
-def load_pem_key(raw: bytes, password: bytes | None = None) -> Any:
+def import_from_ssh_key(raw: bytes) -> Any:
+    return load_ssh_public_key(raw, backend=default_backend())
+
+
+def import_from_pem_key(raw: bytes, password: bytes | None = None) -> Any:
     key: Any
 
     if b"OPENSSH PRIVATE" in raw:
@@ -91,15 +95,15 @@ def dump_pem_key(
 class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
     key_type: str
     ssh_type: bytes
-    cryptography_native_keys: Any
+    _cryptography_key_types: Any
 
     @classmethod
     def check_ssh_type(cls, value: bytes) -> bool:
         return value.startswith(cls.ssh_type)
 
     @classmethod
-    def check_cryptography_native_key(cls, native_key: Any) -> bool:
-        return isinstance(native_key, cls.cryptography_native_keys)
+    def check_cryptography_key(cls, native_key: Any) -> bool:
+        return isinstance(native_key, cls._cryptography_key_types)
 
     @classmethod
     def convert_raw_key_to_dict(cls, raw_key: Any, private: bool) -> DictKey:
@@ -118,13 +122,13 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
     @classmethod
     def import_from_bytes(cls, value: bytes, password: Any | None = None) -> Any:
         if cls.check_ssh_type(value):
-            return load_ssh_public_key(value, backend=default_backend())
+            return import_from_ssh_key(value)
 
         if password is not None:
             password = to_bytes(password)
 
-        key = load_pem_key(value, password)
-        if not cls.check_cryptography_native_key(key):
+        key = import_from_pem_key(value, password)
+        if not cls.check_cryptography_key(key):
             raise InvalidKeyTypeError(f"Not a key of: '{cls.key_type}'")
         return key
 
@@ -135,11 +139,13 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
         private: bool | None = False,
         password: Any | None = None,
     ) -> bytes:
+        if private is None:
+            private = key.is_private
+
         if private:
             return dump_pem_key(key.private_key, encoding, private, password)
-        elif private is False:
+        else:
             return dump_pem_key(key.public_key, encoding, private, password)
-        return dump_pem_key(key.raw_value, encoding, key.is_private, password)
 
     @staticmethod
     @abstractmethod
