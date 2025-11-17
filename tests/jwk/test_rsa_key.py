@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import RSAKey
-from joserfc.errors import SecurityWarning
+from joserfc.errors import SecurityWarning, InvalidKeyTypeError
 from tests.keys import read_key
 
 
@@ -160,6 +160,10 @@ class TestRSAKey(TestCase):
         key: RSAKey = RSAKey.import_key(firebase_cert)
         data = key.as_dict()
         self.assertEqual(data["kty"], "RSA")
+
+    def test_import_invalid_pem_key(self):
+        public_pem = read_key("ec-p256-public.pem")
+        self.assertRaises(InvalidKeyTypeError, RSAKey.import_key, public_pem)
 
     def test_output_with_password(self):
         private_pem = read_key("rsa-openssl-private.pem")

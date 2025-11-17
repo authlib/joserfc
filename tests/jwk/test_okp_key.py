@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import OKPKey
-from joserfc.errors import InvalidExchangeKeyError
+from joserfc.errors import InvalidExchangeKeyError, InvalidKeyTypeError
 from tests.keys import read_key
 
 
@@ -47,6 +47,10 @@ class TestOKPKey(TestCase):
 
         self.assertIn("d", private_key.as_dict())
         self.assertNotIn("d", public_key.as_dict())
+
+    def test_import_invalid_pem_key(self):
+        public_pem = read_key("ec-p256-public.pem")
+        self.assertRaises(InvalidKeyTypeError, OKPKey.import_key, public_pem)
 
     def test_properties(self):
         private_pem = read_key("okp-ed448-private.pem")

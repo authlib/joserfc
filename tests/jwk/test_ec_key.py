@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import ECKey, OctKey
-from joserfc.errors import InvalidExchangeKeyError
+from joserfc.errors import InvalidExchangeKeyError, InvalidKeyTypeError
 from tests.keys import read_key
 
 
@@ -68,6 +68,10 @@ class TestECKey(TestCase):
         self.assertEqual(value1, key1.as_der())
         self.assertEqual(value2, key1.as_der(private=False))
         self.assertEqual(value2, key2.as_der())
+
+    def test_import_invalid_pem_key(self):
+        private_pem = read_key("rsa-openssl-private.pem")
+        self.assertRaises(InvalidKeyTypeError, ECKey.import_key, private_pem)
 
     def test_output_with_password(self):
         key = ECKey.import_key(read_key("ec-p256-private.pem"))
