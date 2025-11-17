@@ -101,15 +101,15 @@ class JWSRegistry:
 
     def validate_header_size(self, header: bytes) -> None:
         if header and len(header) > self.max_header_length:
-            raise ExceededSizeError(f"Header size of '{header!r}' exceeds {self.max_header_length} bytes.")
+            raise ExceededSizeError(f"Header size exceeds {self.max_header_length} bytes.")
 
     def validate_payload_size(self, payload: bytes) -> None:
         if payload and len(payload) > self.max_payload_length:
-            raise ExceededSizeError(f"Payload size of '{payload!r}' exceeds {self.max_payload_length} bytes.")
+            raise ExceededSizeError(f"Payload size exceeds {self.max_payload_length} bytes.")
 
     def validate_signature_size(self, signature: bytes) -> None:
         if len(signature) > self.max_signature_length:
-            raise ExceededSizeError(f"Signature of '{signature!r}' exceeds {self.max_signature_length} bytes.")
+            raise ExceededSizeError(f"Signature of exceeds {self.max_signature_length} bytes.")
 
     @classmethod
     def guess_alg(cls, key: Any, strategy: Strategy) -> str | None:
