@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.4.2
+-----
+
+**Released on November 17, 2025**
+
+- Remove the original content from ``ExceededSizeError``.
+
 1.4.1
 -----
 
