@@ -71,6 +71,24 @@ flexibility and allows for granular control over the validation process.
 
 You can learn more about :ref:`claims validation <claims>` on the :ref:`jwt` guide.
 
+JWK
+---
+
+When using methods such as ``.as_dict``, ``.as_bytes``, ``.as_pem``, and others,
+``joserfc`` uses the parameter name ``private``, whereas ``authlib.jose`` uses
+``is_private``:
+
+.. code-block:: python
+    :caption: Authlib
+    :emphasize-lines: 1,2
+
+    key.as_dict(is_private=True)
+
+.. code-block:: python
+    :caption: joserfc
+
+    key.as_dict(private=True)
+
 JWS
 ---
 
