@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Literal, Tuple, cast
+from typing import Any, Literal, cast
 from abc import ABCMeta, abstractmethod
 from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.primitives.serialization import (
@@ -91,14 +91,14 @@ def dump_pem_key(
 class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
     key_type: str
     ssh_type: bytes
-    cryptography_native_keys: Tuple[Any]
+    cryptography_native_keys: Any
 
     @classmethod
-    def check_ssh_type(cls, value: bytes):
-        return cls.ssh_type and value.startswith(cls.ssh_type)
+    def check_ssh_type(cls, value: bytes) -> bool:
+        return value.startswith(cls.ssh_type)
 
     @classmethod
-    def check_cryptography_native_key(cls, native_key: Any):
+    def check_cryptography_native_key(cls, native_key: Any) -> bool:
         return isinstance(native_key, cls.cryptography_native_keys)
 
     @classmethod
