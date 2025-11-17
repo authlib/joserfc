@@ -46,7 +46,18 @@ PrivateKeyTypes = (Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448Pri
 
 
 class OKPBinding(CryptographyBinding):
+    key_type = "OKP"
     ssh_type = b"ssh-ed25519"
+    cryptography_native_keys = (
+        Ed25519PublicKey,
+        Ed25519PrivateKey,
+        Ed448PublicKey,
+        Ed448PrivateKey,
+        X25519PublicKey,
+        X25519PrivateKey,
+        X448PublicKey,
+        X448PrivateKey,
+    )
 
     @staticmethod
     def import_private_key(obj: OKPDictKey) -> PrivateOKPKey:

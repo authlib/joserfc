@@ -36,7 +36,9 @@ ECDictKey = t.TypedDict(
 
 
 class ECBinding(CryptographyBinding):
+    key_type = "EC"
     ssh_type = b"ecdsa-sha2-"
+    cryptography_native_keys = (EllipticCurvePrivateKey, EllipticCurvePublicKey)
 
     _dss_curves: dict[str, t.Type[EllipticCurve]] = {}
     _curves_dss: dict[str, str] = {}
