@@ -12,6 +12,11 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+Unreleased
+----------
+
+- Import ``bytes`` or ``str`` keys without specified key type, via :issue:`73`.
+
 1.4.2
 -----
 

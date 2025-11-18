@@ -10,8 +10,8 @@ Previous CVEs
 CVE-2025-65015
 ~~~~~~~~~~~~~~
 
-Affected versions: 1.3.3, 1.3.4, 1.4.0, 1.4.1
-Fixed versions: 1.3.5, 1.4.2
+- Affected versions: 1.3.3, 1.3.4, 1.4.0, 1.4.1
+- Fixed versions: 1.3.5, 1.4.2
 
 CVE-2024-37568
 ~~~~~~~~~~~~~~
