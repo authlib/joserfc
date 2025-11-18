@@ -71,7 +71,7 @@ def dump_pem_key(
     elif encoding == "DER":
         encoding_enum = Encoding.DER
     else:  # pragma: no cover
-        raise ValueError("Invalid encoding: {!r}".format(encoding))
+        raise ValueError(f"Invalid encoding: {encoding!r}")
 
     if private:
         encryption_algorithm: KeySerializationEncryption
