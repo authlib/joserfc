@@ -102,25 +102,25 @@ class JWERegistry:
 
     def validate_protected_header_size(self, header: bytes) -> None:
         if header and len(header) > self.max_protected_header_length:
-            raise ExceededSizeError(f"Header size of '{header!r}' exceeds {self.max_protected_header_length} bytes.")
+            raise ExceededSizeError(f"Header size exceeds {self.max_protected_header_length} bytes.")
 
     def validate_encrypted_key_size(self, ek: bytes) -> None:
         if ek and len(ek) > self.max_encrypted_key_length:
-            raise ExceededSizeError(f"Encrypted key size of '{ek!r}' exceeds {self.max_encrypted_key_length} bytes.")
+            raise ExceededSizeError(f"Encrypted key size exceeds {self.max_encrypted_key_length} bytes.")
 
     def validate_initialization_vector_size(self, iv: bytes) -> None:
         if iv and len(iv) > self.max_initialization_vector_length:
             raise ExceededSizeError(
-                f"Initialization vector size of '{iv!r}' exceeds {self.max_initialization_vector_length} bytes."
+                f"Initialization vector size exceeds {self.max_initialization_vector_length} bytes."
             )
 
     def validate_ciphertext_size(self, ciphertext: bytes) -> None:
         if ciphertext and len(ciphertext) > self.max_ciphertext_length:
-            raise ExceededSizeError(f"Ciphertext size of '{ciphertext!r}' exceeds {self.max_ciphertext_length} bytes.")
+            raise ExceededSizeError(f"Ciphertext size exceeds {self.max_ciphertext_length} bytes.")
 
     def validate_auth_tag_size(self, tag: bytes) -> None:
         if tag and len(tag) > self.max_auth_tag_length:
-            raise ExceededSizeError(f"Auth tag size of '{tag!r}' exceeds {self.max_auth_tag_length} bytes.")
+            raise ExceededSizeError(f"Auth tag size exceeds {self.max_auth_tag_length} bytes.")
 
     def get_alg(self, name: str) -> JWEAlgModel:
         """Get the allowed ("alg") algorithm instance of the given name.
