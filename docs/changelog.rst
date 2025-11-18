@@ -40,6 +40,13 @@ Changelog
 - Remove deprecated (since 1.2.0) ``rfcXXXX`` modules.
 - Rename ``jwt.ClaimsRegistry`` to ``jwt.BaseClaimsRegistry``.
 
+1.3.5
+-----
+
+**Released on November 18, 2025**
+
+- Remove the original content from ``ExceededSizeError``.
+
 1.3.4
 -----
 
