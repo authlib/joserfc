@@ -12,8 +12,10 @@ Changelog
 .. module:: joserfc
     :noindex:
 
-Unreleased
-----------
+1.4.3
+-----
+
+**Released on November 19, 2025**
 
 - Import ``bytes`` or ``str`` keys without specified key type, via :issue:`73`.
 
