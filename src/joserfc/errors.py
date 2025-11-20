@@ -26,27 +26,31 @@ class JoseError(Exception):
 # --- Key related errors --- #
 
 
+class KeyParameterError(JoseError):
+    error = "key_parameter"
+
+
 class MissingKeyError(JoseError):
     error = "missing_key"
 
 
-class UnsupportedKeyUseError(JoseError):
+class UnsupportedKeyUseError(KeyParameterError):
     error = "unsupported_key_use"
 
 
-class UnsupportedKeyAlgorithmError(JoseError):
+class UnsupportedKeyAlgorithmError(KeyParameterError):
     error = "unsupported_key_alg"
 
 
-class UnsupportedKeyOperationError(JoseError):
+class UnsupportedKeyOperationError(KeyParameterError):
     error = "unsupported_key_operation"
 
 
-class MissingKeyTypeError(JoseError):
+class MissingKeyTypeError(KeyParameterError):
     error = "missing_key_type"
 
 
-class InvalidKeyTypeError(JoseError):
+class InvalidKeyTypeError(KeyParameterError):
     error = "invalid_key_type"
 
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import RSAKey
-from joserfc.errors import SecurityWarning, InvalidKeyTypeError
+from joserfc.errors import SecurityWarning, KeyParameterError, InvalidKeyTypeError
 from tests.keys import read_key
 
 
@@ -42,7 +42,7 @@ class TestRSAKey(TestCase):
             "e": "AQAB",
             "oth": "invalid information",
         }
-        self.assertRaises(ValueError, RSAKey.import_key, data)
+        self.assertRaises(KeyParameterError, RSAKey.import_key, data)
 
     def test_import_only_from_d(self):
         data = {
@@ -72,7 +72,7 @@ class TestRSAKey(TestCase):
             "9vDQSccA3xXHOAFOPJ8R9EeIAbTi1VwBYnbTp87X-xcPWlEPkrdoUKW60tgs1aNd_Nnc"
             "9LEVVPMS390zbFxt8TN_biaBgelNgbC95sM"
         )
-        self.assertRaises(ValueError, RSAKey.import_key, data)
+        self.assertRaises(KeyParameterError, RSAKey.import_key, data)
 
     def test_import_key_from_ssh(self):
         ssh_public_pem = read_key("ssh-rsa-public.pem")

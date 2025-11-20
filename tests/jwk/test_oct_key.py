@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc.jwk import OctKey
-from joserfc.errors import SecurityWarning
+from joserfc.errors import SecurityWarning, KeyParameterError
 from tests.keys import read_key
 
 
@@ -55,7 +55,7 @@ class TestOctKey(TestCase):
             "kty": "oct",
             "alg": "A128KW",
         }
-        self.assertRaises(ValueError, OctKey.import_key, data)
+        self.assertRaises(KeyParameterError, OctKey.import_key, data)
 
     def test_invalid_typeof_k(self):
         data = {
@@ -63,11 +63,11 @@ class TestOctKey(TestCase):
             "alg": "A128KW",
             "k": 123,
         }
-        self.assertRaises(ValueError, OctKey.import_key, data)
+        self.assertRaises(KeyParameterError, OctKey.import_key, data)
 
     def test_mismatch_use_key_ops(self):
         data = {"kty": "oct", "alg": "A128KW", "k": "GawgguFyGrWKav7AX4VKUg", "use": "sig", "key_ops": ["wrapKey"]}
-        self.assertRaises(ValueError, OctKey.import_key, data)
+        self.assertRaises(KeyParameterError, OctKey.import_key, data)
 
     def test_invalid_use(self):
         data = {
@@ -75,7 +75,7 @@ class TestOctKey(TestCase):
             "k": "GawgguFyGrWKav7AX4VKUg",
             "use": "invalid",
         }
-        self.assertRaises(ValueError, OctKey.import_key, data)
+        self.assertRaises(KeyParameterError, OctKey.import_key, data)
 
     def test_invalid_key_ops(self):
         data = {
@@ -83,7 +83,7 @@ class TestOctKey(TestCase):
             "k": "GawgguFyGrWKav7AX4VKUg",
             "key_ops": ["invalid"],
         }
-        self.assertRaises(ValueError, OctKey.import_key, data)
+        self.assertRaises(KeyParameterError, OctKey.import_key, data)
 
     def test_import_pem_key(self):
         public_pem = read_key("ec-p256-public.pem")

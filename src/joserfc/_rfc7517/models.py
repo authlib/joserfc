@@ -13,6 +13,7 @@ from ..registry import (
 )
 from ..util import to_bytes
 from ..errors import (
+    KeyParameterError,
     UnsupportedKeyUseError,
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyOperationError,
@@ -58,13 +59,13 @@ class NativeKeyBinding(metaclass=ABCMeta):
     def validate_dict_key_registry(cls, dict_key: DictKey, registry: KeyParameterRegistryDict) -> None:
         for k in registry:
             if registry[k].required and k not in dict_key:
-                raise ValueError(f"'{k}' is required")
+                raise KeyParameterError(f"'{k}' is required")
 
             if k in dict_key:
                 try:
                     registry[k].validate(dict_key[k])
                 except ValueError as error:
-                    raise ValueError(f"'{k}' {error}")
+                    raise KeyParameterError(f"'{k}' {error}")
 
     @classmethod
     def validate_dict_key_use_operations(cls, dict_key: DictKey) -> None:
@@ -73,7 +74,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
             operations = cls.use_key_ops_registry[_use]
             for op in dict_key["key_ops"]:
                 if op not in operations:
-                    raise ValueError("'use' and 'key_ops' does not match")
+                    raise KeyParameterError("'use' and 'key_ops' does not match")
 
 
 class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):

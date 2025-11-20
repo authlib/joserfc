@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
 )
 from cryptography.hazmat.backends import default_backend
 from ..registry import KeyParameter
-from ..errors import SecurityWarning
+from ..errors import SecurityWarning, KeyParameterError
 from .._rfc7517.models import AsymmetricKey
 from .._rfc7517.pem import CryptographyBinding
 from .._rfc7517.types import KeyParameters, AnyKey
@@ -194,6 +194,6 @@ def has_all_prime_factors(obj: RSADictKey) -> bool:
         return True
 
     if any(props_found):
-        raise ValueError("RSA key must include all parameters if any are present besides d")
+        raise KeyParameterError("RSA key must include all parameters if any are present besides d")
 
     return False
