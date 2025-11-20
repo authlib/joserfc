@@ -1,3 +1,5 @@
+.. _azure:
+
 Dynamic keys for Azure
 ======================
 

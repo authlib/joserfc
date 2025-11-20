@@ -169,3 +169,28 @@ The ``JWTClaimsRegistry`` accepts each claim as an `Individual Claims Requests`_
 JSON object. You can learn more from :ref:`claims`.
 
 .. _`Individual Claims Requests`: http://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests
+
+PyJWKClient
+-----------
+
+Unlike ``PyJWT``, ``joserfc`` does not provide a built-in HTTP client for fetching JWK Sets (jwks)
+from a URL. You are free to use any HTTP library you prefer to retrieve the JWK Set.
+
+Here is an example of using the **requests** library to fetch a JWK Set.
+
+.. code-block:: python
+
+    import functools
+    import requests
+    from joserfc.jwk import KeySet
+    from joserfc import jwt
+
+    @functools.cache
+    def fetch_jwks(url: str):
+        resp = requests.get(jwks_uri)
+        return KeySet.import_key_set(resp.json())
+
+    key_set = fetch_jwks('https://your-domain/to/jwks.json')
+    token = jwt.decode(encoded_jwt, key_set)
+
+Here is a real-world example demonstrating how to fetch :ref:`azure`.
