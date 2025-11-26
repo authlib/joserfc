@@ -238,28 +238,34 @@ you can tell if the signature is flattened or general with ``obj.flattened``:
 Algorithms
 ----------
 
-``joserfc.jws`` module supports algorithms from RFC7518, RFC8037,
-and RFC8812. Here lists all the algorithms ``joserfc.jws`` supporting:
+``joserfc.jws`` module supports algorithms from RFC7518, RFC8037, RFC8812,
+and RFC9864. Here lists all the algorithms ``joserfc.jws`` supporting:
 
-============== ================================================ ==================
-Algorithm name              Description                            Recommended
-============== ================================================ ==================
-none           No digital signature or MAC performed            :bdg-danger:`No`
-HS256          HMAC using SHA-256                               :bdg-success:`YES`
-HS384          HMAC using SHA-384                               :bdg-danger:`No`
-HS512          HMAC using SHA-512                               :bdg-danger:`No`
-RS256          RSASSA-PKCS1-v1_5 using SHA-256                  :bdg-success:`YES`
-RS384          RSASSA-PKCS1-v1_5 using SHA-384                  :bdg-danger:`No`
-RS512          RSASSA-PKCS1-v1_5 using SHA-512                  :bdg-danger:`No`
-ES256          ECDSA using P-256 and SHA-256                    :bdg-success:`YES`
-ES384          ECDSA using P-384 and SHA-384                    :bdg-danger:`No`
-ES512          ECDSA using P-521 and SHA-512                    :bdg-danger:`No`
-PS256          RSASSA-PSS using SHA-256 and MGF1 with SHA-256   :bdg-danger:`No`
-PS384          RSASSA-PSS using SHA-384 and MGF1 with SHA-384   :bdg-danger:`No`
-PS512          RSASSA-PSS using SHA-512 and MGF1 with SHA-512   :bdg-danger:`No`
-EdDSA          Edwards-curve Digital Signature                  :bdg-danger:`No`
-ES256K         ECDSA using secp256k1 curve and SHA-256          :bdg-danger:`No`
-============== ================================================ ==================
+============== ================================================ =========================
+Algorithm name              Description                            Requirements
+============== ================================================ =========================
+none           No digital signature or MAC performed            :bdg-danger:`Deprecated`
+HS256          HMAC using SHA-256                               :bdg-success:`Recommended`
+HS384          HMAC using SHA-384                               :bdg-muted:`Optional`
+HS512          HMAC using SHA-512                               :bdg-muted:`Optional`
+RS256          RSASSA-PKCS1-v1_5 using SHA-256                  :bdg-success:`Recommended`
+RS384          RSASSA-PKCS1-v1_5 using SHA-384                  :bdg-muted:`Optional`
+RS512          RSASSA-PKCS1-v1_5 using SHA-512                  :bdg-muted:`Optional`
+ES256          ECDSA using P-256 and SHA-256                    :bdg-success:`Recommended`
+ES384          ECDSA using P-384 and SHA-384                    :bdg-muted:`Optional`
+ES512          ECDSA using P-521 and SHA-512                    :bdg-muted:`Optional`
+PS256          RSASSA-PSS using SHA-256 and MGF1 with SHA-256   :bdg-muted:`Optional`
+PS384          RSASSA-PSS using SHA-384 and MGF1 with SHA-384   :bdg-muted:`Optional`
+PS512          RSASSA-PSS using SHA-512 and MGF1 with SHA-512   :bdg-muted:`Optional`
+EdDSA          Edwards-curve Digital Signature                  :bdg-danger:`Deprecated`
+ES256K         ECDSA using secp256k1 curve and SHA-256          :bdg-muted:`Optional`
+Ed25519        EdDSA using the Ed25519 parameter set            :bdg-muted:`Optional`
+Ed448          EdDSA using the Ed448 parameter set              :bdg-muted:`Optional`
+============== ================================================ =========================
+
+.. versionadded:: 1.5.0
+
+    ``Ed25519`` and ``Ed448`` are added since 1.5.0 per RFC9864.
 
 The serialization and deserialization methods on ``joserfc.jws`` module accept
 an ``algorithms`` parameter for specifying the allowed algorithms. By default,

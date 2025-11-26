@@ -49,12 +49,15 @@ ES512          ECKey       :bdg-muted:`Optional`
 PS256          RSAKey      :bdg-muted:`Optional`
 PS384          RSAKey      :bdg-muted:`Optional`
 PS512          RSAKey      :bdg-muted:`Optional`
-EdDSA          OKPKey      :bdg-muted:`Optional`
+EdDSA          OKPKey      :bdg-danger:`Deprecated`
 ES256K         ECKey       :bdg-muted:`Optional`
+Ed25519        OKPKey      :bdg-muted:`Optional`
+Ed448          OKPKey      :bdg-muted:`Optional`
 ============== ========== ============================
 
-.. note::
-    ``EdDSA`` algorithm only accepts ``OKPKey`` with "crv" of "Ed25519" and "Ed448".
+.. versionadded:: 1.5.0
+
+    ``Ed25519`` and ``Ed448`` are added since 1.5.0 per RFC9864.
 
 By default, JWS ``serialize`` and ``deserialize`` methods will ONLY allow recommended
 algorithms. To use non-recommended algorithms, developers MUST explicitly specify the
@@ -74,7 +77,10 @@ algorithms either by the ``algorithms`` parameter, or ``registry`` parameter.
     jws.serialize_compact({"alg": "HS384"}, b"payload", key, registry=registry)
 
 .. warning::
-    ``none`` algorithm is deprecated via https://datatracker.ietf.org/doc/draft-ietf-jose-deprecate-none-rsa15/
+
+    - ``none`` algorithm is deprecated via https://datatracker.ietf.org/doc/draft-ietf-jose-deprecate-none-rsa15/
+    - ``EdDSA`` algorithm only accepts ``OKPKey`` with "crv" of "Ed25519" and "Ed448".
+    - ``EdDSA`` algorithm is replaced by "Ed25519" and "Ed448" via RFC 9864.
 
 .. _jwe_algorithms:
 

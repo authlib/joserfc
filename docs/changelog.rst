@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.5.0
+-----
+
+**Not released yet**
+
+- Add ``Ed25519`` and ``Ed448`` algorithms per RFC9864, via :issue:`76`.
+
 1.4.3
 -----
 
