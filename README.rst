@@ -17,6 +17,7 @@ This package contains implementation of:
 - RFC8037: OKP Key and EdDSA algorithm
 - RFC8812: ES256K algorithm
 - RFC9278: JWK Thumbprint URI
+- RFC9864: ``Ed25519`` and ``Ed448`` algorithms
 
 And draft RFCs implementation of:
 

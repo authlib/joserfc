@@ -52,9 +52,10 @@ It follows RFCs with extensible API. The module has implementations of:
 - RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
 - RFC7638: [JSON Web Key (JWK) Thumbprint](https://jose.authlib.org/en/guide/jwk/#thumbprint)
 - RFC7797: [JSON Web Signature (JWS) Unencoded Payload Option](https://jose.authlib.org/en/dev/guide/jws/#rfc7797)
-- RFC8037: ``OKP`` Key and ``EdDSA`` algorithm
-- RFC8812: ``ES256K`` algorithm
+- RFC8037: `OKP` Key and `EdDSA` algorithm
+- RFC8812: `ES256K` algorithm
 - RFC9278: [JWK Thumbprint URI](https://jose.authlib.org/en/guide/jwk/#thumbprint-uri)
+- RFC9864: `Ed25519` and `Ed448` algorithms
 
 And draft RFCs implementation of:
 

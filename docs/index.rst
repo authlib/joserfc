@@ -32,9 +32,9 @@ You would find more details and advanced usage in :ref:`jwt` section.
 
 .. important::
 
-    The string ``"secret"`` employed in the above example is solely intended for demonstration
-    purposes. In a production environment, it is crucial to use a highly secure secret key to
-    ensure robust security measures.
+    The string ``"your-secret-key"`` employed in the above example is solely intended for
+    demonstration purposes. In a production environment, it is crucial to use a highly secure
+    secret key to ensure robust security measures.
 
 RFCs
 ----
@@ -52,6 +52,7 @@ It follows RFCs with extensible API. The module has implementations of:
 - RFC8037: :ref:`OKPKey` and ``EdDSA`` algorithm
 - RFC8812: ``ES256K`` algorithm
 - RFC9278: JWK Thumbprint URI (``thumbprint_uri``)
+- RFC9864: ``Ed25519`` and ``Ed448`` algorithms
 
 And draft RFCs implementation of:
 

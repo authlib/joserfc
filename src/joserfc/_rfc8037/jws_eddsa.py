@@ -15,13 +15,13 @@ class EdDSAAlgorithm(JWSAlgModel):
     def sign(self, msg: bytes, key: OKPKey) -> bytes:
         op_key = key.get_op_key("sign")
         if not isinstance(op_key, (Ed25519PrivateKey, Ed448PrivateKey)):
-            raise InvalidKeyTypeError(f"Algorithm '{self.name}' requires 'Ed25519' and 'Ed448' OKP key")
+            raise InvalidKeyTypeError(f"Algorithm '{self.name}' requires 'Ed25519' or 'Ed448' OKP key")
         return op_key.sign(msg)
 
     def verify(self, msg: bytes, sig: bytes, key: OKPKey) -> bool:
         op_key = key.get_op_key("verify")
         if not isinstance(op_key, (Ed25519PublicKey, Ed448PublicKey)):
-            raise InvalidKeyTypeError(f"Algorithm '{self.name}' requires 'Ed25519' and 'Ed448' OKP key")
+            raise InvalidKeyTypeError(f"Algorithm '{self.name}' requires 'Ed25519' or 'Ed448' OKP key")
         try:
             op_key.verify(sig, msg)
             return True
