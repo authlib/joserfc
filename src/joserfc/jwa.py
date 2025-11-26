@@ -16,7 +16,7 @@ from ._rfc7518.jws_algs import (
     RSAAlgorithm,
     ESAlgorithm,
     RSAPSSAlgorithm,
-    JWS_ALGORITHMS as _JWS_ALGORITHMS,
+    JWS_ALGORITHMS as RFC7518_JWS_ALGORITHMS,
 )
 from ._rfc7518.jwe_algs import (
     DirectAlgEncryption,
@@ -37,6 +37,7 @@ from ._rfc7518.jwe_zips import (
 )
 from ._rfc8037.jws_eddsa import EdDSA, EdDSAAlgorithm
 from ._rfc8812 import ES256K
+from ._rfc9864 import JWS_ALGORITHMS as RFC9864_JWS_ALGORITHMS
 from ._keys import KeySet
 
 __all__ = [
@@ -74,9 +75,10 @@ __all__ = [
 ]
 
 JWS_ALGORITHMS = [
-    *_JWS_ALGORITHMS,
+    *RFC7518_JWS_ALGORITHMS,
     EdDSA,
     ES256K,
+    *RFC9864_JWS_ALGORITHMS,
 ]
 
 
