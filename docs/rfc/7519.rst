@@ -1,0 +1,88 @@
+.. _rfc7519:
+
+RFC 7519
+========
+
+RFC7519 defines the JSON Web Token (JWT) specification, a compact and
+URL-safe format for representing claims securely between parties.
+JWTs are widely used for authentication, authorization, and
+information exchange in modern web applications and APIs.
+
+A JWT can be digitally signed (JWS) or encrypted (JWE), enabling
+integrity protection, confidentiality, or both.
+
+Definition
+----------
+
+RFC 7519 specifies the structure, processing rules, and registered
+claim names for JSON Web Tokens. A JWT consists of three parts (for
+JWS) or five parts (for JWE), with a standardized set of claims to
+ensure interoperability across different systems.
+
+Each JWT contains:
+
+- **Header** — metadata describing the token type and algorithm
+- **Payload** — a set of claims about an entity and token metadata
+- **Signature / Authentication Tag** — used to verify integrity
+
+Registered Claim Names
+~~~~~~~~~~~~~~~~~~~~~~
+
+RFC 7519 defines a set of *registered* claim names that have specific,
+interoperable meanings:
+
+- ``iss`` — **Issuer**: identifies the principal issuing the token
+- ``sub`` — **Subject**: identifies the principal that is the subject
+- ``aud`` — **Audience**: intended recipients of the token
+- ``exp`` — **Expiration Time**: time after which the token must not be accepted
+- ``nbf`` — **Not Before**: identifies when the token becomes valid
+- ``iat`` — **Issued At**: timestamp of issuance
+- ``jti`` — **JWT ID**: unique identifier for preventing replay attacks
+
+These claims are optional unless required by the application.
+
+Public and Private Claims
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Beyond registered claims, JWT supports:
+
+- **Public claims** — custom claims registered in the IANA JWT Claims Registry
+- **Private claims** — application-specific claims agreed upon by communicating parties
+
+The payload is a JSON object and can contain any key–value pairs, as
+long as they do not collide with registered claim names.
+
+JWT Structure (JWS)
+~~~~~~~~~~~~~~~~~~~
+
+A signed JWT uses the JWS compact serialization format:
+
+.. code-block:: text
+
+    <header>.<payload>.<signature>
+
+Each component is Base64URL-encoded. This is the most common form,
+used in OAuth 2.0, OpenID Connect, API tokens, and session systems.
+
+JWT Structure (JWE)
+~~~~~~~~~~~~~~~~~~~
+
+An encrypted JWT uses JWE compact serialization:
+
+.. code-block:: text
+
+    <header>.<encrypted-key>.<iv>.<ciphertext>.<tag>
+
+JWE-based JWTs provide confidentiality as well as integrity, suitable
+for transmitting sensitive information.
+
+Implementation
+--------------
+
+All JWT features defined in RFC 7519 are implemented in ``joserfc``.
+
+Private modules
+~~~~~~~~~~~~~~~
+
+Public exports
+~~~~~~~~~~~~~~

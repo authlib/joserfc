@@ -1,0 +1,46 @@
+.. _rfc9278:
+
+RFC 9278
+========
+
+RFC9278 defines the **JWK Thumbprint URI**, an extension to RFC 7638
+(JWK Thumbprint). It provides a standard way to represent a JWK
+Thumbprint as a URI, enabling stable, comparable key identifiers that
+can be referenced externally.
+
+Definition
+----------
+
+RFC 9278 builds on RFC 7638 by specifying how a JWK Thumbprint
+(Base64URL-encoded SHA-256 digest of a key’s canonical JSON form) can be
+expressed as a URI. This allows JWK-based key identifiers to be used in
+contexts where a URI is required.
+
+The JWK Thumbprint URI uses the following format:
+
+.. code-block:: text
+
+    urn:ietf:params:oauth:jwk-thumbprint:sha-256:<base64url-thumbprint>
+
+Implementation
+--------------
+
+``joserfc`` implements JWK thumbprint support according to RFC7638.
+The functionality is exposed through:
+
+- :meth:`joserfc.jwk.thumbprint_uri`
+- :meth:`joserfc.jwk.OctKey.thumbprint_uri`
+- :meth:`joserfc.jwk.RSAKey.thumbprint_uri`
+- :meth:`joserfc.jwk.ECKey.thumbprint_uri`
+- :meth:`joserfc.jwk.OKPKey.thumbprint_uri`
+
+.. code-block:: python
+
+    from joserfc import jwk
+
+    key = jwk.generate_key("RSA")
+    key.thumbprint_uri()
+    # 'urn:ietf:params:oauth:jwk-thumbprint:sha-256:OLO1-f_Vl8mishRR_ZuXJFqZn1geoCXGsJdmKlW13Oc'
+
+This provides a standards-compliant identifier suitable for use in any
+URI field across OAuth and JOSE-related specifications.

@@ -1,0 +1,71 @@
+.. _rfc8037:
+
+RFC 8037
+========
+
+RFC8037 defines the use of **Edwards-Curve Digital Signature Algorithm (EdDSA)**
+for JSON Web Signature (JWS) and JSON Web Key (JWK).
+
+It introduces support for:
+
+- The ``OKP`` (Octet Key Pair) JWK key type
+- ``EdDSA`` signature algorithm
+
+
+Definition
+----------
+
+RFC 8037 extends JOSE by defining how EdDSA-based keys and signatures
+are represented and processed within the JWS and JWK frameworks.
+
+The specification primarily introduces:
+
+- **OKP key type** for Ed25519, Ed448, X25519, X448
+- **JWS ``alg`` = "EdDSA"**
+- Proper encoding and validation requirements using raw EdDSA signatures
+
+Implementation
+--------------
+
+``joserfc`` includes full RFC 8037 support:
+
+- OKP key handling (Ed25519, Ed448, X25519, X448)
+- JWS signature creation and verification using ``EdDSA``
+- JWK parsing and serialization for OKP keys
+
+Private modules
+~~~~~~~~~~~~~~~
+
+The source code is implemented in internal modules ``joserfc/_rfc8037``.
+
+Public exports
+~~~~~~~~~~~~~~
+
+Public classes and utilities are re-exported through ``joserfc.jwk``.
+You should always interact with ``joserfc.jwk`` module.
+
+Example Usage
+-------------
+
+Signing with an Ed25519 key:
+
+.. code-block:: python
+
+    from joserfc import jws
+    from joserfc.jwk import OKPKey
+
+    private_key = OKPKey.generate_key("Ed25519")
+    payload = b"hello"
+    protected = {"alg": "EdDSA"}
+
+    output = jws.serialize_compact(protected, payload, private_key, algorithms=["EdDSA"])
+
+Verification:
+
+.. code-block:: python
+
+    public_key = OKPKey.import_key(private_key.as_dict(private=False))
+    jws.deserialize_compact(output, public_key, algorithms=["EdDSA"])
+
+``joserfc`` handles OKP key parsing, normalization, and EdDSA signature
+validation according to RFC 8037.

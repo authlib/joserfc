@@ -1,0 +1,97 @@
+.. _rfc7515:
+
+RFC 7515
+========
+
+RFC7515 defines JSON Web Signature (JWS), a specification for
+representing digitally signed or MAC-protected content using
+JSON-based data structures.
+
+Definition
+----------
+
+RFC 7515 specifies the complete framework for creating and validating
+JSON Web Signatures. The specification includes:
+
+JWS Header
+~~~~~~~~~~
+
+The JWS Header is a set of metadata that describes how the JWS object
+is constructed and verified. RFC 7515 defines a registry of header
+parameters, including:
+
+- ``alg`` — the algorithm used to generate the signature or MAC (required)
+- ``jwk`` / ``jku`` — a JSON Web Key or URL pointing to a key set
+- ``kid`` — a key identifier that helps recipients select the correct key
+- ``typ`` and ``cty`` — type and content-type hints
+- ``crit`` — a list of critical header parameters that must be understood
+  by the verifier
+
+The header **must** be encoded as a Base64URL-encoded JSON object when used
+in compact serialization, and may appear as either a protected or unprotected
+header in JSON serialization.
+
+Compact Serialization
+~~~~~~~~~~~~~~~~~~~~~
+
+The compact serialization format represents a JWS as a single, period-separated
+string consisting of three parts:
+
+.. code-block:: text
+
+    <protected-header>.<payload>.<signature>
+
+Each part is Base64URL-encoded. This format is designed to be:
+
+- minimal and URL-safe
+- suitable for HTTP headers, query parameters, and tokens such as JWT
+
+Compact serialization supports exactly **one signature**, with no unprotected headers.
+
+JSON Serialization
+~~~~~~~~~~~~~~~~~~
+
+JSON serialization uses a structured JSON object to represent a JWS. It is designed
+for use cases that require more flexibility than the compact form. A JSON-serialized
+JWS can include:
+
+- **multiple signatures** over the same payload
+- both **protected** and **unprotected** headers
+- richer metadata, such as per-signature header values
+
+The primary fields defined in RFC 7515 are:
+
+- ``payload`` — the Base64URL-encoded content
+- ``signatures`` — an array of signature objects, each containing:
+  - ``protected`` — a Base64URL-encoded header
+  - ``header`` — an unprotected header (optional)
+  - ``signature`` — the Base64URL-encoded signature value
+
+JSON serialization is not intended for compact transmission but is ideal for multi-party
+signing, debugging, and more expressive JOSE workflows.
+
+Implementation
+--------------
+
+All features defined in RFC 7515 are fully implemented in ``joserfc``.
+
+Private modules
+~~~~~~~~~~~~~~~
+
+The source code resides in the private module ``joserfc/_rfc7515``:
+
+- JWS algorithms base models
+- JWS algorithm registry
+- Compact Serialization
+- JSON Serialization
+
+Public exports
+~~~~~~~~~~~~~~
+
+You should always interact with JWS functionality via ``joserfc.jws``, rather
+than importing from the private module directly.
+
+- :meth:`joserfc.jws.serialize_compact`: Construct JWS compact serialization.
+- :meth:`joserfc.jws.deserialize_compact`: Parse JWS compact serialization.
+- :meth:`joserfc.jws.serialize_json`: Construct JWS JSON serialization.
+- :meth:`joserfc.jws.deserialize_json`: Parse JWS JSON serialization.

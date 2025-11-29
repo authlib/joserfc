@@ -273,7 +273,7 @@ those ``serialize`` and ``deserialize`` methods will ONLY allow recommended
 algorithms defined by RFCs. With non recommended algorithms, you may encounter
 an :ref:`UnsupportedAlgorithmError` error.
 
-.. _rfc7797:
+.. _unencoded_payload:
 
 Unencoded Payload Option
 ------------------------

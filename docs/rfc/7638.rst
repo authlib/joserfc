@@ -1,0 +1,43 @@
+.. _rfc7638:
+
+RFC 7638
+========
+
+RFC7638 defines the method for computing a **JSON Web Key (JWK)
+Thumbprint**. A thumbprint is a stable, collision-resistant identifier
+derived from the key material of a JWK. It provides a secure and
+interoperable way to compare, reference, or identify keys without
+exposing the full key contents.
+
+JWK thumbprints are commonly used in OAuth, OpenID Connect, security
+metadata documents, and JOSE-based systems that require compact and
+deterministic key identifiers.
+
+Canonical JWK Form
+------------------
+
+To ensure consistency, a JWK must be reduced to a **canonical form**.
+This includes:
+
+- Only the required members for the specific key type
+- Lexicographically sorted keys
+- JSON without whitespace
+- UTF-8 encoded prior to hashing
+
+Examples of required members:
+
+- RSA: ``{"e", "kty", "n"}``
+- EC: ``{"crv", "kty", "x", "y"}``
+- Symmetric: ``{"k", "kty"}``
+
+Implementation
+--------------
+
+``joserfc`` implements JWK thumbprint support according to RFC7638.
+The functionality is exposed through:
+
+- :meth:`joserfc.jwk.thumbprint`
+- :meth:`joserfc.jwk.OctKey.thumbprint`
+- :meth:`joserfc.jwk.RSAKey.thumbprint`
+- :meth:`joserfc.jwk.ECKey.thumbprint`
+- :meth:`joserfc.jwk.OKPKey.thumbprint`

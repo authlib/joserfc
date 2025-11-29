@@ -1,0 +1,38 @@
+.. _rfc7520:
+
+RFC 7520
+========
+
+RFC7520 provides a comprehensive set of **examples for JOSE
+(JSON Object Signing and Encryption)**, covering JWS, JWE, and JWK.
+Its purpose is to give clear, interoperable, and implementation-friendly
+demonstrations of how JOSE specifications should be used in practice.
+
+These examples include complete, real-world–style values for headers,
+payloads, signatures, encrypted keys, initialization vectors, ciphertext,
+and authentication tags.
+
+The examples in this RFC are frequently used as interoperability test
+vectors across JOSE implementations, including ``joserfc``.
+
+Definition
+----------
+
+RFC 7520 defines **deterministic examples** for every major JOSE workflow:
+
+- Creating and validating a JWS (both compact and JSON serialization)
+- Encrypting and decrypting a JWE (compact and JSON serialization)
+- Multiple-signature and multiple-recipient JOSE objects
+- Public and private JSON Web Keys (JWK)
+- Algorithms, and key wrapping
+- Cross-RFC examples linking RFCs 7515–7519
+
+These examples serve as canonical references for testing and verifying
+that implementations conform to the JOSE standards.
+
+Implementation
+--------------
+
+All examples from RFC 7520 can be validated using ``joserfc``. They are
+commonly used as test vectors in the project's test suite. You can find all
+the examples in ``tests/rfc7520``.

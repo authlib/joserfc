@@ -1,0 +1,48 @@
+.. _rfc9864:
+
+RFC 9864
+========
+
+RFC9864 defines the concept of **fully-specified algorithm identifiers**
+for JOSE and COSE. Under this specification, algorithm names must uniquely
+and unambiguously determine all underlying cryptographic operations. As a
+result, ambiguous or polymorphic identifiers are considered deprecated.
+
+Implementation
+--------------
+
+**joserfc** implements ONLY the JOSE-related portions of RFC 9864.
+
+In accordance with the specification, the use of the polymorphic ``EdDSA``
+algorithm identifier is deprecated. You should instead select a fully-specified
+algorithm:
+
+- ``Ed25519``
+- ``Ed448``
+
+By using fully-specified identifiers, you ensure deterministic, interoperable
+behavior and avoid ambiguity during algorithm negotiation.
+
+Example Usage
+-------------
+
+Signing with an ``Ed25519`` key:
+
+.. code-block:: python
+
+    from joserfc import jws
+    from joserfc.jwk import OKPKey
+
+    private_key = OKPKey.generate_key("Ed25519")
+    payload = b"hello"
+    # using Ed25519 instead of EdDSA
+    protected = {"alg": "Ed25519"}
+
+    output = jws.serialize_compact(protected, payload, private_key, algorithms=["Ed25519"])
+
+Verification:
+
+.. code-block:: python
+
+    public_key = OKPKey.import_key(private_key.as_dict(private=False))
+    jws.deserialize_compact(output, public_key, algorithms=["Ed25519"])

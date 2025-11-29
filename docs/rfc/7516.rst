@@ -1,0 +1,112 @@
+.. _rfc7516:
+
+RFC 7516
+========
+
+RFC7516 defines JSON Web Encryption (JWE), a specification for
+representing encrypted content using JSON-based data structures.
+It describes how to encrypt arbitrary payloads, including how keys
+are managed, how encryption parameters are represented, and how
+JWE objects are serialized.
+
+Definition
+----------
+
+RFC 7516 specifies the complete framework for creating and decrypting
+JSON Web Encryption (JWE) objects. The specification defines:
+
+JWE Header
+~~~~~~~~~~
+
+The JWE Header is a JSON object that specifies metadata describing how
+the payload is encrypted and how the Content Encryption Key (CEK)
+is managed. RFC 7516 defines a registry of header parameters, including:
+
+- ``alg`` — the key management algorithm used to encrypt or wrap the CEK (required)
+- ``enc`` — the content encryption algorithm used to protect the payload (required)
+- ``jwk`` / ``jku`` — a JSON Web Key or URL pointing to a key set
+- ``kid`` — a key identifier to help recipients locate the correct key
+- ``zip`` — indicates that the plaintext is compressed before encryption
+- ``apu`` / ``apv`` — agreement PartyU/PartyV info for ECDH-based algorithms
+- ``typ`` and ``cty`` — type and content-type hints
+- ``crit`` — critical header parameters that must be understood
+
+In the compact serialization format, the header is Base64URL-encoded as
+the first segment of the JWE.
+
+In JSON serialization, it may appear as either a protected or unprotected
+header, similar to JWS.
+
+Compact Serialization
+~~~~~~~~~~~~~~~~~~~~~
+
+The compact serialization format represents a JWE as a single,
+period-separated string consisting of **five** Base64URL-encoded parts:
+
+.. code-block:: text
+
+    <protected-header>.<encrypted-key>.<iv>.<ciphertext>.<tag>
+
+Each part has a specific meaning:
+
+* ``protected-header`` — metadata describing algorithms and parameters
+* ``encrypted-key`` — the CEK encrypted or wrapped with the recipient's key
+* ``iv`` — initialization vector for the content encryption algorithm
+* ``ciphertext`` — the encrypted payload
+* ``tag`` — the authentication tag for AEAD algorithms
+
+Compact serialization is designed for simple and compact transmission and
+supports exactly **one recipient**.
+
+JSON Serialization
+~~~~~~~~~~~~~~~~~~
+
+The JSON serialization format expresses a JWE as a JSON object and supports
+more complex use cases than compact serialization. It is used when:
+
+- encrypting for **multiple recipients**
+- including per-recipient header parameters
+- debugging or inspecting encryption metadata
+
+A JSON-serialized JWE typically includes the following fields:
+
+- ``protected`` — a Base64URL-encoded header shared across recipients
+- ``unprotected`` — an unprotected shared header (optional)
+- ``iv`` — the initialization vector
+- ``ciphertext`` — the encrypted payload
+- ``tag`` — the authentication tag
+- ``recipients`` — an array of recipient objects, each containing:
+
+  - ``header`` — per-recipient unprotected header (optional)
+  - ``encrypted_key`` — a CEK encrypted for that recipient
+
+JSON serialization enables multi-recipient encrypted messages and
+greater flexibility than the compact format.
+
+Implementation
+--------------
+
+All features defined in RFC 7516 are fully implemented in ``joserfc``.
+
+Private modules
+~~~~~~~~~~~~~~~
+
+The underlying implementation can be found in the private module
+``joserfc/_rfc7516``:
+
+- JWE algorithms base models
+- Compact Serialization: encryption and decryption
+- JSON Serialization: encryption and decryption
+
+Public exports
+~~~~~~~~~~~~~~
+
+These internals are re-exported through the public API in
+``joserfc.jwe``. You should always use ``joserfc.jwe`` for creating,
+encrypting, decrypting, and validating JWEs, and avoid importing from
+the private module directly.
+
+- :meth:`joserfc.jwe.encrypt_compact`: Encrypt JWE with compact serialization.
+- :meth:`joserfc.jwe.decrypt_compact`: Decrypt JWE with compact serialization.
+- :meth:`joserfc.jwe.encrypt_json`: Encrypt JWE with JSON serialization.
+- :meth:`joserfc.jwe.decrypt_json`: Decrypt JWE with JSON serialization.

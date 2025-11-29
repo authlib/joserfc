@@ -1,0 +1,144 @@
+.. _rfc7518:
+
+RFC 7518
+========
+
+RFC7518 defines the JSON Web Algorithms (JWA) specification, which lists
+the cryptographic algorithms and associated parameters used with JWS
+(JSON Web Signature), JWE (JSON Web Encryption), and JWK (JSON Web Key).
+It standardizes algorithm names, required key properties, and security
+considerations to ensure interoperable and secure JOSE implementations.
+
+Definition
+----------
+
+RFC 7518 provides a complete registry of algorithms used across the JOSE
+ecosystem. It defines algorithms for:
+
+- digital signatures and MACs (for JWS)
+- key management and key wrapping (for JWE)
+- content encryption (for JWE)
+- compression methods
+- associated key parameters for JWK
+
+The specification ensures that JOSE objects can be securely encoded,
+signed, encrypted, and decrypted using consistent algorithm names and
+structures.
+
+JWS Algorithms
+~~~~~~~~~~~~~~
+
+The signature and MAC algorithms defined for JWS include:
+
+- **Using the Algorithm "none"** (not secure)
+
+- **HMAC with SHA-2 functions**:
+
+  - ``HS256``
+  - ``HS384``
+  - ``HS512``
+
+- **RSA PKCS#1 v1.5 signatures**:
+
+  - ``RS256``
+  - ``RS384``
+  - ``RS512``
+
+- **RSA-PSS signatures**:
+
+  - ``PS256``
+  - ``PS384``
+  - ``PS512``
+
+- **Elliptic Curve signatures**:
+
+  - ``ES256`` (P-256 + SHA-256)
+  - ``ES384`` (P-384 + SHA-384)
+  - ``ES512`` (P-521 + SHA-512)
+
+The specification defines requirements such as key sizes, curve types,
+and verification rules.
+
+JWE Key Management Algorithms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+JWE uses key management algorithms to establish or wrap the Content
+Encryption Key (CEK). RFC 7518 defines:
+
+- **RSA-based key management**:
+
+  - ``RSA1_5`` (deprecated for new deployments)
+  - ``RSA-OAEP``
+  - ``RSA-OAEP-256``
+
+- **AES Key Wrap**:
+
+  - ``A128KW``
+  - ``A192KW``
+  - ``A256KW``
+
+- **Elliptic Curve Diffie–Hellman**:
+
+  - ``ECDH-ES`` (direct)
+  - ``ECDH-ES+A128KW``
+  - ``ECDH-ES+A192KW``
+  - ``ECDH-ES+A256KW``
+
+- **PBES2 key derivation**:
+
+  - ``PBES2-HS256+A128KW``
+  - ``PBES2-HS384+A192KW``
+  - ``PBES2-HS512+A256KW``
+
+These algorithms define how the CEK is derived, encrypted, or agreed upon.
+
+JWE Content Encryption Algorithms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Content encryption algorithms defined by RFC 7518 include:
+
+- **AES GCM** (authenticated encryption):
+
+  - ``A128GCM``
+  - ``A192GCM``
+  - ``A256GCM``
+
+- **AES-CBC with HMAC SHA-2**:
+
+  - ``A128CBC-HS256``
+  - ``A192CBC-HS384``
+  - ``A256CBC-HS512``
+
+Each algorithm specifies required key sizes, initialization vectors,
+authentication tag lengths, and validation procedures.
+
+Compression Algorithms
+~~~~~~~~~~~~~~~~~~~~~~
+
+RFC 7518 defines a simple registry for compression algorithms used in JWE.
+
+The only standardized algorithm is:
+
+- ``DEF`` — DEFLATE (RFC 1951)
+
+Compression is applied before encryption and controlled by the ``zip``
+header parameter.
+
+JWK Algorithm Parameters
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+RFC 7518 also defines required and optional parameters for JWK keys based
+on the selected algorithm.
+
+Implementation
+--------------
+
+All algorithms and related definitions from RFC 7518 are fully implemented
+in ``joserfc``.
+
+Private modules
+~~~~~~~~~~~~~~~
+
+The underlying logic is located in the private module ``joserfc/_rfc7518``.
+
+(TODO)

@@ -1,0 +1,47 @@
+.. _rfc7797:
+
+RFC 7797
+========
+
+RFC7797 defines the **JSON Web Signature (JWS) Unencoded Payload
+Option**, an extension to RFC 7515 that allows the payload of a JWS
+to be transmitted **without Base64URL encoding**. This is useful for
+applications where the payload must remain in its original form, such
+as streaming data, detached content, or cases where re-encoding would
+be impractical.
+
+This extension introduces the ``b64`` header parameter and modifies the
+rules for producing and verifying JWS signatures when payload encoding
+is disabled.
+
+The ``b64`` Header Parameter
+----------------------------
+
+The ``b64`` header parameter determines whether the payload of a JWS is
+Base64URL-encoded before signing:
+
+- ``b64 = true`` (default) — payload **must** be Base64URL-encoded
+- ``b64 = false`` — payload is included **as-is**, without encoding
+
+When ``b64`` is ``false``:
+
+- It **must** appear in the *protected header*
+- ``crit`` must include ``"b64"``, ensuring recipients understand it
+- The payload is transmitted in its original form (binary or text)
+- The signing input changes accordingly
+
+These constraints ensure that consumers explicitly acknowledge the
+unencoded payload behavior.
+
+Implementation
+--------------
+
+``joserfc`` fully supports RFC 7797 for both signing and verifying JWS
+objects with unencoded payloads.
+
+The relevant functionality is integrated default into:
+
+- ``jws.serialize_compact``
+- ``jws.deserialize_compact``
+- ``jws.serialize_json``
+- ``jws.deserialize_json``

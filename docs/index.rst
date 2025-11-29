@@ -41,18 +41,18 @@ RFCs
 
 It follows RFCs with extensible API. The module has implementations of:
 
-- RFC7515: :ref:`JSON Web Signature <jws>`
-- RFC7516: :ref:`JSON Web Encryption <jwe>`
-- RFC7517: :ref:`JSON Web Key <jwk>`
-- RFC7518: :ref:`JSON Web Algorithms <jwa>`
-- RFC7519: :ref:`JSON Web Token <jwt>`
-- RFC7520: Examples of Protecting Content Using JSON Object Signing and Encryption
-- RFC7638: ``thumbprint`` for JWK
-- RFC7797: JSON Web Signature (JWS) :ref:`Unencoded Payload Option <rfc7797>`
-- RFC8037: :ref:`OKPKey` and ``EdDSA`` algorithm
-- RFC8812: ``ES256K`` algorithm
-- RFC9278: JWK Thumbprint URI (``thumbprint_uri``)
-- RFC9864: ``Ed25519`` and ``Ed448`` algorithms
+- :ref:`rfc7515`: :ref:`JSON Web Signature <jws>`
+- :ref:`rfc7516`: :ref:`JSON Web Encryption <jwe>`
+- :ref:`rfc7517`: :ref:`JSON Web Key <jwk>`
+- :ref:`rfc7518`: :ref:`JSON Web Algorithms <jwa>`
+- :ref:`rfc7519`: :ref:`JSON Web Token <jwt>`
+- :ref:`rfc7520`: Examples of Protecting Content Using JSON Object Signing and Encryption
+- :ref:`rfc7638`: ``thumbprint`` for JWK
+- :ref:`rfc7797`: JSON Web Signature (JWS) :ref:`Unencoded Payload Option <unencoded_payload>`
+- :ref:`rfc8037`: :ref:`OKPKey` and ``EdDSA`` algorithm
+- :ref:`rfc8812`: ``ES256K`` algorithm and ``ECKey`` with curve ``secp256k1``
+- :ref:`rfc9278`: JWK Thumbprint URI (``thumbprint_uri``)
+- :ref:`rfc9864`: ``Ed25519`` and ``Ed448`` algorithms
 
 And draft RFCs implementation of:
 
@@ -96,6 +96,7 @@ Explore the following sections to discover more about ``joserfc`` and its featur
    :hidden:
 
    api/index
+   rfc/index
    security
    stability
    contributing/index

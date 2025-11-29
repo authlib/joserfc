@@ -1,0 +1,87 @@
+.. _rfc7517:
+
+RFC 7517
+========
+
+RFC7517 defines the JSON Web Key (JWK) specification, a standard format
+for representing cryptographic keys using JSON. It provides a flexible
+and interoperable way to describe public keys, private keys, and
+symmetric keys for use with JWS, JWE, and other JOSE-related operations.
+
+Definition
+----------
+
+RFC 7517 specifies how cryptographic keys are expressed as JSON objects
+and how sets of keys are represented. The specification defines:
+
+JWK Object
+~~~~~~~~~~
+
+A JWK is a JSON object representing a single cryptographic key. Each JWK
+contains a set of required and optional parameters depending on the key
+type. Common parameters include:
+
+- ``kty`` — the key type (required), such as ``RSA``, ``EC``, or ``oct``
+- ``use`` — intended key usage (``sig`` for signature, ``enc`` for encryption)
+- ``key_ops`` — a list of permitted operations (``sign``, ``verify``, ``wrapKey``, etc.)
+- ``kid`` — a key identifier for selecting a specific key
+- ``alg`` — the algorithm for which the key is intended
+- ``x5u`` / ``x5c`` / ``x5t`` — X.509 certificate chain parameters
+
+JWK Set (JWKS)
+~~~~~~~~~~~~~~
+
+A JWK Set is a JSON object that contains an array of JWKs. It is commonly
+used for publishing multiple keys, such as rotation sets or multi-tenant
+public keys:
+
+.. code-block:: json
+
+    {
+      "keys": [
+        { ... JWK 1 ... },
+        { ... JWK 2 ... }
+      ]
+    }
+
+JWKS documents are frequently served over HTTPS endpoints, allowing clients
+to discover signing keys dynamically (e.g., OAuth 2.0, OpenID Connect).
+
+Key Usage and Operations
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+A JWK may declare either:
+
+- ``use`` — a coarse-grained indication of intended purpose
+  (e.g., ``sig`` or ``enc``), or
+- ``key_ops`` — a precise list of permissible operations
+  (e.g., ``sign``, ``verify``, ``encrypt``, ``unwrapKey``)
+
+These fields help recipients determine how a key should be used and
+prevent unintended or insecure key usage.
+
+Implementation
+--------------
+
+All definitions from RFC 7517 are fully implemented in ``joserfc``.
+
+Private modules
+~~~~~~~~~~~~~~~
+
+The underlying logic resides in the private module ``joserfc/_rfc7517``,
+which defines:
+
+- Base key models
+- Utilities for handling PEM keys
+
+Public exports
+~~~~~~~~~~~~~~
+
+Public classes and utilities are re-exported through ``joserfc.jwk``.
+You should always use ``joserfc.jwk`` for working with JWK objects and
+JWK Sets, rather than importing from the private module directly.
+
+This includes functionality for:
+
+- parsing JWK and JWKs: ``jwk.import_key``
+- constructing JWK and JWKs: ``jwk.generate_key``

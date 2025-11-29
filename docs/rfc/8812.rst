@@ -1,0 +1,50 @@
+.. _rfc8812:
+
+RFC 8812
+========
+
+RFC8812 defines the use of the **secp256k1** elliptic curve for JSON Web
+Signatures (JWS) and JSON Web Keys (JWK).
+
+It introduces:
+
+- the new JWS algorithm identifier **ES256K**
+- the new JWK elliptic curve identifier **secp256k1**
+
+This RFC extends RFC 7515 (JWS) and RFC 7517 (JWK) by adding support for a curve
+commonly used in blockchain ecosystems.
+
+Implementation
+--------------
+
+``joserfc`` fully supports the definitions introduced in RFC 8812:
+
+- Parsing and generating EC Key with ``crv="secp256k1"``
+- Signing and verifying JWS messages using the ``ES256K`` algorithm
+
+The functionality is available through:
+
+- ``joserfc.jws`` for signing and verifying
+- ``joserfc.jwk`` for key loading, generation, and handling
+
+Example Usage
+-------------
+
+Signing with an ``secp256k1`` EC key:
+
+.. code-block:: python
+
+    from joserfc import jws, jwk
+
+    private_key = jwk.generate_key("EC", "secp256k1")
+    payload = b"hello"
+    protected = {"alg": "ES256K"}
+
+    output = jws.serialize_compact(protected, payload, private_key, algorithms=["ES256K"])
+
+Verification:
+
+.. code-block:: python
+
+    public_key = jwk.import_key(private_key.as_dict(private=False))
+    jws.deserialize_compact(output, public_key, algorithms=["ES256K"])
