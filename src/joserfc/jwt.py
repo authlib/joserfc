@@ -61,6 +61,7 @@ def encode(
     algorithms: list[str] | None = None,
     registry: JWSRegistry | JWERegistry | None = None,
     encoder_cls: Type[JSONEncoder] | None = None,
+    default_type: str | None = "JWT",
 ) -> str:
     """Encode a JSON Web Token with the given header, and claims.
 
@@ -70,9 +71,12 @@ def encode(
     :param algorithms: a list of allowed algorithms
     :param registry: a ``JWSRegistry`` or ``JWERegistry`` to use
     :param encoder_cls: A JSONEncoder subclass to use
+    :param default_type: default value of the ``typ`` header parameter
     """
-    # add ``typ`` in header
-    _header = {"typ": "JWT", **header}
+    if default_type is not None:
+        _header = {"typ": default_type, **header}
+    else:
+        _header = {**header}
     payload = convert_claims(claims, encoder_cls)
     if isinstance(registry, JWERegistry):
         return encrypt_compact(_header, payload, key, algorithms, registry)

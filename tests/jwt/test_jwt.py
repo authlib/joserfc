@@ -15,21 +15,34 @@ def use_embedded_jwk(obj: GuestProtocol) -> Key:
 
 
 class TestJWT(TestCase):
+    oct_key = OctKey.generate_key()
+
+    def test_default_type(self):
+        data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, self.oct_key)
+        token = jwt.decode(data, self.oct_key)
+        self.assertEqual(token.header["typ"], "JWT")
+
+        data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, self.oct_key, default_type=None)
+        token = jwt.decode(data, self.oct_key)
+        self.assertNotIn("typ", token.header)
+
+        data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, self.oct_key, default_type="jwt+at")
+        token = jwt.decode(data, self.oct_key)
+        self.assertEqual(token.header["typ"], "jwt+at")
+
     def test_invalid_payload(self):
-        key = OctKey.import_key("secret")
-        data = jws.serialize_compact({"alg": "HS256"}, b"hello", key)
-        self.assertRaises(InvalidPayloadError, jwt.decode, data, key)
+        data = jws.serialize_compact({"alg": "HS256"}, b"hello", self.oct_key)
+        self.assertRaises(InvalidPayloadError, jwt.decode, data, self.oct_key)
 
     def test_claims_registry(self):
-        key = OctKey.import_key("secret")
-        data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, key)
-        token = jwt.decode(data, key)
+        data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, self.oct_key)
+        token = jwt.decode(data, self.oct_key)
 
         claims_registry = jwt.JWTClaimsRegistry(iss={"essential": True})
         self.assertRaises(MissingClaimError, claims_registry.validate, token.claims)
 
-        data = jwt.encode({"alg": "HS256"}, {"iss": "a"}, key)
-        obj = jwt.decode(data, key)
+        data = jwt.encode({"alg": "HS256"}, {"iss": "a"}, self.oct_key)
+        obj = jwt.decode(data, self.oct_key)
         self.assertEqual(obj.claims["iss"], "a")
 
     def test_jwe_format(self):
