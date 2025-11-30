@@ -19,11 +19,14 @@ Features
   capabilities, providing a more expressive and readable codebase. The use of
   type hints enhances development workflows by enabling better static analysis,
   improved IDE support, and more reliable code refactoring.
-  
+
 - **Organized Codebase with RFC Compliance**: ``joserfc`` is structured following
   the RFC standards, ensuring clear separation and organization of the different
   JOSE functionalities. It strictly follows the latest versions of the JOSE standards,
   guaranteeing the highest level of interoperability and compliance.
+
+- **Full featured**: ``joserfc`` includes implementations for all JOSE-related RFCs,
+  providing complete coverage of the JOSE ecosystem out of the box.
 
 Why joserfc?
 ------------

@@ -32,7 +32,7 @@ Import and generate JWK
 .. code-block:: python
 
     >>> from joserfc.jwk import RSAKey
-    >>> rsa_key = RSAKey.generate_key(512)
+    >>> rsa_key = RSAKey.generate_key()
     >>> rsa_key.as_pem(private=True)
     b'-----BEGIN PRIVATE KEY-----\n....'
     >>> rsa_key.as_pem(private=False)

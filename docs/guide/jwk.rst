@@ -407,7 +407,7 @@ The ``jwk`` module offers a means to dynamically import and generate keys.
 Import keys
 ~~~~~~~~~~~
 
-.. versionadded:: v1.1.0
+.. versionadded:: 1.1.0
 
 The :meth:`import_key` can choose the correct key type automatically when
 importing a JWK in dict:
@@ -440,7 +440,7 @@ the key type manually:
 Generate keys
 ~~~~~~~~~~~~~
 
-.. versionadded:: v1.1.0
+.. versionadded:: 1.1.0
 
 The :meth:`generate_key` can generate a key with all the supported key
 types. For ``oct`` and ``RSA`` the parameters in this method:

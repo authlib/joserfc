@@ -54,7 +54,7 @@ You can call :meth:`jwe.encrypt_compact` to construct a compact JWE serializatio
     from joserfc.jwk import OctKey
 
     protected = {"alg": "A128KW", "enc": "A128GCM"}
-    key = OctKey.generate_key(128)  # algorithm requires key of big size 128
+    key = OctKey.generate_key(128)  # algorithm requires key of bit size 128
     data = jwe.encrypt_compact(protected, "hello", key)
 
 A compact JWE is constructed by ``protected`` header, ``plaintext`` and a public key.
@@ -110,10 +110,6 @@ An example of a JWE using the general JWE JSON Serialization is as follows:
 
 Encryption
 ~~~~~~~~~~
-
-.. versionchanged:: 0.6.0
-
-    ``jwe.JSONEncryption`` is separated to ``GeneralJSONEncryption`` and ``FlattenedJSONEncryption``.
 
 The structure for JSON JWE serialization is a little complex, developers
 SHOULD create an object of :class:`jwe.GeneralJSONEncryption` at first:
