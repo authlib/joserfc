@@ -35,7 +35,7 @@ A JWK Set is a JSON object that contains an array of JWKs. It is commonly
 used for publishing multiple keys, such as rotation sets or multi-tenant
 public keys:
 
-.. code-block:: json
+.. code-block:: text
 
     {
       "keys": [

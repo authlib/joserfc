@@ -15,9 +15,10 @@ Changelog
 1.5.0
 -----
 
-**Not released yet**
+**Released on November 30, 2025**
 
-- Add ``Ed25519`` and ``Ed448`` algorithms per RFC9864, via :issue:`76`.
+- Add ``Ed25519`` and ``Ed448`` algorithms per :ref:`rfc9864`, via :issue:`76`.
+- Add parameter ``default_type`` for :meth:`jwt.encode` method.
 
 1.4.3
 -----
@@ -134,7 +135,7 @@ Changelog
 
 **Released on July 7, 2025**
 
-- Added RFC9278 JWK Thumbprint URI ``thumbprint_uri``.
+- Added :ref:`rfc9278` JWK Thumbprint URI ``thumbprint_uri``.
 - Show security warnings for ``none`` and ``RSA1_5`` algorithms.
 - Show security warnings for ``OctKey.generate_key`` and ``RSAKey.generate_key``.
   when key size is too short, per `NIST SP 800-131A`_.
