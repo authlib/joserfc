@@ -36,7 +36,7 @@ def extract_rfc7515_compact(
     :param value: JWS in bytes
     :param payload: optional payload, required with detached content
     :param registry: optional JWSRegistry instance
-    :raise: DecodeError
+    :raise DecodeError: when decoding fails
     """
     parts = value.split(b".")
     if len(parts) != 3:

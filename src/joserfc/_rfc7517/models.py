@@ -216,7 +216,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         requires its presence.
 
         :param use: this key is used for, e.g. "sig", "enc"
-        :raise: UnsupportedKeyUseError
+        :raise UnsupportedKeyUseError: if this key is not designed for the given use
         """
         designed_use = self.get("use")
         if designed_use and designed_use != use:
@@ -226,7 +226,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         """Check if this key supports the given "alg".
 
         :param alg: the algorithm this key is intended to be used, e.g. "HS256", "ECDH-EC"
-        :raise: UnsupportedKeyAlgorithmError
+        :raise UnsupportedKeyAlgorithmError: if this key is not designed for the given algorithm
         """
         designed_alg = self.get("alg")
         if designed_alg and designed_alg != alg:
@@ -236,7 +236,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         """Check if the given key_op is supported by this key.
 
         :param operation: key operation value, such as "sign", "encrypt".
-        :raise: UnsupportedKeyOperationError
+        :raise UnsupportedKeyOperationError: if the operation is not supported by this key.
         """
         key_ops = self.get("key_ops")
         if key_ops is not None and operation not in key_ops:

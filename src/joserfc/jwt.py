@@ -99,7 +99,8 @@ def decode(
     :param algorithms: a list of allowed algorithms
     :param registry: a ``JWSRegistry`` or ``JWERegistry`` to use
     :param decoder_cls: A JSONDecoder subclass to use
-    :raise: BadSignatureError
+    :raise BadSignatureError: when signature verification fails
+    :raise InvalidPayloadError: when payload is not a valid JSON object
     """
     _value = to_bytes(value)
     header: Header

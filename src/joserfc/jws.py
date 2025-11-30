@@ -178,7 +178,8 @@ def deserialize_compact(
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
     :param payload: optional payload, required with detached content
-    :return: object of the ``CompactSignature``
+    :raises BadSignatureError: when signature verification fails
+    :return: object of the CompactSignature
     """
     obj = extract_compact(to_bytes(value), payload, registry)
     if not validate_compact(obj, public_key, algorithms, registry):
@@ -286,8 +287,8 @@ def deserialize_json(
     :param public_key: a flexible public key to verify the signature
     :param algorithms: a list of allowed algorithms
     :param registry: a JWSRegistry to use
-    :return: object of the SignatureData
-    :raise: ValueError or BadSignatureError
+    :return: object of GeneralJSONSignature or FlattenedJSONSignature
+    :raises BadSignatureError: when signature verification fails
     """
     if registry is None:
         registry = construct_registry(algorithms)

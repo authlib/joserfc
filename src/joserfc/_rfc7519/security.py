@@ -22,7 +22,13 @@ SENSITIVE_VALUES = re.compile(
 
 
 def check_sensitive_data(claims: dict[str, Any]) -> None:
-    """Check if claims contains sensitive information."""
+    """
+    Checks for sensitive data within a dictionary of claims and raises an
+    error if any sensitive names or values are detected.
+
+    :param claims: JWT claims to check for sensitive data
+    :raises InsecureClaimError: if any sensitive names or values are detected
+    """
     for k in claims:
         # check claims key name
         if k in SENSITIVE_NAMES:
