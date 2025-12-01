@@ -40,9 +40,20 @@ class BaseClaimsRegistry:
 
     def __init__(self, **kwargs: ClaimsOption):
         self.options = kwargs
-        self.essential_keys = {key for key in kwargs if kwargs[key].get("essential")}
+
+    @property
+    def essential_keys(self) -> set[str]:
+        """Returns the essential claim names."""
+        return {key for key in self.options if self.options[key].get("essential")}
 
     def check_value(self, claim_name: str, value: Any) -> None:
+        """
+        Validates a given claim value based on predefined options.
+
+        :param claim_name: The name of the claim to validate.
+        :param value: The value of the claim to be validated.
+        :raises InvalidClaimError: If the value does not meet the claim's validation requirements.
+        """
         option = self.options.get(claim_name)
         if not option:
             return
@@ -69,6 +80,13 @@ class BaseClaimsRegistry:
                 raise InvalidClaimError(claim_name)
 
     def validate(self, claims: dict[str, Any]) -> None:
+        """
+        Validates the provided claims against specified requirements and checks.
+
+        :param claims: A dictionary containing claims to validate.
+        :raises InvalidClaimError: Raised if any claim fails validation.
+        :raises MissingClaimError: Raised if one or more essential keys are missing.
+        """
         missed_keys = {key for key in self.essential_keys if claims.get(key) is None}
         if missed_keys:
             raise MissingClaimError(",".join(sorted(missed_keys)))
@@ -99,6 +117,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
 
     @property
     def now(self) -> int:
+        """Returns the current timestamp."""
         if callable(self._now):
             return self._now()
         return self._now
