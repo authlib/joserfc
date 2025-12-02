@@ -18,6 +18,7 @@ Changelog
 **Released on November 30, 2025**
 
 - Add ``Ed25519`` and ``Ed448`` algorithms per :ref:`rfc9864`, via :issue:`76`.
+- Marked ``EdDSA`` algorithm as deprecated per :ref:`rfc9864`, via :issue:`76`.
 - Add parameter ``default_type`` for :meth:`jwt.encode` method.
 
 1.4.3
