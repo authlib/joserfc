@@ -18,6 +18,7 @@ Changelog
 **Unreleased**
 
 - ``filter_algorithms`` ``names`` defaults to all algs. :pr:`79`
+- check_key checks the curve compatibility with EdDSA. :pr:`80`
 
 1.5.0
 -----

@@ -18,6 +18,12 @@ class EdDSAAlgorithm(JWSAlgModel):
         self.name = curve
         self.description = f"EdDSA using the {curve} parameter set"
 
+    def check_key(self, key: OKPKey) -> None:
+        super().check_key(key)
+        public_key_cls = _public_key_mapping[self.name]
+        if not isinstance(key.public_key, public_key_cls):
+            raise InvalidKeyTypeError(f"Algorithm '{self.name}' requires '{self.name}' OKP key")
+
     def sign(self, msg: bytes, key: OKPKey) -> bytes:
         op_key = t.cast(t.Union[Ed25519PrivateKey, Ed448PrivateKey], key.get_op_key("sign"))
         private_key_cls = _private_key_mapping[self.name]
