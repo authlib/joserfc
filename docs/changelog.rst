@@ -18,6 +18,7 @@ Changelog
 **Unreleased**
 
 - ``filter_algorithms`` ``names`` defaults to all algs. :pr:`79`
+- ``filter_algorithms`` and ``guess_alg`` supports ``KeySet`` objects. :pr:`81`
 
 1.5.0
 -----
