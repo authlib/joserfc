@@ -19,6 +19,7 @@ Changelog
 
 - ``filter_algorithms`` ``names`` defaults to all algorithms. :pr:`79`.
 - Replace ``JWSRegistry.guess_alg`` with ``JWSRegistry.guess_algorithm``.
+- ``filter_algorithms`` and ``guess_alg`` supports ``KeySet`` objects. :pr:`81`
 
 1.5.0
 -----

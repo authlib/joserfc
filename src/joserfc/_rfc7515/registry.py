@@ -17,6 +17,7 @@ from ..registry import (
     check_crit_header,
     check_supported_header,
 )
+from .._keys import KeySet
 
 __all__ = [
     "JWSRegistry",
@@ -115,7 +116,7 @@ class JWSRegistry:
     def guess_algorithm(cls, key: Any, strategy: Strategy) -> JWSAlgModel | None:
         """Guess the JWS algorithm for a given key.
 
-        :param key: key instance
+        :param key: key instance or a KeySet
         :param strategy: the strategy for guessing the JWS algorithm
         """
         if strategy == cls.Strategy.RECOMMENDED:
@@ -145,12 +146,19 @@ class JWSRegistry:
     def filter_algorithms(cls, key: Any, names: list[str] | None = None) -> list[JWSAlgModel]:
         """Filter JWS algorithms based on the given algorithm names.
 
-        :param key: key instance
+        :param key: a key instance or a KeySet
         :param names: list of algorithm names
         """
         if names is None:
             names = list(cls.algorithms.keys())
         rv: list[JWSAlgModel] = []
+        if isinstance(key, KeySet):
+            for k in key.keys:
+                for alg in cls.filter_algorithms(k, names):
+                    if alg not in rv:
+                        rv.append(alg)
+            return rv
+
         for name in names:
             alg = cls.algorithms[name]
             try:
