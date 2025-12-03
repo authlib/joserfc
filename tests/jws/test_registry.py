@@ -39,3 +39,9 @@ class JWSRegistryTest(unittest.TestCase):
 
         name = JWSRegistry.guess_alg(self.okp_key, JWSRegistry.Strategy.SECURITY)
         self.assertEqual(name, "EdDSA")
+
+    def test_filter_algorithms_default_names(self):
+        all_names = list(JWSRegistry.algorithms.keys())
+        explicit = JWSRegistry.filter_algorithms(self.rsa_key, all_names)
+        default = JWSRegistry.filter_algorithms(self.rsa_key)
+        self.assertEqual(explicit, default)
