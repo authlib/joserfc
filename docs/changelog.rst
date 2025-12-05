@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.x.x
+-----
+
+**Unreleased**
+
+- ``filter_algorithms`` ``names`` defaults to all algs. :pr:`79`
+
 1.5.0
 -----
 

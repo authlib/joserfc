@@ -134,12 +134,14 @@ class JWSRegistry:
             return None
 
     @classmethod
-    def filter_algorithms(cls, key: Any, names: list[str]) -> list[JWSAlgModel]:
+    def filter_algorithms(cls, key: Any, names: list[str] | None = None) -> list[JWSAlgModel]:
         """Filter JWS algorithms based on the given algorithm names.
 
         :param key: key instance
         :param names: list of algorithm names
         """
+        if names is None:
+            names = list(cls.algorithms.keys())
         rv: list[JWSAlgModel] = []
         for name in names:
             alg = cls.algorithms[name]
