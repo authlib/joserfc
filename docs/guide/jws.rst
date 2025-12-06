@@ -321,12 +321,12 @@ Guess Algorithms via Key
 ------------------------
 
 If you are unsure which algorithm to use but already have a key, you can call the
-:meth:`jws.JWSRegistry.guess_alg` method to determine a suitable algorithm:
+:meth:`jws.JWSRegistry.guess_algorithm` method to determine a suitable algorithm:
 
 .. code-block:: python
 
     from joserfc.jws import JWSRegistry, serialize_compact
 
-    alg = JWSRegistry.guess_alg(key, JWSRegistry.Strategy.RECOMMENDED)
-    protected = {"alg": alg}
+    alg = JWSRegistry.guess_algorithm(key, JWSRegistry.Strategy.RECOMMENDED)
+    protected = {"alg": alg.name}
     serialize_compact(protected, b"payload", key)

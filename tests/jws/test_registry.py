@@ -11,34 +11,34 @@ class JWSRegistryTest(unittest.TestCase):
     okp_key = OKPKey.generate_key()
 
     def test_guess_recommended_algorithm(self):
-        name = JWSRegistry.guess_alg(self.oct_key, JWSRegistry.Strategy.RECOMMENDED)
-        self.assertEqual(name, "HS256")
+        alg = JWSRegistry.guess_algorithm(self.oct_key, JWSRegistry.Strategy.RECOMMENDED)
+        self.assertEqual(alg.name, "HS256")
 
-        name = JWSRegistry.guess_alg(self.rsa_key, JWSRegistry.Strategy.RECOMMENDED)
-        self.assertEqual(name, "RS256")
+        alg = JWSRegistry.guess_algorithm(self.rsa_key, JWSRegistry.Strategy.RECOMMENDED)
+        self.assertEqual(alg.name, "RS256")
 
-        name = JWSRegistry.guess_alg(self.ec_key, JWSRegistry.Strategy.RECOMMENDED)
-        self.assertEqual(name, "ES256")
+        alg = JWSRegistry.guess_algorithm(self.ec_key, JWSRegistry.Strategy.RECOMMENDED)
+        self.assertEqual(alg.name, "ES256")
 
-        name = JWSRegistry.guess_alg(self.okp_key, JWSRegistry.Strategy.RECOMMENDED)
-        self.assertEqual(name, None)
+        alg = JWSRegistry.guess_algorithm(self.okp_key, JWSRegistry.Strategy.RECOMMENDED)
+        self.assertEqual(alg, None)
 
     def test_guess_security_algorithm(self):
-        name = JWSRegistry.guess_alg(self.oct_key, JWSRegistry.Strategy.SECURITY)
-        self.assertEqual(name, "HS512")
+        alg = JWSRegistry.guess_algorithm(self.oct_key, JWSRegistry.Strategy.SECURITY)
+        self.assertEqual(alg.name, "HS512")
 
-        name = JWSRegistry.guess_alg(self.rsa_key, JWSRegistry.Strategy.SECURITY)
-        self.assertEqual(name, "RS512")
+        alg = JWSRegistry.guess_algorithm(self.rsa_key, JWSRegistry.Strategy.SECURITY)
+        self.assertEqual(alg.name, "RS512")
 
-        name = JWSRegistry.guess_alg(self.ec_key, JWSRegistry.Strategy.SECURITY)
-        self.assertEqual(name, "ES256")
+        alg = JWSRegistry.guess_algorithm(self.ec_key, JWSRegistry.Strategy.SECURITY)
+        self.assertEqual(alg.name, "ES256")
 
         ec521 = ECKey.generate_key("P-521")
-        name = JWSRegistry.guess_alg(ec521, JWSRegistry.Strategy.SECURITY)
-        self.assertEqual(name, "ES512")
+        alg = JWSRegistry.guess_algorithm(ec521, JWSRegistry.Strategy.SECURITY)
+        self.assertEqual(alg.name, "ES512")
 
-        name = JWSRegistry.guess_alg(self.okp_key, JWSRegistry.Strategy.SECURITY)
-        self.assertEqual(name, "EdDSA")
+        alg = JWSRegistry.guess_algorithm(self.okp_key, JWSRegistry.Strategy.SECURITY)
+        self.assertEqual(alg.name, "EdDSA")
 
     def test_filter_algorithms_default_names(self):
         all_names = list(JWSRegistry.algorithms.keys())
