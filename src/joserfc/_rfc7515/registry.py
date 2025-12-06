@@ -112,7 +112,7 @@ class JWSRegistry:
             raise ExceededSizeError(f"Signature of exceeds {self.max_signature_length} bytes.")
 
     @classmethod
-    def guess_alg(cls, key: Any, strategy: Strategy) -> str | None:
+    def guess_algorithm(cls, key: Any, strategy: Strategy) -> JWSAlgModel | None:
         """Guess the JWS algorithm for a given key.
 
         :param key: key instance
@@ -129,9 +129,17 @@ class JWSRegistry:
             raise NotImplementedError(f"Unknown algorithm strategy '{strategy}'")
 
         if algorithms:
-            return algorithms[0].name
+            return algorithms[0]
         else:
             return None
+
+    @classmethod
+    def guess_alg(cls, key: Any, strategy: Strategy) -> str | None:  # pragma: no cover
+        warnings.warn("Please use guess_algorithm(key, strategy)", DeprecationWarning)
+        alg = cls.guess_algorithm(key, strategy)
+        if alg:
+            return alg.name
+        return None
 
     @classmethod
     def filter_algorithms(cls, key: Any, names: list[str] | None = None) -> list[JWSAlgModel]:

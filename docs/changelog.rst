@@ -17,7 +17,8 @@ Changelog
 
 **Unreleased**
 
-- ``filter_algorithms`` ``names`` defaults to all algs. :pr:`79`
+- ``filter_algorithms`` ``names`` defaults to all algorithms. :pr:`79`.
+- Replace ``JWSRegistry.guess_alg`` with ``JWSRegistry.guess_algorithm``.
 
 1.5.0
 -----
