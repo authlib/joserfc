@@ -52,6 +52,8 @@ class TestKeySet(TestCase):
         self.assertIsNotNone(key1)
         key2 = key_set.pick_random_key("RS256")
         self.assertIsNone(key2)
+        key3 = key_set.pick_random_key()
+        self.assertIsNotNone(key3)
 
     def test_key_set_methods(self):
         key_set = KeySet.generate_key_set("oct", 8)
