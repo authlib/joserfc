@@ -45,3 +45,21 @@ class JWSRegistryTest(unittest.TestCase):
         explicit = JWSRegistry.filter_algorithms(self.rsa_key, all_names)
         default = JWSRegistry.filter_algorithms(self.rsa_key)
         self.assertEqual(explicit, default)
+
+    def test_filter_algorithms_ed25519(self):
+        """Ed25519 keys should only be compatible with EdDSA and Ed25519, not Ed448."""
+        ed25519_key = OKPKey.generate_key("Ed25519")
+        algs = JWSRegistry.filter_algorithms(ed25519_key)
+        names = [alg.name for alg in algs]
+        self.assertIn("EdDSA", names)
+        self.assertIn("Ed25519", names)
+        self.assertNotIn("Ed448", names)
+
+    def test_filter_algorithms_ed448(self):
+        """Ed448 keys should only be compatible with EdDSA and Ed448, not Ed25519."""
+        ed448_key = OKPKey.generate_key("Ed448")
+        algs = JWSRegistry.filter_algorithms(ed448_key)
+        names = [alg.name for alg in algs]
+        self.assertIn("EdDSA", names)
+        self.assertIn("Ed448", names)
+        self.assertNotIn("Ed25519", names)
