@@ -1,6 +1,10 @@
 from unittest import TestCase
 from joserfc.jwk import ECKey, OctKey
-from joserfc.errors import InvalidExchangeKeyError, InvalidKeyTypeError
+from joserfc.errors import (
+    InvalidExchangeKeyError,
+    InvalidKeyTypeError,
+    InvalidKeyCurveError,
+)
 from tests.keys import read_key
 
 
@@ -50,7 +54,7 @@ class TestECKey(TestCase):
         self.assertEqual(key, ECKey.import_key(key.private_key))
 
     def test_generate_key(self):
-        self.assertRaises(ValueError, ECKey.generate_key, "Invalid")
+        self.assertRaises(InvalidKeyCurveError, ECKey.generate_key, "Invalid")
 
         key = ECKey.generate_key(private=True)
         self.assertTrue(key.is_private)

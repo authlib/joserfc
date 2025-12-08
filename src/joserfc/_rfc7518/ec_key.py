@@ -14,7 +14,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP521R1,
 )
 from cryptography.hazmat.backends import default_backend
-from ..errors import InvalidExchangeKeyError
+from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError
 from .._rfc7517.models import CurveKey
 from .._rfc7517.pem import CryptographyBinding
 from .._rfc7517.types import KeyParameters, AnyKey
@@ -51,7 +51,7 @@ class ECBinding(CryptographyBinding):
     @classmethod
     def generate_private_key(cls, name: str) -> EllipticCurvePrivateKey:
         if name not in cls._dss_curves:
-            raise ValueError("Invalid crv value: '{}'".format(name))
+            raise InvalidKeyCurveError("Invalid crv value: '{}'".format(name))
 
         curve = cls._dss_curves[name]()
         raw_key = generate_private_key(
