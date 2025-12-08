@@ -63,6 +63,8 @@ class OKPBinding(CryptographyBinding):
 
     @staticmethod
     def generate_private_key(crv: LiteralCurves) -> PrivateOKPKey:
+        if crv not in PRIVATE_KEYS_MAP:
+            raise InvalidKeyCurveError(f"Invalid curve value: '{crv}'")
         crv_key: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
         return crv_key.generate()
 
@@ -190,12 +192,9 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         :param auto_kid: add ``kid`` automatically
         """
         if crv is None:
-            crv = "Ed25519"
-
-        if crv not in PRIVATE_KEYS_MAP:
-            raise InvalidKeyCurveError(f"Invalid curve value: '{crv}'")
-
-        raw_key = cls.binding.generate_private_key(crv)
+            raw_key = cls.binding.generate_private_key("Ed25519")
+        else:
+            raw_key = cls.binding.generate_private_key(crv)
         if private:
             key = cls(raw_key, raw_key, parameters)
         else:

@@ -44,6 +44,14 @@ class RSABinding(CryptographyBinding):
     _cryptography_key_types = (RSAPrivateKey, RSAPublicKey)
 
     @staticmethod
+    def generate_private_key(size: int) -> RSAPrivateKey:
+        return generate_private_key(
+            public_exponent=65537,
+            key_size=size,
+            backend=default_backend(),
+        )
+
+    @staticmethod
     def import_private_key(obj: RSADictKey) -> RSAPrivateKey:
         if "oth" in obj:  # pragma: no cover
             # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
@@ -170,17 +178,13 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
             key_size = 2048
 
         if key_size % 8 != 0:
-            raise ValueError("Invalid key_size for RSAKey")
+            raise ValueError("A bit size must be a multiple of 8")
 
         if key_size < 2048:
             # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
             warnings.warn("Key size should be >= 2048 bits", SecurityWarning)
 
-        raw_key = generate_private_key(
-            public_exponent=65537,
-            key_size=key_size,
-            backend=default_backend(),
-        )
+        raw_key = cls.binding.generate_private_key(key_size)
         if private:
             key = cls(raw_key, raw_key, parameters)
         else:
