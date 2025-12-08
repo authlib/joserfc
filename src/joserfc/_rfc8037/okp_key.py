@@ -15,16 +15,18 @@ from cryptography.hazmat.primitives.serialization import (
 from .._rfc7517.models import CurveKey
 from .._rfc7517.types import KeyParameters, AnyKey
 from .._rfc7517.pem import CryptographyBinding
-from ..errors import InvalidExchangeKeyError
+from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 from ..registry import KeyParameter
 
+
+LiteralCurves = t.Literal["Ed25519", "Ed448", "X25519", "X448"]
 PublicOKPKey = t.Union[Ed25519PublicKey, Ed448PublicKey, X25519PublicKey, X448PublicKey]
 PrivateOKPKey = t.Union[Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448PrivateKey]
 OKPDictKey = t.TypedDict(
     "OKPDictKey",
     {
-        "crv": t.Literal["Ed25519", "Ed448", "X25519", "X448"],
+        "crv": LiteralCurves,
         "x": str,
         "d": str,
     },
@@ -60,20 +62,33 @@ class OKPBinding(CryptographyBinding):
     )
 
     @staticmethod
-    def import_private_key(obj: OKPDictKey) -> PrivateOKPKey:
-        crv_key: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[obj["crv"]]
+    def generate_private_key(crv: LiteralCurves) -> PrivateOKPKey:
+        crv_key: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
+        return crv_key.generate()
+
+    @staticmethod
+    def from_private_bytes(crv: LiteralCurves, data: bytes) -> PrivateOKPKey:
+        crv_key: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
+        return crv_key.from_private_bytes(data)
+
+    @staticmethod
+    def from_public_bytes(crv: LiteralCurves, data: bytes) -> PublicOKPKey:
+        crv_key: t.Type[PublicOKPKey] = PUBLIC_KEYS_MAP[crv]
+        return crv_key.from_public_bytes(data)
+
+    @classmethod
+    def import_private_key(cls, obj: OKPDictKey) -> PrivateOKPKey:
         d = urlsafe_b64decode(to_bytes(obj["d"]))
-        return crv_key.from_private_bytes(d)
+        return cls.from_private_bytes(obj["crv"], d)
 
-    @staticmethod
-    def import_public_key(obj: OKPDictKey) -> PublicOKPKey:
-        crv_key: t.Type[PublicOKPKey] = PUBLIC_KEYS_MAP[obj["crv"]]
-        x_bytes = urlsafe_b64decode(to_bytes(obj["x"]))
-        return crv_key.from_public_bytes(x_bytes)
+    @classmethod
+    def import_public_key(cls, obj: OKPDictKey) -> PublicOKPKey:
+        x = urlsafe_b64decode(to_bytes(obj["x"]))
+        return cls.from_public_bytes(obj["crv"], x)
 
-    @staticmethod
-    def export_private_key(key: PrivateOKPKey) -> dict[str, str]:
-        obj = OKPBinding.export_public_key(key.public_key())
+    @classmethod
+    def export_private_key(cls, key: PrivateOKPKey) -> dict[str, str]:
+        obj = cls.export_public_key(key.public_key())
         d_bytes = key.private_bytes(Encoding.Raw, PrivateFormat.Raw, NoEncryption())
         obj["d"] = urlsafe_b64encode(d_bytes).decode("utf-8")
         return obj
@@ -130,22 +145,36 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         return None
 
     @property
-    def curve_name(self) -> str:
+    def curve_name(self) -> LiteralCurves:
         return get_key_curve(self.raw_value)
 
     @classmethod
     def import_key(
-        cls: t.Any,
-        value: AnyKey,
+        cls: t.Type[OKPKey],
+        value: AnyKey | PrivateOKPKey | PublicOKPKey,
         parameters: KeyParameters | None = None,
         password: t.Any = None,
     ) -> "OKPKey":
+        if isinstance(
+            value,
+            (
+                Ed25519PrivateKey,
+                Ed448PrivateKey,
+                X25519PrivateKey,
+                X448PrivateKey,
+                Ed25519PublicKey,
+                Ed448PublicKey,
+                X25519PublicKey,
+                X448PublicKey,
+            ),
+        ):
+            return cls(value, value, parameters)
         return super(OKPKey, cls).import_key(value, parameters, password)
 
     @classmethod
     def generate_key(
-        cls,
-        crv: str | None = "Ed25519",
+        cls: t.Type[OKPKey],
+        crv: LiteralCurves | None = "Ed25519",
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
@@ -161,10 +190,9 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
             crv = "Ed25519"
 
         if crv not in PRIVATE_KEYS_MAP:
-            raise ValueError("Invalid crv value: '{}'".format(crv))
+            raise InvalidKeyCurveError(f"Invalid curve value: '{crv}'")
 
-        private_key_cls: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
-        raw_key = private_key_cls.generate()
+        raw_key = cls.binding.generate_private_key(crv)
         if private:
             key = cls(raw_key, raw_key, parameters)
         else:
@@ -175,7 +203,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         return key
 
 
-def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]) -> str:
+def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]) -> LiteralCurves:
     if isinstance(key, (Ed25519PublicKey, Ed25519PrivateKey)):
         return "Ed25519"
     elif isinstance(key, (Ed448PublicKey, Ed448PrivateKey)):

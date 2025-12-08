@@ -1,6 +1,10 @@
 from unittest import TestCase
 from joserfc.jwk import OKPKey
-from joserfc.errors import InvalidExchangeKeyError, InvalidKeyTypeError
+from joserfc.errors import (
+    InvalidExchangeKeyError,
+    InvalidKeyTypeError,
+    InvalidKeyCurveError,
+)
 from tests.keys import read_key
 
 
@@ -30,7 +34,7 @@ class TestOKPKey(TestCase):
         public_key = OKPKey.generate_key("Ed25519", private=False)
         self.assertFalse(public_key.is_private)
         self.assertIsNone(public_key.kid)
-        self.assertRaises(ValueError, OKPKey.generate_key, "invalid")
+        self.assertRaises(InvalidKeyCurveError, OKPKey.generate_key, "invalid")
 
         key = OKPKey.generate_key(auto_kid=True)
         self.assertIsNotNone(key.kid)
@@ -70,6 +74,12 @@ class TestOKPKey(TestCase):
         public_key = OKPKey.import_key(read_key("okp-ed25519-public.json"))
         self.assertTrue(private_key.is_private)
         self.assertFalse(public_key.is_private)
+
+    def test_import_from_native_keys(self):
+        curves = ["Ed25519", "Ed448", "X25519", "X448"]
+        for crv in curves:
+            key = OKPKey.generate_key(crv)
+            self.assertEqual(key, OKPKey.import_key(key.private_key))
 
     def test_all_as_methods(self):
         private_json = read_key("okp-ed25519-private.json")
