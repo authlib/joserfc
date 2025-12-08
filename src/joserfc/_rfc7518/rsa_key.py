@@ -1,6 +1,6 @@
 from __future__ import annotations
 import warnings
-from typing import TypedDict, Any
+import typing as t
 from functools import cached_property
 from cryptography.hazmat.primitives.asymmetric.rsa import (
     generate_private_key,
@@ -22,7 +22,7 @@ from .._rfc7517.types import KeyParameters, AnyKey
 from ..util import int_to_base64, base64_to_int
 
 
-RSADictKey = TypedDict(
+RSADictKey = t.TypedDict(
     "RSADictKey",
     {
         "n": str,
@@ -136,12 +136,16 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
 
     @classmethod
     def import_key(
-        cls: Any,
-        value: AnyKey,
+        cls: t.Any,
+        value: AnyKey | RSAPrivateKey | RSAPublicKey,
         parameters: KeyParameters | None = None,
-        password: Any = None,
+        password: t.Any = None,
     ) -> "RSAKey":
-        key: RSAKey = super(RSAKey, cls).import_key(value, parameters, password)
+        key: RSAKey
+        if isinstance(value, (RSAPrivateKey, RSAPublicKey)):
+            key = cls(value, value, parameters)
+        else:
+            key = super(RSAKey, cls).import_key(value, parameters, password)
         if key.raw_value.key_size < 2048:
             # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
             warnings.warn("Key size should be >= 2048 bits", SecurityWarning)
@@ -149,7 +153,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
 
     @classmethod
     def generate_key(
-        cls,
+        cls: t.Type["RSAKey"],
         key_size: int | None = 2048,
         parameters: KeyParameters | None = None,
         private: bool = True,

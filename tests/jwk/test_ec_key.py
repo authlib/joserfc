@@ -45,6 +45,10 @@ class TestECKey(TestCase):
     def test_import_secp256k1_key(self):
         self.run_import_key("secp256k1")
 
+    def test_import_from_native_keys(self):
+        key = ECKey.generate_key()
+        self.assertEqual(key, ECKey.import_key(key.private_key))
+
     def test_generate_key(self):
         self.assertRaises(ValueError, ECKey.generate_key, "Invalid")
 

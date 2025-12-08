@@ -150,11 +150,12 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     @classmethod
     def import_key(
-        cls: t.Type[OKPKey],
+        cls: t.Any,
         value: AnyKey | PrivateOKPKey | PublicOKPKey,
         parameters: KeyParameters | None = None,
         password: t.Any = None,
     ) -> "OKPKey":
+        key: OKPKey
         if isinstance(
             value,
             (
@@ -168,12 +169,14 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
                 X448PublicKey,
             ),
         ):
-            return cls(value, value, parameters)
-        return super(OKPKey, cls).import_key(value, parameters, password)
+            key = cls(value, value, parameters)
+        else:
+            key = super(OKPKey, cls).import_key(value, parameters, password)
+        return key
 
     @classmethod
     def generate_key(
-        cls: t.Type[OKPKey],
+        cls: t.Type["OKPKey"],
         crv: LiteralCurves | None = "Ed25519",
         parameters: KeyParameters | None = None,
         private: bool = True,

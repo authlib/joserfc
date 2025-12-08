@@ -147,15 +147,20 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
     @classmethod
     def import_key(
         cls: t.Any,
-        value: AnyKey,
+        value: AnyKey | EllipticCurvePrivateKey | EllipticCurvePublicKey,
         parameters: KeyParameters | None = None,
         password: t.Any = None,
     ) -> "ECKey":
-        return super(ECKey, cls).import_key(value, parameters, password)
+        key: ECKey
+        if isinstance(value, (EllipticCurvePrivateKey, EllipticCurvePublicKey)):
+            key = cls(value, value, parameters)
+        else:
+            key = super(ECKey, cls).import_key(value, parameters, password)
+        return key
 
     @classmethod
     def generate_key(
-        cls,
+        cls: t.Type["ECKey"],
         crv: str | None = "P-256",
         parameters: KeyParameters | None = None,
         private: bool = True,

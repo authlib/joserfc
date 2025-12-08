@@ -92,6 +92,10 @@ class TestRSAKey(TestCase):
         key: RSAKey = RSAKey.import_key(private_pem)
         self.assertTrue(key.is_private)
 
+    def test_import_from_native_keys(self):
+        key = RSAKey.generate_key()
+        self.assertEqual(key, RSAKey.import_key(key.private_key))
+
     def test_output_as_methods(self):
         private_pem = read_key("rsa-openssl-private.pem")
         key: RSAKey = RSAKey.import_key(private_pem)
