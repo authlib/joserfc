@@ -116,8 +116,6 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         "d": KeyParameter("OKP Private Key", "str", private=True, required=False),
     }
     binding = OKPBinding
-    required_fields = frozenset(["crv", "x"])
-    private_only_fields = frozenset(["d"])
 
     def exchange_derive_key(self, key: "OKPKey") -> bytes:
         # used in ECDH-ES Algorithms
