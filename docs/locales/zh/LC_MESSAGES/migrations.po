@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 11:11+0900\n"
+"POT-Creation-Date: 2025-12-09 14:11+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -32,8 +32,7 @@ msgid ""
 " structure and functionality."
 msgstr ""
 
-#: ../../migrations/authlib.rst:11 ../../migrations/index.rst:31
-#: ../../migrations/python-jose.rst:85
+#: ../../migrations/authlib.rst:11 ../../migrations/python-jose.rst:85
 msgid "JWT"
 msgstr "JWT"
 
@@ -55,18 +54,19 @@ msgid ""
 "``jwt.encode(header, payload, key)`` method."
 msgstr ""
 
-#: ../../migrations/authlib.rst:22 ../../migrations/authlib.rst:80
+#: ../../migrations/authlib.rst:22 ../../migrations/authlib.rst:81
+#: ../../migrations/authlib.rst:97
 msgid "Authlib"
 msgstr "Authlib"
 
-#: ../../migrations/authlib.rst:30 ../../migrations/authlib.rst:92
-#: ../../migrations/index.rst:23 ../../migrations/pyjwt.rst:23
-#: ../../migrations/pyjwt.rst:45 ../../migrations/pyjwt.rst:64
-#: ../../migrations/pyjwt.rst:96 ../../migrations/pyjwt.rst:136
-#: ../../migrations/pyjwt.rst:155 ../../migrations/python-jose.rst:31
-#: ../../migrations/python-jose.rst:72 ../../migrations/python-jose.rst:101
-#: ../../migrations/python-jose.rst:122 ../../migrations/python-jose.rst:137
-#: ../../migrations/python-jose.rst:155
+#: ../../migrations/authlib.rst:30 ../../migrations/authlib.rst:86
+#: ../../migrations/authlib.rst:109 ../../migrations/index.rst:23
+#: ../../migrations/pyjwt.rst:23 ../../migrations/pyjwt.rst:45
+#: ../../migrations/pyjwt.rst:64 ../../migrations/pyjwt.rst:96
+#: ../../migrations/pyjwt.rst:136 ../../migrations/pyjwt.rst:155
+#: ../../migrations/python-jose.rst:31 ../../migrations/python-jose.rst:72
+#: ../../migrations/python-jose.rst:101 ../../migrations/python-jose.rst:122
+#: ../../migrations/python-jose.rst:137 ../../migrations/python-jose.rst:155
 msgid "joserfc"
 msgstr "joserfc"
 
@@ -100,60 +100,71 @@ msgid ""
 ":ref:`jwt` guide."
 msgstr ""
 
-#: ../../migrations/authlib.rst:75 ../../migrations/python-jose.rst:14
+#: ../../migrations/authlib.rst:75 ../../migrations/python-jose.rst:149
+msgid "JWK"
+msgstr ""
+
+#: ../../migrations/authlib.rst:77
+msgid ""
+"When using methods such as ``.as_dict``, ``.as_bytes``, ``.as_pem``, and "
+"others, ``joserfc`` uses the parameter name ``private``, whereas "
+"``authlib.jose`` uses ``is_private``:"
+msgstr ""
+
+#: ../../migrations/authlib.rst:92 ../../migrations/python-jose.rst:14
 msgid "JWS"
 msgstr "JWS"
 
-#: ../../migrations/authlib.rst:77
+#: ../../migrations/authlib.rst:94
 msgid ""
 "When migrating JWS (JSON Web Signature) operations from Authlib to "
 "``joserfc``, follow these steps:"
 msgstr ""
 
-#: ../../migrations/authlib.rst:104
+#: ../../migrations/authlib.rst:121
 msgid ""
 "Above is a simple example of using the ``HS256`` algorithm for JWS. If "
 "you would like to explore further and learn more about JWS, we recommend "
 "referring to the comprehensive :ref:`jws` guide."
 msgstr ""
 
-#: ../../migrations/authlib.rst:109 ../../migrations/python-jose.rst:55
+#: ../../migrations/authlib.rst:126 ../../migrations/python-jose.rst:55
 msgid "JWE"
 msgstr "JWE"
 
-#: ../../migrations/authlib.rst:111
+#: ../../migrations/authlib.rst:128
 msgid ""
 "The method names for JWE serialization and deserialization are different "
 "between Authlib and ``joserfc``."
 msgstr ""
 
-#: ../../migrations/authlib.rst:114
+#: ../../migrations/authlib.rst:131
 msgid "In Authlib, the methods for JWE serialization and deserialization are:"
 msgstr ""
 
-#: ../../migrations/authlib.rst:116
+#: ../../migrations/authlib.rst:133
 msgid "``.serialize_compact(header, payload, key)``"
 msgstr "``.serialize_compact(header, payload, key)``"
 
-#: ../../migrations/authlib.rst:117
+#: ../../migrations/authlib.rst:134
 msgid "``.deserialize_compact(token, key)``"
 msgstr "``.deserialize_compact(token, key)``"
 
-#: ../../migrations/authlib.rst:127
+#: ../../migrations/authlib.rst:144
 msgid ""
 "In ``joserfc``, the equivalent methods for JWE serialization and "
 "deserialization are:"
 msgstr ""
 
-#: ../../migrations/authlib.rst:129
+#: ../../migrations/authlib.rst:146
 msgid "``.encrypt_compact(header, payload, key)``"
 msgstr "``.encrypt_compact(header, payload, key)``"
 
-#: ../../migrations/authlib.rst:130
+#: ../../migrations/authlib.rst:147
 msgid "``.decrypt_compact(token, key)``"
 msgstr "``.decrypt_compact(token, key)``"
 
-#: ../../migrations/authlib.rst:139
+#: ../../migrations/authlib.rst:156
 msgid ""
 "If you would like to explore further and learn more about JWS, we "
 "recommend referring to the comprehensive :ref:`jwe` guide."
@@ -169,7 +180,7 @@ msgid ""
 "libraries to ``joserfc``:"
 msgstr ""
 
-#: ../../migrations/index.rst:15 ../../migrations/index.rst:23
+#: ../../migrations/index.rst:15
 msgid "Comparison"
 msgstr "对比"
 
@@ -183,6 +194,10 @@ msgstr ""
 msgid ""
 "The following highlights the key differences between joserfc and other "
 "Python libraries:"
+msgstr ""
+
+#: ../../migrations/index.rst:23
+msgid "Features"
 msgstr ""
 
 #: ../../migrations/index.rst:23
@@ -212,14 +227,18 @@ msgstr ""
 #: ../../migrations/index.rst:31 ../../migrations/index.rst:32
 #: ../../migrations/index.rst:33 ../../migrations/index.rst:34
 #: ../../migrations/index.rst:35 ../../migrations/index.rst:36
+#: ../../migrations/index.rst:37 ../../migrations/index.rst:38
+#: ../../migrations/index.rst:39
 msgid ":bdg-success:`Yes`"
 msgstr ":bdg-success:`是`"
 
 #: ../../migrations/index.rst:25 ../../migrations/index.rst:27
 #: ../../migrations/index.rst:28 ../../migrations/index.rst:29
-#: ../../migrations/index.rst:32 ../../migrations/index.rst:33
-#: ../../migrations/index.rst:34 ../../migrations/index.rst:35
-#: ../../migrations/index.rst:36
+#: ../../migrations/index.rst:30 ../../migrations/index.rst:31
+#: ../../migrations/index.rst:33 ../../migrations/index.rst:34
+#: ../../migrations/index.rst:35 ../../migrations/index.rst:36
+#: ../../migrations/index.rst:37 ../../migrations/index.rst:38
+#: ../../migrations/index.rst:39
 msgid ":bdg-danger:`No`"
 msgstr ":bdg-danger:`否`"
 
@@ -239,28 +258,53 @@ msgstr ""
 msgid "JSON JWE"
 msgstr ""
 
-#: ../../migrations/index.rst:30 ../../migrations/python-jose.rst:149
-msgid "JWK"
+#: ../../migrations/index.rst:30
+msgid "Key generation"
+msgstr ""
+
+#: ../../migrations/index.rst:30 ../../migrations/index.rst:31
+#, fuzzy
+msgid ":bdg-danger:`Yes`"
+msgstr ":bdg-danger:`否`"
+
+#: ../../migrations/index.rst:31
+msgid "Key importing"
 msgstr ""
 
 #: ../../migrations/index.rst:32
-msgid "RFC7638"
+msgid "JWT on JWS"
 msgstr ""
 
 #: ../../migrations/index.rst:33
-msgid "RFC7797"
+msgid "JWT on JWE"
 msgstr ""
 
 #: ../../migrations/index.rst:34
-msgid "RFC8037"
+msgid "RFC7638"
 msgstr ""
 
 #: ../../migrations/index.rst:35
-msgid "RFC8812"
+msgid "RFC7797"
 msgstr ""
 
 #: ../../migrations/index.rst:36
+msgid "RFC8037"
+msgstr ""
+
+#: ../../migrations/index.rst:37
+msgid "RFC8812"
+msgstr ""
+
+#: ../../migrations/index.rst:38
 msgid "RFC9278"
+msgstr ""
+
+#: ../../migrations/index.rst:39
+msgid "RFC9864"
+msgstr ""
+
+#: ../../migrations/index.rst:39
+msgid "Not released"
 msgstr ""
 
 #: ../../migrations/pyjwt.rst:2
@@ -368,6 +412,26 @@ msgid ""
 "Requests`_ JSON object. You can learn more from :ref:`claims`."
 msgstr ""
 
+#: ../../migrations/pyjwt.rst:174
+#, fuzzy
+msgid "PyJWKClient"
+msgstr "PyJWT"
+
+#: ../../migrations/pyjwt.rst:176
+msgid ""
+"Unlike ``PyJWT``, ``joserfc`` does not provide a built-in HTTP client for"
+" fetching JWK Sets (jwks) from a URL. You are free to use any HTTP "
+"library you prefer to retrieve the JWK Set."
+msgstr ""
+
+#: ../../migrations/pyjwt.rst:179
+msgid "Here is an example of using the **requests** library to fetch a JWK Set."
+msgstr ""
+
+#: ../../migrations/pyjwt.rst:196
+msgid "Here is a real-world example demonstrating how to fetch :ref:`azure`."
+msgstr ""
+
 #: ../../migrations/python-jose.rst:2
 msgid "Migrating from python-jose"
 msgstr "从 python-jose 迁移到 joserfc"
@@ -454,3 +518,4 @@ msgid ""
 "instance from a JWK-formatted dictionary. In contrast, ``joserfc`` "
 "provides the ``jwk.import_key`` method to achieve the same result."
 msgstr ""
+

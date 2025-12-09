@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  joserfc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-26 11:26+0900\n"
+"POT-Creation-Date: 2025-12-09 14:11+0900\n"
 "PO-Revision-Date: 2023-07-15 14:44+0900\n"
 "Last-Translator: Hsiaoming Yang <me@lepture.com>\n"
 "Language: zh\n"
@@ -67,73 +67,79 @@ msgid ""
 "this:"
 msgstr "一个快速而简单的 JWT 编码和解码的示例如下："
 
-#: ../../index.rst:32
+#: ../../index.rst:31
 msgid "You would find more details and advanced usage in :ref:`jwt` section."
 msgstr "您可以在 :ref:`jwt` 部分找到更多详细信息和高级用法。"
 
-#: ../../index.rst:36
+#: ../../index.rst:35
 msgid ""
-"The string ``\"secret\"`` employed in the above example is solely "
-"intended for demonstration purposes. In a production environment, it is "
-"crucial to use a highly secure secret key to ensure robust security "
-"measures."
-msgstr "上述示例中使用的字符串 ``\"secret\"`` 仅用于演示目的。在生产环境中，使用高度安全的密钥以确保强大的安全措施是至关重要的。"
+"The string ``\"your-secret-key\"`` employed in the above example is "
+"solely intended for demonstration purposes. In a production environment, "
+"it is crucial to use a highly secure secret key to ensure robust security"
+" measures."
+msgstr "上述示例中使用的字符串 ``\"your-secret-key\"`` 仅用于演示目的。在生产环境中，使用高度安全的密钥以确保强大的安全措施是至关重要的。"
 
-#: ../../index.rst:41
+#: ../../index.rst:40
 msgid "RFCs"
 msgstr "RFCs"
 
-#: ../../index.rst:43
+#: ../../index.rst:42
 msgid "It follows RFCs with extensible API. The module has implementations of:"
 msgstr "它遵循可扩展的 API，并遵循 RFC 标准。该模块包含以下实现："
 
+#: ../../index.rst:44
+msgid ":ref:`rfc7515`: :ref:`JSON Web Signature <jws>`"
+msgstr ":ref:`rfc7515`: :ref:`JSON Web Signature <jws>`"
+
 #: ../../index.rst:45
-msgid "RFC7515: :ref:`JSON Web Signature <jws>`"
-msgstr "RFC7515: :ref:`JSON Web Signature <jws>`"
+msgid ":ref:`rfc7516`: :ref:`JSON Web Encryption <jwe>`"
+msgstr ":ref:`rfc7516`: :ref:`JSON Web Encryption <jwe>`"
 
 #: ../../index.rst:46
-msgid "RFC7516: :ref:`JSON Web Encryption <jwe>`"
-msgstr "RFC7516: :ref:`JSON Web Encryption <jwe>`"
+msgid ":ref:`rfc7517`: :ref:`JSON Web Key <jwk>`"
+msgstr ":ref:`rfc7517`: :ref:`JSON Web Key <jwk>`"
 
 #: ../../index.rst:47
-msgid "RFC7517: :ref:`JSON Web Key <jwk>`"
-msgstr "RFC7517: :ref:`JSON Web Key <jwk>`"
+msgid ":ref:`rfc7518`: :ref:`JSON Web Algorithms <jwa>`"
+msgstr ":ref:`rfc7518`: :ref:`JSON Web Algorithms <jwa>`"
 
 #: ../../index.rst:48
-msgid "RFC7518: :ref:`JSON Web Algorithms <jwa>`"
-msgstr "RFC7518: :ref:`JSON Web Algorithms <jwa>`"
+msgid ":ref:`rfc7519`: :ref:`JSON Web Token <jwt>`"
+msgstr ":ref:`rfc7519`: :ref:`JSON Web Token <jwt>`"
 
 #: ../../index.rst:49
-msgid "RFC7519: :ref:`JSON Web Token <jwt>`"
-msgstr "RFC7519: :ref:`JSON Web Token <jwt>`"
+msgid ""
+":ref:`rfc7520`: Examples of Protecting Content Using JSON Object Signing "
+"and Encryption"
+msgstr ":ref:`rfc7520`: 使用 JSON 对象签名和加密保护内容的示例"
 
 #: ../../index.rst:50
-msgid ""
-"RFC7520: Examples of Protecting Content Using JSON Object Signing and "
-"Encryption"
-msgstr "RFC7520: 使用 JSON 对象签名和加密保护内容的示例"
+msgid ":ref:`rfc7638`: ``thumbprint`` for JWK"
+msgstr ":ref:`rfc7638`: JWK 的 ``thumbprint``"
 
 #: ../../index.rst:51
-msgid "RFC7638: ``thumbprint`` for JWK"
-msgstr "RFC7638: JWK 的 ``thumbprint``"
+msgid ""
+":ref:`rfc7797`: JSON Web Signature (JWS) :ref:`Unencoded Payload Option "
+"<unencoded_payload>`"
+msgstr ":ref:`rfc7797`: JSON Web Signature (JWS) :ref:`未编码载荷选项 <rfc7797>`"
 
 #: ../../index.rst:52
-msgid ""
-"RFC7797: JSON Web Signature (JWS) :ref:`Unencoded Payload Option "
-"<rfc7797>`"
-msgstr "RFC7797: JSON Web Signature (JWS) :ref:`未编码载荷选项 <rfc7797>`"
+msgid ":ref:`rfc8037`: :ref:`OKPKey` and ``EdDSA`` algorithm"
+msgstr ":ref:`rfc8037`: :ref:`OKPKey` 和 ``EdDSA`` 算法"
 
 #: ../../index.rst:53
-msgid "RFC8037: :ref:`OKPKey` and ``EdDSA`` algorithm"
-msgstr "RFC8037: :ref:`OKPKey` 和 ``EdDSA`` 算法"
+msgid ""
+":ref:`rfc8812`: ``ES256K`` algorithm and ``ECKey`` with curve "
+"``secp256k1``"
+msgstr ":ref:`rfc8812`: ``ES256K`` 算法和使用 ``secp256k1`` 曲线的 ``ECKey``"
 
 #: ../../index.rst:54
-msgid "RFC8812: ``ES256K`` algorithm"
-msgstr "RFC8812: ``ES256K`` 算法"
+msgid ":ref:`rfc9278`: JWK Thumbprint URI (``thumbprint_uri``)"
+msgstr ":ref:`rfc9278`: JWK 的 ``thumbprint_uri``"
 
 #: ../../index.rst:55
-msgid "RFC9278: JWK Thumbprint URI (``thumbprint_uri``)"
-msgstr "RFC9278: JWK 的 ``thumbprint_uri``"
+msgid ":ref:`rfc9864`: ``Ed25519`` and ``Ed448`` algorithms"
+msgstr ":ref:`rfc9864`: ``Ed25519`` 和 ``Ed448`` 算法"
 
 #: ../../index.rst:57
 msgid "And draft RFCs implementation of:"

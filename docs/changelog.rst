@@ -17,9 +17,12 @@ Changelog
 
 **Unreleased**
 
-- ``filter_algorithms`` ``names`` defaults to all algorithms. :pr:`79`.
+- ``filter_algorithms`` ``names`` defaults to all algorithms. :pull:`79`.
 - Replace ``JWSRegistry.guess_alg`` with ``JWSRegistry.guess_algorithm``.
-- ``filter_algorithms`` and ``guess_alg`` supports ``KeySet`` objects. :pr:`81`
+- ``filter_algorithms`` and ``guess_alg`` supports ``KeySet`` objects. :pull:`81`.
+- Improve ``generate_private_key`` method on Key's binding class.
+- Raise ``InvalidKeyCurveError`` when generating ECKey with an invalid curve.
+- Allow import key from cryptography native key types.
 
 1.5.0
 -----

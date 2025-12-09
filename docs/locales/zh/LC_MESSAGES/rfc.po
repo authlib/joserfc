@@ -1,0 +1,1500 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) Copyright &copy; 2023, Hsiaoming Yang
+# This file is distributed under the same license as the joserfc package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: joserfc 1.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-09 14:11+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh\n"
+"Language-Team: zh <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../rfc/7515.rst:4
+msgid "RFC 7515"
+msgstr ""
+
+#: ../../rfc/7515.rst:6
+msgid ""
+"RFC7515 defines JSON Web Signature (JWS), a specification for "
+"representing digitally signed or MAC-protected content using JSON-based "
+"data structures."
+msgstr ""
+
+#: ../../rfc/7515.rst:11 ../../rfc/7516.rst:13 ../../rfc/7517.rst:12
+#: ../../rfc/7518.rst:13 ../../rfc/7519.rst:15 ../../rfc/7520.rst:19
+#: ../../rfc/8037.rst:16 ../../rfc/9278.rst:12
+msgid "Definition"
+msgstr ""
+
+#: ../../rfc/7515.rst:13
+msgid ""
+"RFC 7515 specifies the complete framework for creating and validating "
+"JSON Web Signatures. The specification includes:"
+msgstr ""
+
+#: ../../rfc/7515.rst:17
+msgid "JWS Header"
+msgstr ""
+
+#: ../../rfc/7515.rst:19
+msgid ""
+"The JWS Header is a set of metadata that describes how the JWS object is "
+"constructed and verified. RFC 7515 defines a registry of header "
+"parameters, including:"
+msgstr ""
+
+#: ../../rfc/7515.rst:23
+msgid "``alg`` — the algorithm used to generate the signature or MAC (required)"
+msgstr ""
+
+#: ../../rfc/7515.rst:24 ../../rfc/7516.rst:27
+msgid "``jwk`` / ``jku`` — a JSON Web Key or URL pointing to a key set"
+msgstr ""
+
+#: ../../rfc/7515.rst:25
+msgid "``kid`` — a key identifier that helps recipients select the correct key"
+msgstr ""
+
+#: ../../rfc/7515.rst:26 ../../rfc/7516.rst:31
+msgid "``typ`` and ``cty`` — type and content-type hints"
+msgstr ""
+
+#: ../../rfc/7515.rst:27
+msgid ""
+"``crit`` — a list of critical header parameters that must be understood "
+"by the verifier"
+msgstr ""
+
+#: ../../rfc/7515.rst:30
+msgid ""
+"The header **must** be encoded as a Base64URL-encoded JSON object when "
+"used in compact serialization, and may appear as either a protected or "
+"unprotected header in JSON serialization."
+msgstr ""
+
+#: ../../rfc/7515.rst:35 ../../rfc/7515.rst:85 ../../rfc/7516.rst:41
+msgid "Compact Serialization"
+msgstr ""
+
+#: ../../rfc/7515.rst:37
+msgid ""
+"The compact serialization format represents a JWS as a single, period-"
+"separated string consisting of three parts:"
+msgstr ""
+
+#: ../../rfc/7515.rst:44
+msgid "Each part is Base64URL-encoded. This format is designed to be:"
+msgstr ""
+
+#: ../../rfc/7515.rst:46
+msgid "minimal and URL-safe"
+msgstr ""
+
+#: ../../rfc/7515.rst:47
+msgid "suitable for HTTP headers, query parameters, and tokens such as JWT"
+msgstr ""
+
+#: ../../rfc/7515.rst:49
+msgid ""
+"Compact serialization supports exactly **one signature**, with no "
+"unprotected headers."
+msgstr ""
+
+#: ../../rfc/7515.rst:52 ../../rfc/7515.rst:86 ../../rfc/7516.rst:62
+msgid "JSON Serialization"
+msgstr ""
+
+#: ../../rfc/7515.rst:54
+msgid ""
+"JSON serialization uses a structured JSON object to represent a JWS. It "
+"is designed for use cases that require more flexibility than the compact "
+"form. A JSON-serialized JWS can include:"
+msgstr ""
+
+#: ../../rfc/7515.rst:58
+msgid "**multiple signatures** over the same payload"
+msgstr ""
+
+#: ../../rfc/7515.rst:59
+msgid "both **protected** and **unprotected** headers"
+msgstr ""
+
+#: ../../rfc/7515.rst:60
+msgid "richer metadata, such as per-signature header values"
+msgstr ""
+
+#: ../../rfc/7515.rst:62
+msgid "The primary fields defined in RFC 7515 are:"
+msgstr ""
+
+#: ../../rfc/7515.rst:64
+msgid "``payload`` — the Base64URL-encoded content"
+msgstr ""
+
+#: ../../rfc/7515.rst:65
+msgid ""
+"``signatures`` — an array of signature objects, each containing: - "
+"``protected`` — a Base64URL-encoded header - ``header`` — an unprotected "
+"header (optional) - ``signature`` — the Base64URL-encoded signature value"
+msgstr ""
+
+#: ../../rfc/7515.rst:70
+msgid ""
+"JSON serialization is not intended for compact transmission but is ideal "
+"for multi-party signing, debugging, and more expressive JOSE workflows."
+msgstr ""
+
+#: ../../rfc/7515.rst:74 ../../rfc/7516.rst:87 ../../rfc/7517.rst:64
+#: ../../rfc/7518.rst:134 ../../rfc/7519.rst:80 ../../rfc/7520.rst:34
+#: ../../rfc/7638.rst:34 ../../rfc/7797.rst:37 ../../rfc/8037.rst:28
+#: ../../rfc/8812.rst:18 ../../rfc/9278.rst:26 ../../rfc/9864.rst:12
+msgid "Implementation"
+msgstr ""
+
+#: ../../rfc/7515.rst:76
+msgid "All features defined in RFC 7515 are fully implemented in ``joserfc``."
+msgstr ""
+
+#: ../../rfc/7515.rst:79 ../../rfc/7516.rst:92 ../../rfc/7517.rst:69
+#: ../../rfc/7518.rst:140 ../../rfc/7519.rst:85 ../../rfc/8037.rst:37
+msgid "Private modules"
+msgstr ""
+
+#: ../../rfc/7515.rst:81
+msgid "The source code resides in the private module ``joserfc/_rfc7515``:"
+msgstr ""
+
+#: ../../rfc/7515.rst:83
+msgid "JWS algorithms base models"
+msgstr ""
+
+#: ../../rfc/7515.rst:84
+msgid "JWS algorithm registry"
+msgstr ""
+
+#: ../../rfc/7515.rst:89 ../../rfc/7516.rst:102 ../../rfc/7517.rst:78
+#: ../../rfc/7519.rst:88 ../../rfc/8037.rst:42
+msgid "Public exports"
+msgstr ""
+
+#: ../../rfc/7515.rst:91
+msgid ""
+"You should always interact with JWS functionality via ``joserfc.jws``, "
+"rather than importing from the private module directly."
+msgstr ""
+
+#: ../../rfc/7515.rst:94
+msgid ""
+":meth:`joserfc.jws.serialize_compact`: Construct JWS compact "
+"serialization."
+msgstr ""
+
+#: ../../rfc/7515.rst:95
+msgid ":meth:`joserfc.jws.deserialize_compact`: Parse JWS compact serialization."
+msgstr ""
+
+#: ../../rfc/7515.rst:96
+msgid ":meth:`joserfc.jws.serialize_json`: Construct JWS JSON serialization."
+msgstr ""
+
+#: ../../rfc/7515.rst:97
+msgid ":meth:`joserfc.jws.deserialize_json`: Parse JWS JSON serialization."
+msgstr ""
+
+#: ../../rfc/7516.rst:4
+msgid "RFC 7516"
+msgstr ""
+
+#: ../../rfc/7516.rst:6
+msgid ""
+"RFC7516 defines JSON Web Encryption (JWE), a specification for "
+"representing encrypted content using JSON-based data structures. It "
+"describes how to encrypt arbitrary payloads, including how keys are "
+"managed, how encryption parameters are represented, and how JWE objects "
+"are serialized."
+msgstr ""
+
+#: ../../rfc/7516.rst:15
+msgid ""
+"RFC 7516 specifies the complete framework for creating and decrypting "
+"JSON Web Encryption (JWE) objects. The specification defines:"
+msgstr ""
+
+#: ../../rfc/7516.rst:19
+msgid "JWE Header"
+msgstr ""
+
+#: ../../rfc/7516.rst:21
+msgid ""
+"The JWE Header is a JSON object that specifies metadata describing how "
+"the payload is encrypted and how the Content Encryption Key (CEK) is "
+"managed. RFC 7516 defines a registry of header parameters, including:"
+msgstr ""
+
+#: ../../rfc/7516.rst:25
+msgid ""
+"``alg`` — the key management algorithm used to encrypt or wrap the CEK "
+"(required)"
+msgstr ""
+
+#: ../../rfc/7516.rst:26
+msgid ""
+"``enc`` — the content encryption algorithm used to protect the payload "
+"(required)"
+msgstr ""
+
+#: ../../rfc/7516.rst:28
+msgid "``kid`` — a key identifier to help recipients locate the correct key"
+msgstr ""
+
+#: ../../rfc/7516.rst:29
+msgid "``zip`` — indicates that the plaintext is compressed before encryption"
+msgstr ""
+
+#: ../../rfc/7516.rst:30
+msgid "``apu`` / ``apv`` — agreement PartyU/PartyV info for ECDH-based algorithms"
+msgstr ""
+
+#: ../../rfc/7516.rst:32
+msgid "``crit`` — critical header parameters that must be understood"
+msgstr ""
+
+#: ../../rfc/7516.rst:34
+msgid ""
+"In the compact serialization format, the header is Base64URL-encoded as "
+"the first segment of the JWE."
+msgstr ""
+
+#: ../../rfc/7516.rst:37
+msgid ""
+"In JSON serialization, it may appear as either a protected or unprotected"
+" header, similar to JWS."
+msgstr ""
+
+#: ../../rfc/7516.rst:43
+msgid ""
+"The compact serialization format represents a JWE as a single, period-"
+"separated string consisting of **five** Base64URL-encoded parts:"
+msgstr ""
+
+#: ../../rfc/7516.rst:50
+msgid "Each part has a specific meaning:"
+msgstr ""
+
+#: ../../rfc/7516.rst:52
+msgid "``protected-header`` — metadata describing algorithms and parameters"
+msgstr ""
+
+#: ../../rfc/7516.rst:53
+msgid "``encrypted-key`` — the CEK encrypted or wrapped with the recipient's key"
+msgstr ""
+
+#: ../../rfc/7516.rst:54
+msgid "``iv`` — initialization vector for the content encryption algorithm"
+msgstr ""
+
+#: ../../rfc/7516.rst:55 ../../rfc/7516.rst:76
+msgid "``ciphertext`` — the encrypted payload"
+msgstr ""
+
+#: ../../rfc/7516.rst:56
+msgid "``tag`` — the authentication tag for AEAD algorithms"
+msgstr ""
+
+#: ../../rfc/7516.rst:58
+msgid ""
+"Compact serialization is designed for simple and compact transmission and"
+" supports exactly **one recipient**."
+msgstr ""
+
+#: ../../rfc/7516.rst:64
+msgid ""
+"The JSON serialization format expresses a JWE as a JSON object and "
+"supports more complex use cases than compact serialization. It is used "
+"when:"
+msgstr ""
+
+#: ../../rfc/7516.rst:67
+msgid "encrypting for **multiple recipients**"
+msgstr ""
+
+#: ../../rfc/7516.rst:68
+msgid "including per-recipient header parameters"
+msgstr ""
+
+#: ../../rfc/7516.rst:69
+msgid "debugging or inspecting encryption metadata"
+msgstr ""
+
+#: ../../rfc/7516.rst:71
+msgid "A JSON-serialized JWE typically includes the following fields:"
+msgstr ""
+
+#: ../../rfc/7516.rst:73
+msgid "``protected`` — a Base64URL-encoded header shared across recipients"
+msgstr ""
+
+#: ../../rfc/7516.rst:74
+msgid "``unprotected`` — an unprotected shared header (optional)"
+msgstr ""
+
+#: ../../rfc/7516.rst:75
+msgid "``iv`` — the initialization vector"
+msgstr ""
+
+#: ../../rfc/7516.rst:77
+msgid "``tag`` — the authentication tag"
+msgstr ""
+
+#: ../../rfc/7516.rst:78
+msgid "``recipients`` — an array of recipient objects, each containing:"
+msgstr ""
+
+#: ../../rfc/7516.rst:80
+msgid "``header`` — per-recipient unprotected header (optional)"
+msgstr ""
+
+#: ../../rfc/7516.rst:81
+msgid "``encrypted_key`` — a CEK encrypted for that recipient"
+msgstr ""
+
+#: ../../rfc/7516.rst:83
+msgid ""
+"JSON serialization enables multi-recipient encrypted messages and greater"
+" flexibility than the compact format."
+msgstr ""
+
+#: ../../rfc/7516.rst:89
+msgid "All features defined in RFC 7516 are fully implemented in ``joserfc``."
+msgstr ""
+
+#: ../../rfc/7516.rst:94
+msgid ""
+"The underlying implementation can be found in the private module "
+"``joserfc/_rfc7516``:"
+msgstr ""
+
+#: ../../rfc/7516.rst:97
+msgid "JWE algorithms base models"
+msgstr ""
+
+#: ../../rfc/7516.rst:98
+msgid "Compact Serialization: encryption and decryption"
+msgstr ""
+
+#: ../../rfc/7516.rst:99
+msgid "JSON Serialization: encryption and decryption"
+msgstr ""
+
+#: ../../rfc/7516.rst:104
+msgid ""
+"These internals are re-exported through the public API in "
+"``joserfc.jwe``. You should always use ``joserfc.jwe`` for creating, "
+"encrypting, decrypting, and validating JWEs, and avoid importing from the"
+" private module directly."
+msgstr ""
+
+#: ../../rfc/7516.rst:109
+msgid ""
+":meth:`joserfc.jwe.encrypt_compact`: Encrypt JWE with compact "
+"serialization."
+msgstr ""
+
+#: ../../rfc/7516.rst:110
+msgid ""
+":meth:`joserfc.jwe.decrypt_compact`: Decrypt JWE with compact "
+"serialization."
+msgstr ""
+
+#: ../../rfc/7516.rst:111
+msgid ":meth:`joserfc.jwe.encrypt_json`: Encrypt JWE with JSON serialization."
+msgstr ""
+
+#: ../../rfc/7516.rst:112
+msgid ":meth:`joserfc.jwe.decrypt_json`: Decrypt JWE with JSON serialization."
+msgstr ""
+
+#: ../../rfc/7517.rst:4
+msgid "RFC 7517"
+msgstr ""
+
+#: ../../rfc/7517.rst:6
+msgid ""
+"RFC7517 defines the JSON Web Key (JWK) specification, a standard format "
+"for representing cryptographic keys using JSON. It provides a flexible "
+"and interoperable way to describe public keys, private keys, and "
+"symmetric keys for use with JWS, JWE, and other JOSE-related operations."
+msgstr ""
+
+#: ../../rfc/7517.rst:14
+msgid ""
+"RFC 7517 specifies how cryptographic keys are expressed as JSON objects "
+"and how sets of keys are represented. The specification defines:"
+msgstr ""
+
+#: ../../rfc/7517.rst:18
+msgid "JWK Object"
+msgstr ""
+
+#: ../../rfc/7517.rst:20
+msgid ""
+"A JWK is a JSON object representing a single cryptographic key. Each JWK "
+"contains a set of required and optional parameters depending on the key "
+"type. Common parameters include:"
+msgstr ""
+
+#: ../../rfc/7517.rst:24
+msgid "``kty`` — the key type (required), such as ``RSA``, ``EC``, or ``oct``"
+msgstr ""
+
+#: ../../rfc/7517.rst:25
+msgid ""
+"``use`` — intended key usage (``sig`` for signature, ``enc`` for "
+"encryption)"
+msgstr ""
+
+#: ../../rfc/7517.rst:26
+msgid ""
+"``key_ops`` — a list of permitted operations (``sign``, ``verify``, "
+"``wrapKey``, etc.)"
+msgstr ""
+
+#: ../../rfc/7517.rst:27
+msgid "``kid`` — a key identifier for selecting a specific key"
+msgstr ""
+
+#: ../../rfc/7517.rst:28
+msgid "``alg`` — the algorithm for which the key is intended"
+msgstr ""
+
+#: ../../rfc/7517.rst:29
+msgid "``x5u`` / ``x5c`` / ``x5t`` — X.509 certificate chain parameters"
+msgstr ""
+
+#: ../../rfc/7517.rst:32
+msgid "JWK Set (JWKS)"
+msgstr ""
+
+#: ../../rfc/7517.rst:34
+msgid ""
+"A JWK Set is a JSON object that contains an array of JWKs. It is commonly"
+" used for publishing multiple keys, such as rotation sets or multi-tenant"
+" public keys:"
+msgstr ""
+
+#: ../../rfc/7517.rst:47
+msgid ""
+"JWKS documents are frequently served over HTTPS endpoints, allowing "
+"clients to discover signing keys dynamically (e.g., OAuth 2.0, OpenID "
+"Connect)."
+msgstr ""
+
+#: ../../rfc/7517.rst:51
+msgid "Key Usage and Operations"
+msgstr ""
+
+#: ../../rfc/7517.rst:53
+msgid "A JWK may declare either:"
+msgstr ""
+
+#: ../../rfc/7517.rst:55
+msgid ""
+"``use`` — a coarse-grained indication of intended purpose (e.g., ``sig`` "
+"or ``enc``), or"
+msgstr ""
+
+#: ../../rfc/7517.rst:57
+msgid ""
+"``key_ops`` — a precise list of permissible operations (e.g., ``sign``, "
+"``verify``, ``encrypt``, ``unwrapKey``)"
+msgstr ""
+
+#: ../../rfc/7517.rst:60
+msgid ""
+"These fields help recipients determine how a key should be used and "
+"prevent unintended or insecure key usage."
+msgstr ""
+
+#: ../../rfc/7517.rst:66
+msgid "All definitions from RFC 7517 are fully implemented in ``joserfc``."
+msgstr ""
+
+#: ../../rfc/7517.rst:71
+msgid ""
+"The underlying logic resides in the private module ``joserfc/_rfc7517``, "
+"which defines:"
+msgstr ""
+
+#: ../../rfc/7517.rst:74
+msgid "Base key models"
+msgstr ""
+
+#: ../../rfc/7517.rst:75
+msgid "Utilities for handling PEM keys"
+msgstr ""
+
+#: ../../rfc/7517.rst:80
+msgid ""
+"Public classes and utilities are re-exported through ``joserfc.jwk``. You"
+" should always use ``joserfc.jwk`` for working with JWK objects and JWK "
+"Sets, rather than importing from the private module directly."
+msgstr ""
+
+#: ../../rfc/7517.rst:84
+msgid "This includes functionality for:"
+msgstr ""
+
+#: ../../rfc/7517.rst:86
+msgid "parsing JWK and JWKs: ``jwk.import_key``"
+msgstr ""
+
+#: ../../rfc/7517.rst:87
+msgid "constructing JWK and JWKs: ``jwk.generate_key``"
+msgstr ""
+
+#: ../../rfc/7518.rst:4
+msgid "RFC 7518"
+msgstr ""
+
+#: ../../rfc/7518.rst:6
+msgid ""
+"RFC7518 defines the JSON Web Algorithms (JWA) specification, which lists "
+"the cryptographic algorithms and associated parameters used with JWS "
+"(JSON Web Signature), JWE (JSON Web Encryption), and JWK (JSON Web Key). "
+"It standardizes algorithm names, required key properties, and security "
+"considerations to ensure interoperable and secure JOSE implementations."
+msgstr ""
+
+#: ../../rfc/7518.rst:15
+msgid ""
+"RFC 7518 provides a complete registry of algorithms used across the JOSE "
+"ecosystem. It defines algorithms for:"
+msgstr ""
+
+#: ../../rfc/7518.rst:18
+msgid "digital signatures and MACs (for JWS)"
+msgstr ""
+
+#: ../../rfc/7518.rst:19
+msgid "key management and key wrapping (for JWE)"
+msgstr ""
+
+#: ../../rfc/7518.rst:20
+msgid "content encryption (for JWE)"
+msgstr ""
+
+#: ../../rfc/7518.rst:21
+msgid "compression methods"
+msgstr ""
+
+#: ../../rfc/7518.rst:22
+msgid "associated key parameters for JWK"
+msgstr ""
+
+#: ../../rfc/7518.rst:24
+msgid ""
+"The specification ensures that JOSE objects can be securely encoded, "
+"signed, encrypted, and decrypted using consistent algorithm names and "
+"structures."
+msgstr ""
+
+#: ../../rfc/7518.rst:29
+msgid "JWS Algorithms"
+msgstr ""
+
+#: ../../rfc/7518.rst:31
+msgid "The signature and MAC algorithms defined for JWS include:"
+msgstr ""
+
+#: ../../rfc/7518.rst:33
+msgid "**Using the Algorithm \"none\"** (not secure)"
+msgstr ""
+
+#: ../../rfc/7518.rst:35
+msgid "**HMAC with SHA-2 functions**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:37
+msgid "``HS256``"
+msgstr ""
+
+#: ../../rfc/7518.rst:38
+msgid "``HS384``"
+msgstr ""
+
+#: ../../rfc/7518.rst:39
+msgid "``HS512``"
+msgstr ""
+
+#: ../../rfc/7518.rst:41
+msgid "**RSA PKCS#1 v1.5 signatures**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:43
+msgid "``RS256``"
+msgstr ""
+
+#: ../../rfc/7518.rst:44
+msgid "``RS384``"
+msgstr ""
+
+#: ../../rfc/7518.rst:45
+msgid "``RS512``"
+msgstr ""
+
+#: ../../rfc/7518.rst:47
+msgid "**RSA-PSS signatures**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:49
+msgid "``PS256``"
+msgstr ""
+
+#: ../../rfc/7518.rst:50
+msgid "``PS384``"
+msgstr ""
+
+#: ../../rfc/7518.rst:51
+msgid "``PS512``"
+msgstr ""
+
+#: ../../rfc/7518.rst:53
+msgid "**Elliptic Curve signatures**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:55
+msgid "``ES256`` (P-256 + SHA-256)"
+msgstr ""
+
+#: ../../rfc/7518.rst:56
+msgid "``ES384`` (P-384 + SHA-384)"
+msgstr ""
+
+#: ../../rfc/7518.rst:57
+msgid "``ES512`` (P-521 + SHA-512)"
+msgstr ""
+
+#: ../../rfc/7518.rst:59
+msgid ""
+"The specification defines requirements such as key sizes, curve types, "
+"and verification rules."
+msgstr ""
+
+#: ../../rfc/7518.rst:63
+msgid "JWE Key Management Algorithms"
+msgstr ""
+
+#: ../../rfc/7518.rst:65
+msgid ""
+"JWE uses key management algorithms to establish or wrap the Content "
+"Encryption Key (CEK). RFC 7518 defines:"
+msgstr ""
+
+#: ../../rfc/7518.rst:68
+msgid "**RSA-based key management**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:70
+msgid "``RSA1_5`` (deprecated for new deployments)"
+msgstr ""
+
+#: ../../rfc/7518.rst:71
+msgid "``RSA-OAEP``"
+msgstr ""
+
+#: ../../rfc/7518.rst:72
+msgid "``RSA-OAEP-256``"
+msgstr ""
+
+#: ../../rfc/7518.rst:74
+msgid "**AES Key Wrap**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:76
+msgid "``A128KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:77
+msgid "``A192KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:78
+msgid "``A256KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:80
+msgid "**Elliptic Curve Diffie–Hellman**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:82
+msgid "``ECDH-ES`` (direct)"
+msgstr ""
+
+#: ../../rfc/7518.rst:83
+msgid "``ECDH-ES+A128KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:84
+msgid "``ECDH-ES+A192KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:85
+msgid "``ECDH-ES+A256KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:87
+msgid "**PBES2 key derivation**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:89
+msgid "``PBES2-HS256+A128KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:90
+msgid "``PBES2-HS384+A192KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:91
+msgid "``PBES2-HS512+A256KW``"
+msgstr ""
+
+#: ../../rfc/7518.rst:93
+msgid "These algorithms define how the CEK is derived, encrypted, or agreed upon."
+msgstr ""
+
+#: ../../rfc/7518.rst:96
+msgid "JWE Content Encryption Algorithms"
+msgstr ""
+
+#: ../../rfc/7518.rst:98
+msgid "Content encryption algorithms defined by RFC 7518 include:"
+msgstr ""
+
+#: ../../rfc/7518.rst:100
+msgid "**AES GCM** (authenticated encryption):"
+msgstr ""
+
+#: ../../rfc/7518.rst:102
+msgid "``A128GCM``"
+msgstr ""
+
+#: ../../rfc/7518.rst:103
+msgid "``A192GCM``"
+msgstr ""
+
+#: ../../rfc/7518.rst:104
+msgid "``A256GCM``"
+msgstr ""
+
+#: ../../rfc/7518.rst:106
+msgid "**AES-CBC with HMAC SHA-2**:"
+msgstr ""
+
+#: ../../rfc/7518.rst:108
+msgid "``A128CBC-HS256``"
+msgstr ""
+
+#: ../../rfc/7518.rst:109
+msgid "``A192CBC-HS384``"
+msgstr ""
+
+#: ../../rfc/7518.rst:110
+msgid "``A256CBC-HS512``"
+msgstr ""
+
+#: ../../rfc/7518.rst:112
+msgid ""
+"Each algorithm specifies required key sizes, initialization vectors, "
+"authentication tag lengths, and validation procedures."
+msgstr ""
+
+#: ../../rfc/7518.rst:116
+msgid "Compression Algorithms"
+msgstr ""
+
+#: ../../rfc/7518.rst:118
+msgid "RFC 7518 defines a simple registry for compression algorithms used in JWE."
+msgstr ""
+
+#: ../../rfc/7518.rst:120
+msgid "The only standardized algorithm is:"
+msgstr ""
+
+#: ../../rfc/7518.rst:122
+msgid "``DEF`` — DEFLATE (RFC 1951)"
+msgstr ""
+
+#: ../../rfc/7518.rst:124
+msgid ""
+"Compression is applied before encryption and controlled by the ``zip`` "
+"header parameter."
+msgstr ""
+
+#: ../../rfc/7518.rst:128
+msgid "JWK Algorithm Parameters"
+msgstr ""
+
+#: ../../rfc/7518.rst:130
+msgid ""
+"RFC 7518 also defines required and optional parameters for JWK keys based"
+" on the selected algorithm."
+msgstr ""
+
+#: ../../rfc/7518.rst:136
+msgid ""
+"All algorithms and related definitions from RFC 7518 are fully "
+"implemented in ``joserfc``."
+msgstr ""
+
+#: ../../rfc/7518.rst:142
+msgid ""
+"The underlying logic is located in the private module "
+"``joserfc/_rfc7518``."
+msgstr ""
+
+#: ../../rfc/7518.rst:144
+msgid "(TODO)"
+msgstr ""
+
+#: ../../rfc/7519.rst:4
+msgid "RFC 7519"
+msgstr ""
+
+#: ../../rfc/7519.rst:6
+msgid ""
+"RFC7519 defines the JSON Web Token (JWT) specification, a compact and "
+"URL-safe format for representing claims securely between parties. JWTs "
+"are widely used for authentication, authorization, and information "
+"exchange in modern web applications and APIs."
+msgstr ""
+
+#: ../../rfc/7519.rst:11
+msgid ""
+"A JWT can be digitally signed (JWS) or encrypted (JWE), enabling "
+"integrity protection, confidentiality, or both."
+msgstr ""
+
+#: ../../rfc/7519.rst:17
+msgid ""
+"RFC 7519 specifies the structure, processing rules, and registered claim "
+"names for JSON Web Tokens. A JWT consists of three parts (for JWS) or "
+"five parts (for JWE), with a standardized set of claims to ensure "
+"interoperability across different systems."
+msgstr ""
+
+#: ../../rfc/7519.rst:22
+msgid "Each JWT contains:"
+msgstr ""
+
+#: ../../rfc/7519.rst:24
+msgid "**Header** — metadata describing the token type and algorithm"
+msgstr ""
+
+#: ../../rfc/7519.rst:25
+msgid "**Payload** — a set of claims about an entity and token metadata"
+msgstr ""
+
+#: ../../rfc/7519.rst:26
+msgid "**Signature / Authentication Tag** — used to verify integrity"
+msgstr ""
+
+#: ../../rfc/7519.rst:29
+msgid "Registered Claim Names"
+msgstr ""
+
+#: ../../rfc/7519.rst:31
+msgid ""
+"RFC 7519 defines a set of *registered* claim names that have specific, "
+"interoperable meanings:"
+msgstr ""
+
+#: ../../rfc/7519.rst:34
+msgid "``iss`` — **Issuer**: identifies the principal issuing the token"
+msgstr ""
+
+#: ../../rfc/7519.rst:35
+msgid "``sub`` — **Subject**: identifies the principal that is the subject"
+msgstr ""
+
+#: ../../rfc/7519.rst:36
+msgid "``aud`` — **Audience**: intended recipients of the token"
+msgstr ""
+
+#: ../../rfc/7519.rst:37
+msgid ""
+"``exp`` — **Expiration Time**: time after which the token must not be "
+"accepted"
+msgstr ""
+
+#: ../../rfc/7519.rst:38
+msgid "``nbf`` — **Not Before**: identifies when the token becomes valid"
+msgstr ""
+
+#: ../../rfc/7519.rst:39
+msgid "``iat`` — **Issued At**: timestamp of issuance"
+msgstr ""
+
+#: ../../rfc/7519.rst:40
+msgid "``jti`` — **JWT ID**: unique identifier for preventing replay attacks"
+msgstr ""
+
+#: ../../rfc/7519.rst:42
+msgid "These claims are optional unless required by the application."
+msgstr ""
+
+#: ../../rfc/7519.rst:45
+msgid "Public and Private Claims"
+msgstr ""
+
+#: ../../rfc/7519.rst:47
+msgid "Beyond registered claims, JWT supports:"
+msgstr ""
+
+#: ../../rfc/7519.rst:49
+msgid ""
+"**Public claims** — custom claims registered in the IANA JWT Claims "
+"Registry"
+msgstr ""
+
+#: ../../rfc/7519.rst:50
+msgid ""
+"**Private claims** — application-specific claims agreed upon by "
+"communicating parties"
+msgstr ""
+
+#: ../../rfc/7519.rst:52
+msgid ""
+"The payload is a JSON object and can contain any key–value pairs, as long"
+" as they do not collide with registered claim names."
+msgstr ""
+
+#: ../../rfc/7519.rst:56
+msgid "JWT Structure (JWS)"
+msgstr ""
+
+#: ../../rfc/7519.rst:58
+msgid "A signed JWT uses the JWS compact serialization format:"
+msgstr ""
+
+#: ../../rfc/7519.rst:64
+msgid ""
+"Each component is Base64URL-encoded. This is the most common form, used "
+"in OAuth 2.0, OpenID Connect, API tokens, and session systems."
+msgstr ""
+
+#: ../../rfc/7519.rst:68
+msgid "JWT Structure (JWE)"
+msgstr ""
+
+#: ../../rfc/7519.rst:70
+msgid "An encrypted JWT uses JWE compact serialization:"
+msgstr ""
+
+#: ../../rfc/7519.rst:76
+msgid ""
+"JWE-based JWTs provide confidentiality as well as integrity, suitable for"
+" transmitting sensitive information."
+msgstr ""
+
+#: ../../rfc/7519.rst:82
+msgid "All JWT features defined in RFC 7519 are implemented in ``joserfc``."
+msgstr ""
+
+#: ../../rfc/7520.rst:4
+msgid "RFC 7520"
+msgstr ""
+
+#: ../../rfc/7520.rst:6
+msgid ""
+"RFC7520 provides a comprehensive set of **examples for JOSE (JSON Object "
+"Signing and Encryption)**, covering JWS, JWE, and JWK. Its purpose is to "
+"give clear, interoperable, and implementation-friendly demonstrations of "
+"how JOSE specifications should be used in practice."
+msgstr ""
+
+#: ../../rfc/7520.rst:11
+msgid ""
+"These examples include complete, real-world–style values for headers, "
+"payloads, signatures, encrypted keys, initialization vectors, ciphertext,"
+" and authentication tags."
+msgstr ""
+
+#: ../../rfc/7520.rst:15
+msgid ""
+"The examples in this RFC are frequently used as interoperability test "
+"vectors across JOSE implementations, including ``joserfc``."
+msgstr ""
+
+#: ../../rfc/7520.rst:21
+msgid "RFC 7520 defines **deterministic examples** for every major JOSE workflow:"
+msgstr ""
+
+#: ../../rfc/7520.rst:23
+msgid "Creating and validating a JWS (both compact and JSON serialization)"
+msgstr ""
+
+#: ../../rfc/7520.rst:24
+msgid "Encrypting and decrypting a JWE (compact and JSON serialization)"
+msgstr ""
+
+#: ../../rfc/7520.rst:25
+msgid "Multiple-signature and multiple-recipient JOSE objects"
+msgstr ""
+
+#: ../../rfc/7520.rst:26
+msgid "Public and private JSON Web Keys (JWK)"
+msgstr ""
+
+#: ../../rfc/7520.rst:27
+msgid "Algorithms, and key wrapping"
+msgstr ""
+
+#: ../../rfc/7520.rst:28
+msgid "Cross-RFC examples linking RFCs 7515–7519"
+msgstr ""
+
+#: ../../rfc/7520.rst:30
+msgid ""
+"These examples serve as canonical references for testing and verifying "
+"that implementations conform to the JOSE standards."
+msgstr ""
+
+#: ../../rfc/7520.rst:36
+msgid ""
+"All examples from RFC 7520 can be validated using ``joserfc``. They are "
+"commonly used as test vectors in the project's test suite. You can find "
+"all the examples in ``tests/rfc7520``."
+msgstr ""
+
+#: ../../rfc/7638.rst:4
+msgid "RFC 7638"
+msgstr ""
+
+#: ../../rfc/7638.rst:6
+msgid ""
+"RFC7638 defines the method for computing a **JSON Web Key (JWK) "
+"Thumbprint**. A thumbprint is a stable, collision-resistant identifier "
+"derived from the key material of a JWK. It provides a secure and "
+"interoperable way to compare, reference, or identify keys without "
+"exposing the full key contents."
+msgstr ""
+
+#: ../../rfc/7638.rst:12
+msgid ""
+"JWK thumbprints are commonly used in OAuth, OpenID Connect, security "
+"metadata documents, and JOSE-based systems that require compact and "
+"deterministic key identifiers."
+msgstr ""
+
+#: ../../rfc/7638.rst:17
+msgid "Canonical JWK Form"
+msgstr ""
+
+#: ../../rfc/7638.rst:19
+msgid ""
+"To ensure consistency, a JWK must be reduced to a **canonical form**. "
+"This includes:"
+msgstr ""
+
+#: ../../rfc/7638.rst:22
+msgid "Only the required members for the specific key type"
+msgstr ""
+
+#: ../../rfc/7638.rst:23
+msgid "Lexicographically sorted keys"
+msgstr ""
+
+#: ../../rfc/7638.rst:24
+msgid "JSON without whitespace"
+msgstr ""
+
+#: ../../rfc/7638.rst:25
+msgid "UTF-8 encoded prior to hashing"
+msgstr ""
+
+#: ../../rfc/7638.rst:27
+msgid "Examples of required members:"
+msgstr ""
+
+#: ../../rfc/7638.rst:29
+#, python-brace-format
+msgid "RSA: ``{\"e\", \"kty\", \"n\"}``"
+msgstr ""
+
+#: ../../rfc/7638.rst:30
+#, python-brace-format
+msgid "EC: ``{\"crv\", \"kty\", \"x\", \"y\"}``"
+msgstr ""
+
+#: ../../rfc/7638.rst:31
+#, python-brace-format
+msgid "Symmetric: ``{\"k\", \"kty\"}``"
+msgstr ""
+
+#: ../../rfc/7638.rst:36 ../../rfc/9278.rst:28
+msgid ""
+"``joserfc`` implements JWK thumbprint support according to RFC7638. The "
+"functionality is exposed through:"
+msgstr ""
+
+#: ../../rfc/7638.rst:39
+msgid ":meth:`joserfc.jwk.thumbprint`"
+msgstr ""
+
+#: ../../rfc/7638.rst:40
+msgid ":meth:`joserfc.jwk.OctKey.thumbprint`"
+msgstr ""
+
+#: ../../rfc/7638.rst:41
+msgid ":meth:`joserfc.jwk.RSAKey.thumbprint`"
+msgstr ""
+
+#: ../../rfc/7638.rst:42
+msgid ":meth:`joserfc.jwk.ECKey.thumbprint`"
+msgstr ""
+
+#: ../../rfc/7638.rst:43
+msgid ":meth:`joserfc.jwk.OKPKey.thumbprint`"
+msgstr ""
+
+#: ../../rfc/7797.rst:4
+msgid "RFC 7797"
+msgstr ""
+
+#: ../../rfc/7797.rst:6
+msgid ""
+"RFC7797 defines the **JSON Web Signature (JWS) Unencoded Payload "
+"Option**, an extension to RFC 7515 that allows the payload of a JWS to be"
+" transmitted **without Base64URL encoding**. This is useful for "
+"applications where the payload must remain in its original form, such as "
+"streaming data, detached content, or cases where re-encoding would be "
+"impractical."
+msgstr ""
+
+#: ../../rfc/7797.rst:13
+msgid ""
+"This extension introduces the ``b64`` header parameter and modifies the "
+"rules for producing and verifying JWS signatures when payload encoding is"
+" disabled."
+msgstr ""
+
+#: ../../rfc/7797.rst:18
+msgid "The ``b64`` Header Parameter"
+msgstr ""
+
+#: ../../rfc/7797.rst:20
+msgid ""
+"The ``b64`` header parameter determines whether the payload of a JWS is "
+"Base64URL-encoded before signing:"
+msgstr ""
+
+#: ../../rfc/7797.rst:23
+msgid "``b64 = true`` (default) — payload **must** be Base64URL-encoded"
+msgstr ""
+
+#: ../../rfc/7797.rst:24
+msgid "``b64 = false`` — payload is included **as-is**, without encoding"
+msgstr ""
+
+#: ../../rfc/7797.rst:26
+msgid "When ``b64`` is ``false``:"
+msgstr ""
+
+#: ../../rfc/7797.rst:28
+msgid "It **must** appear in the *protected header*"
+msgstr ""
+
+#: ../../rfc/7797.rst:29
+msgid "``crit`` must include ``\"b64\"``, ensuring recipients understand it"
+msgstr ""
+
+#: ../../rfc/7797.rst:30
+msgid "The payload is transmitted in its original form (binary or text)"
+msgstr ""
+
+#: ../../rfc/7797.rst:31
+msgid "The signing input changes accordingly"
+msgstr ""
+
+#: ../../rfc/7797.rst:33
+msgid ""
+"These constraints ensure that consumers explicitly acknowledge the "
+"unencoded payload behavior."
+msgstr ""
+
+#: ../../rfc/7797.rst:39
+msgid ""
+"``joserfc`` fully supports RFC 7797 for both signing and verifying JWS "
+"objects with unencoded payloads."
+msgstr ""
+
+#: ../../rfc/7797.rst:42
+msgid "The relevant functionality is integrated default into:"
+msgstr ""
+
+#: ../../rfc/7797.rst:44
+msgid "``jws.serialize_compact``"
+msgstr ""
+
+#: ../../rfc/7797.rst:45
+msgid "``jws.deserialize_compact``"
+msgstr ""
+
+#: ../../rfc/7797.rst:46
+msgid "``jws.serialize_json``"
+msgstr ""
+
+#: ../../rfc/7797.rst:47
+msgid "``jws.deserialize_json``"
+msgstr ""
+
+#: ../../rfc/8037.rst:4
+msgid "RFC 8037"
+msgstr ""
+
+#: ../../rfc/8037.rst:6
+msgid ""
+"RFC8037 defines the use of **Edwards-Curve Digital Signature Algorithm "
+"(EdDSA)** for JSON Web Signature (JWS) and JSON Web Key (JWK)."
+msgstr ""
+
+#: ../../rfc/8037.rst:9
+msgid "It introduces support for:"
+msgstr ""
+
+#: ../../rfc/8037.rst:11
+msgid "The ``OKP`` (Octet Key Pair) JWK key type"
+msgstr ""
+
+#: ../../rfc/8037.rst:12
+msgid "``EdDSA`` signature algorithm"
+msgstr ""
+
+#: ../../rfc/8037.rst:18
+msgid ""
+"RFC 8037 extends JOSE by defining how EdDSA-based keys and signatures are"
+" represented and processed within the JWS and JWK frameworks."
+msgstr ""
+
+#: ../../rfc/8037.rst:21
+msgid "The specification primarily introduces:"
+msgstr ""
+
+#: ../../rfc/8037.rst:23
+msgid "**OKP key type** for Ed25519, Ed448, X25519, X448"
+msgstr ""
+
+#: ../../rfc/8037.rst:24
+msgid "**JWS ``alg`` = \"EdDSA\"**"
+msgstr ""
+
+#: ../../rfc/8037.rst:25
+msgid "Proper encoding and validation requirements using raw EdDSA signatures"
+msgstr ""
+
+#: ../../rfc/8037.rst:30
+msgid "``joserfc`` includes full RFC 8037 support:"
+msgstr ""
+
+#: ../../rfc/8037.rst:32
+msgid "OKP key handling (Ed25519, Ed448, X25519, X448)"
+msgstr ""
+
+#: ../../rfc/8037.rst:33
+msgid "JWS signature creation and verification using ``EdDSA``"
+msgstr ""
+
+#: ../../rfc/8037.rst:34
+msgid "JWK parsing and serialization for OKP keys"
+msgstr ""
+
+#: ../../rfc/8037.rst:39
+msgid "The source code is implemented in internal modules ``joserfc/_rfc8037``."
+msgstr ""
+
+#: ../../rfc/8037.rst:44
+msgid ""
+"Public classes and utilities are re-exported through ``joserfc.jwk``. You"
+" should always interact with ``joserfc.jwk`` module."
+msgstr ""
+
+#: ../../rfc/8037.rst:48 ../../rfc/8812.rst:31 ../../rfc/9864.rst:27
+msgid "Example Usage"
+msgstr ""
+
+#: ../../rfc/8037.rst:50
+msgid "Signing with an Ed25519 key:"
+msgstr ""
+
+#: ../../rfc/8037.rst:63 ../../rfc/8812.rst:45 ../../rfc/9864.rst:43
+msgid "Verification:"
+msgstr ""
+
+#: ../../rfc/8037.rst:70
+msgid ""
+"``joserfc`` handles OKP key parsing, normalization, and EdDSA signature "
+"validation according to RFC 8037."
+msgstr ""
+
+#: ../../rfc/8812.rst:4
+msgid "RFC 8812"
+msgstr ""
+
+#: ../../rfc/8812.rst:6
+msgid ""
+"RFC8812 defines the use of the **secp256k1** elliptic curve for JSON Web "
+"Signatures (JWS) and JSON Web Keys (JWK)."
+msgstr ""
+
+#: ../../rfc/8812.rst:9
+msgid "It introduces:"
+msgstr ""
+
+#: ../../rfc/8812.rst:11
+msgid "the new JWS algorithm identifier **ES256K**"
+msgstr ""
+
+#: ../../rfc/8812.rst:12
+msgid "the new JWK elliptic curve identifier **secp256k1**"
+msgstr ""
+
+#: ../../rfc/8812.rst:14
+msgid ""
+"This RFC extends RFC 7515 (JWS) and RFC 7517 (JWK) by adding support for "
+"a curve commonly used in blockchain ecosystems."
+msgstr ""
+
+#: ../../rfc/8812.rst:20
+msgid "``joserfc`` fully supports the definitions introduced in RFC 8812:"
+msgstr ""
+
+#: ../../rfc/8812.rst:22
+msgid "Parsing and generating EC Key with ``crv=\"secp256k1\"``"
+msgstr ""
+
+#: ../../rfc/8812.rst:23
+msgid "Signing and verifying JWS messages using the ``ES256K`` algorithm"
+msgstr ""
+
+#: ../../rfc/8812.rst:25
+msgid "The functionality is available through:"
+msgstr ""
+
+#: ../../rfc/8812.rst:27
+msgid "``joserfc.jws`` for signing and verifying"
+msgstr ""
+
+#: ../../rfc/8812.rst:28
+msgid "``joserfc.jwk`` for key loading, generation, and handling"
+msgstr ""
+
+#: ../../rfc/8812.rst:33
+msgid "Signing with an ``secp256k1`` EC key:"
+msgstr ""
+
+#: ../../rfc/9278.rst:4
+msgid "RFC 9278"
+msgstr ""
+
+#: ../../rfc/9278.rst:6
+msgid ""
+"RFC9278 defines the **JWK Thumbprint URI**, an extension to RFC 7638 (JWK"
+" Thumbprint). It provides a standard way to represent a JWK Thumbprint as"
+" a URI, enabling stable, comparable key identifiers that can be "
+"referenced externally."
+msgstr ""
+
+#: ../../rfc/9278.rst:14
+msgid ""
+"RFC 9278 builds on RFC 7638 by specifying how a JWK Thumbprint "
+"(Base64URL-encoded SHA-256 digest of a key’s canonical JSON form) can be "
+"expressed as a URI. This allows JWK-based key identifiers to be used in "
+"contexts where a URI is required."
+msgstr ""
+
+#: ../../rfc/9278.rst:19
+msgid "The JWK Thumbprint URI uses the following format:"
+msgstr ""
+
+#: ../../rfc/9278.rst:31
+msgid ":meth:`joserfc.jwk.thumbprint_uri`"
+msgstr ""
+
+#: ../../rfc/9278.rst:32
+msgid ":meth:`joserfc.jwk.OctKey.thumbprint_uri`"
+msgstr ""
+
+#: ../../rfc/9278.rst:33
+msgid ":meth:`joserfc.jwk.RSAKey.thumbprint_uri`"
+msgstr ""
+
+#: ../../rfc/9278.rst:34
+msgid ":meth:`joserfc.jwk.ECKey.thumbprint_uri`"
+msgstr ""
+
+#: ../../rfc/9278.rst:35
+msgid ":meth:`joserfc.jwk.OKPKey.thumbprint_uri`"
+msgstr ""
+
+#: ../../rfc/9278.rst:45
+msgid ""
+"This provides a standards-compliant identifier suitable for use in any "
+"URI field across OAuth and JOSE-related specifications."
+msgstr ""
+
+#: ../../rfc/9864.rst:4
+msgid "RFC 9864"
+msgstr ""
+
+#: ../../rfc/9864.rst:6
+msgid ""
+"RFC9864 defines the concept of **fully-specified algorithm identifiers** "
+"for JOSE and COSE. Under this specification, algorithm names must "
+"uniquely and unambiguously determine all underlying cryptographic "
+"operations. As a result, ambiguous or polymorphic identifiers are "
+"considered deprecated."
+msgstr ""
+
+#: ../../rfc/9864.rst:14
+msgid "**joserfc** implements ONLY the JOSE-related portions of RFC 9864."
+msgstr ""
+
+#: ../../rfc/9864.rst:16
+msgid ""
+"In accordance with the specification, the use of the polymorphic "
+"``EdDSA`` algorithm identifier is deprecated. You should instead select a"
+" fully-specified algorithm:"
+msgstr ""
+
+#: ../../rfc/9864.rst:20
+msgid "``Ed25519``"
+msgstr ""
+
+#: ../../rfc/9864.rst:21
+msgid "``Ed448``"
+msgstr ""
+
+#: ../../rfc/9864.rst:23
+msgid ""
+"By using fully-specified identifiers, you ensure deterministic, "
+"interoperable behavior and avoid ambiguity during algorithm negotiation."
+msgstr ""
+
+#: ../../rfc/9864.rst:29
+msgid "Signing with an ``Ed25519`` key:"
+msgstr ""
+
+#: ../../rfc/index.rst:2
+msgid "RFCs"
+msgstr ""
+
