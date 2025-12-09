@@ -58,6 +58,28 @@ present in the claims:
 
     jwt.check_sensitive_data(claims)
 
+Convert datetime
+~~~~~~~~~~~~~~~~
+
+:meth:`encode` will convert ``datetime`` to timestamp integer for ``iat``,
+``exp``, and ``nbf``:
+
+.. code-block:: python
+
+    import datetime
+    from joserfc import jwk, jwt
+
+    now = datetime.datetime.now(datetime.UTC)
+    claims = {
+        "iss": "https://authlib.org",
+        "iat": now,
+        "exp": now + datetime.timedelta(minutes=5),
+    }
+    header = {"alg": "HS256"}
+    key = jwk.import_key("your-secret-key", "oct")
+    text = jwt.encode(header, claims, key)
+
+
 Decode token
 ------------
 
@@ -166,6 +188,12 @@ The ``JWTClaimsRegistry`` has built-in validators for timing related fields:
 - ``exp``: expiration time
 - ``nbf``: not before
 - ``iat``: issued at
+
+.. code-block:: python
+
+    claims = {"iss": "https://authlib.org", "exp": 1765256501}
+    claims_requests = JWTClaimsRegistry()
+    claims_requests.validate(claims)  # this will raise ExpiredTokenError
 
 List validation
 ~~~~~~~~~~~~~~~
