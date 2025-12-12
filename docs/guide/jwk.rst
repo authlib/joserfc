@@ -177,6 +177,8 @@ You can import an ``ECKey`` from string, bytes and a JWK (in dict).
 Derive an "EC" Key
 ~~~~~~~~~~~~~~~~~~
 
+.. versionadded:: 1.6.0
+
 ``joserfc`` provides deterministic key derivation helpers for EC key.
 This method allows applications to derive a *stable* JWK from an application
 secret (for example, ``SECRET_KEY`` in a web framework), while still producing
@@ -251,6 +253,8 @@ You can import an ``OKPKey`` from string, bytes and a JWK (in dict).
 
 Derive an "OKP" Key
 ~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 1.6.0
 
 Just like above ``ECKey``, ``joserfc`` provides a ``OKPKey.derive_key`` method
 to derive a *stable* JWK.
