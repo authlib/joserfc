@@ -90,40 +90,46 @@ JSON Web Encryption
 ``joserfc.jwe`` module supports algorithms from RFC7518, and drafts of
 ``ECDH-1PU``. You MUST specify the correct key type for each algorithm.
 
-===================  ==========  ===========================
-Algorithm name       Key Type    Requirements
-===================  ==========  ===========================
-dir                  OctKey      :bdg-success:`Recommended`
-A128KW               OctKey      :bdg-success:`Recommended`
-A192KW               OctKey      :bdg-muted:`Optional`
-A256KW               OctKey      :bdg-success:`Recommended`
-RSA1_5               RSAKey      :bdg-danger:`Deprecated`
-RSA-OAEP             RSAKey      :bdg-success:`Recommended`
-RSA-OAEP-256         RSAKey      :bdg-muted:`Optional`
-ECDH-ES              ECKey       :bdg-success:`Recommended`
-ECDH-ES+A128KW       ECKey       :bdg-success:`Recommended`
-ECDH-ES+A192KW       ECKey       :bdg-muted:`Optional`
-ECDH-ES+A256KW       ECKey       :bdg-success:`Recommended`
-A128GCMKW            OctKey      :bdg-muted:`Optional`
-A192GCMKW            OctKey      :bdg-muted:`Optional`
-A256GCMKW            OctKey      :bdg-muted:`Optional`
-PBES2-HS256+A128KW   RSAKey      :bdg-muted:`Optional`
-PBES2-HS384+A192KW   RSAKey      :bdg-muted:`Optional`
-PBES2-HS512+A256KW   RSAKey      :bdg-muted:`Optional`
-===================  ==========  ===========================
-
-All algorithms defined in RFC7518 for "enc" value are recommended, which
-including:
-
-- ``A128CBC-HS256``
-- ``A192CBC-HS384``
-- ``A256CBC-HS512``
-- ``A128GCM``
-- ``A192GCM``
-- ``A256GCM``
+===================  =====================  ===========================
+Algorithm name       Key Type               Requirements
+===================  =====================  ===========================
+dir                  OctKey                 :bdg-success:`Recommended`
+A128KW               OctKey (128 bits)      :bdg-success:`Recommended`
+A192KW               OctKey (192 bits)      :bdg-muted:`Optional`
+A256KW               OctKey (256 bits)      :bdg-success:`Recommended`
+RSA1_5               RSAKey                 :bdg-danger:`Deprecated`
+RSA-OAEP             RSAKey                 :bdg-success:`Recommended`
+RSA-OAEP-256         RSAKey                 :bdg-muted:`Optional`
+ECDH-ES              ECKey                  :bdg-success:`Recommended`
+ECDH-ES+A128KW       ECKey                  :bdg-success:`Recommended`
+ECDH-ES+A192KW       ECKey                  :bdg-muted:`Optional`
+ECDH-ES+A256KW       ECKey                  :bdg-success:`Recommended`
+A128GCMKW            OctKey (128 bits)      :bdg-muted:`Optional`
+A192GCMKW            OctKey (192 bits)      :bdg-muted:`Optional`
+A256GCMKW            OctKey (256 bits)      :bdg-muted:`Optional`
+PBES2-HS256+A128KW   RSAKey                 :bdg-muted:`Optional`
+PBES2-HS384+A192KW   RSAKey                 :bdg-muted:`Optional`
+PBES2-HS512+A256KW   RSAKey                 :bdg-muted:`Optional`
+===================  =====================  ===========================
 
 .. warning::
     ``RSA1_5`` algorithm is deprecated via https://datatracker.ietf.org/doc/draft-ietf-jose-deprecate-none-rsa15/
+
+Encryption Algorithms
+~~~~~~~~~~~~~~~~~~~~~
+
+All algorithms defined in RFC7518 for "enc" value are recommended.
+
+===================  ===========================
+Encryption name      Requirements
+===================  ===========================
+A128CBC-HS256        :bdg-success:`Recommended`
+A192CBC-HS384        :bdg-success:`Recommended`
+A256CBC-HS512        :bdg-success:`Recommended`
+A128GCM              :bdg-success:`Recommended`
+A192GCM              :bdg-success:`Recommended`
+A256GCM              :bdg-success:`Recommended`
+===================  ===========================
 
 There is also a ``DEF`` algorithm for the "zip" (compression) header parameter,
 using of ``DEF`` is optional.
