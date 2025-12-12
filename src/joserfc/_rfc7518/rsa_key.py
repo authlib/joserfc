@@ -13,7 +13,6 @@ from cryptography.hazmat.primitives.asymmetric.rsa import (
     rsa_crt_dmq1,
     rsa_crt_iqmp,
 )
-from cryptography.hazmat.backends import default_backend
 from ..registry import KeyParameter
 from ..errors import SecurityWarning, KeyParameterError
 from .._rfc7517.models import AsymmetricKey
@@ -45,11 +44,7 @@ class RSABinding(CryptographyBinding):
 
     @staticmethod
     def generate_private_key(size: int) -> RSAPrivateKey:
-        return generate_private_key(
-            public_exponent=65537,
-            key_size=size,
-            backend=default_backend(),
-        )
+        return generate_private_key(public_exponent=65537, key_size=size)
 
     @staticmethod
     def import_private_key(obj: RSADictKey) -> RSAPrivateKey:
@@ -82,7 +77,7 @@ class RSABinding(CryptographyBinding):
                 public_numbers=public_numbers,
             )
 
-        return numbers.private_key(default_backend())
+        return numbers.private_key()
 
     @staticmethod
     def export_private_key(key: RSAPrivateKey) -> RSADictKey:
@@ -101,7 +96,7 @@ class RSABinding(CryptographyBinding):
     @staticmethod
     def import_public_key(obj: RSADictKey) -> RSAPublicKey:
         numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))
-        return numbers.public_key(default_backend())
+        return numbers.public_key()
 
     @staticmethod
     def export_public_key(key: RSAPublicKey) -> dict[str, str]:

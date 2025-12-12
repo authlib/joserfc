@@ -3,7 +3,6 @@ from __future__ import annotations
 import typing as t
 from functools import cached_property
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey, Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey, Ed448PrivateKey
 from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PublicKey, X25519PrivateKey
@@ -282,7 +281,6 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
             hkdf = HKDF(
                 algorithm=algorithm,
                 length=OKP_SEED_SIZES[crv],
-                backend=default_backend(),
                 **kdf_options,
             )
             seed = hkdf.derive(to_bytes(secret))
@@ -291,7 +289,6 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
             pbkdf2 = PBKDF2HMAC(
                 algorithm=algorithm,
                 length=OKP_SEED_SIZES[crv],
-                backend=default_backend(),
                 **kdf_options,
             )
             seed = pbkdf2.derive(to_bytes(secret))

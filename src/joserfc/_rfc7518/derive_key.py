@@ -1,7 +1,6 @@
 from __future__ import annotations
 import struct
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash
 from ..registry import Header
 from ..util import to_bytes, urlsafe_b64decode
@@ -40,7 +39,6 @@ def derive_key_for_concat_kdf(
         algorithm=hashes.SHA256(),
         length=bit_size // 8,
         otherinfo=fixed_info,
-        backend=default_backend(),
     )
     return ckdf.derive(shared_key)
 

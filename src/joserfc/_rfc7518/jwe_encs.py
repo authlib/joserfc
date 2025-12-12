@@ -11,7 +11,6 @@ Encryption per `Section 5`_.
 from __future__ import annotations
 import hmac
 import hashlib
-from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher
 from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.ciphers.modes import GCM, CBC
@@ -54,7 +53,7 @@ class CBCHS2EncModel(JWEEncModel):
         pad = PKCS7(AES.block_size).padder()
         padded_data = pad.update(plaintext) + pad.finalize()
 
-        cipher = Cipher(AES(ekey), CBC(iv), backend=default_backend())
+        cipher = Cipher(AES(ekey), CBC(iv))
         enc = cipher.encryptor()
         ciphertext = enc.update(padded_data) + enc.finalize()
         tag = self._hmac(ciphertext, aad, iv, hkey)
@@ -69,7 +68,7 @@ class CBCHS2EncModel(JWEEncModel):
         if not hmac.compare_digest(ctag, tag):
             raise DecodeError("tag does not match")
 
-        cipher = Cipher(AES(dkey), CBC(iv), backend=default_backend())
+        cipher = Cipher(AES(dkey), CBC(iv))
         d = cipher.decryptor()
         data = d.update(ciphertext) + d.finalize()
         unpad = PKCS7(AES.block_size).unpadder()
@@ -90,7 +89,7 @@ class GCMEncModel(JWEEncModel):
 
     def encrypt(self, plaintext: bytes, cek: bytes, iv: bytes, aad: bytes) -> tuple[bytes, bytes]:
         """Key Encryption with AES GCM"""
-        cipher = Cipher(AES(cek), GCM(iv), backend=default_backend())
+        cipher = Cipher(AES(cek), GCM(iv))
         enc = cipher.encryptor()
         enc.authenticate_additional_data(aad)
         ciphertext = enc.update(plaintext) + enc.finalize()
@@ -98,7 +97,7 @@ class GCMEncModel(JWEEncModel):
 
     def decrypt(self, ciphertext: bytes, tag: bytes, cek: bytes, iv: bytes, aad: bytes) -> bytes:
         """Key Decryption with AES GCM"""
-        cipher = Cipher(AES(cek), GCM(iv, tag), backend=default_backend())
+        cipher = Cipher(AES(cek), GCM(iv, tag))
         d = cipher.decryptor()
         d.authenticate_additional_data(aad)
         try:

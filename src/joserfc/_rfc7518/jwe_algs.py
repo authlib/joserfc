@@ -2,7 +2,6 @@ from __future__ import annotations
 import secrets
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.keywrap import (
     aes_key_wrap,
     aes_key_unwrap,
@@ -92,12 +91,12 @@ class AESAlgKeyWrapping(JWEKeyWrapping):
 
     def wrap_cek(self, cek: bytes, key: bytes) -> bytes:
         self.check_op_key(key)
-        return aes_key_wrap(key, cek, default_backend())
+        return aes_key_wrap(key, cek)
 
     def unwrap_cek(self, ek: bytes, key: bytes) -> bytes:
         self.check_op_key(key)
         try:
-            cek = aes_key_unwrap(key, ek, default_backend())
+            cek = aes_key_unwrap(key, ek)
         except InvalidUnwrap:
             raise DecodeError("Unwrap AES key failed")
         return cek
@@ -148,7 +147,7 @@ class AESGCMAlgKeyWrapping(JWEKeyWrapping):
         iv_size = 96
         iv = secrets.token_bytes(iv_size // 8)
 
-        cipher = Cipher(AES(op_key), GCM(iv), backend=default_backend())
+        cipher = Cipher(AES(op_key), GCM(iv))
         enc = cipher.encryptor()
 
         encrypted_key = enc.update(cek) + enc.finalize()
@@ -169,7 +168,7 @@ class AESGCMAlgKeyWrapping(JWEKeyWrapping):
         iv = urlsafe_b64decode(to_bytes(headers["iv"]))
         tag = urlsafe_b64decode(to_bytes(headers["tag"]))
 
-        cipher = Cipher(AES(op_key), GCM(iv, tag), backend=default_backend())
+        cipher = Cipher(AES(op_key), GCM(iv, tag))
         d = cipher.decryptor()
         try:
             assert recipient.encrypted_key is not None
@@ -252,7 +251,6 @@ class PBES2HSAlgKeyEncryption(JWEKeyEncryption):
             length=self.key_size // 8,
             salt=salt,
             iterations=p2c,
-            backend=default_backend(),
         )
         return kdf.derive(key)
 

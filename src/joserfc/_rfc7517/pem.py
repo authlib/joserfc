@@ -16,7 +16,6 @@ from cryptography.hazmat.primitives.serialization import (
     BestAvailableEncryption,
     NoEncryption,
 )
-from cryptography.hazmat.backends import default_backend
 from .models import NativeKeyBinding, GenericKey
 from .types import DictKey
 from ..errors import InvalidKeyTypeError
@@ -24,30 +23,30 @@ from ..util import to_bytes
 
 
 def import_from_ssh_key(raw: bytes) -> Any:
-    return load_ssh_public_key(raw, backend=default_backend())
+    return load_ssh_public_key(raw)
 
 
 def import_from_pem_key(raw: bytes, password: bytes | None = None) -> Any:
     key: Any
 
     if b"OPENSSH PRIVATE" in raw:
-        key = load_ssh_private_key(raw, password=password, backend=default_backend())
+        key = load_ssh_private_key(raw, password=password)
 
     elif b"PUBLIC" in raw:
-        key = load_pem_public_key(raw, backend=default_backend())
+        key = load_pem_public_key(raw)
 
     elif b"PRIVATE" in raw:
-        key = load_pem_private_key(raw, password=password, backend=default_backend())
+        key = load_pem_private_key(raw, password=password)
 
     elif b"CERTIFICATE" in raw:
-        cert = load_pem_x509_certificate(raw, backend=default_backend())
+        cert = load_pem_x509_certificate(raw)
         return cert.public_key()
 
     else:
         try:
-            key = load_der_private_key(raw, password=password, backend=default_backend())
+            key = load_der_private_key(raw, password=password)
         except ValueError:
-            key = load_der_public_key(raw, backend=default_backend())
+            key = load_der_public_key(raw)
     return key
 
 
