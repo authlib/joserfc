@@ -53,6 +53,7 @@ class CBCHS2EncModel(JWEEncModel):
         pad = PKCS7(AES.block_size).padder()
         padded_data = pad.update(plaintext) + pad.finalize()
 
+        # noqa: S5542  # Safe: JWE A128CBC-HS256 uses CBC + HMAC (Encrypt-then-MAC)
         cipher = Cipher(AES(ekey), CBC(iv))
         enc = cipher.encryptor()
         ciphertext = enc.update(padded_data) + enc.finalize()
@@ -68,6 +69,7 @@ class CBCHS2EncModel(JWEEncModel):
         if not hmac.compare_digest(ctag, tag):
             raise DecodeError("tag does not match")
 
+        # noqa: S5542  # Safe: JWE A128CBC-HS256 uses CBC + HMAC (Encrypt-then-MAC)
         cipher = Cipher(AES(dkey), CBC(iv))
         d = cipher.decryptor()
         data = d.update(ciphertext) + d.finalize()
