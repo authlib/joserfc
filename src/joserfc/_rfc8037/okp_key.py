@@ -261,7 +261,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
                 }
             )
 
-        :param secret: The input secret used for key derivation.
+        :param secret: The input secret used for key derivation
         :param crv: OKPKey curve name
         :param parameters: extra parameter in JWK
         :param private: generate a private key or public key

@@ -1,4 +1,5 @@
 from unittest import TestCase
+from cryptography.hazmat.primitives import hashes
 from joserfc.jwk import ECKey, OctKey
 from joserfc.errors import (
     InvalidExchangeKeyError,
@@ -97,3 +98,34 @@ class TestECKey(TestCase):
 
     def test_key_eq_with_different_types(self):
         self.assertNotEqual(self.default_key, OctKey.generate_key())
+
+    def test_derive_key_errors(self):
+        self.assertRaises(InvalidKeyCurveError, ECKey.derive_key, "secret", "invalid")
+        self.assertRaises(ValueError, ECKey.derive_key, "secret", kdf_name="invalid")
+
+    def test_derive_key_with_default_kwargs(self):
+        key1 = ECKey.derive_key("ec-secret-key")
+        key2 = ECKey.derive_key("ec-secret-key")
+        self.assertEqual(key1, key2)
+
+        for crv in ["P-256", "P-384", "P-521", "secp256k1"]:
+            key1 = ECKey.derive_key("ec-secret-key", crv)
+            key2 = ECKey.derive_key("ec-secret-key", crv)
+            self.assertEqual(key1, key2)
+
+        for crv in ["P-256", "P-384", "P-521", "secp256k1"]:
+            key1 = ECKey.derive_key("ec-secret-key", crv, kdf_name="PBKDF2")
+            key2 = ECKey.derive_key("ec-secret-key", crv, kdf_name="PBKDF2")
+            self.assertEqual(key1, key2)
+
+    def test_derive_key_with_new_salt(self):
+        curves = ["P-256", "P-384", "P-521", "secp256k1"]
+        for crv in curves:
+            key1 = ECKey.derive_key("ec-secret-key", crv, kdf_options={"salt": b"salt"})
+            key2 = ECKey.derive_key("ec-secret-key", crv, kdf_options={"salt": b"salt"})
+            self.assertEqual(key1, key2)
+
+    def test_derive_key_with_different_hash(self):
+        key1 = ECKey.derive_key("ec-secret-key", "P-256", kdf_options={"algorithm": hashes.SHA256()})
+        key2 = ECKey.derive_key("ec-secret-key", "P-256", kdf_options={"algorithm": hashes.SHA512()})
+        self.assertNotEqual(key1, key2)

@@ -3,7 +3,7 @@ name = "joserfc"
 description = "The ultimate Python library for JOSE RFCs, including JWS, JWE, JWK, JWA, JWT"
 authors = [{name = "Hsiaoming Yang", email="me@lepture.com"}]
 dependencies = [
-    "cryptography",
+    "cryptography>=45.0.1",
 ]
 license = {text = "BSD-3-Clause"}
 requires-python = ">=3.9"
