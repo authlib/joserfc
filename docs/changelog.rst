@@ -12,7 +12,7 @@ Changelog
 .. module:: joserfc
     :noindex:
 
-1.x.x
+1.6.0
 -----
 
 **Unreleased**
@@ -23,6 +23,7 @@ Changelog
 - Improve ``generate_private_key`` method on Key's binding class.
 - Raise ``InvalidKeyCurveError`` when generating ECKey with an invalid curve.
 - Allow import key from cryptography native key types.
+- Add ``ECKey.derive_key`` and ``OKPKey.derive_key`` class methods.
 
 1.5.0
 -----

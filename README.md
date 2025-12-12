@@ -22,12 +22,12 @@
 A quick and simple JWT encoding and decoding would look something like this:
 
 ```python
-from joserfc import jwt
+from joserfc import jwt, jwk
 from joserfc.jwk import OctKey
 
-key = OctKey.import_key("secret")
+key = jwk.import_key("your-secret-key", "oct")
 encoded = jwt.encode({"alg": "HS256"}, {"k": "value"}, key)
-# 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrIjoidmFsdWUifQ.ni-MJXnZHpFB_8L9P9yllj3RNDfzmD4yBKAyefSctMY'
+# 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrIjoidmFsdWUifQ._M8ViO_GK6TnZ9G9eqdlS7IpNWzhoGwaYYDQ3hEwwmA'
 
 token = jwt.decode(encoded, key)
 print(token.header)

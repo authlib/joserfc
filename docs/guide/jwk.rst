@@ -174,6 +174,31 @@ You can import an ``ECKey`` from string, bytes and a JWK (in dict).
         "d": "Hndv7ZZjs_ke8o9zXYo3iq-Yr8SewI5vrqd0pAvEPqg"
     })
 
+Derive an "EC" Key
+~~~~~~~~~~~~~~~~~~
+
+``joserfc`` provides deterministic key derivation helpers for EC key.
+This method allows applications to derive a *stable* JWK from an application
+secret (for example, ``SECRET_KEY`` in a web framework), while still producing
+valid cryptographic keys for use in JWS/JWE.
+
+.. code-block:: python
+
+    from joserfc.jwk import ECKey
+
+    ECKey.derive_key("your-secret-key", "P-256")
+    ECKey.derive_key("your-secret-key", "P-256", kdf_name="HKDF")
+
+Supported key derivation functions:
+
+- **HKDF** (recommended)
+- **PBKDF2** (password-based, may require higher iteration counts)
+
+.. warning::
+    Deterministic keys are useful for applications that want a stable default JWK,
+    but **they should not be used where random key generation is required**.
+
+
 .. _OKPKey:
 
 OKPKey
@@ -223,6 +248,24 @@ You can import an ``OKPKey`` from string, bytes and a JWK (in dict).
         "d": "gUF17HCe-pbN7Ej2rDSXl-e7uSj7rQW5u2dNu0KINP0",
         "kid": "5V_IcL-iX5IbaNz9vg0CjXtWLZiJ94-ESnHI-HN1L2Y"
     })
+
+Derive an "OKP" Key
+~~~~~~~~~~~~~~~~~~~
+
+Just like above ``ECKey``, ``joserfc`` provides a ``OKPKey.derive_key`` method
+to derive a *stable* JWK.
+
+.. code-block:: python
+
+    from joserfc.jwk import OKPKey
+
+    OKPKey.derive_key("your-secret-key", "Ed25519")
+    OKPKey.derive_key("your-secret-key", "Ed25519", kdf_name="HKDF")
+
+Supported key derivation functions:
+
+- **HKDF** (recommended)
+- **PBKDF2** (password-based, may require higher iteration counts)
 
 Key Set
 -------
