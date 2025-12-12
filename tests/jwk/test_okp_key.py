@@ -1,4 +1,5 @@
 from unittest import TestCase
+from cryptography.hazmat.primitives import hashes
 from joserfc.jwk import OKPKey
 from joserfc.errors import (
     InvalidExchangeKeyError,
@@ -118,3 +119,31 @@ class TestOKPKey(TestCase):
         self.assertEqual(key1, key2)
         key3 = OKPKey.generate_key()
         self.assertNotEqual(key1, key3)
+
+    def test_derive_key_errors(self):
+        self.assertRaises(KeyError, OKPKey.derive_key, "secret", "invalid")
+        self.assertRaises(ValueError, OKPKey.derive_key, "secret", "Ed25519", kdf_name="invalid")
+
+    def test_derive_key_with_default_kwargs(self):
+        curves = ["Ed25519", "Ed448", "X25519", "X448"]
+        for crv in curves:
+            key1 = OKPKey.derive_key("okp-secret-key", crv)
+            key2 = OKPKey.derive_key("okp-secret-key", crv)
+            self.assertEqual(key1, key2)
+
+        for crv in curves:
+            key1 = OKPKey.derive_key("okp-secret-key", crv, kdf_name="PBKDF2")
+            key2 = OKPKey.derive_key("okp-secret-key", crv, kdf_name="PBKDF2")
+            self.assertEqual(key1, key2)
+
+    def test_derive_key_with_new_salt(self):
+        curves = ["Ed25519", "Ed448", "X25519", "X448"]
+        for crv in curves:
+            key1 = OKPKey.derive_key("okp-secret-key", crv, kdf_options={"salt": b"salt"})
+            key2 = OKPKey.derive_key("okp-secret-key", crv, kdf_options={"salt": b"salt"})
+            self.assertEqual(key1, key2)
+
+    def test_derive_key_with_different_hash(self):
+        key1 = OKPKey.derive_key("okp-secret-key", "Ed25519", kdf_options={"algorithm": hashes.SHA256()})
+        key2 = OKPKey.derive_key("okp-secret-key", "Ed25519", kdf_options={"algorithm": hashes.SHA512()})
+        self.assertNotEqual(key1, key2)

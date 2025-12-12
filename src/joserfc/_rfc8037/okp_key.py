@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import typing as t
 from functools import cached_property
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey, Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey, Ed448PrivateKey
 from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PublicKey, X25519PrivateKey
@@ -12,6 +14,8 @@ from cryptography.hazmat.primitives.serialization import (
     PrivateFormat,
     NoEncryption,
 )
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from .._rfc7517.models import CurveKey
 from .._rfc7517.types import KeyParameters, AnyKey
 from .._rfc7517.pem import CryptographyBinding
@@ -43,6 +47,12 @@ PRIVATE_KEYS_MAP: dict[str, t.Type[PrivateOKPKey]] = {
     "Ed448": Ed448PrivateKey,
     "X25519": X25519PrivateKey,
     "X448": X448PrivateKey,
+}
+OKP_SEED_SIZES: dict[LiteralCurves, int] = {
+    "Ed25519": 32,
+    "Ed448": 57,
+    "X25519": 32,
+    "X448": 56,
 }
 PrivateKeyTypes = (Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448PrivateKey)
 
@@ -193,14 +203,103 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
             raw_key = cls.binding.generate_private_key("Ed25519")
         else:
             raw_key = cls.binding.generate_private_key(crv)
-        if private:
-            key = cls(raw_key, raw_key, parameters)
+        return _wrap_key(cls, raw_key, private, auto_kid, parameters)
+
+    @classmethod
+    def derive_key(
+        cls: t.Type["OKPKey"],
+        secret: bytes | str,
+        crv: LiteralCurves = "Ed25519",
+        parameters: KeyParameters | None = None,
+        private: bool = True,
+        auto_kid: bool = False,
+        kdf_name: t.Literal["HKDF", "PBKDF2"] = "HKDF",
+        kdf_options: dict[str, t.Any] | None = None,
+    ) -> "OKPKey":
+        """
+        Derives a key from a given input secret using a specified key derivation function
+        (KDF) and elliptic curve algorithm.
+
+        To derive a key using **HKDF**, the ``kdf_options`` may contain the ``algorithm``,
+        ``salt`` and ``info`` values:
+
+        .. code-block:: python
+
+            from cryptography.hazmat.primitives import hashes
+            from joserfc.jwk import OKPKey
+
+            # default kdf_name is HKDF, algorithm is SHA256
+            OKPKey.derive_key("secret")
+            # equivalent to
+            OKPKey.derive_key(
+                "secret", "Ed25519",
+                kdf_name="HKDF",
+                kdf_options={
+                    "algorithm": hashes.SHA256(),
+                    "salt": b"joserfc:OKP:HKDF:Ed25519",
+                    "info": b"",
+                }
+            )
+
+        To derive a key using **PBKDF2**, the ``kdf_options`` may contain the ``algorithm``,
+        ``salt`` and ``iterations`` values:
+
+        .. code-block:: python
+
+            from cryptography.hazmat.primitives import hashes
+            from joserfc.jwk import OKPKey
+
+            OKPKey.derive_key("secret", kdf_name="PBKDF2")
+            # equivalent to
+            OKPKey.derive_key(
+                "secret", "Ed25519",
+                kdf_name="PBKDF2",
+                kdf_options={
+                    "algorithm": hashes.SHA256(),
+                    "salt": b"joserfc:OKP:PBKDF2:Ed25519",
+                    "iterations": 100000,
+                }
+            )
+
+        :param secret: The input secret used for key derivation.
+        :param crv: OKPKey curve name
+        :param parameters: extra parameter in JWK
+        :param private: generate a private key or public key
+        :param auto_kid: add ``kid`` automatically
+        :param kdf_name: Key derivation function name
+        :param kdf_options: Additional options for the KDF
+        """
+        if kdf_options is None:
+            kdf_options = {}
+
+        algorithm = kdf_options.pop("algorithm", None)
+        if algorithm is None:
+            algorithm = hashes.SHA256()
+
+        kdf_options.setdefault("salt", to_bytes(f"joserfc:OKP:{kdf_name}:{crv}"))
+        if kdf_name == "HKDF":
+            kdf_options.setdefault("info", b"")
+            hkdf = HKDF(
+                algorithm=algorithm,
+                length=OKP_SEED_SIZES[crv],
+                backend=default_backend(),
+                **kdf_options,
+            )
+            seed = hkdf.derive(to_bytes(secret))
+        elif kdf_name == "PBKDF2":
+            kdf_options.setdefault("iterations", 100000)
+            pbkdf2 = PBKDF2HMAC(
+                algorithm=algorithm,
+                length=OKP_SEED_SIZES[crv],
+                backend=default_backend(),
+                **kdf_options,
+            )
+            seed = pbkdf2.derive(to_bytes(secret))
         else:
-            pub_key = raw_key.public_key()
-            key = cls(pub_key, pub_key, parameters)
-        if auto_kid:
-            key.ensure_kid()
-        return key
+            raise ValueError(f"Invalid kdf value: '{kdf_name}'")
+
+        raw_key = cls.binding.from_private_bytes(crv, seed)
+        return _wrap_key(cls, raw_key, private, auto_kid, parameters)
 
 
 def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]) -> LiteralCurves:
@@ -213,3 +312,20 @@ def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]) -> LiteralCurves:
     elif isinstance(key, (X448PublicKey, X448PrivateKey)):
         return "X448"
     raise ValueError("Invalid key")  # pragma: no cover
+
+
+def _wrap_key(
+    cls: t.Type["OKPKey"],
+    raw_key: PrivateOKPKey,
+    private: bool,
+    auto_kid: bool,
+    parameters: KeyParameters | None = None,
+) -> OKPKey:
+    if private:
+        key = cls(raw_key, raw_key, parameters)
+    else:
+        pub_key = raw_key.public_key()
+        key = cls(pub_key, pub_key, parameters)
+    if auto_kid:
+        key.ensure_kid()
+    return key
