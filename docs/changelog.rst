@@ -15,7 +15,7 @@ Changelog
 1.6.0
 -----
 
-**Unreleased**
+**Released on December 14, 2025**
 
 - ``filter_algorithms`` ``names`` defaults to all algorithms. :pull:`79`.
 - Replace ``JWSRegistry.guess_alg`` with ``JWSRegistry.guess_algorithm``.
