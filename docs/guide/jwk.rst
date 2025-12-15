@@ -13,6 +13,32 @@ represents a cryptographic key (via RFC7517_).
 
 .. _RFC7517: https://www.rfc-editor.org/rfc/rfc7517
 
+Examples
+--------
+
+Here are some examples on importing and generating keys:
+
+.. code-block:: python
+
+    from joserfc import jwk
+
+    # import a JWK dict
+    jwk.import_key({
+        'kty': 'oct',
+        'k': 'eW91ci1zZWNyZXQta2V5',
+        'use': 'sig',
+    })
+
+    # import a oct key
+    jwk.import_key("a-random-string-as-key", "oct")
+    # same as:
+    jwk.OctKey.import_key("a-random-string-as-key")
+
+    # generate a key
+    jwk.generate_key("RSA", 2048, {"use": "sig"})
+    # same as:
+    jwk.RSAKey.generate_key(2048, {"use": "sig"})
+
 .. _OctKey:
 
 OctKey

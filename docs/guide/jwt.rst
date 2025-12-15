@@ -25,12 +25,12 @@ It encodes the payload with the given ``alg`` in header:
 
 .. code-block:: python
 
-    from joserfc import jwt
+    from joserfc import jwt, jwk
     from joserfc.jwk import OctKey
 
     header = {"alg": "HS256"}
     claims = {"iss": "https://authlib.org"}
-    key = OctKey.import_key("your-secret-key")
+    key = jwk.import_key("your-secret-key", "oct")
     text = jwt.encode(header, claims, key)
 
 The returned value of ``text`` in above example is:
@@ -147,24 +147,28 @@ And we added one more field:
 Missing essential claims
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+When a claim is declared as ``essential``:
+
 .. code-block:: python
 
     claims_requests = JWTClaimsRegistry(aud={"essential": True})
 
-    # this will raise MissingClaimError
+    # this will raise MissingClaimError, "aud" is missing
     claims = {"iss": "https://authlib.org"}
     claims_requests.validate(claims)
 
-    # this will raise MissingClaimError
-    claims = {"iss": ""}
+    # this will raise MissingClaimError, because "aud" is empty
+    claims = {"aud": ""}
     claims_requests.validate(claims)
 
 Allow empty essential claims
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+An ``essential`` claim with ``allow_blank`` can be an empty value:
+
 .. code-block:: python
 
-    claims_requests = JWTClaimsRegistry(aud={"essential": True, "allow_blank": True})
+    claims_requests = JWTClaimsRegistry(iss={"essential": True, "allow_blank": True})
 
     # this will NOT raise MissingClaimError
     claims = {"iss": ""}
