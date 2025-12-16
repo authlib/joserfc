@@ -201,9 +201,10 @@ class ClaimError(JoseError):
     claim: str
     description = "Error claim: '{}'"
 
-    def __init__(self, claim: str):
+    def __init__(self, claim: str, description: str | None = None):
         self.claim = claim
-        description = self.description.format(claim)
+        if description is None:
+            description = self.description.format(claim)
         super(ClaimError, self).__init__(description=description)
 
 
@@ -231,18 +232,11 @@ class InsecureClaimError(ClaimError):
     description = "Insecure claim: '{}'"
 
 
-class ExpiredTokenError(JoseError):
+class ExpiredTokenError(ClaimError):
     """This error is designed for JWT. It raised when the token is expired."""
 
     error = "expired_token"
     description = "The token is expired"
-
-
-class InvalidTokenError(JoseError):
-    """This error is designed for JWT. It raised when the token is not valid yet."""
-
-    error = "invalid_token"
-    description = "The token is not valid yet"
 
 
 class InvalidPayloadError(JoseError):
@@ -250,3 +244,7 @@ class InvalidPayloadError(JoseError):
     not a valid JSON object."""
 
     error = "invalid_payload"
+
+
+# compatibility
+InvalidTokenError = InvalidClaimError
