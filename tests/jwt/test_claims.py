@@ -10,7 +10,6 @@ from joserfc.errors import (
     InvalidClaimError,
     MissingClaimError,
     ExpiredTokenError,
-    InvalidTokenError,
 )
 
 
@@ -90,7 +89,7 @@ class TestJWTClaims(TestCase):
 
         claims_requests.validate({"exp": now + 100, "nbf": now - 100, "iat": now})
         self.assertRaises(ExpiredTokenError, claims_requests.validate, {"exp": now - 100})
-        self.assertRaises(InvalidTokenError, claims_requests.validate, {"nbf": now + 100})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"nbf": now + 100})
 
     def test_validate_aud(self):
         claims_requests = jwt.JWTClaimsRegistry(aud={"essential": True, "value": "a"})
@@ -129,13 +128,13 @@ class TestJWTClaims(TestCase):
         claims_requests = jwt.JWTClaimsRegistry(leeway=500)
         now = int(time.time())
         claims_requests.validate({"iat": now})
-        self.assertRaises(InvalidTokenError, claims_requests.validate, {"iat": now + 1000})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"iat": now + 1000})
 
     def test_validate_nbf(self):
         claims_requests = jwt.JWTClaimsRegistry(leeway=500)
         now = int(time.time())
         claims_requests.validate({"nbf": now})
-        self.assertRaises(InvalidTokenError, claims_requests.validate, {"nbf": now + 1000})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"nbf": now + 1000})
 
     def test_claims_with_uuid_field(self):
         value = uuid.uuid4()
@@ -175,30 +174,28 @@ class TestJWTClaims(TestCase):
         claims_requests.validate({"custom_claim": "a"})
 
     def test_validate_allow_blank(self):
+        blank_values = ["", [], {}]
+
         # Case 1: allow blank value
         claims_requests = jwt.JWTClaimsRegistry(custom_claim={"essential": True, "allow_blank": True})
         self.assertRaises(MissingClaimError, claims_requests.validate, {"custom_claim": None})
-        claims_requests.validate({"custom_claim": ""})
-        claims_requests.validate({"custom_claim": []})
-        claims_requests.validate({"custom_claim": {}})
+        for value in blank_values:
+            claims_requests.validate({"custom_claim": value})
 
         # Case 2: allow blank value without essential
         claims_requests = jwt.JWTClaimsRegistry(custom_claim={"allow_blank": True})
         claims_requests.validate({"custom_claim": None})
-        claims_requests.validate({"custom_claim": ""})
-        claims_requests.validate({"custom_claim": []})
-        claims_requests.validate({"custom_claim": {}})
+        for value in blank_values:
+            claims_requests.validate({"custom_claim": value})
 
         # Case 3: do not allow blank value
-        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"essential": True, "allow_blank": False})
-        self.assertRaises(MissingClaimError, claims_requests.validate, {"custom_claim": None})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": ""})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": []})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": {}})
-
-        # Case 4: do not allow blank value without essential
         claims_requests = jwt.JWTClaimsRegistry(custom_claim={"allow_blank": False})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": None})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": ""})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": []})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": {}})
+        for value in blank_values:
+            self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": value})
+
+        # Case 4: do not allow blank value on essential claim
+        claims_requests = jwt.JWTClaimsRegistry(custom_claim={"essential": True, "allow_blank": False})
+        self.assertRaises(MissingClaimError, claims_requests.validate, {"custom_claim": None})
+        for value in blank_values:
+            self.assertRaises(InvalidClaimError, claims_requests.validate, {"custom_claim": value})

@@ -10,7 +10,6 @@ from ..errors import (
     MissingClaimError,
     InvalidClaimError,
     ExpiredTokenError,
-    InvalidTokenError,
 )
 
 Claims = dict[str, Any]
@@ -132,9 +131,9 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
         containing a NumericDate value.  Use of this claim is OPTIONAL.
         """
         if not _validate_numeric_time(value):
-            raise InvalidClaimError("exp")
+            raise InvalidClaimError("exp", "Claim 'exp' must be a NumericDate value")
         if value < (self.now - self.leeway):
-            raise ExpiredTokenError()
+            raise ExpiredTokenError("exp")
         self.check_value("exp", value)
 
     def validate_nbf(self, value: int) -> None:
@@ -147,9 +146,9 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
         NumericDate value.  Use of this claim is OPTIONAL.
         """
         if not _validate_numeric_time(value):
-            raise InvalidClaimError("nbf")
+            raise InvalidClaimError("nbf", "Claim 'nbf' must be a NumericDate value")
         if value > (self.now + self.leeway):
-            raise InvalidTokenError()
+            raise InvalidClaimError("nbf", "The token is not yet valid")
         self.check_value("nbf", value)
 
     def validate_iat(self, value: int) -> None:
@@ -159,9 +158,9 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
         claim is OPTIONAL.
         """
         if not _validate_numeric_time(value):
-            raise InvalidClaimError("iat")
+            raise InvalidClaimError("iat", "Claim 'iat' must be a NumericDate value")
         if value > (self.now + self.leeway):
-            raise InvalidTokenError()
+            raise InvalidClaimError("iat", "The token was issued in the future")
         self.check_value("iat", value)
 
 
