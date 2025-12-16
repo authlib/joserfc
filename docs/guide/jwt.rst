@@ -108,7 +108,7 @@ JSON object.
 
 .. code-block:: python
 
-    from joserfc.errors import ClaimError, ExpiredTokenError, InvalidTokenError
+    from joserfc.errors import ClaimError
     from joserfc.jwt import JWTClaimsRegistry
 
     claims_requests = JWTClaimsRegistry(
@@ -119,12 +119,7 @@ JSON object.
     try:
         claims_requests.validate(token.claims)
     except ClaimError as error:
-        print(error)
-    except ExpiredTokenError as error:
-        print("expired")
-    except InvalidTokenError as error:
-        # only happens when iat and nbf invalid
-        print("invalid")
+        print(error.claim, error.error, error.description)
 
 The Individual Claims Requests JSON object contains:
 
