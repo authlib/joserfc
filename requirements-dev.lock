@@ -18,14 +18,14 @@ iniconfig==2.3.0 ; python_full_version >= '3.10'
 librt==0.7.4 ; platform_python_implementation != 'PyPy'
 mypy==1.19.1
 mypy-extensions==1.1.0
-nodeenv==1.9.1
+nodeenv==1.10.0
 packaging==25.0
 pathspec==0.12.1
 platformdirs==4.4.0 ; python_full_version < '3.10'
 platformdirs==4.5.1 ; python_full_version >= '3.10'
 pluggy==1.6.0
 pre-commit==4.3.0 ; python_full_version < '3.10'
-pre-commit==4.5.0 ; python_full_version >= '3.10'
+pre-commit==4.5.1 ; python_full_version >= '3.10'
 pycparser==2.23 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
 pycryptodome==3.23.0
 pygments==2.19.2
@@ -33,7 +33,7 @@ pytest==8.4.2 ; python_full_version < '3.10'
 pytest==9.0.2 ; python_full_version >= '3.10'
 pytest-cov==7.0.0
 pyyaml==6.0.3
-ruff==0.14.9
+ruff==0.14.10
 tomli==2.3.0 ; python_full_version <= '3.11'
 typing-extensions==4.15.0
 virtualenv==20.35.4
