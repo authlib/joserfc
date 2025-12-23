@@ -104,8 +104,8 @@ class OKPBinding(CryptographyBinding):
         obj["d"] = urlsafe_b64encode(d_bytes).decode("utf-8")
         return obj
 
-    @staticmethod
-    def export_public_key(key: PublicOKPKey) -> dict[str, str]:
+    @classmethod
+    def export_public_key(cls, key: PublicOKPKey) -> dict[str, str]:
         x_bytes = key.public_bytes(Encoding.Raw, PublicFormat.Raw)
         return {
             "crv": get_key_curve(key),

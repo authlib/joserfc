@@ -25,8 +25,8 @@ POSSIBLE_UNSAFE_KEYS = (
 
 class OctBinding(NativeKeyBinding):
     @classmethod
-    def convert_raw_key_to_dict(cls, value: bytes, private: bool) -> DictKey:
-        k = urlsafe_b64encode(value).decode("utf-8")
+    def convert_raw_key_to_dict(cls, raw_key: bytes, private: bool) -> DictKey:
+        k = urlsafe_b64encode(raw_key).decode("utf-8")
         return {"k": k}
 
     @classmethod

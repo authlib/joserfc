@@ -285,7 +285,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     @classmethod
     def generate_key(
         cls: t.Type[GenericKey],
-        size_or_crv: t.Any,
+        arg: t.Any,
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,

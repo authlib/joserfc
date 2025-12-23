@@ -146,22 +146,22 @@ class CryptographyBinding(NativeKeyBinding, metaclass=ABCMeta):
         else:
             return dump_pem_key(key.public_key, encoding, private, password)
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def import_private_key(value: Any) -> Any:
+    def import_private_key(cls, obj: Any) -> Any:
         pass
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def import_public_key(value: Any) -> Any:
+    def import_public_key(cls, obj: Any) -> Any:
         pass
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def export_private_key(value: Any) -> Any:
+    def export_private_key(cls, key: Any) -> Any:
         pass
 
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def export_public_key(value: Any) -> Any:
+    def export_public_key(cls, key: Any) -> Any:
         pass

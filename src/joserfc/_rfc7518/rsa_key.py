@@ -46,8 +46,8 @@ class RSABinding(CryptographyBinding):
     def generate_private_key(size: int) -> RSAPrivateKey:
         return generate_private_key(public_exponent=65537, key_size=size)
 
-    @staticmethod
-    def import_private_key(obj: RSADictKey) -> RSAPrivateKey:
+    @classmethod
+    def import_private_key(cls, obj: RSADictKey) -> RSAPrivateKey:
         if "oth" in obj:  # pragma: no cover
             # https://tools.ietf.org/html/rfc7518#section-6.3.2.7
             raise ValueError('"oth" is not supported yet')
@@ -79,8 +79,8 @@ class RSABinding(CryptographyBinding):
 
         return numbers.private_key()
 
-    @staticmethod
-    def export_private_key(key: RSAPrivateKey) -> RSADictKey:
+    @classmethod
+    def export_private_key(cls, key: RSAPrivateKey) -> RSADictKey:
         numbers = key.private_numbers()
         return {
             "n": int_to_base64(numbers.public_numbers.n),
@@ -93,13 +93,13 @@ class RSABinding(CryptographyBinding):
             "qi": int_to_base64(numbers.iqmp),
         }
 
-    @staticmethod
-    def import_public_key(obj: RSADictKey) -> RSAPublicKey:
+    @classmethod
+    def import_public_key(cls, obj: RSADictKey) -> RSAPublicKey:
         numbers = RSAPublicNumbers(base64_to_int(obj["e"]), base64_to_int(obj["n"]))
         return numbers.public_key()
 
-    @staticmethod
-    def export_public_key(key: RSAPublicKey) -> dict[str, str]:
+    @classmethod
+    def export_public_key(cls, key: RSAPublicKey) -> dict[str, str]:
         numbers = key.public_numbers()
         return {"n": int_to_base64(numbers.n), "e": int_to_base64(numbers.e)}
 
