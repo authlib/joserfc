@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import overload, TypeVar, Any
+from typing import overload, Any
 from ._rfc7515.model import (
     JWSAlgModel,
     HeaderMember,
@@ -308,10 +308,19 @@ def deserialize_json(
         return flattened_obj
 
 
-DetachValue = TypeVar("DetachValue", str, dict[str, Any])
+@overload
+def detach_content(value: str) -> str: ...
 
 
-def detach_content(value: DetachValue) -> DetachValue:
+@overload
+def detach_content(value: GeneralJSONSerialization) -> dict[str, Any]: ...
+
+
+@overload
+def detach_content(value: FlattenedJSONSerialization) -> dict[str, Any]: ...
+
+
+def detach_content(value: Any) -> Any:
     """In some contexts, it is useful to integrity-protect content that is
     not itself contained in a JWS. This method is an implementation of
     https://www.rfc-editor.org/rfc/rfc7515#appendix-F
