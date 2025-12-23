@@ -70,24 +70,15 @@ class HMACAlgorithm(JWSAlgModel):
         return hmac.compare_digest(sig, v_sig)
 
 
-class RSAAlgorithm(JWSAlgModel):
-    """RSA using SHA algorithms for JWS. Available algorithms:
-
-    - RS256: RSASSA-PKCS1-v1_5 using SHA-256
-    - RS384: RSASSA-PKCS1-v1_5 using SHA-384
-    - RS512: RSASSA-PKCS1-v1_5 using SHA-512
-    """
-
+class _RSAAlgModel(JWSAlgModel):
     key_type = "RSA"
 
     SHA256 = hashes.SHA256
     SHA384 = hashes.SHA384
     SHA512 = hashes.SHA512
-    padding = padding.PKCS1v15()
+    padding: padding.AsymmetricPadding
 
     def __init__(self, sha_type: t.Literal[256, 384, 512], recommended: bool = False):
-        self.name = f"RS{sha_type}"
-        self.description = f"RSASSA-PKCS1-v1_5 using SHA-{sha_type}"
         self.recommended = recommended
         self.hash_alg = getattr(self, f"SHA{sha_type}")
         self.algorithm_security = sha_type
@@ -103,6 +94,22 @@ class RSAAlgorithm(JWSAlgModel):
             return True
         except InvalidSignature:
             return False
+
+
+class RSAAlgorithm(_RSAAlgModel):
+    """RSA using SHA algorithms for JWS. Available algorithms:
+
+    - RS256: RSASSA-PKCS1-v1_5 using SHA-256
+    - RS384: RSASSA-PKCS1-v1_5 using SHA-384
+    - RS512: RSASSA-PKCS1-v1_5 using SHA-512
+    """
+
+    padding = padding.PKCS1v15()
+
+    def __init__(self, sha_type: t.Literal[256, 384, 512], recommended: bool = False):
+        super().__init__(sha_type, recommended)
+        self.name = f"RS{sha_type}"
+        self.description = f"RSASSA-PKCS1-v1_5 using SHA-{sha_type}"
 
 
 class ESAlgorithm(JWSAlgModel):
@@ -158,7 +165,7 @@ class ESAlgorithm(JWSAlgModel):
             return False
 
 
-class RSAPSSAlgorithm(JWSAlgModel):
+class RSAPSSAlgorithm(_RSAAlgModel):
     """RSASSA-PSS using SHA algorithms for JWS. Available algorithms:
 
     - PS256: RSASSA-PSS using SHA-256 and MGF1 with SHA-256
@@ -166,30 +173,11 @@ class RSAPSSAlgorithm(JWSAlgModel):
     - PS512: RSASSA-PSS using SHA-512 and MGF1 with SHA-512
     """
 
-    key_type = "RSA"
-
-    SHA256 = hashes.SHA256
-    SHA384 = hashes.SHA384
-    SHA512 = hashes.SHA512
-
     def __init__(self, sha_type: t.Literal[256, 384, 512]):
+        super().__init__(sha_type, False)
         self.name = f"PS{sha_type}"
         self.description = f"RSASSA-PSS using SHA-{sha_type} and MGF1 with SHA-{sha_type}"
-        self.hash_alg = getattr(self, f"SHA{sha_type}")
         self.padding = padding.PSS(mgf=padding.MGF1(self.hash_alg()), salt_length=self.hash_alg.digest_size)
-        self.algorithm_security = sha_type
-
-    def sign(self, msg: bytes, key: RSAKey) -> bytes:
-        op_key = key.get_op_key("sign")
-        return op_key.sign(msg, self.padding, self.hash_alg())
-
-    def verify(self, msg: bytes, sig: bytes, key: RSAKey) -> bool:
-        op_key = key.get_op_key("verify")
-        try:
-            op_key.verify(sig, msg, self.padding, self.hash_alg())
-            return True
-        except InvalidSignature:
-            return False
 
 
 JWS_ALGORITHMS: list[JWSAlgModel] = [
