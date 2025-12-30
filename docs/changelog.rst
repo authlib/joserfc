@@ -12,6 +12,15 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.6.1
+-----
+
+**Released on December 30, 2025**
+
+- Deprecate ``InvalidTokenError``, please use ``InvalidClaimError`` instead.
+- Convert ``ExpiredTokenError`` to inherit from ``ClaimError``.
+- Improve on type hints.
+
 1.6.0
 -----
 
