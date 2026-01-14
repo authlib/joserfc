@@ -3,13 +3,13 @@ import zlib
 from .._rfc7516.models import JWEZipModel
 from ..errors import ExceededSizeError
 
-GZIP_HEAD = bytes([120, 156])
-MAX_SIZE = 250 * 1024
-
 
 class DeflateZipModel(JWEZipModel):
     name = "DEF"
     description = "DEFLATE"
+
+    GZIP_HEAD = bytes([120, 156])
+    MAX_SIZE = 250 * 1024
 
     def compress(self, s: bytes) -> bytes:
         """Compress bytes data with DEFLATE algorithm."""
@@ -20,13 +20,13 @@ class DeflateZipModel(JWEZipModel):
 
     def decompress(self, s: bytes) -> bytes:
         """Decompress DEFLATE bytes data."""
-        if s.startswith(GZIP_HEAD):
+        if s.startswith(self.GZIP_HEAD):
             decompressor = zlib.decompressobj()
         else:
             decompressor = zlib.decompressobj(-zlib.MAX_WBITS)
-        value = decompressor.decompress(s, MAX_SIZE)
+        value = decompressor.decompress(s, self.MAX_SIZE)
         if decompressor.unconsumed_tail:
-            raise ExceededSizeError(f"Decompressed string exceeds {MAX_SIZE} bytes")
+            raise ExceededSizeError(f"Decompressed string exceeds {self.MAX_SIZE} bytes")
         return value
 
 
