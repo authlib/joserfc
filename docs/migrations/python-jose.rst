@@ -111,6 +111,12 @@ differ significantly in terms of structure and flexibility.
     # => token.header : {"alg": "HS256"}
     # => token.claims : {"a": "b"}
 
+.. warning::
+
+    ``python-jose`` will automatically convert and validate string values for JWT claims
+    (e.g. `exp`, `iat` and `nbf`) whereas ``joserfc`` will raise an exception when
+    using the `JWTClaimsRegistry`.
+
 ``get_unverified_header``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
