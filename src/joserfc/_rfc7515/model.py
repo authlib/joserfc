@@ -101,7 +101,7 @@ class GeneralJSONSignature:
         self.segments: SegmentsDict = {}
 
 
-class JWSAlgModel(object, metaclass=ABCMeta):
+class JWSAlgModel(metaclass=ABCMeta):
     """Interface for JWS algorithm. JWA specification (RFC7518) SHOULD
     implement the algorithms for JWS with this base implementation.
     """

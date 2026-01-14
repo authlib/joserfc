@@ -180,7 +180,7 @@ class FlattenedJSONEncryption(BaseJSONEncryption):
         self.recipients = [Recipient(self, header, key)]
 
 
-class JWEEncModel(object, metaclass=ABCMeta):
+class JWEEncModel(metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = False
@@ -210,7 +210,7 @@ class JWEEncModel(object, metaclass=ABCMeta):
         pass
 
 
-class JWEZipModel(object, metaclass=ABCMeta):
+class JWEZipModel(metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = True
