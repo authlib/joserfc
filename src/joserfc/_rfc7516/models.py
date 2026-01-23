@@ -156,6 +156,9 @@ class GeneralJSONEncryption(BaseJSONEncryption):
 
     def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:
         recipient = Recipient(self, header, key)
+        if key:
+            key.ensure_kid()
+            recipient.set_kid(t.cast(str, key.kid))
         self.recipients.append(recipient)
 
 
