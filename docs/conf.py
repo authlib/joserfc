@@ -29,6 +29,7 @@ extensions = [
     "sphinx_contributors",
     "sphinx_iconify",
     "shibuya.sponsors",
+    "myst_parser",
 ]
 
 iconify_script_url = ""

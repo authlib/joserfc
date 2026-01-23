@@ -87,6 +87,7 @@ Explore the following sections to discover more about ``joserfc`` and its featur
    :caption: Recipes
    :hidden:
 
+   recipes/cheatsheet
    recipes/azure
    recipes/openssl
 

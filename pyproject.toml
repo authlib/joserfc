@@ -64,6 +64,7 @@ dev = [
 docs = [
     "shibuya",
     "sphinx",
+    "myst-parser",
     "sphinx-contributors",
     "sphinx-copybutton",
     "sphinx-design",
