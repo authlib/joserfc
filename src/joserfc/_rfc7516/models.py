@@ -156,9 +156,8 @@ class GeneralJSONEncryption(BaseJSONEncryption):
 
     def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:
         recipient = Recipient(self, header, key)
-        if key:
-            key.ensure_kid()
-            recipient.set_kid(t.cast(str, key.kid))
+        if key and key.kid:
+            recipient.set_kid(key.kid)
         self.recipients.append(recipient)
 
 
@@ -180,7 +179,10 @@ class FlattenedJSONEncryption(BaseJSONEncryption):
     flattened = True
 
     def add_recipient(self, header: Header | None = None, key: Key | None = None) -> None:
-        self.recipients = [Recipient(self, header, key)]
+        recipient = Recipient(self, header, key)
+        if key and key.kid:
+            recipient.set_kid(key.kid)
+        self.recipients = [recipient]
 
 
 class JWEEncModel(metaclass=ABCMeta):

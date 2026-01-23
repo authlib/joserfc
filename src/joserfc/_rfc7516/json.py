@@ -36,10 +36,10 @@ def represent_general_json(obj: GeneralJSONEncryption) -> GeneralJSONSerializati
     recipients = []
     for recipient in obj.recipients:
         item: JSONRecipientDict = {}
-        if recipient.header:
-            item["header"] = recipient.header
-        if recipient.encrypted_key:
-            item["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
+        assert recipient.header is not None
+        assert recipient.encrypted_key is not None
+        item["header"] = recipient.header
+        item["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
         recipients.append(item)
     data["recipients"] = recipients
     return data
@@ -49,10 +49,10 @@ def represent_flattened_json(obj: FlattenedJSONEncryption) -> FlattenedJSONSeria
     data: FlattenedJSONSerialization = __represent_json_serialization(obj)
     recipient = obj.recipients[0]
     assert recipient is not None
-    if recipient.header:
-        data["header"] = recipient.header
-    if recipient.encrypted_key:
-        data["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
+    assert recipient.header is not None
+    assert recipient.encrypted_key is not None
+    data["header"] = recipient.header
+    data["encrypted_key"] = to_str(urlsafe_b64encode(recipient.encrypted_key))
     return data
 
 

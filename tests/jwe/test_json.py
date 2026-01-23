@@ -1,6 +1,6 @@
 from unittest import TestCase
 from joserfc import jwe
-from joserfc.jwe import GeneralJSONEncryption
+from joserfc.jwe import GeneralJSONEncryption, FlattenedJSONEncryption
 from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
 from joserfc.errors import (
     DecodeError,
@@ -72,3 +72,19 @@ class TestJWEJSON(TestCase):
             key3,
             registry=registry,
         )
+
+    def test_flattened_encryption(self):
+        key = OctKey.generate_key(128)
+        protected = {"enc": "A128CBC-HS256"}
+        plaintext = b"hello world"
+        obj0 = FlattenedJSONEncryption(protected, plaintext)
+        obj0.add_recipient({"alg": "A128KW"})
+        value = jwe.encrypt_json(obj0, key)
+        obj1 = jwe.decrypt_json(value, key)
+        self.assertEqual(obj1.plaintext, plaintext)
+
+        obj2 = FlattenedJSONEncryption(protected, plaintext)
+        obj2.add_recipient({"alg": "A128KW"}, key)
+        value = jwe.encrypt_json(obj0, None)
+        obj3 = jwe.decrypt_json(value, key)
+        self.assertEqual(obj3.plaintext, plaintext)
