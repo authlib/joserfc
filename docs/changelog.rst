@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.6.2
+-----
+
+**Released on February 16, 2026**
+
+- **JWE**: Auto add ``kid`` to recipient.
+- **JWE**: Use ``DeflateZipModel.MAX_SIZE`` to determine size limit.
+
 1.6.1
 -----
 
