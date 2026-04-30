@@ -61,7 +61,7 @@ class TestCompact(TestCase):
 
     def test_payload_exceeded_size_error(self):
         header = json_b64encode({"alg": "HS256"})
-        exceeded_payload = urlsafe_b64encode(("o" * 10000).encode("utf8"))
+        exceeded_payload = urlsafe_b64encode(("o" * (128000 + 1)).encode("utf8"))
         fake_jws = header + b"." + exceeded_payload + b"." + urlsafe_b64encode(b"o")
         self.assertRaises(ExceededSizeError, deserialize_compact, fake_jws, self.key)
 

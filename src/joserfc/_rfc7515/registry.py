@@ -49,7 +49,7 @@ class JWSRegistry:
     #: max header content's size in bytes
     max_header_length: int = 512
     #: max payload content's size in bytes
-    max_payload_length: int = 8000
+    max_payload_length: int = 128000
     #: max signature's size in bytes
     max_signature_length: int = 1024
 
