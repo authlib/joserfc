@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.6.5
+-----
+
+**Released on May 3, 2026**
+
+- **JWS**: increase registry's payload max size.
+
 1.6.4
 -----
 
