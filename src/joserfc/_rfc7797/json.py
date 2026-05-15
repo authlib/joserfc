@@ -31,10 +31,11 @@ def extract_rfc7797_json(value: FlattenedJSONSerialization, registry: JWSRegistr
     member = HeaderMember(protected, header)
 
     payload_segment: bytes = value["payload"].encode("utf-8")
+    registry.validate_payload_size(payload_segment)
+
     if is_rfc7797_enabled(member.headers()):
         payload = payload_segment
     else:
-        registry.validate_payload_size(payload_segment)
         try:
             payload = urlsafe_b64decode(payload_segment)
         except (TypeError, ValueError):

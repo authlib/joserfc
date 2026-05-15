@@ -49,6 +49,8 @@ def extract_rfc7515_compact(
 
     registry.validate_header_size(header_segment)
     registry.validate_signature_size(signature_segment)
+    if payload_segment:
+        registry.validate_payload_size(payload_segment)
 
     protected = decode_header(header_segment)
 
@@ -61,7 +63,6 @@ def extract_rfc7515_compact(
             payload = to_bytes(payload)
             payload_segment = urlsafe_b64encode(payload)
         else:
-            registry.validate_payload_size(payload_segment)
             try:
                 payload = urlsafe_b64decode(payload_segment)
             except (TypeError, ValueError):
