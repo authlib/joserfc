@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.6.6
+-----
+
+**Released on May 18, 2026**
+
+- **JWS**: validate payload size when ``b64=false``.
+
 1.6.5
 -----
 
