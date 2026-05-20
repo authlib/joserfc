@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import overload, Any
+from collections.abc import Collection
 from ._rfc7515.model import (
     JWSAlgModel,
     HeaderMember,
@@ -75,7 +76,7 @@ def serialize_compact(
     protected: Header,
     payload: bytes | str,
     private_key: KeyFlexible | None,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> str:
     """Generate a JWS Compact Serialization. The JWS Compact Serialization
@@ -91,7 +92,7 @@ def serialize_compact(
     :param protected: protected header part of the JWS, in dict
     :param payload: payload data of the JWS, in bytes
     :param private_key: a flexible private key to sign the signature
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a JWSRegistry to use
     :return: JWS in str
     """
@@ -123,7 +124,7 @@ def serialize_compact(
 def validate_compact(
     obj: CompactSignature,
     public_key: KeyFlexible | None,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> bool:
     """Validate the JWS Compact Serialization with the given key.
@@ -131,7 +132,7 @@ def validate_compact(
 
     :param obj: object of the JWS Compact Serialization
     :param public_key: a flexible public key to verify the signature
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a JWSRegistry to use
     """
     if registry is None:
@@ -156,7 +157,7 @@ def validate_compact(
 def deserialize_compact(
     value: bytes | str,
     public_key: KeyFlexible | None,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
     payload: bytes | str | None = None,
 ) -> CompactSignature:
@@ -175,7 +176,7 @@ def deserialize_compact(
 
     :param value: a string (or bytes) of the JWS Compact Serialization
     :param public_key: a flexible public key to verify the signature
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a JWSRegistry to use
     :param payload: optional payload, required with detached content
     :raises BadSignatureError: when signature verification fails
@@ -192,7 +193,7 @@ def serialize_json(
     members: list[HeaderDict],
     payload: bytes | str,
     private_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> GeneralJSONSerialization: ...
 
@@ -202,7 +203,7 @@ def serialize_json(
     members: HeaderDict,
     payload: bytes | str,
     private_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> FlattenedJSONSerialization: ...
 
@@ -211,7 +212,7 @@ def serialize_json(
     members: HeaderDict | list[HeaderDict],
     payload: bytes | str,
     private_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> GeneralJSONSerialization | FlattenedJSONSerialization:
     """Generate a JWS JSON Serialization (in dict). The JWS JSON Serialization
@@ -261,7 +262,7 @@ def serialize_json(
 def deserialize_json(
     value: GeneralJSONSerialization,
     public_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> GeneralJSONSignature: ...
 
@@ -270,7 +271,7 @@ def deserialize_json(
 def deserialize_json(
     value: FlattenedJSONSerialization,
     public_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> FlattenedJSONSignature: ...
 
@@ -278,14 +279,14 @@ def deserialize_json(
 def deserialize_json(
     value: GeneralJSONSerialization | FlattenedJSONSerialization,
     public_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | None = None,
 ) -> GeneralJSONSignature | FlattenedJSONSignature:
     """Extract and validate the JWS (in string) with the given key.
 
     :param value: a dict of the JSON signature
     :param public_key: a flexible public key to verify the signature
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a JWSRegistry to use
     :return: object of GeneralJSONSignature or FlattenedJSONSignature
     :raises BadSignatureError: when signature verification fails

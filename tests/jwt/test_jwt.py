@@ -5,6 +5,7 @@ from joserfc.errors import (
     InvalidPayloadError,
     MissingClaimError,
     UnsupportedHeaderError,
+    UnsupportedAlgorithmError,
     DecodeError,
 )
 
@@ -92,6 +93,25 @@ class TestJWT(TestCase):
             value2,
             key,
             registry=jws.JWSRegistry(),
+        )
+
+    def test_algorithms_accepts_any_collection(self):
+        # ``algorithms`` only needs to support ``in`` and truthiness, so any
+        # collection works, not just a list.
+        data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, self.oct_key)
+        for algorithms in (["HS256"], ("HS256",), {"HS256"}, frozenset({"HS256"})):
+            token = jwt.decode(data, self.oct_key, algorithms=algorithms)
+            self.assertEqual(token.claims["sub"], "a")
+
+    def test_algorithms_collection_rejects_disallowed(self):
+        data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, self.oct_key)
+        # a disallowed algorithm is still rejected when given as a non-list
+        self.assertRaises(
+            UnsupportedAlgorithmError,
+            jwt.decode,
+            data,
+            self.oct_key,
+            ("HS384",),
         )
 
     def test_with_embedded_jwk(self):
