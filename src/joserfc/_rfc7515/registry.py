@@ -1,6 +1,7 @@
 from __future__ import annotations
 import warnings
 from typing import Any
+from collections.abc import Collection
 from enum import Enum
 from .model import JWSAlgModel
 from ..errors import (
@@ -56,7 +57,7 @@ class JWSRegistry:
     def __init__(
         self,
         header_registry: HeaderRegistryDict | None = None,
-        algorithms: list[str] | None = None,
+        algorithms: Collection[str] | None = None,
         strict_check_header: bool = True,
     ):
         self.header_registry: HeaderRegistryDict = {}
@@ -173,7 +174,7 @@ class JWSRegistry:
 default_registry = JWSRegistry()
 
 
-def construct_registry(algorithms: list[str] | None = None) -> JWSRegistry:
+def construct_registry(algorithms: Collection[str] | None = None) -> JWSRegistry:
     if algorithms:
         registry = JWSRegistry(algorithms=algorithms)
     else:

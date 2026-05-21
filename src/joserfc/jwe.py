@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import overload
+from collections.abc import Collection
 from ._rfc7516.types import (
     GeneralJSONSerialization,
     FlattenedJSONSerialization,
@@ -52,7 +53,7 @@ def encrypt_compact(
     protected: Header,
     plaintext: bytes | str,
     public_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWERegistry | None = None,
     sender_key: ECKey | OKPKey | KeySet | None = None,
 ) -> str:
@@ -68,7 +69,7 @@ def encrypt_compact(
     :param protected: protected header part of the JWE, in dict
     :param plaintext: the content (message) to be encrypted
     :param public_key: a public key used to encrypt the CEK
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a JWERegistry to use
     :param sender_key: only required when using ECDH-1PU
     :return: JWE Compact Serialization in bytes
@@ -95,7 +96,7 @@ def encrypt_compact(
 def decrypt_compact(
     value: bytes | str,
     private_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWERegistry | None = None,
     sender_key: ECKey | OKPKey | KeySet | None = None,
 ) -> CompactEncryption:
@@ -114,7 +115,7 @@ def decrypt_compact(
 
     :param value: a string (or bytes) of the JWE Compact Serialization
     :param private_key: a flexible private key to decrypt the serialization
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a JWERegistry to use
     :param sender_key: only required when using ECDH-1PU
     :return: object of the ``CompactEncryption``
@@ -140,7 +141,7 @@ def decrypt_compact(
 def encrypt_json(
     obj: GeneralJSONEncryption,
     public_key: KeyFlexible | None,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWERegistry | None = None,
     sender_key: ECKey | OKPKey | KeySet | None = None,
 ) -> GeneralJSONSerialization: ...
@@ -150,7 +151,7 @@ def encrypt_json(
 def encrypt_json(
     obj: FlattenedJSONEncryption,
     public_key: KeyFlexible | None,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWERegistry | None = None,
     sender_key: ECKey | OKPKey | KeySet | None = None,
 ) -> FlattenedJSONSerialization: ...
@@ -159,7 +160,7 @@ def encrypt_json(
 def encrypt_json(
     obj: GeneralJSONEncryption | FlattenedJSONEncryption,
     public_key: KeyFlexible | None,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWERegistry | None = None,
     sender_key: ECKey | OKPKey | KeySet | None = None,
 ) -> GeneralJSONSerialization | FlattenedJSONSerialization:
@@ -184,7 +185,7 @@ def encrypt_json(
 
     :param obj: an instance of ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption``
     :param public_key: a public key used to encrypt the CEK
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a JWERegistry to use
     :param sender_key: only required when using ECDH-1PU
     :return: JWE JSON Serialization in dict
@@ -214,7 +215,7 @@ def encrypt_json(
 def decrypt_json(
     data: GeneralJSONSerialization | FlattenedJSONSerialization,
     private_key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWERegistry | None = None,
     sender_key: ECKey | OKPKey | KeySet | None = None,
 ) -> GeneralJSONEncryption | FlattenedJSONEncryption:
@@ -223,7 +224,7 @@ def decrypt_json(
 
     :param data: JWE JSON Serialization in dict
     :param private_key: a flexible private key to decrypt the CEK
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a JWERegistry to use
     :param sender_key: only required when using ECDH-1PU
     :return: an instance of ``GeneralJSONEncryption`` or ``FlattenedJSONEncryption``

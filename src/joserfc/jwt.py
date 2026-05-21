@@ -2,6 +2,7 @@ from __future__ import annotations
 import json
 from json import JSONEncoder, JSONDecoder
 from typing import Type
+from collections.abc import Collection
 from ._rfc7519.claims import (
     convert_claims,
     Claims,
@@ -58,7 +59,7 @@ def encode(
     header: Header,
     claims: Claims,
     key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | JWERegistry | None = None,
     encoder_cls: Type[JSONEncoder] | None = None,
     default_type: str | None = "JWT",
@@ -68,7 +69,7 @@ def encode(
     :param header: A dict of the JWT header
     :param claims: A dict of the JWT claims to be encoded
     :param key: key used to sign the signature
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a ``JWSRegistry`` or ``JWERegistry`` to use
     :param encoder_cls: A JSONEncoder subclass to use
     :param default_type: default value of the ``typ`` header parameter
@@ -87,7 +88,7 @@ def encode(
 def decode(
     value: bytes | str,
     key: KeyFlexible,
-    algorithms: list[str] | None = None,
+    algorithms: Collection[str] | None = None,
     registry: JWSRegistry | JWERegistry | None = None,
     decoder_cls: Type[JSONDecoder] | None = None,
 ) -> Token:
@@ -96,7 +97,7 @@ def decode(
 
     :param value: text of the JWT
     :param key: key used to verify the signature
-    :param algorithms: a list of allowed algorithms
+    :param algorithms: a collection (list, tuple, or set) of allowed algorithms
     :param registry: a ``JWSRegistry`` or ``JWERegistry`` to use
     :param decoder_cls: A JSONDecoder subclass to use
     :raise BadSignatureError: when signature verification fails
@@ -119,7 +120,7 @@ def decode(
 
 
 def _decode_jwe(
-    value: bytes, key: KeyFlexible, algorithms: list[str] | None = None, registry: JWERegistry | None = None
+    value: bytes, key: KeyFlexible, algorithms: Collection[str] | None = None, registry: JWERegistry | None = None
 ) -> tuple[Header, bytes]:
     jwe_obj = decrypt_compact(value, key, algorithms, registry)
     assert jwe_obj.plaintext is not None
@@ -127,7 +128,7 @@ def _decode_jwe(
 
 
 def _decode_jws(
-    value: bytes, key: KeyFlexible, algorithms: list[str] | None = None, registry: JWSRegistry | None = None
+    value: bytes, key: KeyFlexible, algorithms: Collection[str] | None = None, registry: JWSRegistry | None = None
 ) -> tuple[Header, bytes]:
     jws_obj = deserialize_compact(value, key, algorithms, registry)
     assert jws_obj.payload is not None

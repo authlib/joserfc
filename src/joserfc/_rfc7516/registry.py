@@ -1,6 +1,7 @@
 from __future__ import annotations
 import warnings
 import typing as t
+from collections.abc import Collection
 from .models import JWEAlgModel, JWEEncModel, JWEZipModel
 from ..errors import (
     UnsupportedAlgorithmError,
@@ -66,7 +67,7 @@ class JWERegistry:
     def __init__(
         self,
         header_registry: HeaderRegistryDict | None = None,
-        algorithms: list[str] | None = None,
+        algorithms: Collection[str] | None = None,
         verify_all_recipients: bool = True,
         strict_check_header: bool = True,
     ):
