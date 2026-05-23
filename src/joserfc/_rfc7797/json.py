@@ -1,4 +1,3 @@
-from __future__ import annotations
 from .._rfc7515.types import FlattenedJSONSerialization, JSONSignatureDict
 from .._rfc7515.model import HeaderMember, FlattenedJSONSignature
 from .._rfc7515.registry import JWSRegistry

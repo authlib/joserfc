@@ -1,4 +1,3 @@
-from __future__ import annotations
 import typing as t
 from collections.abc import KeysView
 from abc import ABCMeta, abstractmethod
@@ -79,7 +78,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
 
 class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     key_type: t.ClassVar[str]
-    binding: t.ClassVar[t.Type[NativeKeyBinding]]
+    binding: t.ClassVar[type[NativeKeyBinding]]
     value_registry: t.ClassVar[KeyParameterRegistryDict]
     param_registry: t.ClassVar[KeyParameterRegistryDict] = JWK_PARAMETER_REGISTRY
     operation_registry: t.ClassVar[KeyOperationRegistryDict] = JWK_OPERATION_REGISTRY
@@ -269,7 +268,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
 
     @classmethod
     def import_key(
-        cls: t.Type[GenericKey],
+        cls: type[GenericKey],
         value: AnyKey,
         parameters: KeyParameters | None = None,
         password: t.Any = None,
@@ -284,7 +283,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
 
     @classmethod
     def generate_key(
-        cls: t.Type[GenericKey],
+        cls: type[GenericKey],
         *,
         parameters: KeyParameters | None = None,
         private: bool = True,

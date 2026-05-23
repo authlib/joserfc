@@ -1,10 +1,9 @@
-from __future__ import annotations
 import time
 import json
 import datetime
 import calendar
 from json import JSONEncoder
-from typing import TypedDict, Type, Any, Callable
+from typing import TypedDict, Any, Callable
 from ..util import to_bytes
 from ..errors import (
     MissingClaimError,
@@ -15,7 +14,7 @@ from ..errors import (
 Claims = dict[str, Any]
 
 
-def convert_claims(claims: Claims, encoder_cls: Type[JSONEncoder] | None = None) -> bytes:
+def convert_claims(claims: Claims, encoder_cls: type[JSONEncoder] | None = None) -> bytes:
     """Turn claims into bytes payload."""
     for k in ["exp", "iat", "nbf"]:
         claim = claims.get(k)

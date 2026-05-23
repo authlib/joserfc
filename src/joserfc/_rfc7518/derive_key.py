@@ -1,4 +1,3 @@
-from __future__ import annotations
 import struct
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash

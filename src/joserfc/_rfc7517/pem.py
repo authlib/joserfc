@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import Any, Literal, cast
 from abc import ABCMeta, abstractmethod
 from cryptography.x509 import load_pem_x509_certificate

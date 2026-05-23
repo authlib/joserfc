@@ -1,4 +1,4 @@
-import typing as t
+from typing import Any, TypedDict
 
 __all__ = [
     "JSONRecipientDict",
@@ -7,14 +7,14 @@ __all__ = [
 ]
 
 
-class JSONRecipientDict(t.TypedDict, total=False):
-    header: dict[str, t.Any]
+class JSONRecipientDict(TypedDict, total=False):
+    header: dict[str, Any]
     encrypted_key: str
 
 
-class GeneralJSONSerialization(t.TypedDict, total=False):
+class GeneralJSONSerialization(TypedDict, total=False):
     protected: str
-    unprotected: dict[str, t.Any]
+    unprotected: dict[str, Any]
     iv: str
     aad: str
     ciphertext: str
@@ -22,12 +22,12 @@ class GeneralJSONSerialization(t.TypedDict, total=False):
     recipients: list[JSONRecipientDict]
 
 
-class FlattenedJSONSerialization(t.TypedDict, total=False):
+class FlattenedJSONSerialization(TypedDict, total=False):
     protected: str
-    unprotected: dict[str, t.Any]
+    unprotected: dict[str, Any]
     iv: str
     aad: str
     ciphertext: str
     tag: str
-    header: dict[str, t.Any]
+    header: dict[str, Any]
     encrypted_key: str

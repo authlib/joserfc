@@ -1,4 +1,3 @@
-from __future__ import annotations
 import warnings
 import typing as t
 from collections.abc import Collection

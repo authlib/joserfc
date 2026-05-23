@@ -8,7 +8,6 @@ Encryption per `Section 5`_.
 .. _`Section 5`: https://tools.ietf.org/html/rfc7518#section-5
 """
 
-from __future__ import annotations
 import hmac
 import hashlib
 from cryptography.hazmat.primitives.ciphers import Cipher

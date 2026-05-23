@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing as t
 from functools import cached_property
 from cryptography.hazmat.primitives import hashes
@@ -44,11 +42,11 @@ class ECBinding(CryptographyBinding):
     ssh_type = b"ecdsa-sha2-"
     _cryptography_key_types = (EllipticCurvePrivateKey, EllipticCurvePublicKey)
 
-    _dss_curves: dict[str, t.Type[EllipticCurve]] = {}
+    _dss_curves: dict[str, type[EllipticCurve]] = {}
     _curves_dss: dict[str, str] = {}
 
     @classmethod
-    def register_curve(cls, name: str, curve: t.Type[EllipticCurve]) -> None:
+    def register_curve(cls, name: str, curve: type[EllipticCurve]) -> None:
         cls._dss_curves[name] = curve
         cls._curves_dss[str(curve.name)] = name
 
@@ -169,7 +167,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @classmethod
     def generate_key(
-        cls: t.Type["ECKey"],
+        cls: type["ECKey"],
         crv: str | None = "P-256",
         parameters: KeyParameters | None = None,
         private: bool = True,
@@ -189,7 +187,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @classmethod
     def derive_key(
-        cls: t.Type["ECKey"],
+        cls: type["ECKey"],
         secret: bytes | str,
         crv: str = "P-256",
         parameters: KeyParameters | None = None,
@@ -252,7 +250,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
 
 def _wrap_key(
-    cls: t.Type["ECKey"],
+    cls: type["ECKey"],
     raw_key: EllipticCurvePrivateKey,
     private: bool,
     auto_kid: bool,

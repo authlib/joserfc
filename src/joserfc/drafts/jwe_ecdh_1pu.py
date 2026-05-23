@@ -1,4 +1,3 @@
-from __future__ import annotations
 from .._rfc7516.models import Recipient, JWEKeyAgreement, JWEKeyWrapping, JWEEncModel
 from .._rfc7518.jwe_algs import (
     A128KW,

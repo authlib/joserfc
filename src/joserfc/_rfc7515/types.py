@@ -1,4 +1,4 @@
-import typing as t
+from typing import TypedDict, final
 from ..registry import Header
 
 __all__ = [
@@ -10,31 +10,31 @@ __all__ = [
 ]
 
 
-class SegmentsDict(t.TypedDict, total=False):
+class SegmentsDict(TypedDict, total=False):
     header: bytes
     payload: bytes
     signature: bytes
 
 
-class HeaderDict(t.TypedDict, total=False):
+class HeaderDict(TypedDict, total=False):
     protected: Header
     header: Header
 
 
-class JSONSignatureDict(t.TypedDict, total=False):
+class JSONSignatureDict(TypedDict, total=False):
     protected: str
     header: Header
     signature: str
 
 
-@t.final
-class GeneralJSONSerialization(t.TypedDict):
+@final
+class GeneralJSONSerialization(TypedDict):
     payload: str
     signatures: list[JSONSignatureDict]
 
 
-@t.final
-class FlattenedJSONSerialization(t.TypedDict, total=False):
+@final
+class FlattenedJSONSerialization(TypedDict, total=False):
     payload: str
     protected: str
     header: Header

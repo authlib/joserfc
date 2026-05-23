@@ -1,6 +1,5 @@
-from __future__ import annotations
-import typing as t
 import warnings
+from typing import cast, overload, Literal, Union, Callable, Protocol
 from ._keys import (
     JWKRegistry,
     KeySet,
@@ -49,22 +48,22 @@ __all__ = [
 register_secp256k1()
 
 
-class GuestProtocol(t.Protocol):  # pragma: no cover
+class GuestProtocol(Protocol):  # pragma: no cover
     def headers(self) -> Header: ...
 
     def set_kid(self, kid: str) -> None: ...
 
 
-KeyBase = t.Union[Key, KeySet]
-KeyCallable = t.Callable[[GuestProtocol], KeyBase]
-KeyFlexible = t.Union[KeyBase, KeyCallable]
+KeyBase = Union[Key, KeySet]
+KeyCallable = Callable[[GuestProtocol], KeyBase]
+KeyFlexible = Union[KeyBase, KeyCallable]
 
 
 def guess_key(
     key: KeyFlexible,
     obj: GuestProtocol,
     random: bool = False,
-    use: t.Literal["sig", "enc"] | None = None,
+    use: Literal["sig", "enc"] | None = None,
 ) -> Key:
     """Guess key from a various sources.
 
@@ -95,7 +94,7 @@ def guess_key(
             if return_key is None:
                 raise ValueError("Invalid key")
             return_key.ensure_kid()
-            obj.set_kid(t.cast(str, return_key.kid))
+            obj.set_kid(cast(str, return_key.kid))
         else:
             return_key = resolved_key.get_by_kid(kid, parameters)
         return return_key
@@ -103,29 +102,29 @@ def guess_key(
         raise ValueError("Invalid key")
 
 
-@t.overload
-def import_key(data: AnyKey, key_type: t.Literal["oct"], parameters: KeyParameters | None = None) -> OctKey: ...
+@overload
+def import_key(data: AnyKey, key_type: Literal["oct"], parameters: KeyParameters | None = None) -> OctKey: ...
 
 
-@t.overload
-def import_key(data: AnyKey, key_type: t.Literal["RSA"], parameters: KeyParameters | None = None) -> RSAKey: ...
+@overload
+def import_key(data: AnyKey, key_type: Literal["RSA"], parameters: KeyParameters | None = None) -> RSAKey: ...
 
 
-@t.overload
-def import_key(data: AnyKey, key_type: t.Literal["EC"], parameters: KeyParameters | None = None) -> ECKey: ...
+@overload
+def import_key(data: AnyKey, key_type: Literal["EC"], parameters: KeyParameters | None = None) -> ECKey: ...
 
 
-@t.overload
-def import_key(data: AnyKey, key_type: t.Literal["OKP"], parameters: KeyParameters | None = None) -> OKPKey: ...
+@overload
+def import_key(data: AnyKey, key_type: Literal["OKP"], parameters: KeyParameters | None = None) -> OKPKey: ...
 
 
-@t.overload
+@overload
 def import_key(data: AnyKey, key_type: None = None, parameters: KeyParameters | None = None) -> Key: ...
 
 
 def import_key(
     data: AnyKey,
-    key_type: t.Literal["oct", "RSA", "EC", "OKP"] | None = None,
+    key_type: Literal["oct", "RSA", "EC", "OKP"] | None = None,
     parameters: KeyParameters | None = None,
 ) -> Key:
     """Importing a key from bytes, string, and dict. When ``value`` is a dict,
@@ -162,9 +161,9 @@ def import_key(
     return JWKRegistry.import_key(data, key_type, parameters)
 
 
-@t.overload
+@overload
 def generate_key(
-    key_type: t.Literal["oct"],
+    key_type: Literal["oct"],
     crv_or_size: int | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
@@ -172,9 +171,9 @@ def generate_key(
 ) -> OctKey: ...
 
 
-@t.overload
+@overload
 def generate_key(
-    key_type: t.Literal["RSA"],
+    key_type: Literal["RSA"],
     crv_or_size: int | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
@@ -182,20 +181,20 @@ def generate_key(
 ) -> RSAKey: ...
 
 
-@t.overload
+@overload
 def generate_key(
-    key_type: t.Literal["EC"],
-    crv_or_size: t.Literal["P-256", "P-384", "P-521", "secp256k1"] | None = None,
+    key_type: Literal["EC"],
+    crv_or_size: Literal["P-256", "P-384", "P-521", "secp256k1"] | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
     auto_kid: bool = False,
 ) -> ECKey: ...
 
 
-@t.overload
+@overload
 def generate_key(
-    key_type: t.Literal["OKP"],
-    crv_or_size: t.Literal["Ed25519", "Ed448", "X25519", "X448"] | None = None,
+    key_type: Literal["OKP"],
+    crv_or_size: Literal["Ed25519", "Ed448", "X25519", "X448"] | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,
     auto_kid: bool = False,
@@ -203,7 +202,7 @@ def generate_key(
 
 
 def generate_key(
-    key_type: t.Literal["oct", "RSA", "EC", "OKP"],
+    key_type: Literal["oct", "RSA", "EC", "OKP"],
     crv_or_size: str | int | None = None,
     parameters: KeyParameters | None = None,
     private: bool = True,

@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import cast, overload, Union
 from collections.abc import Collection
 from ._rfc7516.types import (

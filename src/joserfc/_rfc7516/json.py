@@ -1,5 +1,4 @@
-from __future__ import annotations
-import typing as t
+from typing import Any
 from .models import (
     BaseJSONEncryption,
     GeneralJSONEncryption,
@@ -56,8 +55,8 @@ def represent_flattened_json(obj: FlattenedJSONEncryption) -> FlattenedJSONSeria
     return data
 
 
-def __represent_json_serialization(obj: BaseJSONEncryption) -> t.Any:
-    data: dict[str, t.Any] = {
+def __represent_json_serialization(obj: BaseJSONEncryption) -> Any:
+    data: dict[str, Any] = {
         "protected": to_str(json_b64encode(obj.protected)),
         "iv": to_str(obj.base64_segments["iv"]),
         "ciphertext": to_str(obj.base64_segments["ciphertext"]),
@@ -103,9 +102,9 @@ def extract_flattened_json(data: FlattenedJSONSerialization, registry: JWERegist
 
 
 def __extract_segments(
-    data: t.Union[GeneralJSONSerialization, FlattenedJSONSerialization],
+    data: GeneralJSONSerialization | FlattenedJSONSerialization,
     registry: JWERegistry,
-) -> tuple[dict[str, bytes], dict[str, bytes], t.Optional[bytes]]:
+) -> tuple[dict[str, bytes], dict[str, bytes], bytes | None]:
     base64_segments: dict[str, bytes] = {
         "iv": to_bytes(data["iv"]),
         "ciphertext": to_bytes(data["ciphertext"]),

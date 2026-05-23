@@ -1,6 +1,5 @@
-from __future__ import annotations
-import typing as t
 import copy
+from typing import Any, Callable
 from .model import (
     HeaderMember,
     GeneralJSONSignature,
@@ -33,7 +32,7 @@ __all__ = [
     "detach_json_content",
 ]
 
-FindKey = t.Callable[[HeaderMember], t.Any]
+FindKey = Callable[[HeaderMember], Any]
 
 
 def sign_general_json(
@@ -156,7 +155,7 @@ def verify_signature(
     return alg.verify(signing_input, sig, key)
 
 
-def detach_json_content(value: dict[str, t.Any]) -> dict[str, t.Any]:
+def detach_json_content(value: dict[str, Any]) -> dict[str, Any]:
     # https://www.rfc-editor.org/rfc/rfc7515#appendix-F
     rv = copy.deepcopy(value)  # don't alter original value
     if "payload" in rv:

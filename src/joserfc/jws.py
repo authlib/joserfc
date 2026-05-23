@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import overload, Any
 from collections.abc import Collection
 from ._rfc7515.model import (

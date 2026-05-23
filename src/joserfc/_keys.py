@@ -1,4 +1,3 @@
-from __future__ import annotations
 import typing as t
 import random
 from ._rfc7517.types import AnyKey, KeyParameters, DictKey
@@ -44,7 +43,7 @@ class JWKRegistry:
         key = JWKRegistry.import_key(data)
     """
 
-    key_types: dict[str, t.Type[Key]] = {
+    key_types: dict[str, type[Key]] = {
         OctKey.key_type: OctKey,
         RSAKey.key_type: RSAKey,
         ECKey.key_type: ECKey,
@@ -110,7 +109,7 @@ class KeySet:
     #: keys in the key set
     keys: list[Key]
 
-    registry_cls: t.Type[JWKRegistry] = JWKRegistry
+    registry_cls: type[JWKRegistry] = JWKRegistry
     algorithm_keys: t.ClassVar[dict[str, list[str]]] = {}
 
     def __init__(self, keys: list[Key]):

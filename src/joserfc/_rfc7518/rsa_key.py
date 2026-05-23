@@ -1,4 +1,3 @@
-from __future__ import annotations
 import warnings
 import typing as t
 from functools import cached_property
@@ -156,7 +155,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
 
     @classmethod
     def generate_key(
-        cls: t.Type["RSAKey"],
+        cls: type["RSAKey"],
         key_size: int | None = 2048,
         parameters: KeyParameters | None = None,
         private: bool = True,

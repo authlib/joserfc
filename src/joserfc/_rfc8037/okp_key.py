@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing as t
 from functools import cached_property
 from cryptography.hazmat.primitives import hashes
@@ -35,13 +33,13 @@ OKPDictKey = t.TypedDict(
     },
     total=False,
 )
-PUBLIC_KEYS_MAP: dict[str, t.Type[PublicOKPKey]] = {
+PUBLIC_KEYS_MAP: dict[str, type[PublicOKPKey]] = {
     "Ed25519": Ed25519PublicKey,
     "Ed448": Ed448PublicKey,
     "X25519": X25519PublicKey,
     "X448": X448PublicKey,
 }
-PRIVATE_KEYS_MAP: dict[str, t.Type[PrivateOKPKey]] = {
+PRIVATE_KEYS_MAP: dict[str, type[PrivateOKPKey]] = {
     "Ed25519": Ed25519PrivateKey,
     "Ed448": Ed448PrivateKey,
     "X25519": X25519PrivateKey,
@@ -74,17 +72,17 @@ class OKPBinding(CryptographyBinding):
     def generate_private_key(crv: LiteralCurves) -> PrivateOKPKey:
         if crv not in PRIVATE_KEYS_MAP:
             raise InvalidKeyCurveError(f"Invalid curve value: '{crv}'")
-        crv_key: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
+        crv_key: type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
         return crv_key.generate()
 
     @staticmethod
     def from_private_bytes(crv: LiteralCurves, data: bytes) -> PrivateOKPKey:
-        crv_key: t.Type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
+        crv_key: type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
         return crv_key.from_private_bytes(data)
 
     @staticmethod
     def from_public_bytes(crv: LiteralCurves, data: bytes) -> PublicOKPKey:
-        crv_key: t.Type[PublicOKPKey] = PUBLIC_KEYS_MAP[crv]
+        crv_key: type[PublicOKPKey] = PUBLIC_KEYS_MAP[crv]
         return crv_key.from_public_bytes(data)
 
     @classmethod
@@ -185,7 +183,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     @classmethod
     def generate_key(
-        cls: t.Type["OKPKey"],
+        cls: type["OKPKey"],
         crv: LiteralCurves | None = "Ed25519",
         parameters: KeyParameters | None = None,
         private: bool = True,
@@ -206,7 +204,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     @classmethod
     def derive_key(
-        cls: t.Type["OKPKey"],
+        cls: type["OKPKey"],
         secret: bytes | str,
         crv: LiteralCurves = "Ed25519",
         parameters: KeyParameters | None = None,
@@ -312,7 +310,7 @@ def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]) -> LiteralCurves:
 
 
 def _wrap_key(
-    cls: t.Type["OKPKey"],
+    cls: type[OKPKey],
     raw_key: PrivateOKPKey,
     private: bool,
     auto_kid: bool,

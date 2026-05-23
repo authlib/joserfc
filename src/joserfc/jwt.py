@@ -1,7 +1,5 @@
-from __future__ import annotations
 import json
 from json import JSONEncoder, JSONDecoder
-from typing import Type
 from collections.abc import Collection
 from ._rfc7519.claims import (
     convert_claims,
@@ -61,7 +59,7 @@ def encode(
     key: KeyFlexible,
     algorithms: Collection[str] | None = None,
     registry: JWSRegistry | JWERegistry | None = None,
-    encoder_cls: Type[JSONEncoder] | None = None,
+    encoder_cls: type[JSONEncoder] | None = None,
     default_type: str | None = "JWT",
 ) -> str:
     """Encode a JSON Web Token with the given header, and claims.
@@ -90,7 +88,7 @@ def decode(
     key: KeyFlexible,
     algorithms: Collection[str] | None = None,
     registry: JWSRegistry | JWERegistry | None = None,
-    decoder_cls: Type[JSONDecoder] | None = None,
+    decoder_cls: type[JSONDecoder] | None = None,
 ) -> Token:
     """Decode the JSON Web Token string with the given key, and validate
     it with the claims requests.
