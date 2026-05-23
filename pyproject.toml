@@ -6,7 +6,7 @@ dependencies = [
     "cryptography>=45.0.1",
 ]
 license = {text = "BSD-3-Clause"}
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["version"]
 readme = "README.rst"
 classifiers = [
@@ -18,7 +18,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -105,7 +104,7 @@ exclude_lines = [
 
 [tool.mypy]
 strict = true
-python_version = "3.9"
+python_version = "3.10"
 files = ["src/joserfc"]
 show_error_codes = true
 pretty = true
