@@ -64,7 +64,7 @@ class JWKRegistry:
         """
         if isinstance(data, dict) and key_type is None:
             if "kty" in data:
-                key_type = data["kty"]  # type: ignore[assignment]
+                key_type = t.cast(str, data["kty"])
             else:
                 raise MissingKeyTypeError("Missing key type")
 

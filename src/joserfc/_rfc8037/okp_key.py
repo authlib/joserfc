@@ -128,7 +128,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     def exchange_derive_key(self, key: "OKPKey") -> bytes:
         # used in ECDH-ES Algorithms
-        pubkey: t.Union[X25519PublicKey, X448PublicKey] = key.get_op_key("deriveKey")  # type: ignore[assignment]
+        pubkey = t.cast(t.Union[X25519PublicKey, X448PublicKey], key.get_op_key("deriveKey"))
 
         # this if else logic is used for type hints
         if isinstance(self.private_key, X25519PrivateKey) and isinstance(pubkey, X25519PublicKey):

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import overload
+from typing import cast, overload, Union
 from collections.abc import Collection
 from ._rfc7516.types import (
     GeneralJSONSerialization,
@@ -236,12 +236,12 @@ def decrypt_json(
 
     reject_unprotected_crit_header(data.get("unprotected"))
     if "recipients" in data:
-        general_obj = extract_general_json(data, registry)  # type: ignore[arg-type]
+        general_obj = extract_general_json(cast(GeneralJSONSerialization, data), registry)
         _attach_recipient_keys(general_obj.recipients, private_key, sender_key)
         perform_decrypt(general_obj, registry)
         return general_obj
     else:
-        flattened_obj = extract_flattened_json(data, registry)  # type: ignore[arg-type]
+        flattened_obj = extract_flattened_json(cast(FlattenedJSONSerialization, data), registry)
         _attach_recipient_keys(flattened_obj.recipients, private_key, sender_key)
         perform_decrypt(flattened_obj, registry)
         return flattened_obj
@@ -261,15 +261,18 @@ def _attach_recipient_keys(
 def _guess_sender_key(
     recipient: Recipient[Key], key: ECKey | OKPKey | KeySet, use_random: bool = False
 ) -> ECKey | OKPKey:
-    if isinstance(key, KeySet):
-        headers = recipient.headers()
-        skid = headers.get("skid")
-        if skid:
-            return key.get_by_kid(skid)  # type: ignore[return-value]
-        if use_random:
-            skey = key.pick_random_key(headers["alg"])
-            if skey is not None:
-                recipient.add_header("skid", skey.kid)
-                return skey  # type: ignore[return-value]
-        raise ValueError("Invalid key")
-    return key
+    if not isinstance(key, KeySet):
+        return key
+
+    headers = recipient.headers()
+    skid = headers.get("skid")
+    if skid:
+        skey = cast(Union[ECKey, OKPKey], key.get_by_kid(skid))
+        return skey
+
+    if use_random:
+        skey = cast(Union[ECKey, OKPKey], key.pick_random_key(headers["alg"]))
+        if skey is not None:
+            recipient.add_header("skid", skey.kid)
+            return skey
+    raise ValueError("Invalid key")
