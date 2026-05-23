@@ -58,6 +58,12 @@ class OctKey(SymmetricKey):
         password: Any = None,
     ) -> "OctKey":
         key: OctKey = super(OctKey, cls).import_key(value, parameters, password)
+        if not key.raw_value:
+            # An empty oct key material produces a deterministic HMAC digest
+            # that any party can reproduce, allowing trivial signature forgery
+            # in JWS HS256/HS384/HS512 verification. Reject outright rather
+            # than emitting a SecurityWarning that callers commonly suppress.
+            raise ValueError("oct key material must not be empty")
         if len(key.raw_value) < 14:
             # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
             warnings.warn("Key size should be >= 112 bits", SecurityWarning)
