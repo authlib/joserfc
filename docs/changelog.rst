@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.6.7
+-----
+
+**Released on May 23, 2026**
+
+- Update for type hints.
+
 1.6.6
 -----
 
