@@ -105,3 +105,19 @@ class TestCompact(TestCase):
         self.assertEqual(value, expected)
         obj = deserialize_compact(value, self.key, payload=b"foo")
         self.assertEqual(obj.payload, b"foo")
+
+    def test_hmac_rejects_empty_key(self):
+        # An empty / None HMAC key produces a deterministic digest that any
+        # attacker can reproduce, so signing and verifying must refuse the
+        # key outright. Otherwise a misconfigured `JWT_SECRET=""` (or similar)
+        # lets the attacker forge arbitrary HS256/HS384/HS512 tokens.
+        self.assertRaisesRegex(ValueError, "must not be empty", OctKey.import_key, "")
+        # Direct OctKey construction also blocked at the HMAC layer
+        # (defence-in-depth): bypass OctKey.import_key by setting raw_value
+        # post-hoc.
+        empty_key = OctKey.import_key("rfc")
+        empty_key._raw_value = b""
+        from joserfc._rfc7518.jws_algs import HMACAlgorithm
+        alg = HMACAlgorithm(256)
+        self.assertRaisesRegex(ValueError, "must not be empty", alg.sign, b"msg", empty_key)
+        self.assertRaisesRegex(ValueError, "must not be empty", alg.verify, b"msg", b"sig", empty_key)
