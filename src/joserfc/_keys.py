@@ -194,7 +194,7 @@ class KeySet:
         return cls(keys)
 
 
-def _filter_keys_by_parameters(keys: list[Key], parameters: KeyParameters) -> t.Generator[Key]:
+def _filter_keys_by_parameters(keys: list[Key], parameters: KeyParameters) -> t.Iterator[Key]:
     _use = parameters.get("use")
     _alg = parameters.get("alg")
 
