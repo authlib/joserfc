@@ -62,10 +62,17 @@ class HMACAlgorithm(JWSAlgModel):
     def sign(self, msg: bytes, key: OctKey) -> bytes:
         # it is faster than the one in cryptography
         op_key = key.get_op_key("sign")
+        if not op_key:
+            # Defence-in-depth: OctKey.import_key rejects empty input, but
+            # an OctKey can also be constructed directly through other
+            # internal paths. An empty HMAC key produces a forgeable digest.
+            raise ValueError("HMAC key must not be empty")
         return hmac.new(op_key, msg, self.hash_alg).digest()
 
     def verify(self, msg: bytes, sig: bytes, key: OctKey) -> bool:
         op_key = key.get_op_key("verify")
+        if not op_key:
+            raise ValueError("HMAC key must not be empty")
         v_sig = hmac.new(op_key, msg, self.hash_alg).digest()
         return hmac.compare_digest(sig, v_sig)
 

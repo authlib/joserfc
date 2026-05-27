@@ -110,6 +110,14 @@ class TestOctKey(TestCase):
     def test_import_key_with_warnings(self):
         self.assertWarns(SecurityWarning, OctKey.import_key, b"rfc")
 
+    def test_import_empty_key_rejected(self):
+        # An empty oct key produces a deterministic HMAC digest reproducible
+        # by any party, so accepting it would let an attacker forge HS256/
+        # HS384/HS512 signatures whenever the application's secret resolves
+        # to "" or None (unset env var, missing config, fallback).
+        self.assertRaisesRegex(ValueError, "must not be empty", OctKey.import_key, "")
+        self.assertRaisesRegex(ValueError, "must not be empty", OctKey.import_key, b"")
+
     def test_key_eq(self):
         key1 = OctKey.generate_key()
         key2 = OctKey.import_key(key1.as_dict())
