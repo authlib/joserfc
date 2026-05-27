@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.6.8
+-----
+
+**Released on May 27, 2026**
+
+- Reject empty OctKey.
+
 1.6.7
 -----
 
