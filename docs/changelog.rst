@@ -12,6 +12,22 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.7.0
+-----
+
+**Released on June 2, 2026**
+
+- Drop Python 3.9 support.
+- Update type hints.
+- **JWK**: export public key by default in ``.as_dict``, ``.as_pem``, ``.as_der`` methods.
+
+1.6.8
+-----
+
+**Released on May 27, 2026**
+
+- Reject empty OctKey.
+
 1.6.7
 -----
 
