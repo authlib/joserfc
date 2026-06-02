@@ -46,11 +46,11 @@ class TestOKPKey(TestCase):
         private_key: OKPKey = OKPKey.import_key(private_pem)
         public_key: OKPKey = OKPKey.import_key(public_pem)
 
-        self.assertEqual(private_key.as_pem(), private_pem)
+        self.assertEqual(private_key.as_pem(private=True), private_pem)
         self.assertEqual(private_key.as_pem(private=False), public_pem)
         self.assertEqual(public_key.as_pem(), public_pem)
 
-        self.assertIn("d", private_key.as_dict())
+        self.assertIn("d", private_key.as_dict(private=True))
         self.assertNotIn("d", public_key.as_dict())
 
     def test_import_invalid_pem_key(self):
@@ -88,7 +88,7 @@ class TestOKPKey(TestCase):
         key: OKPKey = OKPKey.import_key(private_json)
 
         # as_dict
-        data = key.as_dict()
+        data = key.as_dict(private=True)
         self.assertIn("d", data)
         self.assertEqual(data, private_json)
         data = key.as_dict(private=False)
@@ -96,7 +96,7 @@ class TestOKPKey(TestCase):
         self.assertEqual(data, public_json)
 
         # as_pem
-        data = key.as_pem()
+        data = key.as_pem(private=True)
         self.assertIn(b"PRIVATE", data)
         data = key.as_pem(private=False)
         self.assertIn(b"PUBLIC", data)
@@ -107,14 +107,14 @@ class TestOKPKey(TestCase):
 
     def test_output_with_password(self):
         key = OKPKey.import_key(read_key("okp-ed25519-private.json"))
-        pem = key.as_pem(password="secret")
+        pem = key.as_pem(private=True, password="secret")
         self.assertRaises(TypeError, OKPKey.import_key, pem)
         key2 = OKPKey.import_key(pem, password="secret")
         self.assertEqual(key.as_pem(), key2.as_pem())
 
     def test_key_eq(self):
         key1 = OKPKey.generate_key()
-        key2 = OKPKey.import_key(key1.as_dict())
+        key2 = OKPKey.import_key(key1.as_dict(private=True))
         self.assertIsNot(key1, key2)
         self.assertEqual(key1, key2)
         key3 = OKPKey.generate_key()

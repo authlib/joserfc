@@ -1,3 +1,4 @@
+import typing as t
 from typing import Any
 import secrets
 import warnings
@@ -101,3 +102,6 @@ class OctKey(SymmetricKey):
         if auto_kid:
             key.ensure_kid()
         return key
+
+    def as_dict(self, private: bool = False, **params: t.Any) -> DictKey:
+        return super().as_dict(private=True, **params)

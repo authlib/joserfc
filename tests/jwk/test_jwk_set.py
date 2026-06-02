@@ -19,7 +19,7 @@ class TestKeySet(TestCase):
             # we will ensure kid when generating the key set
             self.assertIsNotNone(key.kid)
 
-        jwks1_data = jwks1.as_dict()
+        jwks1_data = jwks1.as_dict(private=True)
         self.assertEqual(list(jwks1_data.keys()), ["keys"])
         for d1 in jwks1_data["keys"]:
             self.assertIn("d", d1)
@@ -90,6 +90,6 @@ class TestKeySet(TestCase):
 
     def test_key_eq_with_new_keys(self):
         key_set1 = KeySet.generate_key_set("RSA", 2048)
-        key_set2 = KeySet([RSAKey.import_key(k.as_dict()) for k in key_set1])
+        key_set2 = KeySet([RSAKey.import_key(k.as_dict(private=True)) for k in key_set1])
         self.assertIsNot(key_set1, key_set2)
         self.assertEqual(key_set1, key_set2)

@@ -84,14 +84,14 @@ class TestECKey(TestCase):
 
     def test_output_with_password(self):
         key = ECKey.import_key(read_key("ec-p256-private.pem"))
-        pem = key.as_pem(password="secret")
+        pem = key.as_pem(private=True, password="secret")
         self.assertRaises(TypeError, ECKey.import_key, pem)
         key2 = ECKey.import_key(pem, password="secret")
         self.assertEqual(key.as_dict(), key2.as_dict())
 
     def test_key_eq(self):
         key1 = self.default_key
-        key2 = ECKey.import_key(key1.as_dict())
+        key2 = ECKey.import_key(key1.as_dict(private=True))
         self.assertEqual(key1, key2)
         key3 = ECKey.generate_key()
         self.assertNotEqual(key1, key3)

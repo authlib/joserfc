@@ -127,16 +127,13 @@ class KeySet:
         assert isinstance(other, KeySet)
         return self.keys == other.keys
 
-    def as_dict(self, private: bool | None = None, **params: t.Any) -> KeySetSerialization:
+    def as_dict(self, private: bool = False, **params: t.Any) -> KeySetSerialization:
         keys: list[DictKey] = []
 
         for key in self.keys:
             # trigger key to generate kid via thumbprint
             key.ensure_kid()
-            if isinstance(key, OctKey):
-                keys.append(key.as_dict(**params))
-            else:
-                keys.append(key.as_dict(private=private, **params))
+            keys.append(key.as_dict(private=private, **params))
         return {"keys": keys}
 
     def get_by_kid(self, kid: str | None = None, parameters: KeyParameters | None = None) -> Key:

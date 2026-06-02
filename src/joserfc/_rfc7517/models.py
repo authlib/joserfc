@@ -49,7 +49,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
     def as_bytes(
         key: GenericKey,
         encoding: t.Literal["PEM", "DER"] | None = None,
-        private: bool | None = None,
+        private: bool = False,
         password: str | None = None,
     ) -> bytes:
         raise NotImplementedError()
@@ -177,7 +177,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         value = self.thumbprint()
         return concat_thumbprint_uri(value, self.thumbprint_digest_method)
 
-    def as_dict(self, private: bool | None = None, **params: t.Any) -> DictKey:
+    def as_dict(self, private: bool = False, **params: t.Any) -> DictKey:
         """Output this key to a JWK format (in dict). By default, it will return
         the ``dict_value`` of this key.
 
@@ -190,7 +190,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
             raise ValueError("This key is not a private key.")
 
         data = self.dict_value.copy()
-        if private is not False:
+        if private:
             data.update(params)
             return data
 
@@ -322,15 +322,15 @@ class AsymmetricKey(BaseKey[NativePrivateKey, NativePublicKey], metaclass=ABCMet
     def as_bytes(
         self,
         encoding: t.Literal["PEM", "DER"] | None = None,
-        private: bool | None = None,
+        private: bool = False,
         password: str | None = None,
     ) -> bytes:
         return self.binding.as_bytes(self, encoding, private, password)
 
-    def as_pem(self, private: bool | None = None, password: str | None = None) -> bytes:
+    def as_pem(self, private: bool = False, password: str | None = None) -> bytes:
         return self.as_bytes(private=private, password=password)
 
-    def as_der(self, private: bool | None = None, password: str | None = None) -> bytes:
+    def as_der(self, private: bool = False, password: str | None = None) -> bytes:
         return self.as_bytes(encoding="DER", private=private, password=password)
 
 

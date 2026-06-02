@@ -101,16 +101,12 @@ class TestRSAKey(TestCase):
         key: RSAKey = RSAKey.import_key(private_pem)
 
         # as_dict
-        data = key.as_dict()
-        self.assertIn("d", data)
         data = key.as_dict(private=True)
         self.assertIn("d", data)
         data = key.as_dict(private=False)
         self.assertNotIn("d", data)
 
         # as_pem
-        data = key.as_pem()
-        self.assertIn(b"PRIVATE", data)
         data = key.as_pem(private=True)
         self.assertIn(b"PRIVATE", data)
         data = key.as_pem(private=False)
@@ -172,14 +168,14 @@ class TestRSAKey(TestCase):
     def test_output_with_password(self):
         private_pem = read_key("rsa-openssl-private.pem")
         key: RSAKey = RSAKey.import_key(private_pem)
-        pem = key.as_pem(password="secret")
+        pem = key.as_pem(private=True, password="secret")
         self.assertRaises(TypeError, RSAKey.import_key, pem)
         key2 = RSAKey.import_key(pem, password="secret")
         self.assertEqual(key.as_dict(), key2.as_dict())
 
     def test_key_eq(self):
         key1 = self.default_key
-        key2 = RSAKey.import_key(key1.as_dict())
+        key2 = RSAKey.import_key(key1.as_dict(private=True))
         self.assertIsNot(key1, key2)
         self.assertEqual(key1, key2)
         key3 = RSAKey.generate_key()
