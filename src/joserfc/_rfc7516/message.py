@@ -124,9 +124,12 @@ def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
     if len(cek) * 8 != enc.cek_size:  # pragma: no cover
         cek = secrets.token_bytes(enc.cek_size // 8)
 
-    aad = json_b64encode(obj.protected)
-    if isinstance(obj, BaseJSONEncryption) and obj.aad:
-        aad = aad + b"." + urlsafe_b64encode(obj.aad)
+    if isinstance(obj, BaseJSONEncryption):
+        aad = json_b64encode(obj.protected)
+        if obj.aad:
+            aad = aad + b"." + obj.base64_segments["aad"]
+    else:
+        aad = obj.base64_segments["aad"]
 
     msg = enc.decrypt(ciphertext, tag, cek, iv, aad)
     if "zip" in obj.protected:

@@ -120,7 +120,9 @@ def __extract_segments(
         "tag": urlsafe_b64decode(base64_segments["tag"]),
     }
     if "aad" in data:
-        aad = urlsafe_b64decode(to_bytes(data["aad"]))
+        base64_segments["aad"] = to_bytes(data["aad"])
+        aad = urlsafe_b64decode(base64_segments["aad"])
+        bytes_segments["aad"] = aad
     else:
         aad = None
     return base64_segments, bytes_segments, aad

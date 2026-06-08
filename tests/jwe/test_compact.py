@@ -313,3 +313,13 @@ class TestJWECompact(TestCase):
         self.assertEqual(obj.recipients, [])
         obj.attach_recipient(key, {"kid": "foo"})
         self.assertEqual(obj.protected["kid"], "foo")
+
+    def test_decrypt_from_other_libary(self):
+        token = (
+            "eyJhbGciOiAiZGlyIiwgImVuYyI6ICJBMjU2R0NNIiwgImtpZCI6ICJrLTEifQ."
+            ".UlOr6A5mRw3K1Wxx.8lI1604.2ubm__cUeWUB5Q7E8fpkyw"
+        )
+        key = OctKey.import_key(b"\x01" * 32)
+        registry = JWERegistry(algorithms=["dir", "A256GCM"])
+        obj = decrypt_compact(token, key, registry=registry)
+        self.assertEqual(obj.plaintext, b"hello")
