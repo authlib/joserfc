@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.7.1
+-----
+
+**Released on June 8, 2026**
+
+- **JWE**: use the original ``aad`` value for decrypting.
+
 1.7.0
 -----
 
@@ -20,6 +27,13 @@ Changelog
 - Drop Python 3.9 support.
 - Update type hints.
 - **JWK**: export public key by default in ``.as_dict``, ``.as_pem``, ``.as_der`` methods.
+
+1.6.9
+-----
+
+**Released on June 8, 2026**
+
+- **JWE**: use the original ``aad`` value for decrypting.
 
 1.6.8
 -----
