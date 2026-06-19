@@ -33,6 +33,10 @@ class TestCompact(TestCase):
         value = b"eyJhbGciOiJIUzI1NiJ9.Zm9v.0pehoi-RMZM1jl-4TP_C4Y6BJ-bcmsuzfDyQpkpJkh0"
         self.assertRaises(BadSignatureError, deserialize_compact, value, key)
 
+    def test_reject_padded_signature(self):
+        value = serialize_compact({"alg": "HS256"}, b"foo", self.key)
+        self.assertRaises(BadSignatureError, deserialize_compact, value + "=", self.key)
+
     def test_raise_unsupported_algorithm_error(self):
         self.assertRaises(UnsupportedAlgorithmError, serialize_compact, {"alg": "HS512"}, b"foo", self.key)
         self.assertRaises(UnsupportedAlgorithmError, serialize_compact, {"alg": "NOT"}, b"foo", self.key)
@@ -118,6 +122,7 @@ class TestCompact(TestCase):
         empty_key = OctKey.import_key("rfc")
         empty_key._raw_value = b""
         from joserfc._rfc7518.jws_algs import HMACAlgorithm
+
         alg = HMACAlgorithm(256)
         self.assertRaisesRegex(ValueError, "must not be empty", alg.sign, b"msg", empty_key)
         self.assertRaisesRegex(ValueError, "must not be empty", alg.verify, b"msg", b"sig", empty_key)

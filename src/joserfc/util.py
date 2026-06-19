@@ -22,7 +22,7 @@ def to_str(x: bytes | str, charset: str = "utf-8") -> str:
 
 
 def urlsafe_b64decode(s: bytes) -> bytes:
-    if b"+" in s or b"/" in s:
+    if b"+" in s or b"/" in s or b"=" in s:
         raise binascii.Error
 
     pad = -len(s) % 4
