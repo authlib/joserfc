@@ -34,6 +34,7 @@ def extract_rfc7797_json(value: FlattenedJSONSerialization, registry: JWSRegistr
 
     if is_rfc7797_enabled(member.headers()):
         payload = payload_segment
+        registry.validate_payload_size(payload)
     else:
         try:
             payload = urlsafe_b64decode(payload_segment)

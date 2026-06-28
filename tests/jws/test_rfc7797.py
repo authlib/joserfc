@@ -6,6 +6,7 @@ from joserfc.errors import (
     InvalidHeaderValueError,
     MissingCritHeaderError,
     UnsupportedHeaderError,
+    ExceededSizeError,
 )
 from joserfc.util import to_bytes
 from joserfc.jws import HeaderDict
@@ -84,6 +85,23 @@ class TestRFC7797(TestFixture):
         value = jws.serialize_json(member, "hello", default_key)
         key2 = OctKey.import_key("secret")
         self.assertRaises(BadSignatureError, jws.deserialize_json, value, key2)
+
+    def test_rfc7797_payload_size_limit_compact(self):
+        """RFC7797 b64=false compact: oversized payload should be rejected.
+        Regression test for GHSA-wphv-vfrh-23q5."""
+        protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
+        big_payload = "x" * 200_000  # exceeds default max_payload_length (128000)
+        value = jws.serialize_compact(protected, big_payload, default_key)
+        # deserialize without payload= arg (no detached content) should reject
+        self.assertRaises(ExceededSizeError, jws.deserialize_compact, value, default_key)
+
+    def test_rfc7797_payload_size_limit_json(self):
+        """RFC7797 b64=false flattened JSON: oversized payload should be rejected.
+        Regression test for GHSA-wphv-vfrh-23q5."""
+        member: HeaderDict = {"protected": {"alg": "HS256", "b64": False, "crit": ["b64"]}}
+        big_payload = "x" * 200_000
+        value = jws.serialize_json(member, big_payload, default_key)
+        self.assertRaises(ExceededSizeError, jws.deserialize_json, value, default_key)
 
 
 TestRFC7797.load_fixture("jws_rfc7797.json")

@@ -57,6 +57,7 @@ def extract_rfc7515_compact(
         if not payload_segment and payload:
             payload_segment = to_bytes(payload)
         payload = payload_segment
+        registry.validate_payload_size(payload)
     else:
         if not payload_segment and payload:
             payload = to_bytes(payload)
