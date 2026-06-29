@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.7.2
+-----
+
+**Released on June 29, 2026**
+
+- Avoid trailing padding for JWTs.
+
 1.7.1
 -----
 
