@@ -48,6 +48,30 @@ class TestJWTClaims(TestCase):
 
         claims_requests.validate({"sub": "a", "iss": "a", "name": "joserfc"})
 
+    def test_claim_iss(self):
+        claims_requests = jwt.JWTClaimsRegistry(iss={"essential": True})
+        claims_requests.validate({"iss": "a"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"iss": 1})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"iss": True})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"iss": ["a"]})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"iss": {"a": "b"}})
+
+    def test_claim_sub(self):
+        claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True})
+        claims_requests.validate({"sub": "a"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": 1})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": True})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": ["a"]})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": {"a": "b"}})
+
+    def test_claim_aud(self):
+        claims_requests = jwt.JWTClaimsRegistry(aud={"essential": True})
+        claims_requests.validate({"aud": "a"})
+        claims_requests.validate({"aud": ["a"]})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"aud": 1})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"aud": True})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"aud": {"a": "b"}})
+
     def test_essential_empty_value(self):
         claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True})
         self.assertRaises(MissingClaimError, claims_requests.validate, {"sub": None})
@@ -62,23 +86,23 @@ class TestJWTClaims(TestCase):
         claims_requests.validate({"foo": 0})
 
     def test_option_value(self):
-        claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "value": "123"})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": "a"})
-        claims_requests.validate({"sub": "123"})
-        claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "value": True})
-        claims_requests.validate({"sub": True})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": False})
-        claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "value": False})
-        claims_requests.validate({"sub": False})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": True})
+        claims_requests = jwt.JWTClaimsRegistry(foo={"essential": True, "value": "123"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"foo": "a"})
+        claims_requests.validate({"foo": "123"})
+        claims_requests = jwt.JWTClaimsRegistry(foo={"essential": True, "value": True})
+        claims_requests.validate({"foo": True})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"foo": False})
+        claims_requests = jwt.JWTClaimsRegistry(foo={"essential": True, "value": False})
+        claims_requests.validate({"foo": False})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"foo": True})
 
     def test_option_values(self):
-        claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True, "values": ["1", "2", True, False]})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": "a"})
-        claims_requests.validate({"sub": "1"})
-        claims_requests.validate({"sub": "2"})
-        claims_requests.validate({"sub": True})
-        claims_requests.validate({"sub": False})
+        claims_requests = jwt.JWTClaimsRegistry(foo={"essential": True, "values": ["1", "2", True, False]})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"foo": "a"})
+        claims_requests.validate({"foo": "1"})
+        claims_requests.validate({"foo": "2"})
+        claims_requests.validate({"foo": True})
+        claims_requests.validate({"foo": False})
 
     def test_int_claims(self):
         now = int(time.time())

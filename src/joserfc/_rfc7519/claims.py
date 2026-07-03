@@ -120,6 +120,49 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
             return self._now()
         return self._now
 
+    def validate_iss(self, value: str) -> None:
+        """The "iss" (issuer) claim identifies the principal that issued the
+        JWT.  The processing of this claim is generally application specific.
+        The "iss" value is a case-sensitive string containing a StringOrURI
+        value.  Use of this claim is OPTIONAL.
+        """
+        if not isinstance(value, str):
+            raise InvalidClaimError("str", "Claim 'str' must be a StringOrURI value")
+        self.check_value("iss", value)
+
+    def validate_sub(self, value: str) -> None:
+        """The "sub" (subject) claim identifies the principal that is the
+        subject of the JWT.  The claims in a JWT are normally statements
+        about the subject.  The subject value MUST either be scoped to be
+        locally unique in the context of the issuer or be globally unique.
+        The processing of this claim is generally application specific.  The
+        "sub" value is a case-sensitive string containing a StringOrURI
+        value.  Use of this claim is OPTIONAL.
+        """
+        if not isinstance(value, str):
+            raise InvalidClaimError("sub", "Claim 'sub' must be a StringOrURI value")
+        self.check_value("sub", value)
+
+    def validate_aud(self, value: str | list[str]) -> None:
+        """The "aud" (audience) claim identifies the recipients that the JWT is
+        intended for.  Each principal intended to process the JWT MUST
+        identify itself with a value in the audience claim.  If the principal
+        processing the claim does not identify itself with a value in the
+        "aud" claim when this claim is present, then the JWT MUST be
+        rejected.  In the general case, the "aud" value is an array of case-
+        sensitive strings, each containing a StringOrURI value.  In the
+        special case when the JWT has one audience, the "aud" value MAY be a
+        single case-sensitive string containing a StringOrURI value.  The
+        interpretation of audience values is generally application specific.
+        Use of this claim is OPTIONAL.
+        """
+        if isinstance(value, str) or _validate_list_of_strings(value):
+            self.check_value("aud", value)
+        else:
+            raise InvalidClaimError(
+                "aud", "Claim 'aud' must be an array of StringOrURI value or a single StringOrURI value"
+            )
+
     def validate_exp(self, value: int) -> None:
         """The "exp" (expiration time) claim identifies the expiration time on
         or after which the JWT MUST NOT be accepted for processing.  The
@@ -165,6 +208,10 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
 
 def _validate_numeric_time(s: int) -> bool:
     return isinstance(s, (int, float))
+
+
+def _validate_list_of_strings(s: list[str]) -> bool:
+    return isinstance(s, list) and all(isinstance(v, str) for v in s)
 
 
 def _generate_now() -> int:
