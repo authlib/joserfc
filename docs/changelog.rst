@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.7.3
+-----
+
+**Released on July 8, 2026**
+
+- Add default claims validation for ``iss``, ``sub`` and ``aud``.
+- Add size validation even for self-provided payload.
+
 1.7.2
 -----
 
