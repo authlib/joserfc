@@ -73,6 +73,20 @@ class TestJWEJSON(TestCase):
             registry=registry,
         )
 
+    def test_general_json_without_recipients(self):
+        obj = GeneralJSONEncryption({"enc": "A128CBC-HS256"}, b"i")
+        obj.add_recipient({"alg": "RSA-OAEP"}, self.rsa_key)
+        value = jwe.encrypt_json(obj, None)
+        value["recipients"] = []
+        self.assertRaises(DecodeError, jwe.decrypt_json, value, self.rsa_key)
+
+    def test_general_json_without_encrypted_key(self):
+        obj = GeneralJSONEncryption({"enc": "A128CBC-HS256"}, b"i")
+        obj.add_recipient({"alg": "RSA-OAEP"}, self.rsa_key)
+        value = jwe.encrypt_json(obj, None)
+        del value["recipients"][0]["encrypted_key"]
+        self.assertRaises(DecodeError, jwe.decrypt_json, value, self.rsa_key)
+
     def test_flattened_encryption(self):
         key = OctKey.generate_key(128)
         protected = {"enc": "A128CBC-HS256"}
@@ -88,3 +102,11 @@ class TestJWEJSON(TestCase):
         value = jwe.encrypt_json(obj0, None)
         obj3 = jwe.decrypt_json(value, key)
         self.assertEqual(obj3.plaintext, plaintext)
+
+    def test_flattened_json_without_encrypted_key(self):
+        key = OctKey.generate_key(128)
+        obj = FlattenedJSONEncryption({"enc": "A128CBC-HS256"}, b"hello world")
+        obj.add_recipient({"alg": "A128KW"}, key)
+        value = jwe.encrypt_json(obj, None)
+        del value["encrypted_key"]
+        self.assertRaises(DecodeError, jwe.decrypt_json, value, key)

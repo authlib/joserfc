@@ -243,7 +243,8 @@ def decrypt_recipient(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient[A
 
         # 8. When Key Agreement with Key Wrapping is employed, the agreed upon key
         # will be used to decrypt the JWE Encrypted Key.
-        assert recipient.encrypted_key is not None
+        if recipient.encrypted_key is None:
+            raise DecodeError("Invalid encrypted key")
         cek = alg.unwrap_cek_with_auk(recipient.encrypted_key, agreed_upon_key)
     else:
         # 9. When Key Wrapping, Key Encryption, or Key Agreement with Key
@@ -256,5 +257,7 @@ def decrypt_recipient(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient[A
         # to decrypt one of the per-recipient JWE Encrypted Key values to
         # obtain the CEK value.
         assert isinstance(alg, (JWEKeyWrapping, JWEKeyEncryption))
+        if recipient.encrypted_key is None:
+            raise DecodeError("Invalid encrypted key")
         cek = alg.decrypt_cek(recipient)
     return cek
