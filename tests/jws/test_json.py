@@ -106,6 +106,13 @@ class TestJSON(TestCase):
         value = serialize_json([member], b"hello", key1)
         self.assertRaises(BadSignatureError, deserialize_json, value, key2)
 
+    def test_general_json_with_empty_signatures(self):
+        data: GeneralJSONSerialization = {
+            "payload": "eyJ1c2VyIjoiYWRtaW4ifQ",
+            "signatures": [],
+        }
+        self.assertRaises(BadSignatureError, deserialize_json, data, self.key)
+
     def test_with_public_header(self):
         key: RSAKey = load_key("rsa-openssl-private.pem")
         member: HeaderDict = {"header": {"alg": "RS256", "kid": "abc"}}

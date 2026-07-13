@@ -115,6 +115,9 @@ def __signature_to_member(sig: JSONSignatureDict, registry: JWSRegistry) -> Head
 
 def verify_general_json(obj: GeneralJSONSignature, registry: JWSRegistry, find_key: FindKey) -> bool:
     payload_segment = obj.segments["payload"]
+    if not obj.signatures:
+        return False
+
     for index, signature in enumerate(obj.signatures):
         member = obj.members[index]
         if not verify_signature(member, signature, payload_segment, registry, find_key):
