@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.7.4
+-----
+
+**Released on July 13, 2026**
+
+- Reject JWS general JSON serialization when signatures is empty.
+- Raises ``DecodeError`` when encrypted_key is None in JWE.
+
 1.7.3
 -----
 
