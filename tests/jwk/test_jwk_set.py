@@ -11,6 +11,16 @@ class TestKeySet(TestCase):
     def test_import_empty_key_set(self):
         self.assertRaises(MissingKeyError, KeySet.import_key_set, {"keys": []})
 
+    def test_import_key_set_ignores_unknown_kty(self):
+        # RFC 7517 Section 5: a key with an unrecognised "kty" is ignored, not fatal.
+        jwks = {"keys": [
+            {"kty": "unknown", "alg": "X", "kid": "unknown"},
+            {"kty": "oct", "k": "MDEyMzQ1Njc4OWFiY2RlZg", "kid": "classical"},
+        ]}
+        key_set = KeySet.import_key_set(jwks)
+        self.assertEqual(len(key_set.keys), 1)
+        self.assertEqual(key_set.keys[0].kid, "classical")
+
     def test_generate_and_import_key_set(self):
         jwks1 = KeySet.generate_key_set("RSA", 2048)
         self.assertEqual(len(jwks1.keys), 4)
