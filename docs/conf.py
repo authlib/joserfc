@@ -33,7 +33,7 @@ extensions = [
 ]
 
 iconify_script_url = ""
-sponsors_json_url = "https://cdn.jsdelivr.net/gh/lepture/lepture/sponsors.json"
+sponsors_json_url = "https://cdn.jsdelivr.net/gh/authlib/assets/sponsors.json"
 
 extlinks = {
     "user": ("https://github.com/%s", "@%s"),
@@ -69,7 +69,11 @@ html_theme_options = {
                 },
             ],
         },
-        {"title": "Support us", "url": "/en/sponsors"},
+        {
+            "title": "Sponsors",
+            "url": "https://authlib.org/sponsors/",
+            "external": True,
+        },
     ],
 }
 
