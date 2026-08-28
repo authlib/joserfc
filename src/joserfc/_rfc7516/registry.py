@@ -43,6 +43,7 @@ class JWERegistry:
     :param algorithms: allowed algorithms to be used
     :param verify_all_recipients: validating all recipients in a JSON serialization
     :param strict_check_header: only allow header key in the registry to be used
+    :param max_recipients: max number of recipients in JWE General JSON Serialization
     """
 
     algorithms: AlgorithmsDict = {
@@ -62,6 +63,8 @@ class JWERegistry:
     max_ciphertext_length: int = 65536  # 64KB
     #: max auth tag's size in bytes
     max_auth_tag_length: int = 64
+    #: max number of recipients in JWE General JSON Serialization
+    max_recipients: int = 16
 
     def __init__(
         self,
@@ -69,6 +72,7 @@ class JWERegistry:
         algorithms: Collection[str] | None = None,
         verify_all_recipients: bool = True,
         strict_check_header: bool = True,
+        max_recipients: int | None = None,
     ):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(JWE_HEADER_REGISTRY)
@@ -77,6 +81,8 @@ class JWERegistry:
         self.allowed = algorithms
         self.verify_all_recipients = verify_all_recipients
         self.strict_check_header = strict_check_header
+        if max_recipients is not None:
+            self.max_recipients = max_recipients
 
     @classmethod
     def register(cls, model: JWEAlgorithm) -> None:
@@ -121,6 +127,10 @@ class JWERegistry:
     def validate_auth_tag_size(self, tag: bytes) -> None:
         if tag and len(tag) > self.max_auth_tag_length:
             raise ExceededSizeError(f"Auth tag size exceeds {self.max_auth_tag_length} bytes.")
+
+    def validate_recipient_count(self, recipients: Collection[t.Any]) -> None:
+        if len(recipients) > self.max_recipients:
+            raise ExceededSizeError(f"Recipient count exceeds {self.max_recipients}.")
 
     def get_alg(self, name: str) -> JWEAlgModel:
         """Get the allowed ("alg") algorithm instance of the given name.

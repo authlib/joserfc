@@ -76,12 +76,14 @@ def extract_general_json(data: GeneralJSONSerialization, registry: JWERegistry) 
     protected = json_b64decode(protected_segment)
 
     unprotected = data.get("unprotected")
+    recipients = data["recipients"]
+    registry.validate_recipient_count(recipients)
     base64_segments, bytes_segments, aad = __extract_segments(data, registry)
 
     obj = GeneralJSONEncryption(protected, None, unprotected, aad)
     obj.base64_segments = base64_segments
     obj.bytes_segments = bytes_segments
-    for item in data["recipients"]:
+    for item in recipients:
         recipient = __extract_recipient(obj, item, registry)
         obj.recipients.append(recipient)
     return obj

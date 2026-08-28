@@ -102,17 +102,20 @@ def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
 
     cek_set = set()
     for recipient in obj.recipients:
-        headers = recipient.headers()
-        registry.check_header(headers, True)
-        # Step 6, Determine the Key Management Mode employed by the algorithm
-        # specified by the "alg" (algorithm) Header Parameter.
-        alg = registry.get_alg(headers["alg"])
         try:
+            headers = recipient.headers()
+            registry.check_header(headers, True)
+            # Step 6, Determine the Key Management Mode employed by the algorithm
+            # specified by the "alg" (algorithm) Header Parameter.
+            alg = registry.get_alg(headers["alg"])
             cek = decrypt_recipient(alg, enc, recipient, tag)
             cek_set.add(cek)
         except (AssertionError, JoseError) as error:
             if registry.verify_all_recipients:
                 raise error
+        else:
+            if not registry.verify_all_recipients:
+                break
 
     if not cek_set:
         raise DecodeError("Invalid recipients")
