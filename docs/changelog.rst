@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.7.5
+-----
+
+**Released on August 29, 2026**
+
+- **JWK**: Ignore keys with unknown ``kty`` values when importing a key set.
+- **JWE**: Add ``max_recipients`` to ``JWERegistry``.
+
 1.7.4
 -----
 
