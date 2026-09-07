@@ -51,10 +51,14 @@ class TestJWTClaims(TestCase):
     def test_claim_iss(self):
         claims_requests = jwt.JWTClaimsRegistry(iss={"essential": True})
         claims_requests.validate({"iss": "a"})
-        self.assertRaises(InvalidClaimError, claims_requests.validate, {"iss": 1})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"iss": True})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"iss": ["a"]})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"iss": {"a": "b"}})
+
+        with self.assertRaises(InvalidClaimError) as cm:
+            claims_requests.validate({"iss": 1})
+        self.assertEqual(cm.exception.claim, "iss")
+        self.assertIn("'iss'", cm.exception.description)
 
     def test_claim_sub(self):
         claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True})
