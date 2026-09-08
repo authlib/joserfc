@@ -127,7 +127,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
         value.  Use of this claim is OPTIONAL.
         """
         if not isinstance(value, str):
-            raise InvalidClaimError("str", "Claim 'str' must be a StringOrURI value")
+            raise InvalidClaimError("iss", "Claim 'iss' must be a StringOrURI value")
         self.check_value("iss", value)
 
     def validate_sub(self, value: str) -> None:
