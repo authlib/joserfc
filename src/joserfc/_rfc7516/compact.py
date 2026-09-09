@@ -34,6 +34,8 @@ def represent_compact(obj: CompactEncryption) -> bytes:
 
 
 def extract_compact(value: bytes, registry: JWERegistry) -> CompactEncryption:
+    registry.validate_compact_value_size(value)
+
     parts = value.split(b".")
     if len(parts) != 5:
         raise ValueError("Invalid JSON Web Encryption")

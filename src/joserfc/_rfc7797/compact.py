@@ -37,12 +37,14 @@ def extract_rfc7515_compact(
     :param registry: optional JWSRegistry instance
     :raise DecodeError: when decoding fails
     """
+    if registry is None:
+        registry = default_registry
+
+    registry.validate_compact_value_size(value)
+
     parts = value.split(b".")
     if len(parts) != 3:
         raise DecodeError("Invalid JSON Web Signature")
-
-    if registry is None:
-        registry = default_registry
 
     header_segment, payload_segment, signature_segment = parts
 

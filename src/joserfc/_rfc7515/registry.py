@@ -100,6 +100,11 @@ class JWSRegistry:
         if self.strict_check_header:
             check_supported_header(self.header_registry, header)
 
+    def validate_compact_value_size(self, value: bytes) -> None:
+        max_length = self.max_header_length + self.max_payload_length + self.max_signature_length
+        if value and len(value) > max_length:
+            raise ExceededSizeError(f"Value size exceeds {max_length} bytes.")
+
     def validate_header_size(self, header: bytes) -> None:
         if header and len(header) > self.max_header_length:
             raise ExceededSizeError(f"Header size exceeds {self.max_header_length} bytes.")

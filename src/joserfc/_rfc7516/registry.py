@@ -106,6 +106,17 @@ class JWERegistry:
         elif self.strict_check_header:
             check_supported_header(self.header_registry, header)
 
+    def validate_compact_value_size(self, value: bytes) -> None:
+        max_length = (
+            self.max_protected_header_length
+            + self.max_encrypted_key_length
+            + self.max_initialization_vector_length
+            + self.max_ciphertext_length
+            + self.max_auth_tag_length
+        )
+        if value and len(value) > max_length:
+            raise ExceededSizeError(f"Value size exceeds {max_length} bytes.")
+
     def validate_protected_header_size(self, header: bytes) -> None:
         if header and len(header) > self.max_protected_header_length:
             raise ExceededSizeError(f"Header size exceeds {self.max_protected_header_length} bytes.")
