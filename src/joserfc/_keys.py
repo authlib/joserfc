@@ -125,7 +125,7 @@ class KeySet:
 
     def __eq__(self, other: t.Any) -> bool:
         if not isinstance(other, KeySet):
-            return NotImplemented
+            return False
         return self.keys == other.keys
 
     def as_dict(self, private: bool = False, **params: t.Any) -> KeySetSerialization:

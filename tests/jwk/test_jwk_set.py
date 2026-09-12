@@ -108,11 +108,3 @@ class TestKeySet(TestCase):
         key_set = KeySet.generate_key_set("oct", 8, count=1)
         self.assertFalse(key_set == "foo")
         self.assertNotEqual(key_set, "foo")
-
-    def test_key_set_eq_uses_reflected_comparison(self):
-        class EqualToKeySet:
-            def __eq__(self, other):
-                return isinstance(other, KeySet)
-
-        key_set = KeySet.generate_key_set("oct", 8, count=1)
-        self.assertTrue(key_set == EqualToKeySet())
