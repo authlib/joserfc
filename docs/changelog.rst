@@ -12,6 +12,20 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+1.7.6
+-----
+
+**Released on October 19, 2026**
+
+- **JWE**: Limit base64url-encoded additional authenticated data to 65,536 bytes
+  before copying or decoding it in JSON serialization. Configure the limit with
+  ``JWERegistry(max_aad_length=...)``.
+- **JWT**: Reject non-string ``jti`` claims, including arrays containing an expected
+  token ID, even when no claim options are configured.
+- **JWT**: Report the correct claim name for invalid ``iss`` values.
+- **JWS & JWE**: Validate compact token size before splitting it into segments.
+- **JWK**: Handle key set equality comparisons with unrelated types.
+
 1.7.5
 -----
 
