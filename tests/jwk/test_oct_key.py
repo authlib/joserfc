@@ -1,5 +1,7 @@
 from unittest import TestCase
-from joserfc.jwk import OctKey
+from joserfc.jwk import OctKey, RSAKey, ECKey, OKPKey
+from joserfc.util import urlsafe_b64encode
+from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 from joserfc.errors import SecurityWarning, KeyParameterError
 from tests.keys import read_key
 
@@ -85,9 +87,36 @@ class TestOctKey(TestCase):
         }
         self.assertRaises(KeyParameterError, OctKey.import_key, data)
 
-    def test_import_pem_key(self):
-        public_pem = read_key("ec-p256-public.pem")
-        self.assertWarns(SecurityWarning, OctKey.import_key, public_pem)
+    def test_import_asymmetric_public_key_rejected(self):
+        keys = (RSAKey.generate_key(), ECKey.generate_key(), OKPKey.generate_key())
+        for key in keys:
+            formats = [PublicFormat.SubjectPublicKeyInfo]
+            if isinstance(key, RSAKey):
+                formats.append(PublicFormat.PKCS1)
+            for encoding in (Encoding.DER, Encoding.PEM):
+                for public_format in formats:
+                    raw = key.public_key.public_bytes(encoding, public_format)
+                    values = [raw, {"kty": "oct", "k": urlsafe_b64encode(raw).decode("ascii")}]
+                    if encoding == Encoding.PEM:
+                        values.append(raw.decode("ascii"))
+                    for value in values:
+                        with self.subTest(key=key.key_type, encoding=encoding, public_format=public_format):
+                            self.assertRaisesRegex(ValueError, "Asymmetric public keys", OctKey.import_key, value)
+
+    def test_import_ssh_public_key_rejected(self):
+        for filename in ("ssh-rsa-public.pem", "ssh-ecdsa-public.pem", "ssh-ed25519-public.pem"):
+            raw = read_key(filename)
+            for value in (raw, {"kty": "oct", "k": urlsafe_b64encode(raw).decode("ascii")}):
+                with self.subTest(filename=filename):
+                    self.assertRaisesRegex(ValueError, "Asymmetric public keys", OctKey.import_key, value)
+
+    def test_import_ambiguous_key_material(self):
+        # A DER prefix alone does not make a random symmetric key unsafe.
+        raw = b"0" + b"x" * 31
+        self.assertEqual(OctKey.import_key(raw).raw_value, raw)
+        self.assertEqual(OctKey.import_key({"kty": "oct", "k": urlsafe_b64encode(raw).decode("ascii")}).raw_value, raw)
+        self.assertWarns(SecurityWarning, OctKey.import_key, b"-----BEGIN not-a-public-key")
+        self.assertWarns(SecurityWarning, OctKey.import_key, b"ssh-rsa not-a-public-key")
 
     def test_generate_key(self):
         key = OctKey.generate_key()

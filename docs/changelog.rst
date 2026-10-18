@@ -12,6 +12,13 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+Unreleased
+----------
+
+- **JWK**: Reject recognized DER, PEM, and SSH asymmetric public keys when
+  importing oct keys, including public key bytes embedded in an oct JWK.
+  Preserve warnings for input that only resembles an asymmetric key.
+
 1.7.6
 -----
 

@@ -2,6 +2,12 @@ import typing as t
 from typing import Any
 import secrets
 import warnings
+from cryptography.exceptions import UnsupportedAlgorithm
+from cryptography.hazmat.primitives.serialization import (
+    load_der_public_key,
+    load_pem_public_key,
+    load_ssh_public_key,
+)
 from ..errors import SecurityWarning
 from ..util import (
     to_bytes,
@@ -31,11 +37,29 @@ class OctBinding(NativeKeyBinding):
 
     @classmethod
     def import_from_dict(cls, value: DictKey) -> bytes:
-        return urlsafe_b64decode(to_bytes(value["k"]))
+        return cls.import_from_bytes(urlsafe_b64decode(to_bytes(value["k"])))
 
     @classmethod
     def import_from_bytes(cls, value: bytes, password: Any | None = None) -> bytes:
-        # security check
+        # Reject recognized public keys, while retaining warnings for input
+        # that only resembles an asymmetric key (see issue #32).
+        if value.startswith(b"0"):
+            loader = load_der_public_key
+        elif value.startswith(b"-----BEGIN "):
+            loader = load_pem_public_key
+        elif value.startswith((b"ssh-", b"ecdsa-sha2-")):
+            loader = load_ssh_public_key
+        else:
+            loader = None
+
+        if loader is not None:
+            try:
+                loader(value)
+            except (ValueError, UnsupportedAlgorithm):
+                pass
+            else:
+                raise ValueError("Asymmetric public keys must not be used as oct keys")
+
         if value.startswith(POSSIBLE_UNSAFE_KEYS):
             warnings.warn("This key should not be used as an oct key", SecurityWarning)
         return value

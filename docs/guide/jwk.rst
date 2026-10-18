@@ -63,6 +63,10 @@ Import an "oct" key
 ~~~~~~~~~~~~~~~~~~~
 
 You can import an ``OctKey`` from string, bytes and a JWK (in dict).
+Recognized DER, PEM, and SSH asymmetric public keys are rejected with
+``ValueError``, including when their bytes are embedded in an oct JWK's ``k``
+parameter. Use a shared secret for HMAC algorithms and import asymmetric public
+keys with their corresponding key type, such as ``RSAKey`` for RSA signatures.
 
 .. code-block:: python
 
