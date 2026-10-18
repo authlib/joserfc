@@ -68,6 +68,42 @@ class TestJWEJSON(TestCase):
         obj1 = jwe.decrypt_json(value, self.rsa_key)
         self.assertEqual(obj1.aad, b"foo")
 
+    def test_aad_size_limit(self):
+        key = OctKey.generate_key(128)
+        limit = jwe.JWERegistry.max_aad_length
+        for model in (GeneralJSONEncryption, FlattenedJSONEncryption):
+            for size in (0, limit * 3 // 4, limit * 3 // 4 + 1):
+                with self.subTest(model=model.__name__, size=size):
+                    aad = b"a" * size
+                    obj = model({"enc": "A128GCM"}, b"hello", aad=aad)
+                    obj.add_recipient({"alg": "A128KW"}, key)
+                    value = jwe.encrypt_json(obj, None)
+                    if size == 0:
+                        value["aad"] = ""
+                    if len(value["aad"]) <= limit:
+                        result = jwe.decrypt_json(value, key)
+                        self.assertEqual(result.aad, aad)
+                        self.assertEqual(result.plaintext, b"hello")
+                    else:
+                        with self.assertRaisesRegex(ExceededSizeError, "AAD size exceeds"):
+                            jwe.decrypt_json(value, key)
+                        registry = jwe.JWERegistry(max_aad_length=len(value["aad"]))
+                        result = jwe.decrypt_json(value, key, registry=registry)
+                        self.assertEqual(result.aad, aad)
+                        self.assertEqual(result.plaintext, b"hello")
+
+    def test_oversized_aad_rejected_before_decoding(self):
+        key = OctKey.generate_key(128)
+        for model in (GeneralJSONEncryption, FlattenedJSONEncryption):
+            with self.subTest(model=model.__name__):
+                obj = model({"enc": "A128GCM"}, b"hello")
+                obj.add_recipient({"alg": "A128KW"}, key)
+                value = jwe.encrypt_json(obj, None)
+                value["aad"] = "!" * 5
+                registry = jwe.JWERegistry(max_aad_length=4)
+                with self.assertRaisesRegex(ExceededSizeError, "AAD size exceeds 4 bytes"):
+                    jwe.decrypt_json(value, key, registry=registry)
+
     def test_decode_multiple_recipients(self):
         obj = GeneralJSONEncryption({"enc": "A128CBC-HS256"}, b"i")
         obj.add_recipient({"alg": "RSA-OAEP"}, self.rsa_key)

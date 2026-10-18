@@ -44,6 +44,7 @@ class JWERegistry:
     :param verify_all_recipients: validating all recipients in a JSON serialization
     :param strict_check_header: only allow header key in the registry to be used
     :param max_recipients: max number of recipients in JWE General JSON Serialization
+    :param max_aad_length: max base64url-encoded additional authenticated data size in bytes
     """
 
     algorithms: AlgorithmsDict = {
@@ -63,6 +64,8 @@ class JWERegistry:
     max_ciphertext_length: int = 65536  # 64KB
     #: max auth tag's size in bytes
     max_auth_tag_length: int = 64
+    #: max base64url-encoded additional authenticated data size in bytes
+    max_aad_length: int = 65536  # 64KB
     #: max number of recipients in JWE General JSON Serialization
     max_recipients: int = 16
 
@@ -73,6 +76,7 @@ class JWERegistry:
         verify_all_recipients: bool = True,
         strict_check_header: bool = True,
         max_recipients: int | None = None,
+        max_aad_length: int | None = None,
     ):
         self.header_registry: HeaderRegistryDict = {}
         self.header_registry.update(JWE_HEADER_REGISTRY)
@@ -83,6 +87,8 @@ class JWERegistry:
         self.strict_check_header = strict_check_header
         if max_recipients is not None:
             self.max_recipients = max_recipients
+        if max_aad_length is not None:
+            self.max_aad_length = max_aad_length
 
     @classmethod
     def register(cls, model: JWEAlgorithm) -> None:
@@ -138,6 +144,10 @@ class JWERegistry:
     def validate_auth_tag_size(self, tag: bytes) -> None:
         if tag and len(tag) > self.max_auth_tag_length:
             raise ExceededSizeError(f"Auth tag size exceeds {self.max_auth_tag_length} bytes.")
+
+    def validate_aad_size(self, aad: str | bytes) -> None:
+        if len(aad) > self.max_aad_length:
+            raise ExceededSizeError(f"AAD size exceeds {self.max_aad_length} bytes.")
 
     def validate_recipient_count(self, recipients: Collection[t.Any]) -> None:
         if len(recipients) > self.max_recipients:
