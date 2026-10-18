@@ -5,6 +5,9 @@ on:
     tags:
     - "1.*"
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: build dist files
