@@ -143,6 +143,14 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
             raise InvalidClaimError("sub", "Claim 'sub' must be a StringOrURI value")
         self.check_value("sub", value)
 
+    def validate_jti(self, value: str) -> None:
+        """The "jti" (JWT ID) claim provides a unique identifier for the JWT.
+        Its value MUST be a case-sensitive string. Use of this claim is OPTIONAL.
+        """
+        if not isinstance(value, str):
+            raise InvalidClaimError("jti", "Claim 'jti' must be a string")
+        self.check_value("jti", value)
+
     def validate_aud(self, value: str | list[str]) -> None:
         """The "aud" (audience) claim identifies the recipients that the JWT is
         intended for.  Each principal intended to process the JWT MUST

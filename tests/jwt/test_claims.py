@@ -68,6 +68,34 @@ class TestJWTClaims(TestCase):
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": ["a"]})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"sub": {"a": "b"}})
 
+    def test_claim_jti(self):
+        claims_requests = jwt.JWTClaimsRegistry()
+        claims_requests.validate({"jti": "expected"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"jti": ["expected"]})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"jti": 1})
+
+        for options in ({}, {"value": "expected"}, {"values": ["expected", "other"]}):
+            claims_requests = jwt.JWTClaimsRegistry(jti=options)
+            claims_requests.validate({})
+            claims_requests.validate({"jti": "expected"})
+            for value in (None, 1, True, ["other", "expected"], {"jti": "expected"}):
+                with self.subTest(options=options, value=value):
+                    with self.assertRaises(InvalidClaimError) as cm:
+                        claims_requests.validate({"jti": value})
+                    self.assertEqual(cm.exception.claim, "jti")
+                    self.assertIn("'jti'", cm.exception.description)
+
+        for options in ({"value": "expected"}, {"values": ["expected", "other"]}):
+            claims_requests = jwt.JWTClaimsRegistry(jti=options)
+            self.assertRaises(InvalidClaimError, claims_requests.validate, {"jti": "wrong"})
+
+        claims_requests = jwt.JWTClaimsRegistry(jti={"essential": True})
+        self.assertRaises(MissingClaimError, claims_requests.validate, {})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"jti": ""})
+        claims_requests = jwt.JWTClaimsRegistry(jti={"allow_blank": True})
+        claims_requests.validate({"jti": ""})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"jti": []})
+
     def test_claim_aud(self):
         claims_requests = jwt.JWTClaimsRegistry(aud={"essential": True})
         claims_requests.validate({"aud": "a"})
