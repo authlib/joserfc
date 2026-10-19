@@ -153,26 +153,26 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @classmethod
     def import_key(
-        cls: t.Any,
+        cls,
         value: AnyKey | EllipticCurvePrivateKey | EllipticCurvePublicKey,
         parameters: KeyParameters | None = None,
-        password: t.Any = None,
-    ) -> "ECKey":
-        key: ECKey
+        password: str | bytes | None = None,
+    ) -> t.Self:
+        key: t.Self
         if isinstance(value, (EllipticCurvePrivateKey, EllipticCurvePublicKey)):
             key = cls(value, value, parameters)
         else:
-            key = super(ECKey, cls).import_key(value, parameters, password)
+            key = super().import_key(value, parameters, password)
         return key
 
     @classmethod
     def generate_key(
-        cls: type["ECKey"],
+        cls,
         crv: str | None = "P-256",
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
-    ) -> "ECKey":
+    ) -> t.Self:
         """Generate a ``ECKey`` with the given "crv" value.
 
         :param crv: ECKey curve name
@@ -187,7 +187,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
 
     @classmethod
     def derive_key(
-        cls: type["ECKey"],
+        cls,
         secret: bytes | str,
         crv: str = "P-256",
         parameters: KeyParameters | None = None,
@@ -195,7 +195,7 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         auto_kid: bool = False,
         kdf_name: t.Literal["HKDF", "PBKDF2"] = "HKDF",
         kdf_options: dict[str, t.Any] | None = None,
-    ) -> "ECKey":
+    ) -> t.Self:
         """
         Generate an elliptic curve cryptographic key derived from a secret input using a key
         derivation function (KDF). This allows the creation of deterministic elliptic curve
@@ -249,13 +249,16 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         return _wrap_key(cls, raw_key, private, auto_kid, parameters)
 
 
+ECKeyType = t.TypeVar("ECKeyType", bound=ECKey)
+
+
 def _wrap_key(
-    cls: type["ECKey"],
+    cls: type[ECKeyType],
     raw_key: EllipticCurvePrivateKey,
     private: bool,
     auto_kid: bool,
     parameters: KeyParameters | None = None,
-) -> ECKey:
+) -> ECKeyType:
     if private:
         key = cls(raw_key, raw_key, parameters)
     else:

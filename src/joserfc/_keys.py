@@ -123,7 +123,7 @@ class KeySet:
     def __bool__(self) -> bool:
         return bool(self.keys)
 
-    def __eq__(self, other: t.Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, KeySet):
             return False
         return self.keys == other.keys
@@ -164,7 +164,7 @@ class KeySet:
         return None
 
     @classmethod
-    def import_key_set(cls, value: KeySetSerialization, parameters: KeyParameters | None = None) -> "KeySet":
+    def import_key_set(cls, value: KeySetSerialization, parameters: KeyParameters | None = None) -> t.Self:
         keys: list[Key] = []
 
         for data in value["keys"]:
@@ -189,7 +189,7 @@ class KeySet:
         parameters: KeyParameters | None = None,
         private: bool = True,
         count: int = 4,
-    ) -> "KeySet":
+    ) -> t.Self:
         keys: list[Key] = []
         for _ in range(count):
             key = cls.registry_cls.generate_key(key_type, crv_or_size, parameters, private)

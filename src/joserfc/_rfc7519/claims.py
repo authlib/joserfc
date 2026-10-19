@@ -3,7 +3,7 @@ import json
 import datetime
 import calendar
 from json import JSONEncoder
-from typing import TypedDict, Any, Callable
+from typing import TypedDict, Any, Callable, TypeGuard
 from ..util import to_bytes
 from ..errors import (
     MissingClaimError,
@@ -120,7 +120,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
             return self._now()
         return self._now
 
-    def validate_iss(self, value: str) -> None:
+    def validate_iss(self, value: object) -> None:
         """The "iss" (issuer) claim identifies the principal that issued the
         JWT.  The processing of this claim is generally application specific.
         The "iss" value is a case-sensitive string containing a StringOrURI
@@ -130,7 +130,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
             raise InvalidClaimError("iss", "Claim 'iss' must be a StringOrURI value")
         self.check_value("iss", value)
 
-    def validate_sub(self, value: str) -> None:
+    def validate_sub(self, value: object) -> None:
         """The "sub" (subject) claim identifies the principal that is the
         subject of the JWT.  The claims in a JWT are normally statements
         about the subject.  The subject value MUST either be scoped to be
@@ -143,7 +143,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
             raise InvalidClaimError("sub", "Claim 'sub' must be a StringOrURI value")
         self.check_value("sub", value)
 
-    def validate_jti(self, value: str) -> None:
+    def validate_jti(self, value: object) -> None:
         """The "jti" (JWT ID) claim provides a unique identifier for the JWT.
         Its value MUST be a case-sensitive string. Use of this claim is OPTIONAL.
         """
@@ -151,7 +151,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
             raise InvalidClaimError("jti", "Claim 'jti' must be a string")
         self.check_value("jti", value)
 
-    def validate_aud(self, value: str | list[str]) -> None:
+    def validate_aud(self, value: object) -> None:
         """The "aud" (audience) claim identifies the recipients that the JWT is
         intended for.  Each principal intended to process the JWT MUST
         identify itself with a value in the audience claim.  If the principal
@@ -171,7 +171,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
                 "aud", "Claim 'aud' must be an array of StringOrURI value or a single StringOrURI value"
             )
 
-    def validate_exp(self, value: int) -> None:
+    def validate_exp(self, value: object) -> None:
         """The "exp" (expiration time) claim identifies the expiration time on
         or after which the JWT MUST NOT be accepted for processing.  The
         processing of the "exp" claim requires that the current date/time
@@ -186,7 +186,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
             raise ExpiredTokenError("exp")
         self.check_value("exp", value)
 
-    def validate_nbf(self, value: int) -> None:
+    def validate_nbf(self, value: object) -> None:
         """The "nbf" (not before) claim identifies the time before which the JWT
         MUST NOT be accepted for processing.  The processing of the "nbf"
         claim requires that the current date/time MUST be after or equal to
@@ -201,7 +201,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
             raise InvalidClaimError("nbf", "The token is not yet valid")
         self.check_value("nbf", value)
 
-    def validate_iat(self, value: int) -> None:
+    def validate_iat(self, value: object) -> None:
         """The "iat" (issued at) claim identifies the time at which the JWT was
         issued.  This claim can be used to determine the age of the JWT.  Its
         value MUST be a number containing a NumericDate value.  Use of this
@@ -214,11 +214,11 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
         self.check_value("iat", value)
 
 
-def _validate_numeric_time(s: int) -> bool:
+def _validate_numeric_time(s: object) -> TypeGuard[int | float]:
     return isinstance(s, (int, float))
 
 
-def _validate_list_of_strings(s: list[str]) -> bool:
+def _validate_list_of_strings(s: object) -> TypeGuard[list[str]]:
     return isinstance(s, list) and all(isinstance(v, str) for v in s)
 
 

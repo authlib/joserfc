@@ -1,5 +1,5 @@
 import typing as t
-from typing import Any
+from typing import Self
 import secrets
 import warnings
 from cryptography.exceptions import UnsupportedAlgorithm
@@ -40,7 +40,7 @@ class OctBinding(NativeKeyBinding):
         return cls.import_from_bytes(urlsafe_b64decode(to_bytes(value["k"])))
 
     @classmethod
-    def import_from_bytes(cls, value: bytes, password: Any | None = None) -> bytes:
+    def import_from_bytes(cls, value: bytes, password: str | bytes | None = None) -> bytes:
         # Reject recognized public keys, while retaining warnings for input
         # that only resembles an asymmetric key (see issue #32).
         if value.startswith(b"0"):
@@ -76,12 +76,12 @@ class OctKey(SymmetricKey):
 
     @classmethod
     def import_key(
-        cls: Any,
+        cls,
         value: AnyKey,
         parameters: KeyParameters | None = None,
-        password: Any = None,
-    ) -> "OctKey":
-        key: OctKey = super(OctKey, cls).import_key(value, parameters, password)
+        password: str | bytes | None = None,
+    ) -> Self:
+        key = super().import_key(value, parameters, password)
         if not key.raw_value:
             # An empty oct key material produces a deterministic HMAC digest
             # that any party can reproduce, allowing trivial signature forgery
@@ -100,7 +100,7 @@ class OctKey(SymmetricKey):
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
-    ) -> "OctKey":
+    ) -> Self:
         """Generate a ``OctKey`` with the given bit size (not bytes).
 
         :param key_size: size in bit
@@ -122,7 +122,7 @@ class OctKey(SymmetricKey):
             warnings.warn("Key size should be >= 112 bits", SecurityWarning)
 
         raw_key = secrets.token_bytes(key_size // 8)
-        key: OctKey = cls(raw_key, raw_key, parameters)
+        key = cls(raw_key, raw_key, parameters)
         if auto_kid:
             key.ensure_kid()
         return key

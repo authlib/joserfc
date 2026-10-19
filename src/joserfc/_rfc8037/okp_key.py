@@ -157,12 +157,12 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     @classmethod
     def import_key(
-        cls: t.Any,
+        cls,
         value: AnyKey | PrivateOKPKey | PublicOKPKey,
         parameters: KeyParameters | None = None,
-        password: t.Any = None,
-    ) -> "OKPKey":
-        key: OKPKey
+        password: str | bytes | None = None,
+    ) -> t.Self:
+        key: t.Self
         if isinstance(
             value,
             (
@@ -178,17 +178,17 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         ):
             key = cls(value, value, parameters)
         else:
-            key = super(OKPKey, cls).import_key(value, parameters, password)
+            key = super().import_key(value, parameters, password)
         return key
 
     @classmethod
     def generate_key(
-        cls: type["OKPKey"],
+        cls,
         crv: LiteralCurves | None = "Ed25519",
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
-    ) -> "OKPKey":
+    ) -> t.Self:
         """Generate a ``OKPKey`` with the given "crv" value.
 
         :param crv: OKPKey curve name
@@ -204,7 +204,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     @classmethod
     def derive_key(
-        cls: type["OKPKey"],
+        cls,
         secret: bytes | str,
         crv: LiteralCurves = "Ed25519",
         parameters: KeyParameters | None = None,
@@ -212,7 +212,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         auto_kid: bool = False,
         kdf_name: t.Literal["HKDF", "PBKDF2"] = "HKDF",
         kdf_options: dict[str, t.Any] | None = None,
-    ) -> "OKPKey":
+    ) -> t.Self:
         """
         Derives a key from a given input secret using a specified key derivation function
         (KDF) and elliptic curve algorithm.
@@ -309,13 +309,16 @@ def get_key_curve(key: PublicOKPKey | PrivateOKPKey) -> LiteralCurves:
     raise ValueError("Invalid key")  # pragma: no cover
 
 
+OKPKeyType = t.TypeVar("OKPKeyType", bound=OKPKey)
+
+
 def _wrap_key(
-    cls: type[OKPKey],
+    cls: type[OKPKeyType],
     raw_key: PrivateOKPKey,
     private: bool,
     auto_kid: bool,
     parameters: KeyParameters | None = None,
-) -> OKPKey:
+) -> OKPKeyType:
     if private:
         key = cls(raw_key, raw_key, parameters)
     else:

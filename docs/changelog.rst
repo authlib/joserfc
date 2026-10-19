@@ -12,6 +12,14 @@ Changelog
 .. module:: joserfc
     :noindex:
 
+Unreleased
+----------
+
+- Drop Python 3.10 support; Python 3.11 or newer is required.
+- Preserve key subclasses in factory return types with ``typing.Self``.
+- Improve claim validation type narrowing with ``typing.TypeGuard`` and refine
+  password, native key, and equality annotations.
+
 1.7.7
 -----
 

@@ -42,7 +42,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def import_from_bytes(cls, value: bytes, password: t.Any = None) -> t.Any:
+    def import_from_bytes(cls, value: bytes, password: str | bytes | None = None) -> t.Any:
         pass
 
     @staticmethod
@@ -102,7 +102,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
             self.validate_dict_key(data)
             self._dict_value = data
 
-    def __eq__(self, other: t.Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, self.__class__):
             return False
         return self.dict_value == other.dict_value
@@ -134,7 +134,7 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
         return t.cast(str | None, self.get("alg"))
 
     @property
-    def raw_value(self) -> t.Any:
+    def raw_value(self) -> NativePrivateKey | NativePublicKey:
         raise NotImplementedError()
 
     @property
@@ -268,11 +268,11 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
 
     @classmethod
     def import_key(
-        cls: type[GenericKey],
+        cls,
         value: AnyKey,
         parameters: KeyParameters | None = None,
-        password: t.Any = None,
-    ) -> GenericKey:
+        password: str | bytes | None = None,
+    ) -> t.Self:
         if isinstance(value, dict):
             cls.validate_dict_key(value)
             raw_key = cls.binding.import_from_dict(value)
@@ -283,12 +283,12 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
 
     @classmethod
     def generate_key(
-        cls: type[GenericKey],
+        cls,
         *,
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
-    ) -> GenericKey:
+    ) -> t.Self:
         raise NotImplementedError()
 
 
