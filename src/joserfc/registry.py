@@ -1,4 +1,4 @@
-from typing import Any, Callable, Union
+from typing import Any, Callable
 from .errors import (
     MissingHeaderError,
     MissingCritHeaderError,
@@ -43,7 +43,7 @@ def is_jwk(value: dict[str, Any]) -> None:
         raise ValueError("must be a JWK")
 
 
-def in_choices(choices: list[str]) -> Callable[[Union[str, list[str]]], None]:
+def in_choices(choices: list[str]) -> Callable[[str | list[str]], None]:
     def _is_one_of(value: str | list[str]) -> None:
         if isinstance(value, list):
             if not all(v in choices for v in value):

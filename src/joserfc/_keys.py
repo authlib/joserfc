@@ -24,7 +24,7 @@ __all__ = [
     "KeySetSerialization",
 ]
 
-Key = t.Union[OctKey, RSAKey, ECKey, OKPKey]
+Key = OctKey | RSAKey | ECKey | OKPKey
 
 
 class JWKRegistry:

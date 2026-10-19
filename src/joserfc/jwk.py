@@ -1,5 +1,5 @@
 import warnings
-from typing import cast, overload, Literal, Union, Callable, Protocol
+from typing import cast, overload, Literal, Callable, Protocol
 from ._keys import (
     JWKRegistry,
     KeySet,
@@ -54,9 +54,9 @@ class GuestProtocol(Protocol):  # pragma: no cover
     def set_kid(self, kid: str) -> None: ...
 
 
-KeyBase = Union[Key, KeySet]
+KeyBase = Key | KeySet
 KeyCallable = Callable[[GuestProtocol], KeyBase]
-KeyFlexible = Union[KeyBase, KeyCallable]
+KeyFlexible = KeyBase | KeyCallable
 
 
 def guess_key(

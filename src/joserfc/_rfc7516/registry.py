@@ -22,7 +22,7 @@ __all__ = [
     "default_registry",
 ]
 
-JWEAlgorithm = t.Union[JWEAlgModel, JWEEncModel, JWEZipModel]
+JWEAlgorithm = JWEAlgModel | JWEEncModel | JWEZipModel
 
 AlgorithmsDict = t.TypedDict(
     "AlgorithmsDict",

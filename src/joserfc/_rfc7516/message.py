@@ -1,5 +1,5 @@
 import secrets
-from typing import Any, Union
+from typing import Any
 
 from .models import (
     CompactEncryption,
@@ -33,7 +33,7 @@ __all__ = [
     "perform_decrypt",
 ]
 
-EncryptionData = Union[CompactEncryption, GeneralJSONEncryption, FlattenedJSONEncryption]
+EncryptionData = CompactEncryption | GeneralJSONEncryption | FlattenedJSONEncryption
 
 
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> None:

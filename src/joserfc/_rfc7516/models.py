@@ -27,7 +27,7 @@ KeyType = t.TypeVar("KeyType")
 class Recipient(t.Generic[KeyType]):
     def __init__(
         self,
-        parent: t.Union["CompactEncryption", "GeneralJSONEncryption", "FlattenedJSONEncryption"],
+        parent: "CompactEncryption | GeneralJSONEncryption | FlattenedJSONEncryption",
         header: Header | None = None,
         recipient_key: KeyType | None = None,
     ):
@@ -103,11 +103,11 @@ class BaseJSONEncryption(metaclass=ABCMeta):
     #: protected header in dict
     protected: Header
     #: the plaintext in bytes
-    plaintext: t.Optional[bytes]
+    plaintext: bytes | None
     #: unprotected header in dict
-    unprotected: t.Optional[Header]
+    unprotected: Header | None
     #: an optional additional authenticated data
-    aad: t.Optional[bytes]
+    aad: bytes | None
     #: a list of recipients
     recipients: list[Recipient[t.Any]]
 
@@ -308,7 +308,7 @@ class JWEKeyWrapping(KeyManagement, metaclass=ABCMeta):
 class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
     key_types = ["EC", "OKP"]
     tag_aware: bool = False
-    key_wrapping: t.Optional[JWEKeyWrapping]
+    key_wrapping: JWEKeyWrapping | None
 
     def prepare_ephemeral_key(self, recipient: Recipient[ECKey]) -> None:
         recipient_key = recipient.recipient_key
@@ -342,4 +342,4 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
         raise NotImplementedError()
 
 
-JWEAlgModel = t.Union[JWEKeyEncryption, JWEKeyWrapping, JWEKeyAgreement, JWEDirectEncryption]
+JWEAlgModel = JWEKeyEncryption | JWEKeyWrapping | JWEKeyAgreement | JWEDirectEncryption

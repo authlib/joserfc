@@ -1,4 +1,4 @@
-from typing import cast, overload, Union
+from typing import cast, overload
 from collections.abc import Collection
 from ._rfc7516.types import (
     GeneralJSONSerialization,
@@ -266,11 +266,11 @@ def _guess_sender_key(
     headers = recipient.headers()
     skid = headers.get("skid")
     if skid:
-        skey = cast(Union[ECKey, OKPKey], key.get_by_kid(skid))
+        skey = cast(ECKey | OKPKey, key.get_by_kid(skid))
         return skey
 
     if use_random:
-        skey = cast(Union[ECKey, OKPKey], key.pick_random_key(headers["alg"]))
+        skey = cast(ECKey | OKPKey, key.pick_random_key(headers["alg"]))
         if skey is not None:
             recipient.add_header("skid", skey.kid)
             return skey

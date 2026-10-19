@@ -126,12 +126,12 @@ class BaseKey(t.Generic[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     @property
     def kid(self) -> str | None:
         """The "kid" value of the JSON Web Key."""
-        return t.cast(t.Optional[str], self.get("kid"))
+        return t.cast(str | None, self.get("kid"))
 
     @property
     def alg(self) -> str | None:
         """The "alg" value of the JSON Web Key."""
-        return t.cast(t.Optional[str], self.get("alg"))
+        return t.cast(str | None, self.get("alg"))
 
     @property
     def raw_value(self) -> t.Any:
@@ -316,7 +316,7 @@ class SymmetricKey(BaseKey[bytes, bytes], metaclass=ABCMeta):
 
 class AsymmetricKey(BaseKey[NativePrivateKey, NativePublicKey], metaclass=ABCMeta):
     @property
-    def raw_value(self) -> t.Union[NativePublicKey, NativePrivateKey]:
+    def raw_value(self) -> NativePublicKey | NativePrivateKey:
         return self._raw_value
 
     def as_bytes(

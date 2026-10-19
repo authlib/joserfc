@@ -21,11 +21,11 @@ class EdDSAAlgorithm(JWSAlgModel):
             raise InvalidKeyCurveError(f"Key for '{self.name}' not supported, only '{self.curve}' allowed")
 
     def sign(self, msg: bytes, key: OKPKey) -> bytes:
-        op_key = t.cast(t.Union[Ed25519PrivateKey, Ed448PrivateKey], key.get_op_key("sign"))
+        op_key = t.cast(Ed25519PrivateKey | Ed448PrivateKey, key.get_op_key("sign"))
         return op_key.sign(msg)
 
     def verify(self, msg: bytes, sig: bytes, key: OKPKey) -> bool:
-        op_key = t.cast(t.Union[Ed25519PublicKey, Ed448PublicKey], key.get_op_key("verify"))
+        op_key = t.cast(Ed25519PublicKey | Ed448PublicKey, key.get_op_key("verify"))
         try:
             op_key.verify(sig, msg)
             return True

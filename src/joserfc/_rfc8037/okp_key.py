@@ -22,8 +22,8 @@ from ..registry import KeyParameter
 
 
 LiteralCurves = t.Literal["Ed25519", "Ed448", "X25519", "X448"]
-PublicOKPKey = t.Union[Ed25519PublicKey, Ed448PublicKey, X25519PublicKey, X448PublicKey]
-PrivateOKPKey = t.Union[Ed25519PrivateKey, Ed448PrivateKey, X25519PrivateKey, X448PrivateKey]
+PublicOKPKey = Ed25519PublicKey | Ed448PublicKey | X25519PublicKey | X448PublicKey
+PrivateOKPKey = Ed25519PrivateKey | Ed448PrivateKey | X25519PrivateKey | X448PrivateKey
 OKPDictKey = t.TypedDict(
     "OKPDictKey",
     {
@@ -126,7 +126,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     def exchange_derive_key(self, key: "OKPKey") -> bytes:
         # used in ECDH-ES Algorithms
-        pubkey = t.cast(t.Union[X25519PublicKey, X448PublicKey], key.get_op_key("deriveKey"))
+        pubkey = t.cast(X25519PublicKey | X448PublicKey, key.get_op_key("deriveKey"))
 
         # this if else logic is used for type hints
         if isinstance(self.private_key, X25519PrivateKey) and isinstance(pubkey, X25519PublicKey):
@@ -297,7 +297,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         return _wrap_key(cls, raw_key, private, auto_kid, parameters)
 
 
-def get_key_curve(key: t.Union[PublicOKPKey, PrivateOKPKey]) -> LiteralCurves:
+def get_key_curve(key: PublicOKPKey | PrivateOKPKey) -> LiteralCurves:
     if isinstance(key, (Ed25519PublicKey, Ed25519PrivateKey)):
         return "Ed25519"
     elif isinstance(key, (Ed448PublicKey, Ed448PrivateKey)):
