@@ -46,24 +46,32 @@ Development
 Once you cloned ``joserfc``'s source code, you can setup a development
 environment to work on.
 
-venv
-~~~~
-
-I strongly suggest you create a virtual environment with ``venv``:
-
-.. code-block:: shell
-
-    python -m venv .venv
-    source .venv/bin/active
-
 Install
 ~~~~~~~
 
-Then install the Python requirements for development:
+Install `uv <https://docs.astral.sh/uv/getting-started/installation/>`_ and use
+Python 3.11 or newer. Create the development environment from the committed
+``uv.lock`` file:
 
 .. code-block:: shell
 
-    pip install -r requirements-dev.txt
+    uv sync --locked
+
+``uv`` creates and manages ``.venv`` automatically. Dependency groups are defined
+in ``pyproject.toml``; the ``dev`` group is installed by default. Install the
+documentation dependencies with:
+
+.. code-block:: shell
+
+    uv sync --locked --group docs
+
+When changing dependencies in ``pyproject.toml``, update and commit ``uv.lock``:
+
+.. code-block:: shell
+
+    uv lock
+
+Use ``uv lock --upgrade-package <name>`` to update a specific dependency.
 
 Run tests
 ~~~~~~~~~~
@@ -73,7 +81,16 @@ case in the ``tests`` folder, then verify it with:
 
 .. code-block:: shell
 
-    pytest
+    uv run --locked pytest
+    uv run --locked ruff check
+    uv run --locked mypy
+
+Build documentation
+~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: shell
+
+    uv run --locked --group docs make build-docs -e lang=en
 
 Next
 ----

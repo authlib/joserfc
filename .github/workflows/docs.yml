@@ -26,15 +26,17 @@ jobs:
         with:
           python-version: "3.13"
 
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
       - name: install dependencies
-        run: |
-          pip install -r requirements-dev.lock
-          pip install -r requirements-docs.lock
+        run: uv sync --locked --python python --group docs
 
       - name: sphinx build
         run: |
-          make build-docs -e lang=en
-          make build-docs -e lang=zh
+          uv run --locked --no-sync make build-docs -e lang=en
+          uv run --locked --no-sync make build-docs -e lang=zh
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5

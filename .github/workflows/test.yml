@@ -9,7 +9,6 @@ on:
       - 'docs/**'
       - '*.md'
       - '*.rst'
-      - '*.lock'
   pull_request:
     branches-ignore:
       - 'wip-*'
@@ -18,7 +17,6 @@ on:
       - 'docs/**'
       - '*.md'
       - '*.rst'
-      - '*.lock'
 
 
 permissions:
@@ -33,15 +31,18 @@ jobs:
         with:
           python-version: "3.13"
 
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
       - name: Install dependencies
-        run: |
-          pip install -r requirements-dev.lock
+        run: uv sync --locked --python python
 
       - name: ruff lint
-        run: ruff check
+        run: uv run --locked --no-sync ruff check
 
       - name: mypy lint
-        run: mypy
+        run: uv run --locked --no-sync mypy
 
   test:
     needs: lint
@@ -66,12 +67,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
       - name: Install dependencies
-        run: |
-          pip install -r requirements-dev.lock
+        run: uv sync --locked --python python
 
       - name: Report coverage
-        run: pytest --cov=joserfc --cov-report=xml
+        run: uv run --locked --no-sync pytest --cov=joserfc --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v6

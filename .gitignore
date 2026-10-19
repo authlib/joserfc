@@ -54,8 +54,6 @@ __pypackages__/
 
 *.mo
 
-uv.lock
-
 public/en
 public/zh
 public/sitemap.xml
