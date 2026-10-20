@@ -1,6 +1,6 @@
 import secrets
-import typing as t
 from abc import ABCMeta, abstractmethod
+from typing import Any, ClassVar, Generic, Literal, TypeVar
 
 from .._keys import ECKey, Key, OctKey
 from ..errors import InvalidKeyLengthError, InvalidKeyTypeError
@@ -22,10 +22,10 @@ __all__ = [
     "JWEAlgModel",
 ]
 
-KeyType = t.TypeVar("KeyType")
+KeyType = TypeVar("KeyType")
 
 
-class Recipient(t.Generic[KeyType]):
+class Recipient(Generic[KeyType]):
     def __init__(
         self,
         parent: "CompactEncryption | GeneralJSONEncryption | FlattenedJSONEncryption",
@@ -49,7 +49,7 @@ class Recipient(t.Generic[KeyType]):
         rv.update(self.__parent.protected)
         return rv
 
-    def add_header(self, k: str, v: t.Any) -> None:
+    def add_header(self, k: str, v: Any) -> None:
         if isinstance(self.__parent, CompactEncryption):
             self.__parent.protected.update({k: v})
         elif self.header:
@@ -71,7 +71,7 @@ class CompactEncryption:
         self.protected = protected
         #: the plaintext in bytes
         self.plaintext = plaintext
-        self.recipient: Recipient[t.Any] | None = None
+        self.recipient: Recipient[Any] | None = None
         self.bytes_segments: dict[str, bytes] = {}  # store the decoded segments
         self.base64_segments: dict[str, bytes] = {}  # store the encoded segments
 
@@ -92,7 +92,7 @@ class CompactEncryption:
         self.recipient = recipient
 
     @property
-    def recipients(self) -> list[Recipient[t.Any]]:
+    def recipients(self) -> list[Recipient[Any]]:
         if self.recipient is not None:
             return [self.recipient]
         return []
@@ -100,7 +100,7 @@ class CompactEncryption:
 
 class BaseJSONEncryption(metaclass=ABCMeta):
     #: represents if the object is in flatten syntax
-    flattened: t.ClassVar[bool]
+    flattened: ClassVar[bool]
     #: protected header in dict
     protected: Header
     #: the plaintext in bytes
@@ -110,7 +110,7 @@ class BaseJSONEncryption(metaclass=ABCMeta):
     #: an optional additional authenticated data
     aad: bytes | None
     #: a list of recipients
-    recipients: list[Recipient[t.Any]]
+    recipients: list[Recipient[Any]]
 
     def __init__(
         self,
@@ -189,8 +189,8 @@ class JWEEncModel(metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = False
-    algorithm_type: t.Literal["JWE"] = "JWE"
-    algorithm_location: t.Literal["enc"] = "enc"
+    algorithm_type: Literal["JWE"] = "JWE"
+    algorithm_location: Literal["enc"] = "enc"
 
     iv_size: int
     cek_size: int
@@ -219,8 +219,8 @@ class JWEZipModel(metaclass=ABCMeta):
     name: str
     description: str
     recommended: bool = True
-    algorithm_type: t.Literal["JWE"] = "JWE"
-    algorithm_location: t.Literal["zip"] = "zip"
+    algorithm_type: Literal["JWE"] = "JWE"
+    algorithm_location: Literal["zip"] = "zip"
 
     @abstractmethod
     def compress(self, s: bytes) -> bytes:
@@ -239,8 +239,8 @@ class KeyManagement:
     key_types: list[str]
     security_warning: str | None = None
 
-    algorithm_type: t.Literal["JWE"] = "JWE"
-    algorithm_location: t.Literal["alg"] = "alg"
+    algorithm_type: Literal["JWE"] = "JWE"
+    algorithm_location: Literal["alg"] = "alg"
     more_header_registry: HeaderRegistryDict = {}
 
     @property
@@ -251,7 +251,7 @@ class KeyManagement:
         if key.key_type not in self.key_types:
             raise InvalidKeyTypeError()
 
-    def prepare_recipient_header(self, recipient: Recipient[t.Any]) -> None:
+    def prepare_recipient_header(self, recipient: Recipient[Any]) -> None:
         raise NotImplementedError()
 
 
@@ -269,11 +269,11 @@ class JWEKeyEncryption(KeyManagement, metaclass=ABCMeta):
         return False
 
     @abstractmethod
-    def encrypt_cek(self, cek: bytes, recipient: Recipient[t.Any]) -> bytes:
+    def encrypt_cek(self, cek: bytes, recipient: Recipient[Any]) -> bytes:
         pass
 
     @abstractmethod
-    def decrypt_cek(self, recipient: Recipient[t.Any]) -> bytes:
+    def decrypt_cek(self, recipient: Recipient[Any]) -> bytes:
         pass
 
 

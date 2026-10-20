@@ -1,6 +1,6 @@
-import typing as t
 import warnings
 from functools import cached_property
+from typing import NotRequired, Self, TypedDict
 
 from cryptography.hazmat.primitives.asymmetric.rsa import (
     RSAPrivateKey,
@@ -22,15 +22,15 @@ from ..registry import KeyParameter
 from ..util import base64_to_int, int_to_base64
 
 
-class RSADictKey(t.TypedDict):
+class RSADictKey(TypedDict):
     n: str
     e: str
-    d: t.NotRequired[str]
-    p: t.NotRequired[str]
-    q: t.NotRequired[str]
-    dp: t.NotRequired[str]
-    dq: t.NotRequired[str]
-    qi: t.NotRequired[str]
+    d: NotRequired[str]
+    p: NotRequired[str]
+    q: NotRequired[str]
+    dp: NotRequired[str]
+    dq: NotRequired[str]
+    qi: NotRequired[str]
 
 
 class RSABinding(CryptographyBinding):
@@ -139,8 +139,8 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         value: AnyKey | RSAPrivateKey | RSAPublicKey,
         parameters: KeyParameters | None = None,
         password: str | bytes | None = None,
-    ) -> t.Self:
-        key: t.Self
+    ) -> Self:
+        key: Self
         if isinstance(value, (RSAPrivateKey, RSAPublicKey)):
             key = cls(value, value, parameters)
         else:
@@ -157,7 +157,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
-    ) -> t.Self:
+    ) -> Self:
         """Generate a ``RSAKey`` with the given bit size (not bytes).
 
         :param key_size: size in bit

@@ -1,4 +1,4 @@
-import typing as t
+from typing import Any, Literal
 
 from .._rfc7638 import calculate_thumbprint
 
@@ -6,8 +6,8 @@ JWK_THUMBPRINT_URN = "urn:ietf:params:oauth:jwk-thumbprint"
 
 
 def calculate_thumbprint_uri(
-    value: dict[str, t.Any],
-    digest_method: t.Literal["sha256", "sha384", "sha512"] = "sha256",
+    value: dict[str, Any],
+    digest_method: Literal["sha256", "sha384", "sha512"] = "sha256",
 ) -> str:
     """Calculate JWK thumbprint URI, defined by RFC9278.
 
@@ -25,6 +25,6 @@ def calculate_thumbprint_uri(
     return concat_thumbprint_uri(thumbprint, digest_method=digest_method)
 
 
-def concat_thumbprint_uri(value: str, digest_method: t.Literal["sha256", "sha384", "sha512"]) -> str:
+def concat_thumbprint_uri(value: str, digest_method: Literal["sha256", "sha384", "sha512"]) -> str:
     method = digest_method.replace("sha", "sha-")
     return f"{JWK_THUMBPRINT_URN}:{method}:{value}"

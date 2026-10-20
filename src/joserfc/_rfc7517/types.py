@@ -1,4 +1,4 @@
-import typing as t
+from typing import TypedDict
 
 __all__ = ["DictKey", "AnyKey", "KeyParameters"]
 
@@ -9,7 +9,7 @@ DictKey = dict[str, str | list[str]]
 AnyKey = str | bytes | DictKey
 
 #: extra key parameters for JWK
-KeyParameters = t.TypedDict(
+KeyParameters = TypedDict(
     "KeyParameters",
     {
         "use": str,

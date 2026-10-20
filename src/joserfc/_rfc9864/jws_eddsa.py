@@ -1,4 +1,4 @@
-import typing as t
+from typing import Literal, cast
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey, Ed448PublicKey
@@ -12,7 +12,7 @@ from ..errors import InvalidKeyCurveError
 class EdDSAAlgorithm(JWSAlgModel):
     key_type = "OKP"
 
-    def __init__(self, curve: t.Literal["Ed25519", "Ed448"]):
+    def __init__(self, curve: Literal["Ed25519", "Ed448"]):
         self.name = curve
         self.curve = curve
         self.description = f"EdDSA using the {curve} parameter set"
@@ -23,11 +23,11 @@ class EdDSAAlgorithm(JWSAlgModel):
             raise InvalidKeyCurveError(f"Key for '{self.name}' not supported, only '{self.curve}' allowed")
 
     def sign(self, msg: bytes, key: OKPKey) -> bytes:
-        op_key = t.cast(Ed25519PrivateKey | Ed448PrivateKey, key.get_op_key("sign"))
+        op_key = cast(Ed25519PrivateKey | Ed448PrivateKey, key.get_op_key("sign"))
         return op_key.sign(msg)
 
     def verify(self, msg: bytes, sig: bytes, key: OKPKey) -> bool:
-        op_key = t.cast(Ed25519PublicKey | Ed448PublicKey, key.get_op_key("verify"))
+        op_key = cast(Ed25519PublicKey | Ed448PublicKey, key.get_op_key("verify"))
         try:
             op_key.verify(sig, msg)
             return True

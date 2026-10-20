@@ -1,4 +1,4 @@
-import typing as t
+from typing import cast
 from unittest import TestCase
 
 from joserfc import jwt
@@ -8,9 +8,9 @@ from tests.base import load_key
 
 
 class TestEdDSA(TestCase):
-    x25519_key = t.cast(OKPKey, load_key("okp-x25519-alice.json"))
-    ed25519_key = t.cast(OKPKey, load_key("okp-ed25519-private.json"))
-    ed448_key = t.cast(OKPKey, load_key("okp-ed448-private.pem"))
+    x25519_key = cast(OKPKey, load_key("okp-x25519-alice.json"))
+    ed25519_key = cast(OKPKey, load_key("okp-ed25519-private.json"))
+    ed448_key = cast(OKPKey, load_key("okp-ed448-private.pem"))
 
     def test_EdDSA(self):
         algorithms = ["EdDSA"]

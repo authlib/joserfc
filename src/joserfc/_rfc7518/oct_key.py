@@ -1,7 +1,6 @@
 import secrets
-import typing as t
 import warnings
-from typing import Self
+from typing import Any, Self
 
 from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives.serialization import (
@@ -128,5 +127,5 @@ class OctKey(SymmetricKey):
             key.ensure_kid()
         return key
 
-    def as_dict(self, private: bool = False, **params: t.Any) -> DictKey:
+    def as_dict(self, private: bool = False, **params: Any) -> DictKey:
         return super().as_dict(private=True, **params)

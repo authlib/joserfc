@@ -1,6 +1,6 @@
 import json
-import typing as t
 from pathlib import Path
+from typing import Any
 from unittest import TestCase
 
 from joserfc.jwk import import_key
@@ -48,5 +48,5 @@ class TestFixture(TestCase):
         method.__doc__ = f"Run fixture {data}"
         setattr(cls, name, method)
 
-    def run_test(self, data: dict[str, t.Any]):
+    def run_test(self, data: dict[str, Any]):
         raise NotImplementedError()

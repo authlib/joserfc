@@ -1,5 +1,5 @@
-import typing as t
 from functools import cached_property
+from typing import Any, Literal, NotRequired, Self, TypedDict, TypeVar, cast
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey, Ed448PublicKey
@@ -22,15 +22,15 @@ from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError
 from ..registry import KeyParameter
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 
-LiteralCurves = t.Literal["Ed25519", "Ed448", "X25519", "X448"]
+LiteralCurves = Literal["Ed25519", "Ed448", "X25519", "X448"]
 PublicOKPKey = Ed25519PublicKey | Ed448PublicKey | X25519PublicKey | X448PublicKey
 PrivateOKPKey = Ed25519PrivateKey | Ed448PrivateKey | X25519PrivateKey | X448PrivateKey
 
 
-class OKPDictKey(t.TypedDict):
+class OKPDictKey(TypedDict):
     crv: LiteralCurves
     x: str
-    d: t.NotRequired[str]
+    d: NotRequired[str]
 
 
 PUBLIC_KEYS_MAP: dict[str, type[PublicOKPKey]] = {
@@ -126,7 +126,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
 
     def exchange_derive_key(self, key: "OKPKey") -> bytes:
         # used in ECDH-ES Algorithms
-        pubkey = t.cast(X25519PublicKey | X448PublicKey, key.get_op_key("deriveKey"))
+        pubkey = cast(X25519PublicKey | X448PublicKey, key.get_op_key("deriveKey"))
 
         # this if else logic is used for type hints
         if isinstance(self.private_key, X25519PrivateKey) and isinstance(pubkey, X25519PublicKey):
@@ -161,8 +161,8 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         value: AnyKey | PrivateOKPKey | PublicOKPKey,
         parameters: KeyParameters | None = None,
         password: str | bytes | None = None,
-    ) -> t.Self:
-        key: t.Self
+    ) -> Self:
+        key: Self
         if isinstance(
             value,
             (
@@ -188,7 +188,7 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
-    ) -> t.Self:
+    ) -> Self:
         """Generate a ``OKPKey`` with the given "crv" value.
 
         :param crv: OKPKey curve name
@@ -210,9 +210,9 @@ class OKPKey(CurveKey[PrivateOKPKey, PublicOKPKey]):
         parameters: KeyParameters | None = None,
         private: bool = True,
         auto_kid: bool = False,
-        kdf_name: t.Literal["HKDF", "PBKDF2"] = "HKDF",
-        kdf_options: dict[str, t.Any] | None = None,
-    ) -> t.Self:
+        kdf_name: Literal["HKDF", "PBKDF2"] = "HKDF",
+        kdf_options: dict[str, Any] | None = None,
+    ) -> Self:
         """
         Derives a key from a given input secret using a specified key derivation function
         (KDF) and elliptic curve algorithm.
@@ -309,7 +309,7 @@ def get_key_curve(key: PublicOKPKey | PrivateOKPKey) -> LiteralCurves:
     raise ValueError("Invalid key")  # pragma: no cover
 
 
-OKPKeyType = t.TypeVar("OKPKeyType", bound=OKPKey)
+OKPKeyType = TypeVar("OKPKeyType", bound=OKPKey)
 
 
 def _wrap_key(

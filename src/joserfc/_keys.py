@@ -1,5 +1,6 @@
 import random
-import typing as t
+from collections.abc import Iterator
+from typing import Any, ClassVar, Self, TypedDict, cast
 
 from ._rfc7517.types import AnyKey, DictKey, KeyParameters
 from ._rfc7518.ec_key import ECKey
@@ -64,7 +65,7 @@ class JWKRegistry:
         """
         if isinstance(data, dict) and key_type is None:
             if "kty" in data:
-                key_type = t.cast(str, data["kty"])
+                key_type = cast(str, data["kty"])
             else:
                 raise MissingKeyTypeError("Missing key type")
 
@@ -103,7 +104,7 @@ class JWKRegistry:
         return key_cls.generate_key(crv_or_size, parameters, private, auto_kid)  # type: ignore[arg-type]
 
 
-class KeySetSerialization(t.TypedDict):
+class KeySetSerialization(TypedDict):
     keys: list[DictKey]
 
 
@@ -112,14 +113,14 @@ class KeySet:
     keys: list[Key]
 
     registry_cls: type[JWKRegistry] = JWKRegistry
-    algorithm_keys: t.ClassVar[dict[str, list[str]]] = {}
+    algorithm_keys: ClassVar[dict[str, list[str]]] = {}
 
     def __init__(self, keys: list[Key]):
         for key in keys:
             key.ensure_kid()
         self.keys = keys
 
-    def __iter__(self) -> t.Iterator[Key]:
+    def __iter__(self) -> Iterator[Key]:
         return iter(self.keys)
 
     def __bool__(self) -> bool:
@@ -130,7 +131,7 @@ class KeySet:
             return False
         return self.keys == other.keys
 
-    def as_dict(self, private: bool = False, **params: t.Any) -> KeySetSerialization:
+    def as_dict(self, private: bool = False, **params: Any) -> KeySetSerialization:
         keys: list[DictKey] = []
 
         for key in self.keys:
@@ -166,7 +167,7 @@ class KeySet:
         return None
 
     @classmethod
-    def import_key_set(cls, value: KeySetSerialization, parameters: KeyParameters | None = None) -> t.Self:
+    def import_key_set(cls, value: KeySetSerialization, parameters: KeyParameters | None = None) -> Self:
         keys: list[Key] = []
 
         for data in value["keys"]:
@@ -191,7 +192,7 @@ class KeySet:
         parameters: KeyParameters | None = None,
         private: bool = True,
         count: int = 4,
-    ) -> t.Self:
+    ) -> Self:
         keys: list[Key] = []
         for _ in range(count):
             key = cls.registry_cls.generate_key(key_type, crv_or_size, parameters, private)
@@ -200,7 +201,7 @@ class KeySet:
         return cls(keys)
 
 
-def _filter_keys_by_parameters(keys: list[Key], parameters: KeyParameters) -> t.Iterator[Key]:
+def _filter_keys_by_parameters(keys: list[Key], parameters: KeyParameters) -> Iterator[Key]:
     _use = parameters.get("use")
     _alg = parameters.get("alg")
 

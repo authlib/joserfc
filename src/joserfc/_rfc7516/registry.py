@@ -1,6 +1,6 @@
-import typing as t
 import warnings
 from collections.abc import Collection
+from typing import Any, ClassVar, TypedDict
 
 from ..errors import (
     ExceededSizeError,
@@ -26,7 +26,7 @@ __all__ = [
 JWEAlgorithm = JWEAlgModel | JWEEncModel | JWEZipModel
 
 
-class AlgorithmsDict(t.TypedDict):
+class AlgorithmsDict(TypedDict):
     alg: dict[str, JWEAlgModel]
     enc: dict[str, JWEEncModel]
     zip: dict[str, JWEZipModel]
@@ -50,7 +50,7 @@ class JWERegistry:
         "enc": {},
         "zip": {},
     }
-    recommended: t.ClassVar[list[str]] = []
+    recommended: ClassVar[list[str]] = []
 
     #: max protected header content's size in bytes
     max_protected_header_length: int = 1024
@@ -147,7 +147,7 @@ class JWERegistry:
         if len(aad) > self.max_aad_length:
             raise ExceededSizeError(f"AAD size exceeds {self.max_aad_length} bytes.")
 
-    def validate_recipient_count(self, recipients: Collection[t.Any]) -> None:
+    def validate_recipient_count(self, recipients: Collection[Any]) -> None:
         if len(recipients) > self.max_recipients:
             raise ExceededSizeError(f"Recipient count exceeds {self.max_recipients}.")
 
@@ -181,7 +181,7 @@ class JWERegistry:
         self._check_algorithm(name, registry)
         return registry[name]
 
-    def _check_algorithm(self, name: str, registry: dict[str, t.Any]) -> None:
+    def _check_algorithm(self, name: str, registry: dict[str, Any]) -> None:
         if name not in registry:
             raise UnsupportedAlgorithmError(f"Algorithm of '{name}' is not supported")
 
