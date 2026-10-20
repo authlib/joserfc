@@ -1,4 +1,4 @@
-from typing import Any, TypedDict
+from typing import Any, NotRequired, TypedDict
 
 __all__ = [
     "JSONRecipientDict",
@@ -12,22 +12,22 @@ class JSONRecipientDict(TypedDict, total=False):
     encrypted_key: str
 
 
-class GeneralJSONSerialization(TypedDict, total=False):
+class GeneralJSONSerialization(TypedDict):
     protected: str
-    unprotected: dict[str, Any]
+    unprotected: NotRequired[dict[str, Any]]
     iv: str
-    aad: str
+    aad: NotRequired[str]
     ciphertext: str
     tag: str
     recipients: list[JSONRecipientDict]
 
 
-class FlattenedJSONSerialization(TypedDict, total=False):
+class FlattenedJSONSerialization(TypedDict):
     protected: str
-    unprotected: dict[str, Any]
+    unprotected: NotRequired[dict[str, Any]]
     iv: str
-    aad: str
+    aad: NotRequired[str]
     ciphertext: str
     tag: str
-    header: dict[str, Any]
-    encrypted_key: str
+    header: NotRequired[dict[str, Any]]
+    encrypted_key: NotRequired[str]

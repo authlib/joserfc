@@ -27,10 +27,10 @@ PublicOKPKey = Ed25519PublicKey | Ed448PublicKey | X25519PublicKey | X448PublicK
 PrivateOKPKey = Ed25519PrivateKey | Ed448PrivateKey | X25519PrivateKey | X448PrivateKey
 
 
-class OKPDictKey(t.TypedDict, total=False):
+class OKPDictKey(t.TypedDict):
     crv: LiteralCurves
     x: str
-    d: str
+    d: t.NotRequired[str]
 
 
 PUBLIC_KEYS_MAP: dict[str, type[PublicOKPKey]] = {

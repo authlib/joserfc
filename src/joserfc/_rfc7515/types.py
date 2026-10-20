@@ -1,4 +1,4 @@
-from typing import TypedDict, final
+from typing import NotRequired, TypedDict, final
 
 from ..registry import Header
 
@@ -22,9 +22,9 @@ class HeaderDict(TypedDict, total=False):
     header: Header
 
 
-class JSONSignatureDict(TypedDict, total=False):
-    protected: str
-    header: Header
+class JSONSignatureDict(TypedDict):
+    protected: NotRequired[str]
+    header: NotRequired[Header]
     signature: str
 
 
@@ -35,8 +35,8 @@ class GeneralJSONSerialization(TypedDict):
 
 
 @final
-class FlattenedJSONSerialization(TypedDict, total=False):
+class FlattenedJSONSerialization(TypedDict):
     payload: str
-    protected: str
-    header: Header
+    protected: NotRequired[str]
+    header: NotRequired[Header]
     signature: str

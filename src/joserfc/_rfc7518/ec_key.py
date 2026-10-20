@@ -28,11 +28,11 @@ from ..util import base64_to_int, int_to_base64, to_bytes
 __all__ = ["ECKey"]
 
 
-class ECDictKey(t.TypedDict, total=False):
+class ECDictKey(t.TypedDict):
     crv: str
     x: str
     y: str
-    d: str
+    d: t.NotRequired[str]
 
 
 class ECBinding(CryptographyBinding):

@@ -22,15 +22,15 @@ from ..registry import KeyParameter
 from ..util import base64_to_int, int_to_base64
 
 
-class RSADictKey(t.TypedDict, total=False):
+class RSADictKey(t.TypedDict):
     n: str
     e: str
-    d: str
-    p: str
-    q: str
-    dp: str
-    dq: str
-    qi: str
+    d: t.NotRequired[str]
+    p: t.NotRequired[str]
+    q: t.NotRequired[str]
+    dp: t.NotRequired[str]
+    dq: t.NotRequired[str]
+    qi: t.NotRequired[str]
 
 
 class RSABinding(CryptographyBinding):

@@ -241,7 +241,7 @@ def decrypt_json(
         perform_decrypt(general_obj, registry)
         return general_obj
     else:
-        flattened_obj = extract_flattened_json(cast(FlattenedJSONSerialization, data), registry)
+        flattened_obj = extract_flattened_json(data, registry)
         _attach_recipient_keys(flattened_obj.recipients, private_key, sender_key)
         perform_decrypt(flattened_obj, registry)
         return flattened_obj
