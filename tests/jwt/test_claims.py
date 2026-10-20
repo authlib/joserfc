@@ -1,16 +1,17 @@
-import time
 import datetime
 import json
+import time
 import uuid
 from unittest import TestCase
+
 from joserfc import jwt
-from joserfc.jwk import OctKey
 from joserfc.errors import (
+    ExpiredTokenError,
     InsecureClaimError,
     InvalidClaimError,
     MissingClaimError,
-    ExpiredTokenError,
 )
+from joserfc.jwk import OctKey
 
 
 class UUIDEncoder(json.JSONEncoder):

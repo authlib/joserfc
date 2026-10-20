@@ -1,15 +1,17 @@
-import time
-import json
-import datetime
 import calendar
+import datetime
+import json
+import time
+from collections.abc import Callable
 from json import JSONEncoder
-from typing import TypedDict, Any, Callable, TypeGuard
-from ..util import to_bytes
+from typing import Any, TypedDict, TypeGuard
+
 from ..errors import (
-    MissingClaimError,
-    InvalidClaimError,
     ExpiredTokenError,
+    InvalidClaimError,
+    MissingClaimError,
 )
+from ..util import to_bytes
 
 Claims = dict[str, Any]
 

@@ -1,8 +1,10 @@
 from unittest import TestCase
-from joserfc.jwk import OctKey, RSAKey, ECKey, OKPKey
-from joserfc.util import urlsafe_b64encode
+
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
-from joserfc.errors import SecurityWarning, KeyParameterError
+
+from joserfc.errors import KeyParameterError, SecurityWarning
+from joserfc.jwk import ECKey, OctKey, OKPKey, RSAKey
+from joserfc.util import urlsafe_b64encode
 from tests.keys import read_key
 
 

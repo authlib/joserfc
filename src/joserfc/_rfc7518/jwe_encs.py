@@ -8,13 +8,15 @@ Encryption per `Section 5`_.
 .. _`Section 5`: https://tools.ietf.org/html/rfc7518#section-5
 """
 
-import hmac
 import hashlib
+import hmac
+
+from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives.ciphers import Cipher
 from cryptography.hazmat.primitives.ciphers.algorithms import AES
-from cryptography.hazmat.primitives.ciphers.modes import GCM, CBC
+from cryptography.hazmat.primitives.ciphers.modes import CBC, GCM
 from cryptography.hazmat.primitives.padding import PKCS7
-from cryptography.exceptions import InvalidTag
+
 from .._rfc7516.models import JWEEncModel
 from ..errors import DecodeError
 from .util import encode_int
@@ -102,7 +104,7 @@ class GCMEncModel(JWEEncModel):
         try:
             return d.update(ciphertext) + d.finalize()
         except InvalidTag as error:
-            raise DecodeError(str(error))
+            raise DecodeError(str(error)) from error
 
 
 JWE_ENC_MODELS: list[JWEEncModel] = [

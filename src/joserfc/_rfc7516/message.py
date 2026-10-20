@@ -1,31 +1,31 @@
 import secrets
 from typing import Any
 
-from .models import (
-    CompactEncryption,
-    BaseJSONEncryption,
-    GeneralJSONEncryption,
-    FlattenedJSONEncryption,
-    Recipient,
-    JWEAlgModel,
-    JWEEncModel,
-    JWEKeyAgreement,
-    JWEDirectEncryption,
-    JWEKeyEncryption,
-    JWEKeyWrapping,
-)
-from .registry import JWERegistry
 from ..errors import (
-    JoseError,
+    ConflictAlgorithmError,
     DecodeError,
     InvalidEncryptedKeyError,
     InvalidExchangeKeyError,
-    ConflictAlgorithmError,
+    JoseError,
 )
 from ..util import (
     json_b64encode,
     urlsafe_b64encode,
 )
+from .models import (
+    BaseJSONEncryption,
+    CompactEncryption,
+    FlattenedJSONEncryption,
+    GeneralJSONEncryption,
+    JWEAlgModel,
+    JWEDirectEncryption,
+    JWEEncModel,
+    JWEKeyAgreement,
+    JWEKeyEncryption,
+    JWEKeyWrapping,
+    Recipient,
+)
+from .registry import JWERegistry
 
 __all__ = [
     "EncryptionData",
@@ -87,8 +87,8 @@ def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> None:
 def perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
     try:
         _perform_decrypt(obj, registry)
-    except InvalidExchangeKeyError as error:
-        raise DecodeError(error.description)
+    except InvalidExchangeKeyError as err:
+        raise DecodeError(err.description) from err
 
 
 def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:

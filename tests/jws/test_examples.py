@@ -1,7 +1,7 @@
-from tests.base import TestFixture, load_key
+from joserfc import jws
 from joserfc.jwk import OctKey
 from joserfc.jws import HeaderDict
-from joserfc import jws
+from tests.base import TestFixture, load_key
 
 
 class TestJWSExamples(TestFixture):

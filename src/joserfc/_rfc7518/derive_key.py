@@ -1,9 +1,10 @@
 import struct
+
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash
+
 from ..registry import Header
 from ..util import to_bytes, urlsafe_b64decode
-
 
 __all__ = [
     "derive_key_for_concat_kdf",

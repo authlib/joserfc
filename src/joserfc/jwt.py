@@ -1,28 +1,29 @@
 import json
-from json import JSONEncoder, JSONDecoder
 from collections.abc import Collection
+from json import JSONDecoder, JSONEncoder
+
 from ._rfc7519.claims import (
-    convert_claims,
+    BaseClaimsRegistry,
     Claims,
     ClaimsOption,
-    BaseClaimsRegistry,
     JWTClaimsRegistry,
+    convert_claims,
 )
 from ._rfc7519.security import check_sensitive_data
-from .jws import (
-    JWSRegistry,
-    serialize_compact,
-    deserialize_compact,
-)
+from .errors import InvalidPayloadError
 from .jwe import (
     JWERegistry,
-    encrypt_compact,
     decrypt_compact,
+    encrypt_compact,
 )
 from .jwk import KeyFlexible
-from .errors import InvalidPayloadError
-from .util import to_bytes
+from .jws import (
+    JWSRegistry,
+    deserialize_compact,
+    serialize_compact,
+)
 from .registry import Header
+from .util import to_bytes
 
 __all__ = [
     # types
@@ -111,8 +112,8 @@ def decode(
 
     try:
         claims: Claims = json.loads(payload, cls=decoder_cls)
-    except (TypeError, ValueError):
-        raise InvalidPayloadError()
+    except (TypeError, ValueError) as error:
+        raise InvalidPayloadError() from error
 
     return Token(header, claims)
 

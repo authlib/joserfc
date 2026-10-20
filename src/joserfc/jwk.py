@@ -1,24 +1,25 @@
 import warnings
-from typing import cast, overload, Literal, Callable, Protocol
+from collections.abc import Callable
+from typing import Literal, Protocol, cast, overload
+
 from ._keys import (
     JWKRegistry,
-    KeySet,
     Key,
+    KeySet,
     KeySetSerialization,
 )
 from ._rfc7517.pem import import_from_pem_key, import_from_ssh_key
 from ._rfc7517.types import AnyKey, DictKey, KeyParameters
+from ._rfc7518.ec_key import ECKey
 from ._rfc7518.oct_key import OctKey
 from ._rfc7518.rsa_key import RSAKey
-from ._rfc7518.ec_key import ECKey
+from ._rfc7638 import calculate_thumbprint as thumbprint
 from ._rfc8037.okp_key import OKPKey
 from ._rfc8812 import register_secp256k1
-from ._rfc7638 import calculate_thumbprint as thumbprint
 from ._rfc9278 import calculate_thumbprint_uri as thumbprint_uri
-from .errors import SecurityWarning, InvalidKeyTypeError
+from .errors import InvalidKeyTypeError, SecurityWarning
 from .registry import Header
 from .util import to_bytes
-
 
 __all__ = [
     # types
@@ -137,7 +138,7 @@ def import_key(
     :return: OctKey, RSAKey, ECKey, or OKPKey
     """
     if isinstance(data, (str, bytes)) and key_type is None:
-        warnings.warn("Using implicit key type is not recommended.", SecurityWarning)
+        warnings.warn("Using implicit key type is not recommended.", SecurityWarning, stacklevel=2)
 
         value = to_bytes(data)
         ssh_types = tuple(

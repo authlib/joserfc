@@ -1,26 +1,26 @@
 from typing import Any
+
+from .._keys import Key
+from ..util import (
+    json_b64decode,
+    json_b64encode,
+    to_bytes,
+    to_str,
+    urlsafe_b64decode,
+    urlsafe_b64encode,
+)
 from .models import (
     BaseJSONEncryption,
-    GeneralJSONEncryption,
     FlattenedJSONEncryption,
+    GeneralJSONEncryption,
     Recipient,
 )
 from .registry import JWERegistry
 from .types import (
-    JSONRecipientDict,
-    GeneralJSONSerialization,
     FlattenedJSONSerialization,
+    GeneralJSONSerialization,
+    JSONRecipientDict,
 )
-from ..util import (
-    to_bytes,
-    to_str,
-    json_b64encode,
-    json_b64decode,
-    urlsafe_b64encode,
-    urlsafe_b64decode,
-)
-from .._keys import Key
-
 
 __all__ = [
     "represent_general_json",

@@ -16,8 +16,8 @@ class JoseError(Exception):
         if description is not None:
             self.description = description
 
-        message = "{}: {}".format(self.error, self.description)
-        super(JoseError, self).__init__(message)
+        message = f"{self.error}: {self.description}"
+        super().__init__(message)
 
 
 # --- Key related errors --- #
@@ -115,7 +115,7 @@ class MissingHeaderError(JoseError):
 
     def __init__(self, key: str):
         description = f"Missing '{key}' value in header"
-        super(MissingHeaderError, self).__init__(description=description)
+        super().__init__(description=description)
 
 
 class MissingCritHeaderError(JoseError):
@@ -125,7 +125,7 @@ class MissingCritHeaderError(JoseError):
 
     def __init__(self, key: str):
         description = f"Missing critical '{key}' value in header"
-        super(MissingCritHeaderError, self).__init__(description=description)
+        super().__init__(description=description)
 
 
 class MissingEncryptionError(JoseError):
@@ -193,7 +193,7 @@ class ClaimError(JoseError):
         self.claim = claim
         if description is None:
             description = self.description.format(claim)
-        super(ClaimError, self).__init__(description=description)
+        super().__init__(description=description)
 
 
 class InvalidClaimError(ClaimError):

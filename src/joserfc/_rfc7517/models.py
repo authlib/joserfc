@@ -1,23 +1,23 @@
 import typing as t
-from collections.abc import KeysView
 from abc import ABCMeta, abstractmethod
-from .types import DictKey, AnyKey, KeyParameters
+from collections.abc import KeysView
+
 from .._rfc7638 import calculate_thumbprint
 from .._rfc9278 import concat_thumbprint_uri
-from ..registry import (
-    KeyParameterRegistryDict,
-    JWK_PARAMETER_REGISTRY,
-    KeyOperationRegistryDict,
-    JWK_OPERATION_REGISTRY,
-)
-from ..util import to_bytes
 from ..errors import (
     KeyParameterError,
-    UnsupportedKeyUseError,
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyOperationError,
+    UnsupportedKeyUseError,
 )
-
+from ..registry import (
+    JWK_OPERATION_REGISTRY,
+    JWK_PARAMETER_REGISTRY,
+    KeyOperationRegistryDict,
+    KeyParameterRegistryDict,
+)
+from ..util import to_bytes
+from .types import AnyKey, DictKey, KeyParameters
 
 NativePrivateKey = t.TypeVar("NativePrivateKey")
 NativePublicKey = t.TypeVar("NativePublicKey")
@@ -64,7 +64,7 @@ class NativeKeyBinding(metaclass=ABCMeta):
                 try:
                     registry[k].validate(dict_key[k])
                 except ValueError as error:
-                    raise KeyParameterError(f"'{k}' {error}")
+                    raise KeyParameterError(f"'{k}' {error}") from error
 
     @classmethod
     def validate_dict_key_use_operations(cls, dict_key: DictKey) -> None:

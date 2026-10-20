@@ -1,39 +1,36 @@
-import warnings
 import typing as t
+import warnings
 from functools import cached_property
+
 from cryptography.hazmat.primitives.asymmetric.rsa import (
-    generate_private_key,
-    RSAPublicKey,
     RSAPrivateKey,
     RSAPrivateNumbers,
+    RSAPublicKey,
     RSAPublicNumbers,
-    rsa_recover_prime_factors,
+    generate_private_key,
     rsa_crt_dmp1,
     rsa_crt_dmq1,
     rsa_crt_iqmp,
+    rsa_recover_prime_factors,
 )
-from ..registry import KeyParameter
-from ..errors import SecurityWarning, KeyParameterError
+
 from .._rfc7517.models import AsymmetricKey
 from .._rfc7517.pem import CryptographyBinding
-from .._rfc7517.types import KeyParameters, AnyKey
-from ..util import int_to_base64, base64_to_int
+from .._rfc7517.types import AnyKey, KeyParameters
+from ..errors import KeyParameterError, SecurityWarning
+from ..registry import KeyParameter
+from ..util import base64_to_int, int_to_base64
 
 
-RSADictKey = t.TypedDict(
-    "RSADictKey",
-    {
-        "n": str,
-        "e": str,
-        "d": str,
-        "p": str,
-        "q": str,
-        "dp": str,
-        "dq": str,
-        "qi": str,
-    },
-    total=False,
-)
+class RSADictKey(t.TypedDict, total=False):
+    n: str
+    e: str
+    d: str
+    p: str
+    q: str
+    dp: str
+    dq: str
+    qi: str
 
 
 class RSABinding(CryptographyBinding):
@@ -150,7 +147,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
             key = super().import_key(value, parameters, password)
         if key.raw_value.key_size < 2048:
             # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
-            warnings.warn("Key size should be >= 2048 bits", SecurityWarning)
+            warnings.warn("Key size should be >= 2048 bits", SecurityWarning, stacklevel=2)
         return key
 
     @classmethod
@@ -176,7 +173,7 @@ class RSAKey(AsymmetricKey[RSAPrivateKey, RSAPublicKey]):
 
         if key_size < 2048:
             # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
-            warnings.warn("Key size should be >= 2048 bits", SecurityWarning)
+            warnings.warn("Key size should be >= 2048 bits", SecurityWarning, stacklevel=2)
 
         raw_key = cls.binding.generate_private_key(key_size)
         if private:

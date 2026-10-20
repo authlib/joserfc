@@ -1,49 +1,54 @@
-from typing import overload, Any
 from collections.abc import Collection
+from typing import Any, overload
+
+from ._rfc7515.compact import (
+    detach_compact_content,
+    sign_compact,
+    verify_compact,
+)
+from ._rfc7515.json import (
+    detach_json_content,
+    extract_general_json,
+    sign_flattened_json,
+    sign_general_json,
+    verify_flattened_json,
+    verify_general_json,
+)
 from ._rfc7515.model import (
-    JWSAlgModel,
-    HeaderMember,
     CompactSignature,
-    GeneralJSONSignature,
     FlattenedJSONSignature,
+    GeneralJSONSignature,
+    HeaderMember,
+    JWSAlgModel,
 )
 from ._rfc7515.registry import (
     JWSRegistry,
     construct_registry,
     default_registry,
 )
-from ._rfc7515.compact import (
-    sign_compact,
-    verify_compact,
-    detach_compact_content,
-)
-from ._rfc7515.json import (
-    sign_general_json,
-    sign_flattened_json,
-    verify_general_json,
-    verify_flattened_json,
-    extract_general_json,
-    detach_json_content,
-)
 from ._rfc7515.types import (
-    HeaderDict,
-    GeneralJSONSerialization,
     FlattenedJSONSerialization,
+    GeneralJSONSerialization,
+    HeaderDict,
 )
-from ._rfc7797.util import is_rfc7797_enabled
+from ._rfc7797.compact import (
+    extract_rfc7515_compact as extract_compact,
+)
 from ._rfc7797.compact import (
     sign_rfc7515_compact,
-    extract_rfc7515_compact as extract_compact,
+)
+from ._rfc7797.json import (
+    extract_rfc7797_json as extract_flattened_json,
 )
 from ._rfc7797.json import (
     sign_rfc7797_json,
-    extract_rfc7797_json as extract_flattened_json,
 )
+from ._rfc7797.util import is_rfc7797_enabled
 from .errors import BadSignatureError, MissingKeyError
-from .jwk import Key, KeyFlexible, guess_key
 from .jwa import setup_jws_algorithms
-from .util import to_bytes
+from .jwk import Key, KeyFlexible, guess_key
 from .registry import Header
+from .util import to_bytes
 
 __all__ = [
     # types

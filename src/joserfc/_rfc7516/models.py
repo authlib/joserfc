@@ -1,9 +1,10 @@
-import typing as t
 import secrets
+import typing as t
 from abc import ABCMeta, abstractmethod
+
+from .._keys import ECKey, Key, OctKey
+from ..errors import InvalidKeyLengthError, InvalidKeyTypeError
 from ..registry import Header, HeaderRegistryDict
-from ..errors import InvalidKeyTypeError, InvalidKeyLengthError
-from .._keys import Key, ECKey, OctKey
 
 __all__ = [
     "Recipient",

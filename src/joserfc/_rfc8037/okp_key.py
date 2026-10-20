@@ -1,38 +1,38 @@
 import typing as t
 from functools import cached_property
+
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey, Ed25519PrivateKey
-from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PublicKey, Ed448PrivateKey
-from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PublicKey, X25519PrivateKey
-from cryptography.hazmat.primitives.asymmetric.x448 import X448PublicKey, X448PrivateKey
-from cryptography.hazmat.primitives.serialization import (
-    Encoding,
-    PublicFormat,
-    PrivateFormat,
-    NoEncryption,
-)
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey, Ed448PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
+from cryptography.hazmat.primitives.asymmetric.x448 import X448PrivateKey, X448PublicKey
+from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X25519PublicKey
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from .._rfc7517.models import CurveKey
-from .._rfc7517.types import KeyParameters, AnyKey
-from .._rfc7517.pem import CryptographyBinding
-from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError
-from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
-from ..registry import KeyParameter
+from cryptography.hazmat.primitives.serialization import (
+    Encoding,
+    NoEncryption,
+    PrivateFormat,
+    PublicFormat,
+)
 
+from .._rfc7517.models import CurveKey
+from .._rfc7517.pem import CryptographyBinding
+from .._rfc7517.types import AnyKey, KeyParameters
+from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError
+from ..registry import KeyParameter
+from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 
 LiteralCurves = t.Literal["Ed25519", "Ed448", "X25519", "X448"]
 PublicOKPKey = Ed25519PublicKey | Ed448PublicKey | X25519PublicKey | X448PublicKey
 PrivateOKPKey = Ed25519PrivateKey | Ed448PrivateKey | X25519PrivateKey | X448PrivateKey
-OKPDictKey = t.TypedDict(
-    "OKPDictKey",
-    {
-        "crv": LiteralCurves,
-        "x": str,
-        "d": str,
-    },
-    total=False,
-)
+
+
+class OKPDictKey(t.TypedDict, total=False):
+    crv: LiteralCurves
+    x: str
+    d: str
+
+
 PUBLIC_KEYS_MAP: dict[str, type[PublicOKPKey]] = {
     "Ed25519": Ed25519PublicKey,
     "Ed448": Ed448PublicKey,

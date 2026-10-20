@@ -1,16 +1,16 @@
-from .models import CompactEncryption, Recipient
-from .registry import JWERegistry
 from .._keys import Key
 from ..errors import (
+    DecodeError,
     MissingAlgorithmError,
     MissingEncryptionError,
-    DecodeError,
 )
 from ..util import (
     json_b64decode,
-    urlsafe_b64encode,
     urlsafe_b64decode,
+    urlsafe_b64encode,
 )
+from .models import CompactEncryption, Recipient
+from .registry import JWERegistry
 
 __all__ = [
     "represent_compact",
@@ -52,8 +52,8 @@ def extract_compact(value: bytes, registry: JWERegistry) -> CompactEncryption:
             raise MissingAlgorithmError()
         if "enc" not in protected:
             raise MissingEncryptionError()
-    except (TypeError, ValueError):
-        raise DecodeError("Invalid header")
+    except (TypeError, ValueError) as err:
+        raise DecodeError("Invalid header") from err
 
     obj = CompactEncryption(protected)
     obj.base64_segments.update(

@@ -1,44 +1,46 @@
-from ._rfc7515.registry import JWSRegistry
+from ._keys import KeySet
 from ._rfc7515.model import JWSAlgModel
-from ._rfc7516.registry import JWERegistry
+from ._rfc7515.registry import JWSRegistry
 from ._rfc7516.models import (
+    JWEAlgModel,
     JWEDirectEncryption,
+    JWEEncModel,
+    JWEKeyAgreement,
     JWEKeyEncryption,
     JWEKeyWrapping,
-    JWEKeyAgreement,
-    JWEAlgModel,
-    JWEEncModel,
     JWEZipModel,
 )
-from ._rfc7518.jws_algs import (
-    NoneAlgorithm,
-    HMACAlgorithm,
-    RSAAlgorithm,
-    ESAlgorithm,
-    RSAPSSAlgorithm,
-    JWS_ALGORITHMS as RFC7518_JWS_ALGORITHMS,
-)
+from ._rfc7516.registry import JWERegistry
 from ._rfc7518.jwe_algs import (
-    DirectAlgEncryption,
-    AESAlgKeyWrapping,
-    ECDHESAlgKeyAgreement,
-    AESGCMAlgKeyWrapping,
-    PBES2HSAlgKeyEncryption,
     JWE_ALG_MODELS,
+    AESAlgKeyWrapping,
+    AESGCMAlgKeyWrapping,
+    DirectAlgEncryption,
+    ECDHESAlgKeyAgreement,
+    PBES2HSAlgKeyEncryption,
 )
 from ._rfc7518.jwe_encs import (
+    JWE_ENC_MODELS,
     CBCHS2EncModel,
     GCMEncModel,
-    JWE_ENC_MODELS,
 )
 from ._rfc7518.jwe_zips import (
-    DeflateZipModel,
     JWE_ZIP_MODELS,
+    DeflateZipModel,
+)
+from ._rfc7518.jws_algs import (
+    JWS_ALGORITHMS as RFC7518_JWS_ALGORITHMS,
+)
+from ._rfc7518.jws_algs import (
+    ESAlgorithm,
+    HMACAlgorithm,
+    NoneAlgorithm,
+    RSAAlgorithm,
+    RSAPSSAlgorithm,
 )
 from ._rfc8037.jws_eddsa import EdDSA, EdDSAAlgorithm
 from ._rfc8812 import ES256K
 from ._rfc9864 import JWS_ALGORITHMS as RFC9864_JWS_ALGORITHMS
-from ._keys import KeySet
 
 __all__ = [
     # JWS algorithms

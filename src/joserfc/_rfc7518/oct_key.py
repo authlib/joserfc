@@ -1,23 +1,24 @@
-import typing as t
-from typing import Self
 import secrets
+import typing as t
 import warnings
+from typing import Self
+
 from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives.serialization import (
     load_der_public_key,
     load_pem_public_key,
     load_ssh_public_key,
 )
+
+from .._rfc7517.models import NativeKeyBinding, SymmetricKey
+from .._rfc7517.types import AnyKey, DictKey, KeyParameters
 from ..errors import SecurityWarning
+from ..registry import KeyParameter
 from ..util import (
     to_bytes,
     urlsafe_b64decode,
     urlsafe_b64encode,
 )
-from ..registry import KeyParameter
-from .._rfc7517.models import SymmetricKey, NativeKeyBinding
-from .._rfc7517.types import KeyParameters, DictKey, AnyKey
-
 
 POSSIBLE_UNSAFE_KEYS = (
     b"-----BEGIN ",
@@ -61,7 +62,7 @@ class OctBinding(NativeKeyBinding):
                 raise ValueError("Asymmetric public keys must not be used as oct keys")
 
         if value.startswith(POSSIBLE_UNSAFE_KEYS):
-            warnings.warn("This key should not be used as an oct key", SecurityWarning)
+            warnings.warn("This key should not be used as an oct key", SecurityWarning, stacklevel=2)
         return value
 
 
@@ -90,7 +91,7 @@ class OctKey(SymmetricKey):
             raise ValueError("oct key material must not be empty")
         if len(key.raw_value) < 14:
             # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
-            warnings.warn("Key size should be >= 112 bits", SecurityWarning)
+            warnings.warn("Key size should be >= 112 bits", SecurityWarning, stacklevel=2)
         return key
 
     @classmethod
@@ -119,7 +120,7 @@ class OctKey(SymmetricKey):
 
         if key_size < 112:
             # https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final
-            warnings.warn("Key size should be >= 112 bits", SecurityWarning)
+            warnings.warn("Key size should be >= 112 bits", SecurityWarning, stacklevel=2)
 
         raw_key = secrets.token_bytes(key_size // 8)
         key = cls(raw_key, raw_key, parameters)

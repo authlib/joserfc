@@ -1,4 +1,5 @@
 import zlib
+
 from .._rfc7516.models import JWEZipModel
 from ..errors import ExceededSizeError
 

@@ -1,4 +1,5 @@
 import typing as t
+
 from .._rfc7638 import calculate_thumbprint
 
 JWK_THUMBPRINT_URN = "urn:ietf:params:oauth:jwk-thumbprint"

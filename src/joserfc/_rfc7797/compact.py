@@ -1,16 +1,17 @@
 import re
 from typing import Any
-from ..util import (
-    to_bytes,
-    to_str,
-    json_b64encode,
-    urlsafe_b64encode,
-    urlsafe_b64decode,
-)
-from .._rfc7515.model import JWSAlgModel, CompactSignature
+
 from .._rfc7515.compact import decode_header
+from .._rfc7515.model import CompactSignature, JWSAlgModel
 from .._rfc7515.registry import JWSRegistry, default_registry
 from ..errors import DecodeError
+from ..util import (
+    json_b64encode,
+    to_bytes,
+    to_str,
+    urlsafe_b64decode,
+    urlsafe_b64encode,
+)
 from .util import is_rfc7797_enabled
 
 
@@ -67,8 +68,8 @@ def extract_rfc7515_compact(
         else:
             try:
                 payload = urlsafe_b64decode(payload_segment)
-            except (TypeError, ValueError):
-                raise DecodeError("Invalid payload")
+            except (TypeError, ValueError) as error:
+                raise DecodeError("Invalid payload") from error
 
     obj = CompactSignature(protected, payload)
     obj.segments.update(

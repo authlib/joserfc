@@ -1,38 +1,39 @@
 import secrets
 import warnings
 
-from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.keywrap import (
-    aes_key_wrap,
-    aes_key_unwrap,
-    InvalidUnwrap,
-)
+from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.ciphers import Cipher
 from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.ciphers.modes import GCM
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.exceptions import InvalidTag
-from .derive_key import derive_key_for_concat_kdf
-from .oct_key import OctKey
-from .rsa_key import RSAKey
-from .ec_key import ECKey
+from cryptography.hazmat.primitives.keywrap import (
+    InvalidUnwrap,
+    aes_key_unwrap,
+    aes_key_wrap,
+)
+
 from .._rfc7516.models import (
     JWEAlgModel,
     JWEDirectEncryption,
+    JWEEncModel,
+    JWEKeyAgreement,
     JWEKeyEncryption,
     JWEKeyWrapping,
-    JWEKeyAgreement,
-    JWEEncModel,
     Recipient,
 )
-from ..util import to_bytes, urlsafe_b64encode, urlsafe_b64decode
-from ..registry import HeaderParameter
 from ..errors import (
-    InvalidKeyLengthError,
     DecodeError,
+    InvalidKeyLengthError,
     SecurityWarning,
 )
+from ..registry import HeaderParameter
+from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
+from .derive_key import derive_key_for_concat_kdf
+from .ec_key import ECKey
+from .oct_key import OctKey
+from .rsa_key import RSAKey
 
 
 class DirectAlgEncryption(JWEDirectEncryption):
@@ -80,7 +81,7 @@ class RSAAlgKeyEncryption(JWEKeyEncryption):
             assert recipient.encrypted_key is not None
             cek = op_key.decrypt(recipient.encrypted_key, self.padding)
         except ValueError as error:
-            raise DecodeError(str(error))
+            raise DecodeError(str(error)) from error
         return cek
 
 
@@ -99,8 +100,8 @@ class AESAlgKeyWrapping(JWEKeyWrapping):
         self.check_op_key(key)
         try:
             cek = aes_key_unwrap(key, ek)
-        except InvalidUnwrap:
-            raise DecodeError("Unwrap AES key failed")
+        except InvalidUnwrap as err:
+            raise DecodeError("Unwrap AES key failed") from err
         return cek
 
     def encrypt_cek(self, cek: bytes, recipient: Recipient[OctKey]) -> bytes:
@@ -176,7 +177,7 @@ class AESGCMAlgKeyWrapping(JWEKeyWrapping):
             assert recipient.encrypted_key is not None
             cek = d.update(recipient.encrypted_key) + d.finalize()
         except InvalidTag as error:
-            raise DecodeError(str(error))
+            raise DecodeError(str(error)) from error
         return cek
 
 
@@ -232,7 +233,7 @@ def validate_p2c(value: int) -> None:
 
     # A minimum iteration count of 1000 is RECOMMENDED.
     if value < 1000:
-        warnings.warn("A minimum iteration count of 1000 is RECOMMENDED", SecurityWarning)
+        warnings.warn("A minimum iteration count of 1000 is RECOMMENDED", SecurityWarning, stacklevel=2)
 
     max_value = 300000
     if value > max_value:

@@ -1,7 +1,7 @@
 import re
 from typing import Any
-from ..errors import InsecureClaimError
 
+from ..errors import InsecureClaimError
 
 SENSITIVE_NAMES = ("password", "token", "secret", "secret_key", "api_key")
 SENSITIVE_VALUES = re.compile(

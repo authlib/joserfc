@@ -1,20 +1,21 @@
 from unittest import TestCase
-from joserfc.jws import (
-    JWSRegistry,
-    serialize_compact,
-    deserialize_compact,
-    detach_content,
-)
-from joserfc.jwk import OctKey, RSAKey, KeySet
+
 from joserfc.errors import (
     BadSignatureError,
     DecodeError,
+    ExceededSizeError,
     MissingAlgorithmError,
     UnsupportedAlgorithmError,
     UnsupportedHeaderError,
-    ExceededSizeError,
 )
-from joserfc.util import urlsafe_b64encode, json_b64encode
+from joserfc.jwk import KeySet, OctKey, RSAKey
+from joserfc.jws import (
+    JWSRegistry,
+    deserialize_compact,
+    detach_content,
+    serialize_compact,
+)
+from joserfc.util import json_b64encode, urlsafe_b64encode
 
 
 class TestCompact(TestCase):

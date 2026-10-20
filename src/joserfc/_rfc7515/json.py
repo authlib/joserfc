@@ -1,25 +1,27 @@
 import copy
-from typing import Any, Callable
-from .model import (
-    HeaderMember,
-    GeneralJSONSignature,
-    FlattenedJSONSignature,
-)
-from .types import (
-    JSONSignatureDict,
-    GeneralJSONSerialization,
-    FlattenedJSONSerialization,
-)
-from .registry import JWSRegistry
+from collections.abc import Callable
+from typing import Any
+
+from ..errors import DecodeError
 from ..registry import reject_unprotected_crit_header
 from ..util import (
-    to_bytes,
-    json_b64encode,
     json_b64decode,
-    urlsafe_b64encode,
+    json_b64encode,
+    to_bytes,
     urlsafe_b64decode,
+    urlsafe_b64encode,
 )
-from ..errors import DecodeError
+from .model import (
+    FlattenedJSONSignature,
+    GeneralJSONSignature,
+    HeaderMember,
+)
+from .registry import JWSRegistry
+from .types import (
+    FlattenedJSONSerialization,
+    GeneralJSONSerialization,
+    JSONSignatureDict,
+)
 
 __all__ = [
     "FindKey",
@@ -91,8 +93,8 @@ def extract_general_json(value: GeneralJSONSerialization, registry: JWSRegistry)
     registry.validate_payload_size(payload_segment)
     try:
         payload = urlsafe_b64decode(payload_segment)
-    except (TypeError, ValueError):
-        raise DecodeError("Invalid payload")
+    except (TypeError, ValueError) as err:
+        raise DecodeError("Invalid payload") from err
 
     signatures: list[JSONSignatureDict] = value["signatures"]
     members = [__signature_to_member(sig, registry) for sig in signatures]

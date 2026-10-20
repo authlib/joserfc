@@ -1,21 +1,22 @@
 from unittest import TestCase
+
 from joserfc import jws
-from joserfc.jwk import RSAKey, OctKey
-from joserfc.registry import HeaderParameter
 from joserfc.errors import (
     BadSignatureError,
+    InvalidHeaderValueError,
+    InvalidKeyCurveError,
+    InvalidKeyTypeError,
+    MissingCritHeaderError,
+    MissingHeaderError,
     MissingKeyError,
     UnsupportedAlgorithmError,
-    UnsupportedKeyUseError,
+    UnsupportedHeaderError,
     UnsupportedKeyAlgorithmError,
     UnsupportedKeyOperationError,
-    InvalidKeyTypeError,
-    InvalidKeyCurveError,
-    MissingHeaderError,
-    MissingCritHeaderError,
-    UnsupportedHeaderError,
-    InvalidHeaderValueError,
+    UnsupportedKeyUseError,
 )
+from joserfc.jwk import OctKey, RSAKey
+from joserfc.registry import HeaderParameter
 from joserfc.util import urlsafe_b64encode
 from tests.base import load_key
 

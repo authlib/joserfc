@@ -20,11 +20,13 @@ Import keys from various sources with `jwk.import_key()` method:
 from joserfc import jwk
 
 # Import generic JWK (dict) - auto-detects type
-key = jwk.import_key({
-    "kty": "oct",
-    "k": "eW91ci1zZWNyZXQta2V5", # "your-secret-key" base64url encoded
-    "use": "sig"
-})
+key = jwk.import_key(
+    {
+        "kty": "oct",
+        "k": "eW91ci1zZWNyZXQta2V5",  # "your-secret-key" base64url encoded
+        "use": "sig",
+    }
+)
 
 # Import Symmetric Key (Oct) from string/bytes
 oct_key = jwk.import_key("your-secret-key", "oct")
@@ -79,7 +81,7 @@ from joserfc.jwk import KeyParameters
 from joserfc.jwk import OctKey, RSAKey, ECKey, OKPKey
 
 # Generate Oct (Symmetric) Key - size in bits
-key = OctKey.generate_key(256) # 256 bits = 32 bytes
+key = OctKey.generate_key(256)  # 256 bits = 32 bytes
 
 # Generate RSA Key
 params: KeyParameters = {"use": "sig"}
@@ -158,8 +160,8 @@ token = jws.serialize_compact(protected, payload, key)
 
 # Verify
 obj = jws.deserialize_compact(token, key)
-print(obj.payload) # b'hello world'
-print(obj.protected) # {'alg': 'HS256'}
+print(obj.payload)  # b'hello world'
+print(obj.protected)  # {'alg': 'HS256'}
 ```
 
 ### JSON Serialization (Multiple Signatures)
@@ -184,7 +186,7 @@ payload = b"secure message"
 # Sign with multiple keys
 members = [
     {"protected": {"alg": "RS256"}, "header": {"kid": rsa_key.kid}},
-    {"protected": {"alg": "ES256"}, "header": {"kid": ec_key.kid}}
+    {"protected": {"alg": "ES256"}, "header": {"kid": ec_key.kid}},
 ]
 
 # Use KeySet for private keys if multiple
@@ -193,7 +195,7 @@ value = jws.serialize_json(members, payload, private_key_set)
 # Verify usually happens on the client side, clients can fetch the public keys from a URL
 public_key_set = KeySet.import_key_set(public_jwks)
 obj = jws.deserialize_json(value, public_key_set)
-print(obj.payload) # b'secure message'
+print(obj.payload)  # b'secure message'
 ```
 
 ---
@@ -209,7 +211,7 @@ from joserfc import jwe
 from joserfc.jwk import OctKey
 
 # Shared secret key (must match algorithm requirements)
-key = OctKey.generate_key(128) # 128 bits for A128KW
+key = OctKey.generate_key(128)  # 128 bits for A128KW
 
 protected = {"alg": "A128KW", "enc": "A128GCM"}
 plaintext = "secret message"
@@ -219,7 +221,7 @@ jwe_token = jwe.encrypt_compact(protected, plaintext, key)
 
 # Decrypt
 obj = jwe.decrypt_compact(jwe_token, key)
-print(obj.plaintext) # b'secret message'
+print(obj.plaintext)  # b'secret message'
 ```
 
 ### JSON Encryption (Multiple Recipients)
@@ -249,7 +251,7 @@ data = jwe.encrypt_json(enc_obj, KeySet([key1, public_key]))
 
 # Decrypt, we use private keys for decryption
 obj = jwe.decrypt_json(data, KeySet([key1, key2]))
-print(obj.plaintext) # b'payload'
+print(obj.plaintext)  # b'payload'
 ```
 
 ---
@@ -270,7 +272,7 @@ header = {"alg": "HS256"}
 claims = {
     "iss": "https://myapp.com",
     "sub": "user123",
-    "exp": datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1)
+    "exp": datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1),
 }
 
 token = jwt.encode(header, claims, key)
@@ -298,7 +300,7 @@ from joserfc.errors import ClaimError
 registry = JWTClaimsRegistry(
     iss={"essential": True, "value": "https://myapp.com"},
     aud={"essential": True, "values": ["my-api", "other-api"]},
-    role={"value": "admin"} # Custom claim check
+    role={"value": "admin"},  # Custom claim check
 )
 
 token_obj = jwt.decode(token, key)

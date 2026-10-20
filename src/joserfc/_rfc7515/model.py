@@ -1,8 +1,9 @@
-from typing import Any, ClassVar, Literal
 from abc import ABCMeta, abstractmethod
-from .types import SegmentsDict, JSONSignatureDict
+from typing import Any, ClassVar, Literal
+
 from ..errors import InvalidKeyTypeError
 from ..registry import Header
+from .types import JSONSignatureDict, SegmentsDict
 
 __all__ = [
     "HeaderMember",

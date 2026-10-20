@@ -1,20 +1,21 @@
-import warnings
 import typing as t
+import warnings
 from collections.abc import Collection
-from .models import JWEAlgModel, JWEEncModel, JWEZipModel
+
 from ..errors import (
-    UnsupportedAlgorithmError,
-    SecurityWarning,
     ExceededSizeError,
+    SecurityWarning,
+    UnsupportedAlgorithmError,
 )
 from ..registry import (
+    JWE_HEADER_REGISTRY,
     Header,
     HeaderRegistryDict,
-    JWE_HEADER_REGISTRY,
-    check_supported_header,
-    check_registry_header,
     check_crit_header,
+    check_registry_header,
+    check_supported_header,
 )
+from .models import JWEAlgModel, JWEEncModel, JWEZipModel
 
 __all__ = [
     "JWEAlgorithm",
@@ -24,14 +25,11 @@ __all__ = [
 
 JWEAlgorithm = JWEAlgModel | JWEEncModel | JWEZipModel
 
-AlgorithmsDict = t.TypedDict(
-    "AlgorithmsDict",
-    {
-        "alg": dict[str, JWEAlgModel],
-        "enc": dict[str, JWEEncModel],
-        "zip": dict[str, JWEZipModel],
-    },
-)
+
+class AlgorithmsDict(t.TypedDict):
+    alg: dict[str, JWEAlgModel]
+    enc: dict[str, JWEEncModel]
+    zip: dict[str, JWEZipModel]
 
 
 class JWERegistry:
@@ -162,7 +160,7 @@ class JWERegistry:
         self._check_algorithm(name, registry)
         alg: JWEAlgModel = registry[name]
         if alg.security_warning:
-            warnings.warn(alg.security_warning, SecurityWarning)
+            warnings.warn(alg.security_warning, SecurityWarning, stacklevel=2)
         return alg
 
     def get_enc(self, name: str) -> JWEEncModel:

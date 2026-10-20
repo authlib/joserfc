@@ -1,5 +1,5 @@
-from ..registry import Header
 from ..errors import MissingCritHeaderError
+from ..registry import Header
 
 
 def is_rfc7797_enabled(header: Header) -> bool:

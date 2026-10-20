@@ -1,17 +1,18 @@
 from unittest import TestCase
+
+from joserfc.drafts.jwe_ecdh_1pu import JWE_ALG_MODELS, register_ecdh_1pu
+from joserfc.errors import InvalidEncryptionAlgorithmError
+from joserfc.jwa import JWE_ENC_MODELS
 from joserfc.jwe import (
-    JWERegistry,
     GeneralJSONEncryption,
     GeneralJSONSerialization,
-    encrypt_compact,
+    JWERegistry,
     decrypt_compact,
-    encrypt_json,
     decrypt_json,
+    encrypt_compact,
+    encrypt_json,
 )
-from joserfc.jwa import JWE_ENC_MODELS
 from joserfc.jwk import KeySet
-from joserfc.errors import InvalidEncryptionAlgorithmError
-from joserfc.drafts.jwe_ecdh_1pu import JWE_ALG_MODELS, register_ecdh_1pu
 from tests.base import TestFixture, load_key
 
 register_ecdh_1pu()

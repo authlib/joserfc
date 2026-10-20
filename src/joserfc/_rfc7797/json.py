@@ -1,9 +1,9 @@
-from .._rfc7515.types import FlattenedJSONSerialization, JSONSignatureDict
-from .._rfc7515.model import HeaderMember, FlattenedJSONSignature
+from .._rfc7515.json import FindKey, sign_json_member
+from .._rfc7515.model import FlattenedJSONSignature, HeaderMember
 from .._rfc7515.registry import JWSRegistry
-from .._rfc7515.json import sign_json_member, FindKey
-from ..util import to_bytes, json_b64decode, urlsafe_b64decode
+from .._rfc7515.types import FlattenedJSONSerialization, JSONSignatureDict
 from ..errors import DecodeError
+from ..util import json_b64decode, to_bytes, urlsafe_b64decode
 from .util import is_rfc7797_enabled
 
 
@@ -37,8 +37,8 @@ def extract_rfc7797_json(value: FlattenedJSONSerialization, registry: JWSRegistr
     else:
         try:
             payload = urlsafe_b64decode(payload_segment)
-        except (TypeError, ValueError):
-            raise DecodeError("Invalid payload")
+        except (TypeError, ValueError) as error:
+            raise DecodeError("Invalid payload") from error
 
     obj = FlattenedJSONSignature(member, payload)
     _sig: JSONSignatureDict = {"signature": value["signature"]}

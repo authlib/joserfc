@@ -1,8 +1,9 @@
 import json
 import typing as t
-from joserfc.jwk import import_key
-from unittest import TestCase
 from pathlib import Path
+from unittest import TestCase
+
+from joserfc.jwk import import_key
 
 BASE_PATH = Path(__file__).parent
 
@@ -47,5 +48,5 @@ class TestFixture(TestCase):
         method.__doc__ = f"Run fixture {data}"
         setattr(cls, name, method)
 
-    def run_test(self, data: t.Dict[str, t.Any]):
+    def run_test(self, data: dict[str, t.Any]):
         raise NotImplementedError()

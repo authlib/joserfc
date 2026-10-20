@@ -1,11 +1,12 @@
 from unittest import TestCase
+
+from joserfc.drafts.jwe_chacha20 import register_chacha20_poly1305
 from joserfc.jwe import (
-    encrypt_compact,
-    decrypt_compact,
     JWERegistry,
+    decrypt_compact,
+    encrypt_compact,
 )
 from joserfc.jwk import OctKey
-from joserfc.drafts.jwe_chacha20 import register_chacha20_poly1305
 
 register_chacha20_poly1305()
 chacha_registry = JWERegistry(algorithms=["dir", "C20P", "XC20P"])

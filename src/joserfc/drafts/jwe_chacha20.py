@@ -1,6 +1,7 @@
 from Crypto.Cipher import ChaCha20_Poly1305
-from .._rfc7516.registry import JWERegistry
+
 from .._rfc7516.models import JWEEncModel
+from .._rfc7516.registry import JWERegistry
 
 __all__ = ["ChaCha20EncModel", "JWE_ENC_MODELS", "register_chacha20_poly1305"]
 

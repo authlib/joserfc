@@ -1,8 +1,9 @@
 import typing as t
 from unittest import TestCase
+
 from joserfc import jwt
+from joserfc.errors import BadSignatureError, InvalidKeyCurveError, InvalidKeyTypeError
 from joserfc.jwk import OKPKey
-from joserfc.errors import InvalidKeyTypeError, InvalidKeyCurveError, BadSignatureError
 from tests.base import load_key
 
 

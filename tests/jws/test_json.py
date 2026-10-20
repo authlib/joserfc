@@ -1,22 +1,23 @@
 from unittest import TestCase
+
+from joserfc.errors import (
+    BadSignatureError,
+    DecodeError,
+    ExceededSizeError,
+    UnsupportedAlgorithmError,
+    UnsupportedHeaderError,
+)
+from joserfc.jwk import KeySet, OctKey, RSAKey
 from joserfc.jws import (
-    HeaderDict,
     FlattenedJSONSerialization,
     GeneralJSONSerialization,
+    HeaderDict,
     JWSRegistry,
-    serialize_json,
     deserialize_json,
     detach_content,
+    serialize_json,
 )
-from joserfc.jwk import RSAKey, OctKey, KeySet
-from joserfc.errors import (
-    DecodeError,
-    BadSignatureError,
-    UnsupportedHeaderError,
-    UnsupportedAlgorithmError,
-    ExceededSizeError,
-)
-from joserfc.util import json_b64encode, urlsafe_b64encode, to_str
+from joserfc.util import json_b64encode, to_str, urlsafe_b64encode
 from tests.base import load_key
 
 

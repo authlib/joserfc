@@ -1,11 +1,13 @@
 from unittest import TestCase
+
 from cryptography.hazmat.primitives import hashes
-from joserfc.jwk import ECKey, OctKey
+
 from joserfc.errors import (
     InvalidExchangeKeyError,
-    InvalidKeyTypeError,
     InvalidKeyCurveError,
+    InvalidKeyTypeError,
 )
+from joserfc.jwk import ECKey, OctKey
 from tests.keys import read_key
 
 

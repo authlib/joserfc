@@ -1,17 +1,16 @@
-from .._rfc7516.models import Recipient, JWEKeyAgreement, JWEKeyWrapping, JWEEncModel
+from .._rfc7516.models import JWEEncModel, JWEKeyAgreement, JWEKeyWrapping, Recipient
+from .._rfc7518.derive_key import (
+    derive_key_for_concat_kdf,
+)
+from .._rfc7518.ec_key import ECKey
 from .._rfc7518.jwe_algs import (
     A128KW,
     A192KW,
     A256KW,
 )
-from .._rfc7518.ec_key import ECKey
-from .._rfc7518.derive_key import (
-    derive_key_for_concat_kdf,
-)
 from .._rfc7518.jwe_encs import CBCHS2EncModel
-from ..registry import HeaderParameter
 from ..errors import InvalidEncryptionAlgorithmError
-
+from ..registry import HeaderParameter
 
 __all__ = ["ECDH1PUAlgModel", "register_ecdh_1pu", "JWE_ALG_MODELS"]
 

@@ -1,15 +1,16 @@
 from typing import Any
-from .model import JWSAlgModel, CompactSignature
+
 from ..errors import (
     DecodeError,
     MissingAlgorithmError,
 )
 from ..util import (
-    json_b64encode,
     json_b64decode,
-    urlsafe_b64encode,
+    json_b64encode,
     urlsafe_b64decode,
+    urlsafe_b64encode,
 )
+from .model import CompactSignature, JWSAlgModel
 
 __all__ = [
     "sign_compact",
@@ -48,6 +49,6 @@ def decode_header(header_segment: bytes) -> dict[str, Any]:
         protected: dict[str, Any] = json_b64decode(header_segment)
         if "alg" not in protected:
             raise MissingAlgorithmError()
-    except (TypeError, ValueError):
-        raise DecodeError("Invalid header")
+    except (TypeError, ValueError) as err:
+        raise DecodeError("Invalid header") from err
     return protected

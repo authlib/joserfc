@@ -1,8 +1,8 @@
-from typing import Any
 import base64
-import struct
 import binascii
 import json
+import struct
+from typing import Any
 
 
 def to_bytes(x: Any, charset: str = "utf-8", errors: str = "strict") -> bytes:
@@ -43,8 +43,8 @@ def urlsafe_b64encode(s: bytes) -> bytes:
 
 def base64_to_int(s: str) -> int:
     data = urlsafe_b64decode(to_bytes(s))
-    buf = struct.unpack("%sB" % len(data), data)
-    return int("".join(["%02x" % byte for byte in buf]), 16)
+    buf = struct.unpack(f"{len(data)}B", data)
+    return int("".join([f"{byte:02x}" for byte in buf]), 16)
 
 
 def int_to_base64(num: int, byte_count: int | None = None) -> str:

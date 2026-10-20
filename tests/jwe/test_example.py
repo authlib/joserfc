@@ -1,13 +1,13 @@
 from unittest import TestCase
-from joserfc.jwe import decrypt_compact, decrypt_json
-from joserfc.jwk import RSAKey, OctKey, KeySet
-from joserfc.util import json_b64encode, urlsafe_b64encode, to_bytes
-from joserfc.jwe import JWERegistry, default_registry as registry
-from joserfc.jwe import CompactEncryption, GeneralJSONEncryption
-from joserfc._rfc7516.message import perform_encrypt
+
 from joserfc._rfc7516.compact import represent_compact
 from joserfc._rfc7516.json import represent_general_json
+from joserfc._rfc7516.message import perform_encrypt
 from joserfc.errors import UnsupportedAlgorithmError
+from joserfc.jwe import CompactEncryption, GeneralJSONEncryption, JWERegistry, decrypt_compact, decrypt_json
+from joserfc.jwe import default_registry as registry
+from joserfc.jwk import KeySet, OctKey, RSAKey
+from joserfc.util import json_b64encode, to_bytes, urlsafe_b64encode
 from tests.base import load_key
 
 

@@ -1,6 +1,7 @@
 from unittest import TestCase
+
+from joserfc.errors import InvalidKeyTypeError, KeyParameterError, SecurityWarning
 from joserfc.jwk import RSAKey
-from joserfc.errors import SecurityWarning, KeyParameterError, InvalidKeyTypeError
 from tests.keys import read_key
 
 

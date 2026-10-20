@@ -1,21 +1,22 @@
 from unittest import TestCase
-from joserfc.jwe import (
-    JWERegistry,
-    encrypt_compact,
-    decrypt_compact,
-    CompactEncryption,
-)
-from joserfc.jwa import JWE_ENC_MODELS
-from joserfc.jwk import RSAKey, ECKey, OctKey, OKPKey, KeySet
+
 from joserfc.errors import (
-    SecurityWarning,
-    InvalidKeyLengthError,
-    MissingAlgorithmError,
-    MissingEncryptionError,
     DecodeError,
     ExceededSizeError,
     InvalidHeaderValueError,
+    InvalidKeyLengthError,
+    MissingAlgorithmError,
+    MissingEncryptionError,
+    SecurityWarning,
 )
+from joserfc.jwa import JWE_ENC_MODELS
+from joserfc.jwe import (
+    CompactEncryption,
+    JWERegistry,
+    decrypt_compact,
+    encrypt_compact,
+)
+from joserfc.jwk import ECKey, KeySet, OctKey, OKPKey, RSAKey
 from joserfc.util import json_b64encode, urlsafe_b64encode
 from tests.base import load_key
 

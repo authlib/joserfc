@@ -1,14 +1,15 @@
-import typing as t
 import random
-from ._rfc7517.types import AnyKey, KeyParameters, DictKey
+import typing as t
+
+from ._rfc7517.types import AnyKey, DictKey, KeyParameters
+from ._rfc7518.ec_key import ECKey
 from ._rfc7518.oct_key import OctKey
 from ._rfc7518.rsa_key import RSAKey
-from ._rfc7518.ec_key import ECKey
 from ._rfc8037.okp_key import OKPKey
 from .errors import (
-    MissingKeyError,
     InvalidKeyIdError,
     InvalidKeyTypeError,
+    MissingKeyError,
     MissingKeyTypeError,
 )
 from .util import to_bytes
@@ -102,7 +103,8 @@ class JWKRegistry:
         return key_cls.generate_key(crv_or_size, parameters, private, auto_kid)  # type: ignore[arg-type]
 
 
-KeySetSerialization = t.TypedDict("KeySetSerialization", {"keys": list[DictKey]})
+class KeySetSerialization(t.TypedDict):
+    keys: list[DictKey]
 
 
 class KeySet:

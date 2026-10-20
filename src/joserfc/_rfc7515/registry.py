@@ -1,23 +1,24 @@
 import warnings
-from typing import Any
 from collections.abc import Collection
 from enum import Enum
-from .model import JWSAlgModel
+from typing import Any
+
+from .._keys import KeySet
 from ..errors import (
-    JoseError,
-    UnsupportedAlgorithmError,
-    SecurityWarning,
     ExceededSizeError,
+    JoseError,
+    SecurityWarning,
+    UnsupportedAlgorithmError,
 )
 from ..registry import (
     JWS_HEADER_REGISTRY,
     Header,
     HeaderRegistryDict,
-    check_registry_header,
     check_crit_header,
+    check_registry_header,
     check_supported_header,
 )
-from .._keys import KeySet
+from .model import JWSAlgModel
 
 __all__ = [
     "JWSRegistry",
@@ -90,7 +91,7 @@ class JWSRegistry:
 
         alg = self.algorithms[name]
         if alg.security_warning:
-            warnings.warn(alg.security_warning, SecurityWarning)
+            warnings.warn(alg.security_warning, SecurityWarning, stacklevel=2)
         return alg
 
     def check_header(self, header: Header) -> None:
@@ -141,7 +142,7 @@ class JWSRegistry:
 
     @classmethod
     def guess_alg(cls, key: Any, strategy: Strategy) -> str | None:  # pragma: no cover
-        warnings.warn("Please use guess_algorithm(key, strategy)", DeprecationWarning)
+        warnings.warn("Please use guess_algorithm(key, strategy)", DeprecationWarning, stacklevel=2)
         alg = cls.guess_algorithm(key, strategy)
         if alg:
             return alg.name

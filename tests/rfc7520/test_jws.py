@@ -1,7 +1,6 @@
-from tests.base import TestFixture, load_key
 from joserfc import jws
 from joserfc.util import urlsafe_b64encode
-
+from tests.base import TestFixture, load_key
 
 # https://datatracker.ietf.org/doc/html/rfc7520#section-4
 payload = (

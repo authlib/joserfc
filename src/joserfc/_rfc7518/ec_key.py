@@ -1,40 +1,38 @@
 import typing as t
 from functools import cached_property
+
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import (
-    generate_private_key,
-    derive_private_key,
     ECDH,
-    EllipticCurvePublicKey,
-    EllipticCurvePrivateKey,
-    EllipticCurvePrivateNumbers,
-    EllipticCurvePublicNumbers,
-    EllipticCurve,
     SECP256R1,
     SECP384R1,
     SECP521R1,
+    EllipticCurve,
+    EllipticCurvePrivateKey,
+    EllipticCurvePrivateNumbers,
+    EllipticCurvePublicKey,
+    EllipticCurvePublicNumbers,
+    derive_private_key,
+    generate_private_key,
 )
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError
+
 from .._rfc7517.models import CurveKey
 from .._rfc7517.pem import CryptographyBinding
-from .._rfc7517.types import KeyParameters, AnyKey
-from ..util import base64_to_int, int_to_base64, to_bytes
+from .._rfc7517.types import AnyKey, KeyParameters
+from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError
 from ..registry import KeyParameter
+from ..util import base64_to_int, int_to_base64, to_bytes
 
 __all__ = ["ECKey"]
 
-ECDictKey = t.TypedDict(
-    "ECDictKey",
-    {
-        "crv": str,
-        "x": str,
-        "y": str,
-        "d": str,  # optional
-    },
-    total=False,
-)
+
+class ECDictKey(t.TypedDict, total=False):
+    crv: str
+    x: str
+    y: str
+    d: str
 
 
 class ECBinding(CryptographyBinding):
@@ -211,8 +209,8 @@ class ECKey(CurveKey[EllipticCurvePrivateKey, EllipticCurvePublicKey]):
         """
         try:
             curve_class = cls.binding._dss_curves[crv]
-        except KeyError:
-            raise InvalidKeyCurveError(f"Invalid crv value: '{crv}'")
+        except KeyError as error:
+            raise InvalidKeyCurveError(f"Invalid crv value: '{crv}'") from error
 
         curve = curve_class()
         length = (curve.group_order.bit_length() + 7) // 8 * 2

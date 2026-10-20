@@ -1,4 +1,4 @@
-from joserfc.jwk import ECKey, RSAKey, OctKey
+from joserfc.jwk import ECKey, OctKey, RSAKey
 
 
 def test_ec_key():

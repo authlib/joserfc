@@ -1,17 +1,16 @@
-from joserfc.jwk import OctKey
+from joserfc import jws
 from joserfc.errors import (
-    DecodeError,
-    MissingAlgorithmError,
     BadSignatureError,
+    DecodeError,
     InvalidHeaderValueError,
+    MissingAlgorithmError,
     MissingCritHeaderError,
     UnsupportedHeaderError,
 )
-from joserfc.util import to_bytes
+from joserfc.jwk import OctKey
 from joserfc.jws import HeaderDict
-from joserfc import jws
+from joserfc.util import to_bytes
 from tests.base import TestFixture
-
 
 default_key = OctKey.import_key(
     {"kty": "oct", "k": ("AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow")}

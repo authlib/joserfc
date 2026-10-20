@@ -1,5 +1,6 @@
 import binascii
 from unittest import TestCase
+
 from joserfc import util
 
 

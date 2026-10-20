@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from joserfc.errors import InvalidKeyTypeError, InvalidKeyIdError, MissingKeyError
-from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
+from joserfc.errors import InvalidKeyIdError, InvalidKeyTypeError, MissingKeyError
+from joserfc.jwk import ECKey, KeySet, OctKey, RSAKey
 from tests.keys import read_key
 
 KeySet.algorithm_keys["RS256"] = ["RSA"]
@@ -13,10 +13,12 @@ class TestKeySet(TestCase):
 
     def test_import_key_set_ignores_unknown_kty(self):
         # RFC 7517 Section 5: a key with an unrecognised "kty" is ignored, not fatal.
-        jwks = {"keys": [
-            {"kty": "unknown", "alg": "X", "kid": "unknown"},
-            {"kty": "oct", "k": "MDEyMzQ1Njc4OWFiY2RlZg", "kid": "classical"},
-        ]}
+        jwks = {
+            "keys": [
+                {"kty": "unknown", "alg": "X", "kid": "unknown"},
+                {"kty": "oct", "k": "MDEyMzQ1Njc4OWFiY2RlZg", "kid": "classical"},
+            ]
+        }
         key_set = KeySet.import_key_set(jwks)
         self.assertEqual(len(key_set.keys), 1)
         self.assertEqual(key_set.keys[0].kid, "classical")

@@ -1,7 +1,7 @@
 import unittest
 
+from joserfc.jwk import ECKey, KeySet, OctKey, OKPKey, RSAKey
 from joserfc.jws import JWSRegistry
-from joserfc.jwk import OctKey, RSAKey, ECKey, OKPKey, KeySet
 
 
 class JWSRegistryTest(unittest.TestCase):

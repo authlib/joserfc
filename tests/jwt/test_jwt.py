@@ -1,13 +1,14 @@
 from unittest import TestCase
-from joserfc import jws, jwe, jwt
-from joserfc.jwk import OctKey, GuestProtocol, Key, import_key
+
+from joserfc import jwe, jws, jwt
 from joserfc.errors import (
+    DecodeError,
     InvalidPayloadError,
     MissingClaimError,
-    UnsupportedHeaderError,
     UnsupportedAlgorithmError,
-    DecodeError,
+    UnsupportedHeaderError,
 )
+from joserfc.jwk import GuestProtocol, Key, OctKey, import_key
 
 
 def use_embedded_jwk(obj: GuestProtocol) -> Key:

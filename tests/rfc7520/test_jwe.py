@@ -1,15 +1,15 @@
 import json
-from tests.base import TestFixture, load_key
-from joserfc.jwk import ECKey, OctKey
-from joserfc.jwe import (
-    GeneralJSONEncryption,
-    FlattenedJSONEncryption,
-    encrypt_compact,
-    decrypt_compact,
-    encrypt_json,
-    decrypt_json,
-)
 
+from joserfc.jwe import (
+    FlattenedJSONEncryption,
+    GeneralJSONEncryption,
+    decrypt_compact,
+    decrypt_json,
+    encrypt_compact,
+    encrypt_json,
+)
+from joserfc.jwk import ECKey, OctKey
+from tests.base import TestFixture, load_key
 
 payload = (
     b"You can trust us to stick with you through thick and "

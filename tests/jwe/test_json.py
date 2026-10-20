@@ -1,14 +1,15 @@
 from unittest import TestCase
+
 from joserfc import jwe
-from joserfc.jwe import GeneralJSONEncryption, FlattenedJSONEncryption
-from joserfc.jwa import JWEKeyEncryption
-from joserfc.jwk import KeySet, RSAKey, ECKey, OctKey
 from joserfc.errors import (
-    DecodeError,
     ConflictAlgorithmError,
-    InvalidKeyTypeError,
+    DecodeError,
     ExceededSizeError,
+    InvalidKeyTypeError,
 )
+from joserfc.jwa import JWEKeyEncryption
+from joserfc.jwe import FlattenedJSONEncryption, GeneralJSONEncryption
+from joserfc.jwk import ECKey, KeySet, OctKey, RSAKey
 
 
 class CountingKeyEncryption(JWEKeyEncryption):

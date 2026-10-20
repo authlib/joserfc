@@ -1,9 +1,11 @@
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
+
 from .errors import (
-    MissingHeaderError,
-    MissingCritHeaderError,
-    UnsupportedHeaderError,
     InvalidHeaderValueError,
+    MissingCritHeaderError,
+    MissingHeaderError,
+    UnsupportedHeaderError,
 )
 
 Header = dict[str, Any]
@@ -192,7 +194,7 @@ def check_registry_header(registry: HeaderRegistryDict, header: Header, check_re
             try:
                 reg.validate(header[key])
             except ValueError as error:
-                raise InvalidHeaderValueError(f"'{key}' in header {error}")
+                raise InvalidHeaderValueError(f"'{key}' in header {error}") from error
 
 
 def check_crit_header(registry: HeaderRegistryDict, header: Header) -> None:

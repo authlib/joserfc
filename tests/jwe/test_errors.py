@@ -1,14 +1,15 @@
 from unittest import TestCase
+
 from joserfc import jwe
-from joserfc.jwk import OctKey, RSAKey
-from joserfc.registry import HeaderParameter
 from joserfc.errors import (
-    InvalidKeyTypeError,
-    InvalidKeyLengthError,
     DecodeError,
+    InvalidKeyLengthError,
+    InvalidKeyTypeError,
     UnsupportedAlgorithmError,
     UnsupportedHeaderError,
 )
+from joserfc.jwk import OctKey, RSAKey
+from joserfc.registry import HeaderParameter
 from tests.base import load_key
 
 

@@ -1,20 +1,24 @@
 from unittest import TestCase
 
 from joserfc import jws
-from joserfc.jwk import (
-    guess_key,
-    import_key,
-    generate_key,
-    thumbprint_uri,
-)
-from joserfc.jwk import KeySet, OctKey, RSAKey, ECKey, OKPKey
 from joserfc.errors import (
-    UnsupportedKeyAlgorithmError,
-    UnsupportedKeyUseError,
-    UnsupportedKeyOperationError,
+    InvalidKeyIdError,
     InvalidKeyTypeError,
     MissingKeyTypeError,
-    InvalidKeyIdError,
+    UnsupportedKeyAlgorithmError,
+    UnsupportedKeyOperationError,
+    UnsupportedKeyUseError,
+)
+from joserfc.jwk import (
+    ECKey,
+    KeySet,
+    OctKey,
+    OKPKey,
+    RSAKey,
+    generate_key,
+    guess_key,
+    import_key,
+    thumbprint_uri,
 )
 from tests.keys import read_key
 
