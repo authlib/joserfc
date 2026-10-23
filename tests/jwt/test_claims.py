@@ -129,6 +129,22 @@ class TestJWTClaims(TestCase):
         claims_requests.validate({"foo": False})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"foo": True})
 
+    def test_option_value_with_list(self):
+        # a list "value" is the expected claim value itself
+        claims_requests = jwt.JWTClaimsRegistry(aud={"essential": True, "value": ["id1"]})
+        claims_requests.validate({"aud": ["id1"]})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"aud": ["id2"]})
+
+        claims_requests = jwt.JWTClaimsRegistry(aud={"essential": True, "value": ["id1", "id2"]})
+        claims_requests.validate({"aud": ["id1", "id2"]})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"aud": "id1"})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"aud": ["id1"]})
+
+        # a scalar "value" still matches any element of a list claim
+        claims_requests = jwt.JWTClaimsRegistry(foo={"essential": True, "value": "id1"})
+        claims_requests.validate({"foo": ["id1"]})
+        self.assertRaises(InvalidClaimError, claims_requests.validate, {"foo": ["id2"]})
+
     def test_option_values(self):
         claims_requests = jwt.JWTClaimsRegistry(foo={"essential": True, "values": ["1", "2", True, False]})
         self.assertRaises(InvalidClaimError, claims_requests.validate, {"foo": "a"})

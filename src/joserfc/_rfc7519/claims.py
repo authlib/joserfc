@@ -31,7 +31,7 @@ def convert_claims(claims: Claims, encoder_cls: type[JSONEncoder] | None = None)
 class ClaimsOption(TypedDict, total=False):
     essential: bool
     allow_blank: bool | None
-    value: str | int | bool
+    value: str | int | bool | list[str | int | bool]
     values: list[str | int | bool] | list[str] | list[int] | list[bool]
 
 
@@ -64,20 +64,25 @@ class BaseClaimsRegistry:
 
         option_values = option.get("values")
 
-        if option_values is None:
-            option_value = option.get("value")
-            if option_value is not None:
-                option_values = [option_value]
-
-        if not option_values:
+        if option_values:
+            if isinstance(value, list):
+                if not any(v in value for v in option_values):
+                    raise InvalidClaimError(claim_name)
+            elif value not in option_values:
+                raise InvalidClaimError(claim_name)
             return
 
+        option_value = option.get("value")
+        if option_value is None:
+            return
+
+        # "value" is the expected claim value itself; a list claim also
+        # matches when one of its elements is the expected value
         if isinstance(value, list):
-            if not any(v in value for v in option_values):
+            if value != option_value and option_value not in value:
                 raise InvalidClaimError(claim_name)
-        else:
-            if value not in option_values:
-                raise InvalidClaimError(claim_name)
+        elif value != option_value:
+            raise InvalidClaimError(claim_name)
 
     def validate(self, claims: dict[str, Any]) -> None:
         """
