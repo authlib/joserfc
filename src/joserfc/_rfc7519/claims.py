@@ -189,7 +189,7 @@ class JWTClaimsRegistry(BaseClaimsRegistry):
         """
         if not _validate_numeric_time(value):
             raise InvalidClaimError("exp", "Claim 'exp' must be a NumericDate value")
-        if value < (self.now - self.leeway):
+        if value <= (self.now - self.leeway):
             raise ExpiredTokenError("exp")
         self.check_value("exp", value)
 

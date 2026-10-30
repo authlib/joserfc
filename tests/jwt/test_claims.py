@@ -197,6 +197,16 @@ class TestJWTClaims(TestCase):
         claims_requests = jwt.JWTClaimsRegistry(aud={"essential": True})
         claims_requests.validate({"aud": "a"})
 
+    def test_validate_exp(self):
+        now = int(time.time())
+        claims_requests = jwt.JWTClaimsRegistry(now=now)
+        claims_requests.validate({"exp": now + 1})
+        self.assertRaises(ExpiredTokenError, claims_requests.validate, {"exp": now})
+
+        claims_requests = jwt.JWTClaimsRegistry(now=now, leeway=500)
+        claims_requests.validate({"exp": now - 499})
+        self.assertRaises(ExpiredTokenError, claims_requests.validate, {"exp": now - 500})
+
     def test_validate_iat(self):
         claims_requests = jwt.JWTClaimsRegistry(leeway=500)
         now = int(time.time())
