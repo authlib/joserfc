@@ -12,9 +12,18 @@ Changelog
 .. module:: joserfc
     :noindex:
 
-Unreleased
-----------
+1.8.0
+-----
 
+**Released on November 3, 2026**
+
+- **JWT**: Reject non-finite and boolean NumericDate claims, and reject JWT payloads
+  that are not JSON objects.
+- **JWK**: Reject X.509 certificates and prefixed asymmetric public keys as oct keys.
+- **JWS**: Require critical headers and RFC 7797 ``b64`` parameters to be protected,
+  and require a consistent ``b64`` value across General JSON signatures.
+- **JWE**: Generate fresh ECDH ephemeral keys for each encryption and reject an
+  explicitly empty AAD member.
 - Drop Python 3.10 support; Python 3.11 or newer is required.
 - Preserve key subclasses in factory return types with ``typing.Self``.
 - Improve claim validation type narrowing with ``typing.TypeGuard`` and refine
