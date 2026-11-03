@@ -134,8 +134,11 @@ class TestJWEJSON(TestCase):
                     obj.add_recipient({"alg": "A128KW"}, key)
                     value = jwe.encrypt_json(obj, None)
                     if size == 0:
-                        value["aad"] = ""
-                    if len(value["aad"]) <= limit:
+                        self.assertNotIn("aad", value)
+                        result = jwe.decrypt_json(value, key)
+                        self.assertIsNone(result.aad)
+                        self.assertEqual(result.plaintext, b"hello")
+                    elif len(value["aad"]) <= limit:
                         result = jwe.decrypt_json(value, key)
                         self.assertEqual(result.aad, aad)
                         self.assertEqual(result.plaintext, b"hello")
@@ -146,6 +149,17 @@ class TestJWEJSON(TestCase):
                         result = jwe.decrypt_json(value, key, registry=registry)
                         self.assertEqual(result.aad, aad)
                         self.assertEqual(result.plaintext, b"hello")
+
+    def test_empty_aad_member_rejected(self):
+        key = OctKey.generate_key(128)
+        for model in (GeneralJSONEncryption, FlattenedJSONEncryption):
+            with self.subTest(model=model.__name__):
+                obj = model({"enc": "A128GCM"}, b"hello")
+                obj.add_recipient({"alg": "A128KW"}, key)
+                value = jwe.encrypt_json(obj, None)
+                value["aad"] = ""
+                with self.assertRaisesRegex(DecodeError, "AAD must be omitted when empty"):
+                    jwe.decrypt_json(value, key)
 
     def test_oversized_aad_rejected_before_decoding(self):
         key = OctKey.generate_key(128)
