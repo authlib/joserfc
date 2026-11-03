@@ -2,6 +2,7 @@ import secrets
 import warnings
 from typing import Any, Self
 
+from cryptography import x509
 from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives.serialization import (
     load_der_public_key,
@@ -28,6 +29,14 @@ POSSIBLE_UNSAFE_KEYS = (
     b"ecdsa-sha2-",
 )
 
+UNSAFE_KEY_LOADERS = (
+    load_pem_public_key,
+    load_der_public_key,
+    load_ssh_public_key,
+    x509.load_pem_x509_certificate,
+    x509.load_der_x509_certificate,
+)
+
 
 class OctBinding(NativeKeyBinding):
     @classmethod
@@ -41,26 +50,18 @@ class OctBinding(NativeKeyBinding):
 
     @classmethod
     def import_from_bytes(cls, value: bytes, password: str | bytes | None = None) -> bytes:
-        # Reject recognized public keys, while retaining warnings for input
-        # that only resembles an asymmetric key (see issue #32).
-        if value.startswith(b"0"):
-            loader = load_der_public_key
-        elif value.startswith(b"-----BEGIN "):
-            loader = load_pem_public_key
-        elif value.startswith((b"ssh-", b"ecdsa-sha2-")):
-            loader = load_ssh_public_key
-        else:
-            loader = None
-
-        if loader is not None:
+        # Parse instead of dispatching on a prefix: PEM loaders accept leading
+        # bytes, and certificates also contain public keys that must not be
+        # treated as HMAC secrets.
+        for loader in UNSAFE_KEY_LOADERS:
             try:
                 loader(value)
             except (ValueError, UnsupportedAlgorithm):
-                pass
-            else:
-                raise ValueError("Asymmetric public keys must not be used as oct keys")
+                continue
+            raise ValueError("Asymmetric public keys must not be used as oct keys")
 
-        if value.startswith(POSSIBLE_UNSAFE_KEYS):
+        # Retain warnings for unparsable input that merely resembles a key.
+        if any(marker in value for marker in POSSIBLE_UNSAFE_KEYS):
             warnings.warn("This key should not be used as an oct key", SecurityWarning, stacklevel=2)
         return value
 

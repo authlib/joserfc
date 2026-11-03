@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from cryptography import x509
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 
 from joserfc.errors import KeyParameterError, SecurityWarning
@@ -112,6 +113,25 @@ class TestOctKey(TestCase):
                 with self.subTest(filename=filename):
                     self.assertRaisesRegex(ValueError, "Asymmetric public keys", OctKey.import_key, value)
 
+    def test_import_prefixed_pem_public_key_rejected(self):
+        raw = read_key("rsa-openssl-public.pem")
+        prefixes = (b"\n", b" ", b"\r\n", b"\t", b"# comment\n", b"\xef\xbb\xbf")
+        for prefix in prefixes:
+            prefixed_key = prefix + raw
+            values = (prefixed_key, {"kty": "oct", "k": urlsafe_b64encode(prefixed_key).decode("ascii")})
+            for value in values:
+                with self.subTest(prefix=prefix, jwk=isinstance(value, dict)):
+                    self.assertRaisesRegex(ValueError, "Asymmetric public keys", OctKey.import_key, value)
+
+    def test_import_x509_certificate_rejected(self):
+        pem_certificate = read_key("firebase-cert.pem")
+        der_certificate = x509.load_pem_x509_certificate(pem_certificate).public_bytes(Encoding.DER)
+        for certificate in (pem_certificate, der_certificate):
+            values = (certificate, {"kty": "oct", "k": urlsafe_b64encode(certificate).decode("ascii")})
+            for value in values:
+                with self.subTest(der=certificate is der_certificate, jwk=isinstance(value, dict)):
+                    self.assertRaisesRegex(ValueError, "Asymmetric public keys", OctKey.import_key, value)
+
     def test_import_ambiguous_key_material(self):
         # A DER prefix alone does not make a random symmetric key unsafe.
         raw = b"0" + b"x" * 31
@@ -119,6 +139,7 @@ class TestOctKey(TestCase):
         self.assertEqual(OctKey.import_key({"kty": "oct", "k": urlsafe_b64encode(raw).decode("ascii")}).raw_value, raw)
         self.assertWarns(SecurityWarning, OctKey.import_key, b"-----BEGIN not-a-public-key")
         self.assertWarns(SecurityWarning, OctKey.import_key, b"ssh-rsa not-a-public-key")
+        self.assertWarns(SecurityWarning, OctKey.import_key, b"\nssh-rsa not-a-public-key")
 
     def test_generate_key(self):
         key = OctKey.generate_key()
