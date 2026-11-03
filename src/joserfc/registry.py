@@ -214,6 +214,17 @@ def check_crit_header(registry: HeaderRegistryDict, header: Header) -> None:
         raise UnsupportedHeaderError(f"Unsupported {unsupported_crit_headers} in header")
 
 
-def reject_unprotected_crit_header(unprotected: Header | None) -> None:
+def reject_unprotected_crit_header(unprotected: Header | None, protected: Header | None = None) -> None:
     if unprotected and "crit" in unprotected:
         raise UnsupportedHeaderError("'crit' header MUST be protected header")
+
+    if not unprotected or not protected:
+        return
+
+    critical_headers = protected.get("crit")
+    if not isinstance(critical_headers, list):
+        return
+
+    for name in critical_headers:
+        if isinstance(name, str) and name not in protected and name in unprotected:
+            raise UnsupportedHeaderError(f"'{name}' header MUST be protected")

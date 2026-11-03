@@ -6,6 +6,7 @@ from joserfc.errors import (
     DecodeError,
     ExceededSizeError,
     InvalidKeyTypeError,
+    UnsupportedHeaderError,
 )
 from joserfc.jwa import JWEKeyEncryption
 from joserfc.jwe import FlattenedJSONEncryption, GeneralJSONEncryption
@@ -68,6 +69,38 @@ class TestJWEJSON(TestCase):
         value = jwe.encrypt_json(obj, None)
         obj1 = jwe.decrypt_json(value, self.rsa_key)
         self.assertEqual(obj1.aad, b"foo")
+
+    def test_critical_headers_must_be_protected(self):
+        key = OctKey.generate_key(128)
+        obj = FlattenedJSONEncryption(
+            {"enc": "A128GCM", "crit": ["kid"]},
+            b"hello",
+            unprotected={"kid": "alice"},
+        )
+        obj.add_recipient({"alg": "A128KW"}, key)
+        self.assertRaises(UnsupportedHeaderError, jwe.encrypt_json, obj, None)
+
+        obj = FlattenedJSONEncryption({"enc": "A128GCM", "crit": ["kid"]}, b"hello")
+        obj.add_recipient({"alg": "A128KW", "kid": "alice"}, key)
+        self.assertRaises(UnsupportedHeaderError, jwe.encrypt_json, obj, None)
+
+        obj = FlattenedJSONEncryption({"enc": "A128GCM"}, b"hello")
+        obj.add_recipient({"alg": "A128KW", "crit": ["alg"]}, key)
+        self.assertRaises(UnsupportedHeaderError, jwe.encrypt_json, obj, None)
+
+    def test_recipient_critical_header_rejected_on_decrypt(self):
+        key = OctKey.generate_key(128)
+        obj = FlattenedJSONEncryption({"enc": "A128GCM"}, b"hello")
+        obj.add_recipient({"alg": "A128KW"}, key)
+        value = jwe.encrypt_json(obj, None)
+        value["header"]["crit"] = ["alg"]
+        self.assertRaises(UnsupportedHeaderError, jwe.decrypt_json, value, key)
+
+        obj = GeneralJSONEncryption({"enc": "A128GCM"}, b"hello")
+        obj.add_recipient({"alg": "A128KW"}, key)
+        value = jwe.encrypt_json(obj, None)
+        value["recipients"][0]["header"]["crit"] = ["alg"]
+        self.assertRaises(UnsupportedHeaderError, jwe.decrypt_json, value, key)
 
     def test_aad_size_limit(self):
         key = OctKey.generate_key(128)

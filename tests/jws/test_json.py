@@ -4,6 +4,7 @@ from joserfc.errors import (
     BadSignatureError,
     DecodeError,
     ExceededSizeError,
+    InvalidHeaderValueError,
     UnsupportedAlgorithmError,
     UnsupportedHeaderError,
 )
@@ -141,6 +142,48 @@ class TestJSON(TestCase):
         value["header"] = {"kid": "b"}
         obj = deserialize_json(value, self.key)
         self.assertEqual(obj.headers()["kid"], "a")
+
+    def test_critical_header_parameters_must_be_protected(self):
+        protected = to_str(json_b64encode({"alg": "HS256", "crit": ["kid"]}))
+        value = serialize_json({"protected": {"alg": "HS256"}}, b"hello", self.key)
+        value["protected"] = protected
+        value["header"] = {"kid": "alice"}
+        self.assertRaises(UnsupportedHeaderError, deserialize_json, value, self.key)
+
+        value = serialize_json([{"protected": {"alg": "HS256"}}], b"hello", self.key)
+        value["signatures"][0]["protected"] = protected
+        value["signatures"][0]["header"] = {"kid": "alice"}
+        self.assertRaises(UnsupportedHeaderError, deserialize_json, value, self.key)
+
+    def test_b64_must_be_protected(self):
+        value = serialize_json({"protected": {"alg": "HS256"}}, b"hello", self.key)
+        value["header"] = {"b64": True}
+        self.assertRaises(UnsupportedHeaderError, deserialize_json, value, self.key)
+
+        value = serialize_json({"protected": {"alg": "HS256"}}, b"hello", self.key)
+        value["protected"] = to_str(json_b64encode({"alg": "HS256", "crit": ["b64"]}))
+        value["header"] = {"b64": True}
+        self.assertRaises(UnsupportedHeaderError, deserialize_json, value, self.key)
+
+    def test_general_json_b64_must_match_across_signatures(self):
+        members: list[HeaderDict] = [
+            {"protected": {"alg": "HS256", "b64": False, "crit": ["b64"]}},
+            {"protected": {"alg": "HS256"}},
+        ]
+        self.assertRaises(InvalidHeaderValueError, serialize_json, members, b"hello", self.key)
+
+        members = [
+            {"protected": {"alg": "HS256", "b64": False, "crit": ["b64"]}},
+            {"protected": {"alg": "HS256", "b64": False, "crit": ["b64"]}},
+        ]
+        value = serialize_json(members, b"hello", self.key)
+        self.assertEqual(value["payload"], "hello")
+        obj = deserialize_json(value, self.key)
+        self.assertEqual(obj.payload, b"hello")
+
+        second_header = {"alg": "HS256"}
+        value["signatures"][1]["protected"] = to_str(json_b64encode(second_header))
+        self.assertRaises(InvalidHeaderValueError, deserialize_json, value, self.key)
 
     def test_header_exceeded_size_error(self):
         data: FlattenedJSONSerialization = {

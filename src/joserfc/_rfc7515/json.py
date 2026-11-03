@@ -68,9 +68,7 @@ def sign_flattened_json(
 def sign_json_member(
     payload_segment: bytes, member: HeaderMember, registry: JWSRegistry, find_key: FindKey
 ) -> JSONSignatureDict:
-    reject_unprotected_crit_header(member.header)
-    headers = member.headers()
-    registry.check_header(headers)
+    headers = check_json_member_headers(member, registry)
     alg = registry.get_alg(headers["alg"])
     key = find_key(member)
     alg.check_key(key)
@@ -89,15 +87,12 @@ def sign_json_member(
 
 
 def extract_general_json(value: GeneralJSONSerialization, registry: JWSRegistry) -> GeneralJSONSignature:
-    payload_segment: bytes = value["payload"].encode("utf-8")
-    registry.validate_payload_size(payload_segment)
+    payload_segment, signatures, members = extract_general_json_parts(value, registry)
     try:
         payload = urlsafe_b64decode(payload_segment)
     except (TypeError, ValueError) as err:
         raise DecodeError("Invalid payload") from err
 
-    signatures: list[JSONSignatureDict] = value["signatures"]
-    members = [__signature_to_member(sig, registry) for sig in signatures]
     obj = GeneralJSONSignature(members, payload)
     obj.signatures = signatures
     obj.segments = {"payload": payload_segment}
@@ -140,9 +135,7 @@ def verify_signature(
     registry: JWSRegistry,
     find_key: FindKey,
 ) -> bool:
-    reject_unprotected_crit_header(member.header)
-    headers = member.headers()
-    registry.check_header(headers)
+    headers = check_json_member_headers(member, registry)
     alg = registry.get_alg(headers["alg"])
     key = find_key(member)
     alg.check_key(key)
@@ -158,6 +151,25 @@ def verify_signature(
     sig = urlsafe_b64decode(signature_segment)
     signing_input = b".".join([protected_segment, payload_segment])
     return alg.verify(signing_input, sig, key)
+
+
+def extract_general_json_parts(
+    value: GeneralJSONSerialization, registry: JWSRegistry
+) -> tuple[bytes, list[JSONSignatureDict], list[HeaderMember]]:
+    payload_segment = value["payload"].encode("utf-8")
+    registry.validate_payload_size(payload_segment)
+    signatures = value["signatures"]
+    members = [__signature_to_member(signature, registry) for signature in signatures]
+    for member in members:
+        check_json_member_headers(member, registry)
+    return payload_segment, signatures, members
+
+
+def check_json_member_headers(member: HeaderMember, registry: JWSRegistry) -> dict[str, Any]:
+    reject_unprotected_crit_header(member.header, member.protected)
+    headers = member.headers()
+    registry.check_header(headers)
+    return headers
 
 
 def detach_json_content(value: dict[str, Any]) -> dict[str, Any]:

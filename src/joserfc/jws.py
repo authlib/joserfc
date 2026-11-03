@@ -8,9 +8,6 @@ from ._rfc7515.compact import (
 )
 from ._rfc7515.json import (
     detach_json_content,
-    extract_general_json,
-    sign_flattened_json,
-    sign_general_json,
     verify_flattened_json,
     verify_general_json,
 )
@@ -38,11 +35,11 @@ from ._rfc7797.compact import (
     sign_rfc7515_compact,
 )
 from ._rfc7797.json import (
-    extract_rfc7797_json as extract_flattened_json,
+    extract_general_json,
+    sign_flattened_json,
+    sign_general_json,
 )
-from ._rfc7797.json import (
-    sign_rfc7797_json,
-)
+from ._rfc7797.json import extract_rfc7797_json as extract_flattened_json
 from ._rfc7797.util import is_rfc7797_enabled
 from .errors import BadSignatureError, MissingKeyError
 from .jwa import setup_jws_algorithms
@@ -257,8 +254,6 @@ def serialize_json(
         return sign_general_json(_members, _payload, registry, find_key)
     else:
         member = HeaderMember(**members)
-        if is_rfc7797_enabled(member.headers()):
-            return sign_rfc7797_json(member, _payload, registry, find_key)
         return sign_flattened_json(member, _payload, registry, find_key)
 
 

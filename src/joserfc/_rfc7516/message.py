@@ -8,6 +8,7 @@ from ..errors import (
     InvalidExchangeKeyError,
     JoseError,
 )
+from ..registry import reject_unprotected_crit_header
 from ..util import (
     json_b64encode,
     urlsafe_b64encode,
@@ -37,6 +38,9 @@ EncryptionData = CompactEncryption | GeneralJSONEncryption | FlattenedJSONEncryp
 
 
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> None:
+    for recipient in obj.recipients:
+        _check_recipient_header_protection(obj, recipient)
+
     enc = registry.get_enc(obj.protected["enc"])
     cek, delayed_tasks = pre_encrypt_recipients(enc, obj.recipients, registry)
 
@@ -102,6 +106,7 @@ def _perform_decrypt(obj: EncryptionData, registry: JWERegistry) -> None:
 
     cek_set = set()
     for recipient in obj.recipients:
+        _check_recipient_header_protection(obj, recipient)
         try:
             headers = recipient.headers()
             registry.check_header(headers, True)
@@ -185,6 +190,12 @@ def __prepare_recipient_algorithm(recipient: Recipient[Any], registry: JWERegist
     if isinstance(alg, JWEKeyAgreement):
         alg.prepare_ephemeral_key(recipient)
     return alg
+
+
+def _check_recipient_header_protection(obj: EncryptionData, recipient: Recipient[Any]) -> None:
+    if isinstance(obj, BaseJSONEncryption):
+        reject_unprotected_crit_header(obj.unprotected, obj.protected)
+    reject_unprotected_crit_header(recipient.header, obj.protected)
 
 
 def __pre_encrypt_direct_mode(alg: JWEAlgModel, enc: JWEEncModel, recipient: Recipient[Any]) -> bytes:
