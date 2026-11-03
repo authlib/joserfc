@@ -36,6 +36,12 @@ class TestJWT(TestCase):
         data = jws.serialize_compact({"alg": "HS256"}, b"hello", self.oct_key)
         self.assertRaises(InvalidPayloadError, jwt.decode, data, self.oct_key)
 
+    def test_payload_must_be_a_json_object(self):
+        for payload in (b"[1, 2, 3]", b"null", b'"claims"', b"1", b"true"):
+            with self.subTest(payload=payload):
+                data = jws.serialize_compact({"alg": "HS256"}, payload, self.oct_key)
+                self.assertRaises(InvalidPayloadError, jwt.decode, data, self.oct_key)
+
     def test_claims_registry(self):
         data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, self.oct_key)
         token = jwt.decode(data, self.oct_key)

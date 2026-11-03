@@ -224,7 +224,7 @@ class TestJWTClaims(TestCase):
         # is false, so "exp": NaN used to give a token that never expires.
         claims_requests = jwt.JWTClaimsRegistry(now=1000)
         for claim in ("exp", "nbf", "iat"):
-            for value in (float("nan"), float("inf"), float("-inf")):
+            for value in (float("nan"), float("inf"), float("-inf"), True, False):
                 with self.subTest(claim=claim, value=value):
                     self.assertRaises(InvalidClaimError, claims_requests.validate, {claim: value})
 

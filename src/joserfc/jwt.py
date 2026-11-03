@@ -111,9 +111,12 @@ def decode(
         header, payload = _decode_jws(_value, key, algorithms, registry)
 
     try:
-        claims: Claims = json.loads(payload, cls=decoder_cls)
+        claims = json.loads(payload, cls=decoder_cls)
     except (TypeError, ValueError) as error:
         raise InvalidPayloadError() from error
+
+    if not isinstance(claims, dict):
+        raise InvalidPayloadError()
 
     return Token(header, claims)
 

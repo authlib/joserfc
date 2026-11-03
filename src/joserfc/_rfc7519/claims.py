@@ -226,7 +226,7 @@ def _validate_numeric_time(s: object) -> TypeGuard[int | float]:
     # NumericDate is a JSON number, and NaN and Infinity are not. Every comparison with NaN
     # is false, so an "exp" of NaN would never expire. An int is always finite, and math.isfinite
     # raises OverflowError for one too large for a float.
-    return isinstance(s, int) or (isinstance(s, float) and math.isfinite(s))
+    return not isinstance(s, bool) and (isinstance(s, int) or (isinstance(s, float) and math.isfinite(s)))
 
 
 def _validate_list_of_strings(s: object) -> TypeGuard[list[str]]:
