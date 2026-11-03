@@ -38,6 +38,14 @@ EncryptionData = CompactEncryption | GeneralJSONEncryption | FlattenedJSONEncryp
 
 
 def perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> None:
+    try:
+        _perform_encrypt(obj, registry)
+    finally:
+        for recipient in obj.recipients:
+            recipient.ephemeral_key = None
+
+
+def _perform_encrypt(obj: EncryptionData, registry: JWERegistry) -> None:
     for recipient in obj.recipients:
         _check_recipient_header_protection(obj, recipient)
 

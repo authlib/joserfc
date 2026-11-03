@@ -1,3 +1,4 @@
+from copy import deepcopy
 from unittest import TestCase
 
 from joserfc import jwe
@@ -41,6 +42,26 @@ class TestJWEJSON(TestCase):
         value = jwe.encrypt_json(obj, None)
         self.assertIn("recipients", value)
         self.assertEqual(len(value["recipients"]), 2)
+
+    def test_reusing_json_encryption_model_generates_fresh_ephemeral_keys(self):
+        for model in (GeneralJSONEncryption, FlattenedJSONEncryption):
+            for alg in ("ECDH-ES", "ECDH-ES+A128KW"):
+                with self.subTest(model=model.__name__, alg=alg):
+                    obj = model({"enc": "A128GCM"}, b"hello")
+                    obj.add_recipient({"alg": alg}, self.ec_key)
+                    first = deepcopy(jwe.encrypt_json(obj, None))
+                    second = jwe.encrypt_json(obj, None)
+
+                    if model is GeneralJSONEncryption:
+                        first_header = first["recipients"][0]["header"]
+                        second_header = second["recipients"][0]["header"]
+                    else:
+                        first_header = first["header"]
+                        second_header = second["header"]
+
+                    self.assertNotEqual(first_header["epk"], second_header["epk"])
+                    self.assertEqual(jwe.decrypt_json(first, self.ec_key).plaintext, b"hello")
+                    self.assertEqual(jwe.decrypt_json(second, self.ec_key).plaintext, b"hello")
 
     def test_multiple_recipients_without_key(self):
         key1 = RSAKey.generate_key(parameters={"kid": "rsa"})

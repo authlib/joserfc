@@ -316,8 +316,7 @@ class JWEKeyAgreement(KeyManagement, metaclass=ABCMeta):
         assert recipient_key is not None
         self.check_key_type(recipient_key)
         if recipient.ephemeral_key is None:
-            ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
-            recipient.ephemeral_key = ephemeral_key
+            recipient.ephemeral_key = recipient_key.generate_key(recipient_key.curve_name, private=True)
         recipient.add_header("epk", recipient.ephemeral_key.as_dict(private=False))
 
     @abstractmethod
