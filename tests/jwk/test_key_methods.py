@@ -202,3 +202,8 @@ class TestKeyMethods(TestCase):
 
         key = import_key(b"oct-key")
         self.assertEqual(key.key_type, "oct")
+
+    def test_import_key_invalid_kty(self):
+        self.assertRaises(InvalidKeyTypeError, import_key, {"kty": ["RSA"]})
+        self.assertRaises(InvalidKeyTypeError, import_key, {"kty": 123})
+        self.assertRaises(InvalidKeyTypeError, generate_key, ["RSA"], 2048)

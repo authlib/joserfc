@@ -77,11 +77,15 @@ class OKPBinding(CryptographyBinding):
 
     @staticmethod
     def from_private_bytes(crv: LiteralCurves, data: bytes) -> PrivateOKPKey:
+        if not isinstance(crv, str) or crv not in PRIVATE_KEYS_MAP:
+            raise InvalidKeyCurveError(f"Invalid curve value: '{crv}'")
         crv_key: type[PrivateOKPKey] = PRIVATE_KEYS_MAP[crv]
         return crv_key.from_private_bytes(data)
 
     @staticmethod
     def from_public_bytes(crv: LiteralCurves, data: bytes) -> PublicOKPKey:
+        if not isinstance(crv, str) or crv not in PUBLIC_KEYS_MAP:
+            raise InvalidKeyCurveError(f"Invalid curve value: '{crv}'")
         crv_key: type[PublicOKPKey] = PUBLIC_KEYS_MAP[crv]
         return crv_key.from_public_bytes(data)
 
