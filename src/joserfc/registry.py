@@ -202,6 +202,10 @@ def check_crit_header(registry: HeaderRegistryDict, header: Header) -> None:
     missing_crit_headers = []
     unsupported_crit_headers = []
     if "crit" in header:
+        try:
+            is_list_str(header["crit"])
+        except ValueError as error:
+            raise InvalidHeaderValueError(f"'crit' in header {error}") from error
         for k in header["crit"]:
             if k not in header:
                 missing_crit_headers.append(k)

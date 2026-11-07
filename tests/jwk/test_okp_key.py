@@ -38,6 +38,11 @@ class TestOKPKey(TestCase):
         self.assertFalse(public_key.is_private)
         self.assertIsNone(public_key.kid)
         self.assertRaises(InvalidKeyCurveError, OKPKey.generate_key, "invalid")
+        self.assertRaises(
+            InvalidKeyCurveError,
+            OKPKey.import_key,
+            {"kty": "OKP", "crv": "invalid", "x": "O2aF9noUDtuAzxF6LGLOTNOXmxJBXdAhBLfvphQKf_8"},
+        )
 
         key = OKPKey.generate_key(auto_kid=True)
         self.assertIsNotNone(key.kid)

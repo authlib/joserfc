@@ -58,6 +58,11 @@ class TestECKey(TestCase):
 
     def test_generate_key(self):
         self.assertRaises(InvalidKeyCurveError, ECKey.generate_key, "Invalid")
+        self.assertRaises(
+            InvalidKeyCurveError,
+            ECKey.import_key,
+            {"kty": "EC", "crv": "invalid", "x": "f83OJ3D2xFMTbKEgahAcx3tdrsPtWn00-qeJA23z9Mo", "y": "x_da696PqkGomAbZIrEbngHxnXMbAzMSXXOYq5utin0"},
+        )
 
         key = ECKey.generate_key(private=True)
         self.assertTrue(key.is_private)
