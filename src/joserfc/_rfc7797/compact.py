@@ -90,4 +90,4 @@ _re_urlsafe = re.compile("^[a-zA-Z0-9-_~]+$")
 
 
 def __is_urlsafe_characters(s: bytes | str) -> bool:
-    return bool(_re_urlsafe.match(to_str(s)))
+    return bool(_re_urlsafe.fullmatch(to_str(s)))
