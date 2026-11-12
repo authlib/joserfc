@@ -42,6 +42,13 @@ class TestJWT(TestCase):
                 data = jws.serialize_compact({"alg": "HS256"}, payload, self.oct_key)
                 self.assertRaises(InvalidPayloadError, jwt.decode, data, self.oct_key)
 
+    def test_deeply_nested_payload_is_invalid(self):
+        # a deeply nested payload raises RecursionError from json.loads, which
+        # must surface as InvalidPayloadError, not as a raw RecursionError
+        payload = b'{"a":' + b"[" * 30000 + b"]" * 30000 + b"}"
+        data = jws.serialize_compact({"alg": "HS256"}, payload, self.oct_key)
+        self.assertRaises(InvalidPayloadError, jwt.decode, data, self.oct_key)
+
     def test_claims_registry(self):
         data = jwt.encode({"alg": "HS256"}, {"sub": "a"}, self.oct_key)
         token = jwt.decode(data, self.oct_key)
