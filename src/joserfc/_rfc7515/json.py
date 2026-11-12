@@ -2,7 +2,7 @@ import copy
 from collections.abc import Callable
 from typing import Any
 
-from ..errors import DecodeError
+from ..errors import DecodeError, InvalidHeaderValueError
 from ..registry import reject_unprotected_crit_header
 from ..util import (
     json_b64decode,
@@ -100,12 +100,16 @@ def extract_general_json(value: GeneralJSONSerialization, registry: JWSRegistry)
 
 
 def __signature_to_member(sig: JSONSignatureDict, registry: JWSRegistry) -> HeaderMember:
+    if not isinstance(sig, dict):
+        raise InvalidHeaderValueError("Invalid 'signatures' member: must be a JSON object")
     member = HeaderMember()
     if "protected" in sig:
         protected_segment = to_bytes(sig["protected"])
         registry.validate_header_size(protected_segment)
         member.protected = json_b64decode(protected_segment)
     if "header" in sig:
+        if not isinstance(sig["header"], dict):
+            raise InvalidHeaderValueError("Invalid 'header' value: must be a JSON object")
         member.header = sig["header"]
     return member
 
@@ -156,9 +160,13 @@ def verify_signature(
 def extract_general_json_parts(
     value: GeneralJSONSerialization, registry: JWSRegistry
 ) -> tuple[bytes, list[JSONSignatureDict], list[HeaderMember]]:
+    if "payload" not in value or not isinstance(value["payload"], str):
+        raise DecodeError("Invalid 'payload' member")
     payload_segment = value["payload"].encode("utf-8")
     registry.validate_payload_size(payload_segment)
     signatures = value["signatures"]
+    if not isinstance(signatures, list):
+        raise InvalidHeaderValueError("Invalid 'signatures' value: must be a list")
     members = [__signature_to_member(signature, registry) for signature in signatures]
     for member in members:
         check_json_member_headers(member, registry)

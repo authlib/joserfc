@@ -69,6 +69,8 @@ def sign_rfc7797_json(
 
 
 def extract_rfc7797_json(value: FlattenedJSONSerialization, registry: JWSRegistry) -> FlattenedJSONSignature:
+    if "payload" not in value or not isinstance(value["payload"], str):
+        raise DecodeError("Invalid 'payload' member")
     if "protected" in value:
         protected_segment = to_bytes(value["protected"])
         registry.validate_header_size(protected_segment)
@@ -77,6 +79,8 @@ def extract_rfc7797_json(value: FlattenedJSONSerialization, registry: JWSRegistr
         protected = None
 
     header = value.get("header")
+    if "header" in value and not isinstance(header, dict):
+        raise InvalidHeaderValueError("Invalid 'header' value: must be a JSON object")
     member = HeaderMember(protected, header)
 
     payload_segment: bytes = value["payload"].encode("utf-8")
@@ -92,6 +96,8 @@ def extract_rfc7797_json(value: FlattenedJSONSerialization, registry: JWSRegistr
         payload = payload_segment
 
     obj = FlattenedJSONSignature(member, payload)
+    if "signature" not in value:
+        raise DecodeError("Missing 'signature' member")
     _sig: JSONSignatureDict = {"signature": value["signature"]}
     if "protected" in value:
         _sig["protected"] = value["protected"]
