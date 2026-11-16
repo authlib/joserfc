@@ -1,4 +1,5 @@
-from unittest import TestCase
+import sys
+from unittest import TestCase, skipIf
 
 from joserfc import jwe, jws, jwt
 from joserfc.errors import (
@@ -42,9 +43,15 @@ class TestJWT(TestCase):
                 data = jws.serialize_compact({"alg": "HS256"}, payload, self.oct_key)
                 self.assertRaises(InvalidPayloadError, jwt.decode, data, self.oct_key)
 
+    @skipIf(
+        sys.version_info >= (3, 14),
+        "CPython >= 3.14 uses a non-recursive JSON parser; "
+        "deeply nested payloads parse without RecursionError",
+    )
     def test_deeply_nested_payload_is_invalid(self):
-        # a deeply nested payload raises RecursionError from json.loads, which
-        # must surface as InvalidPayloadError, not as a raw RecursionError
+        # on Python <= 3.13, a deeply nested payload raises RecursionError
+        # from json.loads, which must surface as InvalidPayloadError,
+        # not as a raw RecursionError
         payload = b'{"a":' + b"[" * 30000 + b"]" * 30000 + b"}"
         data = jws.serialize_compact({"alg": "HS256"}, payload, self.oct_key)
         self.assertRaises(InvalidPayloadError, jwt.decode, data, self.oct_key)
