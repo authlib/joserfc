@@ -144,11 +144,18 @@ class KeySet:
         if kid is None and len(self.keys) == 1:
             return self.keys[0]
 
-        keys = [key for key in self.keys if key.kid == kid]
+        if kid is None:
+            # without a kid, look for the only key that fits the algorithm
+            algorithm = parameters.get("alg") if parameters else None
+            key_types = self.algorithm_keys.get(algorithm) if algorithm else None
+            keys = [k for k in self.keys if not key_types or k.key_type in key_types]
+        else:
+            keys = [key for key in self.keys if key.kid == kid]
+
         if parameters:
             keys = list(_filter_keys_by_parameters(keys, parameters))
 
-        if keys:
+        if keys and (kid is not None or len(keys) == 1):
             return keys[0]
         raise InvalidKeyIdError(f"No key for kid: '{kid}'")
 
