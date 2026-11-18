@@ -11,6 +11,7 @@ Originally designed in ``authlib.jose.rfc7518``.
 
 import hashlib
 import hmac
+import warnings
 from typing import Any, Literal
 
 from cryptography.exceptions import InvalidSignature
@@ -23,7 +24,7 @@ from cryptography.hazmat.primitives.asymmetric.utils import (
 )
 
 from .._rfc7515.model import JWSAlgModel
-from ..errors import InvalidKeyCurveError
+from ..errors import InvalidKeyCurveError, SecurityWarning
 from .ec_key import ECKey
 from .oct_key import OctKey
 from .rsa_key import RSAKey
@@ -60,6 +61,18 @@ class HMACAlgorithm(JWSAlgModel):
         self.recommended = recommended
         self.hash_alg = getattr(self, f"SHA{sha_type}")
         self.algorithm_security = sha_type
+        # RFC 7518, Section 3.2: a key the same size as the hash output or
+        # larger MUST be used with HMAC.
+        self.min_key_size = sha_type // 8
+
+    def check_key(self, key: OctKey) -> None:
+        super().check_key(key)
+        if len(key.raw_value) < self.min_key_size:
+            warnings.warn(
+                f"RFC 7518 requires a key of at least {self.min_key_size} bytes for {self.name}",
+                SecurityWarning,
+                stacklevel=2,
+            )
 
     def sign(self, msg: bytes, key: OctKey) -> bytes:
         # it is faster than the one in cryptography
@@ -91,6 +104,17 @@ class _RSAAlgModel(JWSAlgModel):
         self.recommended = recommended
         self.hash_alg = getattr(self, f"SHA{sha_type}")
         self.algorithm_security = sha_type
+
+    def check_key(self, key: RSAKey) -> None:
+        super().check_key(key)
+        # RFC 7518, Sections 3.3 and 3.5: RSA keys of 2048 bits or larger
+        # MUST be used with RS and PS algorithms.
+        if key.raw_value.key_size < 2048:
+            warnings.warn(
+                f"RFC 7518 requires an RSA key of at least 2048 bits for {self.name}",
+                SecurityWarning,
+                stacklevel=2,
+            )
 
     def sign(self, msg: bytes, key: RSAKey) -> bytes:
         op_key = key.get_op_key("sign")
