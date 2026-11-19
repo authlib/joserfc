@@ -114,6 +114,21 @@ class TestJWSErrors(TestCase):
         header = {"alg": "HS256", "kid": "1", "crit": ["kid"]}
         jws.serialize_compact(header, "i", self.key)
 
+        self.assertRaises(
+            InvalidHeaderValueError,
+            jws.serialize_compact,
+            {"alg": "HS256", "crit": 1},
+            "i",
+            self.key,
+        )
+        self.assertRaises(
+            InvalidHeaderValueError,
+            jws.serialize_compact,
+            {"alg": "HS256", "crit": ["kid", 123]},
+            "i",
+            self.key,
+        )
+
     def test_unsupported_crit_header(self):
         header = {"alg": "HS256", "bob": "a", "crit": ["bob"]}
         self.assertRaises(

@@ -69,7 +69,7 @@ class JWKRegistry:
             else:
                 raise MissingKeyTypeError("Missing key type")
 
-        if key_type not in cls.key_types:
+        if not isinstance(key_type, str) or key_type not in cls.key_types:
             raise InvalidKeyTypeError(f"Invalid key type: '{key_type}'")
 
         if isinstance(data, str):
@@ -97,7 +97,7 @@ class JWKRegistry:
             JWKRegistry.generate_key("RSA", 2048)
             JWKRegistry.generate_key("EC", "P-256")
         """
-        if key_type not in cls.key_types:
+        if not isinstance(key_type, str) or key_type not in cls.key_types:
             raise InvalidKeyTypeError(f"Invalid key type: '{key_type}'")
 
         key_cls = cls.key_types[key_type]

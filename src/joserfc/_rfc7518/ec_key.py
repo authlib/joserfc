@@ -58,7 +58,10 @@ class ECBinding(CryptographyBinding):
 
     @classmethod
     def import_private_key(cls, obj: ECDictKey) -> EllipticCurvePrivateKey:
-        curve = cls._dss_curves[obj["crv"]]()
+        crv = obj.get("crv")
+        if not isinstance(crv, str) or crv not in cls._dss_curves:
+            raise InvalidKeyCurveError(f"Invalid crv value: '{crv}'")
+        curve = cls._dss_curves[crv]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),
             base64_to_int(obj["y"]),
@@ -81,7 +84,10 @@ class ECBinding(CryptographyBinding):
 
     @classmethod
     def import_public_key(cls, obj: ECDictKey) -> EllipticCurvePublicKey:
-        curve = cls._dss_curves[obj["crv"]]()
+        crv = obj.get("crv")
+        if not isinstance(crv, str) or crv not in cls._dss_curves:
+            raise InvalidKeyCurveError(f"Invalid crv value: '{crv}'")
+        curve = cls._dss_curves[crv]()
         public_numbers = EllipticCurvePublicNumbers(
             base64_to_int(obj["x"]),
             base64_to_int(obj["y"]),

@@ -16,6 +16,8 @@ class TestKeySet(TestCase):
         jwks = {
             "keys": [
                 {"kty": "unknown", "alg": "X", "kid": "unknown"},
+                {"kty": ["RSA"], "alg": "X", "kid": "invalid-list"},
+                {"kty": 123, "alg": "X", "kid": "invalid-int"},
                 {"kty": "oct", "k": "MDEyMzQ1Njc4OWFiY2RlZg", "kid": "classical"},
             ]
         }
