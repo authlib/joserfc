@@ -10,6 +10,7 @@ from ._rfc8037.okp_key import OKPKey
 from .errors import (
     InvalidKeyIdError,
     InvalidKeyTypeError,
+    JoseError,
     MissingKeyError,
     MissingKeyTypeError,
 )
@@ -178,12 +179,17 @@ class KeySet:
         keys: list[Key] = []
 
         for data in value["keys"]:
-            # RFC 7517, Section 5: ignore a key whose "kty" is not understood
-            # rather than failing the whole set (for example a post-quantum key
-            # published alongside classical ones).
+            # RFC 7517, Section 5: implementations SHOULD ignore JWKs that use
+            # an unknown "kty", that miss a required member, or whose values are
+            # out of the supported range. One bad key must not prevent the set
+            # from being used to verify tokens signed with a good key.
+            #
+            # Malformed material reaches the crypto backend as KeyError (unknown
+            # curve), ValueError (invalid point, invalid base64url) or TypeError,
+            # so catch those alongside joserfc's own errors.
             try:
                 keys.append(cls.registry_cls.import_key(data, parameters=parameters))
-            except InvalidKeyTypeError:
+            except (JoseError, KeyError, ValueError, TypeError):
                 continue
 
         if not keys:

@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from joserfc.errors import InvalidKeyIdError, InvalidKeyTypeError, MissingKeyError
-from joserfc.jwk import ECKey, KeySet, OctKey, RSAKey
+from joserfc.jwk import ECKey, KeySet, OctKey, OKPKey, RSAKey
 from tests.keys import read_key
 
 KeySet.algorithm_keys["RS256"] = ["RSA"]
@@ -24,6 +24,41 @@ class TestKeySet(TestCase):
         key_set = KeySet.import_key_set(jwks)
         self.assertEqual(len(key_set.keys), 1)
         self.assertEqual(key_set.keys[0].kid, "classical")
+
+    def test_import_key_set_ignores_malformed_keys(self):
+        # RFC 7517 Section 5: an unknown curve, a missing member, invalid
+        # base64url and an off-curve point are all reasons to ignore a key.
+        ec = ECKey.generate_key("P-256").as_dict(private=False)
+        okp = OKPKey.generate_key("Ed25519").as_dict(private=False)
+        rsa = RSAKey.generate_key(2048).as_dict(private=False)
+        valid = OctKey.import_key("a-valid-secret").as_dict(private=False)
+        valid["kid"] = "valid"
+
+        unknown_ec_crv = {**ec, "crv": "P-9999", "kid": "unknown-ec-crv"}
+        unknown_okp_crv = {**okp, "crv": "Ed9999", "kid": "unknown-okp-crv"}
+        ec_without_x = {key: value for key, value in ec.items() if key != "x"}
+        rsa_without_n = {key: value for key, value in rsa.items() if key != "n"}
+        rsa_bad_n = {**rsa, "n": "not*base64url", "kid": "bad-rsa-n"}
+        off_curve = {**ec, "x": "A" * 43, "kid": "off-curve"}
+
+        jwks = {
+            "keys": [
+                unknown_ec_crv,
+                unknown_okp_crv,
+                ec_without_x,
+                rsa_without_n,
+                rsa_bad_n,
+                off_curve,
+                valid,
+            ]
+        }
+        key_set = KeySet.import_key_set(jwks)
+        self.assertEqual(len(key_set.keys), 1)
+        self.assertEqual(key_set.keys[0].kid, "valid")
+
+    def test_import_key_set_all_malformed_raises(self):
+        jwks = {"keys": [{"kty": "EC", "crv": "P-256"}]}
+        self.assertRaises(MissingKeyError, KeySet.import_key_set, jwks)
 
     def test_generate_and_import_key_set(self):
         jwks1 = KeySet.generate_key_set("RSA", 2048)
