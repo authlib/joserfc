@@ -50,6 +50,13 @@ class TestRFC7797(TestFixture):
     def test_compact_missing_alg(self):
         self.assertRaises(MissingAlgorithmError, jws.deserialize_compact, b"e30.a.b", default_key)
 
+    def test_compact_detaches_payload_with_trailing_newline(self):
+        protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
+        value = jws.serialize_compact(protected, "hello\n", default_key)
+        self.assertEqual(value.split(".")[1], "")
+        obj = jws.deserialize_compact(value, default_key, payload="hello\n")
+        self.assertEqual(obj.payload, b"hello\n")
+
     def test_compact_bad_signature(self):
         protected = {"alg": "HS256", "b64": False, "crit": ["b64"]}
         value = jws.serialize_compact(protected, "hello", default_key)
