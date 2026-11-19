@@ -112,7 +112,7 @@ def decode(
 
     try:
         claims = json.loads(payload, cls=decoder_cls)
-    except (TypeError, ValueError) as error:
+    except (TypeError, ValueError, RecursionError) as error:
         raise InvalidPayloadError() from error
 
     if not isinstance(claims, dict):
