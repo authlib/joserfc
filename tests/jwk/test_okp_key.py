@@ -6,6 +6,7 @@ from joserfc.errors import (
     InvalidExchangeKeyError,
     InvalidKeyCurveError,
     InvalidKeyTypeError,
+    KeyParameterError,
 )
 from joserfc.jwk import OKPKey
 from tests.keys import read_key
@@ -46,6 +47,13 @@ class TestOKPKey(TestCase):
 
         key = OKPKey.generate_key(auto_kid=True)
         self.assertIsNotNone(key.kid)
+
+    def test_import_mismatched_x(self):
+        for crv in ["Ed25519", "Ed448", "X25519", "X448"]:
+            a = OKPKey.generate_key(crv).as_dict(private=True)
+            b = OKPKey.generate_key(crv).as_dict(private=True)
+            self.assertRaises(KeyParameterError, OKPKey.import_key, {**a, "x": b["x"]})
+            self.assertEqual(OKPKey.import_key(a).as_dict(private=True), a)
 
     def test_import_pem_key(self):
         private_pem = read_key("okp-ed448-private.pem")

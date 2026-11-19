@@ -18,7 +18,7 @@ from cryptography.hazmat.primitives.serialization import (
 from .._rfc7517.models import CurveKey
 from .._rfc7517.pem import CryptographyBinding
 from .._rfc7517.types import AnyKey, KeyParameters
-from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError
+from ..errors import InvalidExchangeKeyError, InvalidKeyCurveError, KeyParameterError
 from ..registry import KeyParameter
 from ..util import to_bytes, urlsafe_b64decode, urlsafe_b64encode
 
@@ -92,7 +92,11 @@ class OKPBinding(CryptographyBinding):
     @classmethod
     def import_private_key(cls, obj: OKPDictKey) -> PrivateOKPKey:
         d = urlsafe_b64decode(to_bytes(obj["d"]))
-        return cls.from_private_bytes(obj["crv"], d)
+        key = cls.from_private_bytes(obj["crv"], d)
+        x = key.public_key().public_bytes(Encoding.Raw, PublicFormat.Raw)
+        if x != urlsafe_b64decode(to_bytes(obj["x"])):
+            raise KeyParameterError("'x' does not match 'd'")
+        return key
 
     @classmethod
     def import_public_key(cls, obj: OKPDictKey) -> PublicOKPKey:
