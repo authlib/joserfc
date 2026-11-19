@@ -2,7 +2,6 @@ from unittest import TestCase
 
 from joserfc import jws
 from joserfc.errors import (
-    InvalidKeyIdError,
     InvalidKeyTypeError,
     MissingKeyTypeError,
     UnsupportedKeyAlgorithmError,
@@ -58,14 +57,15 @@ class TestKeyMethods(TestCase):
         guest = Guest()
         guest._headers["alg"] = "HS256"
 
-        self.assertRaises(InvalidKeyIdError, guess_key, key_set, guest)
+        # without a kid, the only key that fits the algorithm is used
+        self.assertIsInstance(guess_key(key_set, guest), OctKey)
         key1 = guess_key(key_set, guest, True)
         self.assertIsInstance(key1, OctKey)
         guess_key(key_set, guest)
 
         guest = Guest()
         guest._headers["alg"] = "RS256"
-        self.assertRaises(InvalidKeyIdError, guess_key, key_set, guest)
+        self.assertIsInstance(guess_key(key_set, guest), RSAKey)
         key2 = guess_key(key_set, guest, True)
         self.assertIsInstance(key2, RSAKey)
 

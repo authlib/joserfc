@@ -84,6 +84,23 @@ class TestKeySet(TestCase):
         k2 = key_set.get_by_kid()
         self.assertIsInstance(k2, OctKey)
 
+    def test_get_by_kid_without_kid(self):
+        rsa_key = RSAKey.generate_key(2048, private=False, auto_kid=True)
+        other_rsa_key = RSAKey.generate_key(2048, {"alg": "RS384"}, private=False, auto_kid=True)
+        ec_key = ECKey.generate_key("P-256", private=False, auto_kid=True)
+        key_set = KeySet([rsa_key, other_rsa_key, ec_key])
+
+        # only one key can be used with the algorithm
+        self.assertIs(key_set.get_by_kid(None, {"alg": "RS256"}), rsa_key)
+        self.assertIs(key_set.get_by_kid(None, {"alg": "ES256"}), ec_key)
+
+        # several keys can be used with the algorithm
+        self.assertRaises(InvalidKeyIdError, key_set.get_by_kid, None, {"alg": "RS384"})
+        self.assertRaises(InvalidKeyIdError, key_set.get_by_kid, None)
+
+        # no key can be used with the algorithm
+        self.assertRaises(InvalidKeyIdError, key_set.get_by_kid, None, {"alg": "HS256"})
+
     def test_key_set_bool(self):
         key_set = KeySet([])
         self.assertFalse(key_set)
