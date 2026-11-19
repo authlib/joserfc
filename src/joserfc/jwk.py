@@ -40,6 +40,7 @@ __all__ = [
     "KeySet",
     # methods
     "guess_key",
+    "fill_headers_from_key",
     "import_key",
     "generate_key",
     "thumbprint",
@@ -53,6 +54,8 @@ class GuestProtocol(Protocol):  # pragma: no cover
     def headers(self) -> Header: ...
 
     def set_kid(self, kid: str) -> None: ...
+
+    def set_alg(self, alg: str) -> None: ...
 
 
 KeyBase = Key | KeySet
@@ -101,6 +104,31 @@ def guess_key(
         return return_key
     else:
         raise ValueError("Invalid key")
+
+
+def fill_headers_from_key(obj: GuestProtocol, key: KeyFlexible) -> None:
+    """Fill ``alg`` and ``kid`` into a signing header from a single key.
+
+    RFC 7517 section 4.4 defines ``alg`` as the algorithm intended for use with
+    the key, and RFC 8725 section 3.1 requires a key to be used with exactly one
+    algorithm. When the caller signs with a key that already declares these
+    values there is no reason to repeat them in the header.
+
+    Explicit header values always win, including an explicit ``alg`` that does
+    not match the key; the usual ``check_key`` validation still rejects that
+    case. A KeySet or a key callable cannot be resolved without an ``alg`` in
+    the header, so this helper leaves those untouched.
+    """
+    if not isinstance(key, (OctKey, RSAKey, ECKey, OKPKey)):
+        return
+
+    headers = obj.headers()
+    if "alg" not in headers:
+        designed_alg = key.get("alg")
+        if isinstance(designed_alg, str):
+            obj.set_alg(designed_alg)
+    if "kid" not in headers and key.kid:
+        obj.set_kid(key.kid)
 
 
 @overload

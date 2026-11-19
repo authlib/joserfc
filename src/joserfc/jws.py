@@ -43,7 +43,7 @@ from ._rfc7797.json import extract_rfc7797_json as extract_flattened_json
 from ._rfc7797.util import is_rfc7797_enabled
 from .errors import BadSignatureError, MissingKeyError
 from .jwa import setup_jws_algorithms
-from .jwk import Key, KeyFlexible, guess_key
+from .jwk import Key, KeyFlexible, fill_headers_from_key, guess_key
 from .registry import Header
 from .util import to_bytes
 
@@ -100,10 +100,11 @@ def serialize_compact(
     if registry is None:
         registry = construct_registry(algorithms)
 
-    registry.check_header(protected)
-
     is_rfc7797 = is_rfc7797_enabled(protected)
     obj = CompactSignature(protected, to_bytes(payload))
+    fill_headers_from_key(obj, private_key)
+
+    registry.check_header(protected)
     alg: JWSAlgModel = registry.get_alg(protected["alg"])
 
     # "none" algorithm requires no key
@@ -251,10 +252,15 @@ def serialize_json(
     _payload = to_bytes(payload)
     if isinstance(members, list):
         _members = [HeaderMember(**member) for member in members]
-        return sign_general_json(_members, _payload, registry, find_key)
     else:
-        member = HeaderMember(**members)
-        return sign_flattened_json(member, _payload, registry, find_key)
+        _members = [HeaderMember(**members)]
+
+    for member in _members:
+        fill_headers_from_key(member, private_key)
+
+    if isinstance(members, list):
+        return sign_general_json(_members, _payload, registry, find_key)
+    return sign_flattened_json(_members[0], _payload, registry, find_key)
 
 
 @overload

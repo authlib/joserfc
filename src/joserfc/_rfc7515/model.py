@@ -40,6 +40,11 @@ class HeaderMember:
             self.header = {}
         self.header["kid"] = kid
 
+    def set_alg(self, alg: str) -> None:
+        if self.protected is None:
+            self.protected = {}
+        self.protected["alg"] = alg
+
 
 class CompactSignature:
     """JSON Web Signature object for compact mode. This object is used to
@@ -59,6 +64,9 @@ class CompactSignature:
 
     def set_kid(self, kid: str) -> None:
         self.protected["kid"] = kid
+
+    def set_alg(self, alg: str) -> None:
+        self.protected["alg"] = alg
 
 
 class FlattenedJSONSignature:
