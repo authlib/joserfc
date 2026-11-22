@@ -19,6 +19,7 @@ Claims = dict[str, Any]
 
 def convert_claims(claims: Claims, encoder_cls: type[JSONEncoder] | None = None) -> bytes:
     """Turn claims into bytes payload."""
+    claims = dict(claims)
     for k in ["exp", "iat", "nbf"]:
         claim = claims.get(k)
         if isinstance(claim, datetime.datetime):
