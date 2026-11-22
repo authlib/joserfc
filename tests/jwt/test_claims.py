@@ -40,6 +40,13 @@ class TestJWTClaims(TestCase):
         decoded_data = jwt.decode(encoded_text, key)
         self.assertIsInstance(decoded_data.claims["iat"], int)
 
+    def test_convert_time_keeps_input_claims(self):
+        key = OctKey.import_key("secret")
+        now = datetime.datetime.now(datetime.UTC)
+        claims = {"iat": now, "exp": now, "nbf": now}
+        jwt.encode({"alg": "HS256"}, claims, key)
+        self.assertEqual(claims, {"iat": now, "exp": now, "nbf": now})
+
     def test_essential_claims(self):
         claims_requests = jwt.JWTClaimsRegistry(sub={"essential": True})
         self.assertRaises(MissingClaimError, claims_requests.validate, {"iss": "a"})
